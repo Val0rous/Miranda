@@ -1,2 +1,2 @@
 # Miranda
-Project Miranda - Android App for Mobile Development, A.Y. 2023-2024
+Codename Project Miranda - Android App for Mobile Development, A.Y. 2023-2024
