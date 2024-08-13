@@ -177,23 +177,25 @@ fun Navbar() {
 
 @Composable
 fun TotalBalance(balance: String) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 16.dp)
-    ) {
-        Text(
-            text = "Total Balance",
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-        Text(
-            text = balance,
-            style = MaterialTheme.typography.displaySmall,
-            color = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier.padding(top = 8.dp)
-        )
+    OutlinedCard(modifier = Modifier.padding(8.dp)) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 16.dp)
+        ) {
+            Text(
+                text = "Total Balance",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            Text(
+                text = balance,
+                style = MaterialTheme.typography.displaySmall,
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.padding(top = 8.dp)
+            )
+        }
     }
 }
 
