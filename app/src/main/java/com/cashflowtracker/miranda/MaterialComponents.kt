@@ -8,10 +8,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.rounded.AccountBalance
 import androidx.compose.material.icons.rounded.Assignment
+import androidx.compose.material.icons.rounded.CreditCard
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Leaderboard
+import androidx.compose.material.icons.rounded.QueryStats
 import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material.icons.rounded.Settings
+import androidx.compose.material.icons.rounded.VpnKey
+import androidx.compose.material.icons.rounded.Wallet
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -42,13 +46,13 @@ fun AppLayout() {
             TotalBalance("3,470.00 €")
             // Aggiungi la lista degli account
             val accounts = listOf(
-                Account("N26", "420.00 €", Icons.Filled.ShoppingCart, true),
-                Account("Hype", "360.00 €", Icons.Filled.AccountBalance, true),
-                Account("Wallet", "100.00 €", Icons.Filled.ShoppingCart, false),
+                Account("N26", "420.00 €", Icons.Rounded.AccountBalance, true),
+                Account("Hype", "360.00 €", Icons.Rounded.CreditCard, true),
+                Account("Wallet", "100.00 €", Icons.Rounded.Wallet, false),
                 Account("Deutsche Bank", "1,500.00 €", Icons.Filled.AccountBalance, false),
-                Account("Investments", "940.00 €", Icons.Filled.Leaderboard, false),
-                Account("Safe", "400.00 €", Icons.Filled.ShoppingCart, false),
-                Account("Revolut", "200.00 €", Icons.Filled.AccountBalance, false)
+                Account("Investments", "940.00 €", Icons.Rounded.QueryStats, false),
+                Account("Safe", "400.00 €", Icons.Rounded.VpnKey, false),
+                Account("Revolut", "200.00 €", Icons.Rounded.CreditCard, false)
             )
             AccountList(accounts)
         }
