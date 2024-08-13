@@ -15,4 +15,6 @@ sealed class NavigationRoute(
     object Transactions : NavigationRoute("transactions", Icons.Outlined.Assignment, Icons.Filled.Assignment, "Transactions")
     object Recurrents : NavigationRoute("recurrents", Icons.Outlined.Schedule, Icons.Filled.Schedule, "Recurrents")
     object Stats : NavigationRoute("stats", Icons.Outlined.Leaderboard, Icons.Filled.Leaderboard, "Stats")
+    object Settings : NavigationRoute("settings",Icons.Outlined.Settings,Icons.Filled.Settings,"Settings")
+
 }
