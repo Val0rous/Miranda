@@ -1,11 +1,9 @@
-package com.example.jetpackcompose
+package com.cashflowtracker.miranda
 
 import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.gestures.scrollable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,8 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.jetpackcompose.ui.theme.JetpackComposeTheme
-import com.example.jetpackcompose.ui.theme.Purple80
+import com.cashflowtracker.miranda.ui.theme.JetpackComposeTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -88,9 +85,9 @@ fun TextStyle() {
 @Composable
 fun HorizontalLayout() {
     Row {
-       Text("First item")
-       Text("Second item")
-       Text("Third item")
+        Text("First item")
+        Text("Second item")
+        Text("Third item")
     }
 }
 

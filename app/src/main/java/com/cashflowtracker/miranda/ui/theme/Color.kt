@@ -1,4 +1,4 @@
-package com.example.jetpackcompose.ui.theme
+package com.cashflowtracker.miranda.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
