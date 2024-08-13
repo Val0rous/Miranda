@@ -6,6 +6,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.AccountBalance
+import androidx.compose.material.icons.outlined.Assignment
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Leaderboard
+import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.material.icons.rounded.AccountBalance
 import androidx.compose.material.icons.rounded.Assignment
 import androidx.compose.material.icons.rounded.CreditCard
@@ -26,12 +31,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+
 
 // class account
 data class Account(val name: String, val balance: String, val icon: ImageVector, val isFavorite: Boolean)
 
 @Composable
 fun AppLayout() {
+    val navController = rememberNavController()
     Scaffold(
         topBar = { AppBar() },
         floatingActionButton = {
@@ -39,7 +51,7 @@ fun AppLayout() {
                 Icon(Icons.Filled.Add, "Add item")
             }
         },
-        bottomBar = { Navbar() }
+        bottomBar = { NavBar(navController) }
     ) { contentPadding ->
         Column(modifier = Modifier.padding(contentPadding)) {
             // Aggiungi il saldo totale , provvisorio da aggiungere la card..
@@ -49,7 +61,7 @@ fun AppLayout() {
                 Account("N26", "420.00 €", Icons.Rounded.AccountBalance, true),
                 Account("Hype", "360.00 €", Icons.Rounded.CreditCard, true),
                 Account("Wallet", "100.00 €", Icons.Rounded.Wallet, false),
-                Account("Deutsche Bank", "1,500.00 €", Icons.Filled.AccountBalance, false),
+                Account("Deutsche Bank", "1,500.00 €", Icons.Rounded.AccountBalance, false),
                 Account("Investments", "940.00 €", Icons.Rounded.QueryStats, false),
                 Account("Safe", "400.00 €", Icons.Rounded.VpnKey, false),
                 Account("Revolut", "200.00 €", Icons.Rounded.CreditCard, false)
@@ -134,46 +146,57 @@ fun Navbar() {
         NavigationBarItem(
             icon = {
                 Icon(
-                    imageVector = if (selectedItem == 0) Icons.Filled.Home else Icons.Rounded.Home,
+                    imageVector = if (selectedItem == 0) Icons.Filled.Home else Icons.Outlined.Home,
                     contentDescription = "Home"
                 )
             },
             label = { Text("Home") },
             selected = selectedItem == 0,
-            onClick = { selectedItem = 0 }
+            onClick = {
+                selectedItem = 0
+                navController.navigate(NavigationRoute.Home.Route) },
         )
         NavigationBarItem(
             icon = {
                 Icon(
-                    imageVector = if (selectedItem == 1) Icons.Filled.Assignment else Icons.Rounded.Assignment,
+                    imageVector = if (selectedItem == 1) Icons.Filled.Assignment else Icons.Outlined.Assignment,
                     contentDescription = "Transactions"
                 )
             },
             label = { Text("Transactions") },
             selected = selectedItem == 1,
-            onClick = { selectedItem = 1 }
+            onClick = {
+                selectedItem = 1
+                navController.navigate(NavigationRoute.Transactions.Route)
+            }
         )
         NavigationBarItem(
             icon = {
                 Icon(
-                    imageVector = if (selectedItem == 2) Icons.Filled.Schedule else Icons.Rounded.Schedule,
+                    imageVector = if (selectedItem == 2) Icons.Filled.Schedule else Icons.Outlined.Schedule,
                     contentDescription = "Recurrents"
                 )
             },
             label = { Text("Recurrents") },
             selected = selectedItem == 2,
-            onClick = { selectedItem = 2 }
+            onClick = {
+                selectedItem = 2
+                navController.navigate(NavigationRoute.Recurrents.Route)
+            }
         )
         NavigationBarItem(
             icon = {
                 Icon(
-                    imageVector = if (selectedItem == 3) Icons.Filled.Leaderboard else Icons.Rounded.Leaderboard,
+                    imageVector = if (selectedItem == 3) Icons.Filled.Leaderboard else Icons.Outlined.Leaderboard,
                     contentDescription = "Stats"
                 )
             },
             label = { Text("Stats") },
             selected = selectedItem == 3,
-            onClick = { selectedItem = 3 }
+            onClick = {
+                selectedItem = 3
+                navController.navigate(NavigationRoute.Stats.Route)
+            }
         )
     }
 }
