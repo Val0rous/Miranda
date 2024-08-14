@@ -66,16 +66,10 @@ fun AppBar(navController: NavHostController, isDarkTheme: Boolean) {
                         Icon(Icons.Filled.Notifications, contentDescription = "Notifications")
                     }
                     IconButton(onClick = { /* Azione 2 */ }) {
-                        Icon(Icons.Filled.Alarm, contentDescription = "Alarm")
+                        Icon(Icons.Filled.FilterList, contentDescription = "Filter")
                     }
                 }
                 NavigationRoute.Stats.route -> {
-                    IconButton(onClick = { /* Azione 1 */ }) {
-                        Icon(Icons.Filled.ShowChart, contentDescription = "Chart")
-                    }
-                    IconButton(onClick = { /* Azione 2 */ }) {
-                        Icon(Icons.Filled.BarChart, contentDescription = "Bar Chart")
-                    }
                 }
             }
 

@@ -3,10 +3,6 @@ package com.cashflowtracker.miranda
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -25,19 +21,12 @@ fun AppLayout(
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
-    val showBottomBarAndFab = currentRoute != NavigationRoute.Settings.route
+    val showBottomBar = currentRoute != NavigationRoute.Settings.route
 
     Scaffold(
         topBar = { AppBar(navController, isDarkTheme) },
-        floatingActionButton = {
-            if (showBottomBarAndFab) {
-                FloatingActionButton(onClick = { /*TODO*/ }) {
-                    Icon(Icons.Filled.Add, contentDescription = "Add item")
-                }
-            }
-        },
         bottomBar = {
-            if (showBottomBarAndFab) {
+            if (showBottomBar) {
                 NavigationBar(navController)
             }
         }
@@ -70,7 +59,6 @@ fun AppLayout(
                         onThemeChange = onThemeChange
                     )
                 }
-
             }
         }
     }
