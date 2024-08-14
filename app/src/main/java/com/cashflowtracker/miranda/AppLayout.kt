@@ -17,7 +17,10 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 
 @Composable
-fun AppLayout() {
+fun AppLayout(
+    isDarkTheme: Boolean,
+    onThemeChange: (Boolean) -> Unit
+) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
@@ -25,7 +28,7 @@ fun AppLayout() {
     val showBottomBarAndFab = currentRoute != NavigationRoute.Settings.route
 
     Scaffold(
-        topBar = { AppBar(navController) },
+        topBar = { AppBar(navController, isDarkTheme) },
         floatingActionButton = {
             if (showBottomBarAndFab) {
                 FloatingActionButton(onClick = { /*TODO*/ }) {
@@ -61,8 +64,13 @@ fun AppLayout() {
                     Stats(navController)
                 }
                 composable(NavigationRoute.Settings.route) {
-                    SettingsScreen(navController)
+                    SettingsScreen(
+                        navController = navController,
+                        isDarkTheme = isDarkTheme,  // Passa lo stato corrente del tema
+                        onThemeChange = onThemeChange
+                    )
                 }
+
             }
         }
     }
