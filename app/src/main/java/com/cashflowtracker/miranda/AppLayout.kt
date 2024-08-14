@@ -38,7 +38,7 @@ fun AppLayout(
         },
         bottomBar = {
             if (showBottomBarAndFab) {
-                BottomNavigationBar(navController)
+                NavigationBar(navController)
             }
         }
     ) { contentPadding ->
