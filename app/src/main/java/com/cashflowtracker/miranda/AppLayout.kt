@@ -21,7 +21,9 @@ fun AppLayout(
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
-    val showBottomBar = currentRoute != NavigationRoute.Settings.route
+    // Mostra la bottom bar solo se non siamo nelle schermate Settings o Profile
+    val showBottomBar = currentRoute != NavigationRoute.Settings.route &&
+            currentRoute != NavigationRoute.Profile.route
 
     Scaffold(
         topBar = { AppBar(navController, isDarkTheme) },
@@ -58,6 +60,9 @@ fun AppLayout(
                         isDarkTheme = isDarkTheme,  // Passa lo stato corrente del tema
                         onThemeChange = onThemeChange
                     )
+                }
+                composable(NavigationRoute.Profile.route) {
+                    ProfileScreen(navController)
                 }
             }
         }

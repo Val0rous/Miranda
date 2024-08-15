@@ -33,6 +33,7 @@ fun AppBar(navController: NavHostController, isDarkTheme: Boolean) {
                     NavigationRoute.Transactions.route -> "Transactions"
                     NavigationRoute.Recurrents.route -> "Recurrents"
                     NavigationRoute.Stats.route -> "Stats"
+                    NavigationRoute.Profile.route -> "Your Profile"
                     else -> ""
                 },
                 style = MaterialTheme.typography.titleMedium,
@@ -41,44 +42,43 @@ fun AppBar(navController: NavHostController, isDarkTheme: Boolean) {
             )
         },
         navigationIcon = {
-            if (currentRoute == NavigationRoute.Settings.route) {
+            if (currentRoute == NavigationRoute.Settings.route || currentRoute == NavigationRoute.Profile.route) {
                 IconButton(onClick = { navController.popBackStack() }) {
                     Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
                 }
             }
         },
         actions = {
-            // Aggiungi icone specifiche per ogni schermata prima di Settings e Profile
-            when (currentRoute) {
-                NavigationRoute.Transactions.route -> {
-                    IconButton(onClick = { /* Azione 1 */ }) {
-                        Icon(Icons.Filled.FilterList, contentDescription = "Filter")
+            if (currentRoute != NavigationRoute.Settings.route && currentRoute != NavigationRoute.Profile.route) {
+                when (currentRoute) {
+                    NavigationRoute.Transactions.route -> {
+                        IconButton(onClick = { /* Azione 1 */ }) {
+                            Icon(Icons.Filled.FilterList, contentDescription = "Filter")
+                        }
+                        IconButton(onClick = { /* Azione 2 */ }) {
+                            Icon(Icons.Filled.Search, contentDescription = "Search")
+                        }
+                        IconButton(onClick = { /* Azione 3 */ }) {
+                            Icon(Icons.Filled.Sort, contentDescription = "Sort")
+                        }
                     }
-                    IconButton(onClick = { /* Azione 2 */ }) {
-                        Icon(Icons.Filled.Search, contentDescription = "Search")
+                    NavigationRoute.Recurrents.route -> {
+                        IconButton(onClick = { /* Azione 1 */ }) {
+                            Icon(Icons.Filled.Notifications, contentDescription = "Notifications")
+                        }
+                        IconButton(onClick = { /* Azione 2 */ }) {
+                            Icon(Icons.Filled.FilterList, contentDescription = "Filter")
+                        }
                     }
-                    IconButton(onClick = { /* Azione 3 */ }) {
-                        Icon(Icons.Filled.Sort, contentDescription = "Sort")
+                    NavigationRoute.Stats.route -> {
+                        // Aggiungi eventuali icone specifiche per la schermata Stats
                     }
                 }
-                NavigationRoute.Recurrents.route -> {
-                    IconButton(onClick = { /* Azione 1 */ }) {
-                        Icon(Icons.Filled.Notifications, contentDescription = "Notifications")
-                    }
-                    IconButton(onClick = { /* Azione 2 */ }) {
-                        Icon(Icons.Filled.FilterList, contentDescription = "Filter")
-                    }
-                }
-                NavigationRoute.Stats.route -> {
-                }
-            }
 
-            // Aggiungi sempre Settings e Profile come ultime icone a destra
-            if (currentRoute != NavigationRoute.Settings.route) {
                 IconButton(onClick = { navController.navigate(NavigationRoute.Settings.route) }) {
                     Icon(Icons.Rounded.Settings, contentDescription = "Settings")
                 }
-                IconButton(onClick = { /* Gestisci il profilo */ }) {
+                IconButton(onClick = { navController.navigate(NavigationRoute.Profile.route) }) {
                     Icon(Icons.Filled.AccountCircle, contentDescription = "Profile")
                 }
             }
@@ -88,4 +88,3 @@ fun AppBar(navController: NavHostController, isDarkTheme: Boolean) {
         )
     )
 }
-

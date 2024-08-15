@@ -16,5 +16,7 @@ sealed class NavigationRoute(
     object Recurrents : NavigationRoute("recurrents", Icons.Outlined.Schedule, Icons.Filled.Schedule, "Recurrents")
     object Stats : NavigationRoute("stats", Icons.Outlined.Leaderboard, Icons.Filled.Leaderboard, "Stats")
     object Settings : NavigationRoute("settings",Icons.Outlined.Settings,Icons.Filled.Settings,"Settings")
+    object Profile : NavigationRoute("profile", Icons.Default.Person, Icons.Default.Person, "Profile")
+
 
 }
