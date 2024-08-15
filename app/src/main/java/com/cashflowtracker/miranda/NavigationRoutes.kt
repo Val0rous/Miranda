@@ -11,12 +11,12 @@ sealed class NavigationRoute(
     val outlinedIcon: ImageVector,
     val label: String
 ) {
-    object Home : NavigationRoute("home",Icons.Outlined.Home, Icons.Filled.Home , "Home")
-    object Transactions : NavigationRoute("transactions", Icons.Outlined.Assignment, Icons.Filled.Assignment, "Transactions")
-    object Recurrents : NavigationRoute("recurrents", Icons.Outlined.Schedule, Icons.Filled.Schedule, "Recurrents")
-    object Stats : NavigationRoute("stats", Icons.Outlined.Leaderboard, Icons.Filled.Leaderboard, "Stats")
-    object Settings : NavigationRoute("settings",Icons.Outlined.Settings,Icons.Filled.Settings,"Settings")
-    object Profile : NavigationRoute("profile", Icons.Default.Person, Icons.Default.Person, "Profile")
+    data object Home : NavigationRoute("home",Icons.Outlined.Home, Icons.Filled.Home , "Home")
+    data object Transactions : NavigationRoute("transactions", Icons.Outlined.Assignment, Icons.Filled.Assignment, "Transactions")
+    data object Recurrents : NavigationRoute("recurrents", Icons.Outlined.Schedule, Icons.Filled.Schedule, "Recurrents")
+    data object Stats : NavigationRoute("stats", Icons.Outlined.Leaderboard, Icons.Filled.Leaderboard, "Stats")
+    data object Settings : NavigationRoute("settings",Icons.Outlined.Settings,Icons.Filled.Settings,"Settings")
+    data object Profile : NavigationRoute("profile", Icons.Default.Person, Icons.Default.Person, "Profile")
 
 
 }
