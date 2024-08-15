@@ -1,25 +1,23 @@
 package com.cashflowtracker.miranda
 
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Alarm
-import androidx.compose.material.icons.filled.BarChart
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.Map
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.ShowChart
-import androidx.compose.material.icons.filled.Sort
 import androidx.compose.material.icons.filled.SwapVert
 import androidx.compose.material.icons.rounded.Settings
-import androidx.compose.material3.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 
@@ -66,6 +64,7 @@ fun AppBar(navController: NavHostController, isDarkTheme: Boolean) {
                             Icon(Icons.Filled.Map, contentDescription = "Map View")
                         }
                     }
+
                     NavigationRoute.Recurrents.route -> {
                         IconButton(onClick = { /* 1st Action */ }) {
                             Icon(Icons.Filled.SwapVert, contentDescription = "Sort")
@@ -74,6 +73,7 @@ fun AppBar(navController: NavHostController, isDarkTheme: Boolean) {
                             Icon(Icons.Filled.FilterList, contentDescription = "Filter")
                         }
                     }
+
                     NavigationRoute.Stats.route -> {
                         // Eventually add specific icons for Stats screen
                     }

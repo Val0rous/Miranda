@@ -26,7 +26,8 @@ fun NavigationBar(navController: NavHostController) {
             NavigationBarItem(
                 icon = {
                     Icon(
-                        imageVector = if (currentRoute == item.route) item.outlinedIcon ?: item.filledIcon else item.filledIcon,
+                        imageVector = if (currentRoute == item.route) item.outlinedIcon
+                            ?: item.filledIcon else item.filledIcon,
                         contentDescription = item.label
                     )
                 },
