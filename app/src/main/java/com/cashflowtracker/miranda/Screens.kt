@@ -37,8 +37,11 @@ fun Home(navController: NavHostController) {
                 ) {
                     FloatingActionButton(
                         onClick = {
-                            // Naviga alla schermata delle transazioni o esegui l'azione desiderata
-                            navController.navigate(NavigationRoute.Transactions.route)
+                            navController.navigate(NavigationRoute.Transactions.route) {
+                                popUpTo(navController.graph.startDestinationId) { saveState = true }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
                             isMenuExpanded = false
                         },
                     ) {
@@ -47,8 +50,11 @@ fun Home(navController: NavHostController) {
 
                     FloatingActionButton(
                         onClick = {
-                            // Naviga alla schermata delle ricorrenze o esegui l'azione desiderata
-                            navController.navigate(NavigationRoute.Recurrents.route)
+                            navController.navigate(NavigationRoute.Recurrents.route) {
+                                popUpTo(navController.graph.startDestinationId) { saveState = true }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
                             isMenuExpanded = false
                         },
                     ) {
@@ -66,7 +72,6 @@ fun Home(navController: NavHostController) {
         }
     }
 }
-
 
 @Composable
 fun Transactions(navController: NavHostController) {
