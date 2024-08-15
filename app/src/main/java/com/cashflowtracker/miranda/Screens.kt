@@ -6,6 +6,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Assignment
 import androidx.compose.material.icons.filled.Schedule
+import androidx.compose.material.icons.outlined.Assignment
+import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,7 +35,7 @@ fun Home(navController: NavHostController) {
                 // Mostra le due opzioni quando il menu è espanso
                 Column(
                     horizontalAlignment = Alignment.End,
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     FloatingActionButton(
                         onClick = {
@@ -45,9 +47,8 @@ fun Home(navController: NavHostController) {
                             isMenuExpanded = false
                         },
                     ) {
-                        Icon(Icons.Filled.Assignment, contentDescription = "Transactions")
+                        Icon(Icons.Outlined.Assignment, contentDescription = "Transactions")
                     }
-
                     FloatingActionButton(
                         onClick = {
                             navController.navigate(NavigationRoute.Recurrents.route) {
@@ -58,7 +59,7 @@ fun Home(navController: NavHostController) {
                             isMenuExpanded = false
                         },
                     ) {
-                        Icon(Icons.Filled.Schedule, contentDescription = "Recurrents")
+                        Icon(Icons.Outlined.Schedule, contentDescription = "Recurrents")
                     }
                 }
             } else {
@@ -85,7 +86,7 @@ fun Transactions(navController: NavHostController) {
         // FloatingActionButton in basso a destra con l'etichetta "Add Transaction"
         ExtendedFloatingActionButton(
             onClick = { /* Azione da eseguire quando il FAB viene premuto */ },
-            icon = { Icon(Icons.Filled.Assignment, contentDescription = "Add") },
+            icon = { Icon(Icons.Outlined.Assignment, contentDescription = "Add Transaction") },
             text = { Text("Add Transaction") },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
