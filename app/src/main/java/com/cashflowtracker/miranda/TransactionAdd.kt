@@ -2,6 +2,7 @@ package com.cashflowtracker.miranda
 
 import android.app.DatePickerDialog
 import android.content.Context
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -11,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import java.util.*
@@ -29,6 +31,7 @@ fun TransactionAdd(navController: NavHostController) {
     val source = remember { mutableStateOf("") }
     val destination = remember { mutableStateOf("") }
     val amount = remember { mutableStateOf("") }
+    val location = remember { mutableStateOf("1600 Amphitheatre Pkwy") } // Default placeholder
 
     val sourceExpanded = remember { mutableStateOf(false) }
     val destinationExpanded = remember { mutableStateOf(false) }
@@ -218,14 +221,22 @@ fun TransactionAdd(navController: NavHostController) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Placeholder for Map
+            // Location Field with Placeholder Map
+            OutlinedTextField(
+                value = location.value,
+                onValueChange = { /* Handle Location Change */ },
+                label = { Text("Location") },
+                leadingIcon = { Icon(Icons.Default.Place, contentDescription = "Location") },
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(150.dp)
                     .padding(top = 16.dp)
             ) {
-                // Map placeholder implementation
             }
         }
     }
@@ -244,3 +255,4 @@ private fun showDatePicker(context: Context, selectedDate: MutableState<String>)
     )
     datePickerDialog.show()
 }
+
