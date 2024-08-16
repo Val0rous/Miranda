@@ -2,7 +2,6 @@ package com.cashflowtracker.miranda
 
 import android.app.DatePickerDialog
 import android.content.Context
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -25,6 +24,19 @@ fun TransactionAdd(navController: NavHostController) {
     // Stato per gestire la selezione della data
     val selectedDate = remember { mutableStateOf("Select Date") }
     val selectedTimeZone = remember { mutableStateOf("Select Time Zone") }
+
+    // Stato per gestire i selettori
+    val source = remember { mutableStateOf("") }
+    val destination = remember { mutableStateOf("") }
+    val amount = remember { mutableStateOf("") }
+
+    val sourceExpanded = remember { mutableStateOf(false) }
+    val destinationExpanded = remember { mutableStateOf(false) }
+    val amountExpanded = remember { mutableStateOf(false) }
+
+    val sourceOptions = listOf("Deutsche Bank", "Savings Account", "Cash")
+    val destinationOptions = listOf("Restaurant", "Grocery Store", "Online Shopping")
+    val amountOptions = listOf("10.00 €", "20.00 €", "50.00 €")
 
     Scaffold(
         topBar = {
@@ -96,24 +108,102 @@ fun TransactionAdd(navController: NavHostController) {
             }
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Source, Destination, and Amount Fields with Icons and Clickable Text
-            listOf(
-                Pair("Source", Icons.Default.AccountBalance),
-                Pair("Destination", Icons.Default.Restaurant),
-                Pair("Amount", Icons.Default.AttachMoney)
-            ).forEach { (label, icon) ->
-                Row(
+            // Source Field with DropdownMenu
+            ExposedDropdownMenuBox(
+                expanded = sourceExpanded.value,
+                onExpandedChange = { sourceExpanded.value = !sourceExpanded.value }
+            ) {
+                OutlinedTextField(
+                    value = source.value,
+                    onValueChange = {},
+                    label = { Text("Source") },
+                    leadingIcon = { Icon(Icons.Default.AccountBalance, contentDescription = "Source") },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { /* Open corresponding picker */ }
-                        .padding(vertical = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                        .menuAnchor(),
+                    readOnly = true,
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = sourceExpanded.value) }
+                )
+                ExposedDropdownMenu(
+                    expanded = sourceExpanded.value,
+                    onDismissRequest = { sourceExpanded.value = false }
                 ) {
-                    Icon(icon, contentDescription = label, tint = Color.Gray)
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("", color = MaterialTheme.colorScheme.onBackground) // Empty as data is from DB
+                    sourceOptions.forEach { option ->
+                        DropdownMenuItem(
+                            onClick = {
+                                source.value = option
+                                sourceExpanded.value = false
+                            },
+                            text = { Text(option) }
+                        )
+                    }
                 }
-                Divider()
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Destination Field with DropdownMenu
+            ExposedDropdownMenuBox(
+                expanded = destinationExpanded.value,
+                onExpandedChange = { destinationExpanded.value = !destinationExpanded.value }
+            ) {
+                OutlinedTextField(
+                    value = destination.value,
+                    onValueChange = {},
+                    label = { Text("Destination") },
+                    leadingIcon = { Icon(Icons.Default.Restaurant, contentDescription = "Destination") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .menuAnchor(),
+                    readOnly = true,
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = destinationExpanded.value) }
+                )
+                ExposedDropdownMenu(
+                    expanded = destinationExpanded.value,
+                    onDismissRequest = { destinationExpanded.value = false }
+                ) {
+                    destinationOptions.forEach { option ->
+                        DropdownMenuItem(
+                            onClick = {
+                                destination.value = option
+                                destinationExpanded.value = false
+                            },
+                            text = { Text(option) }
+                        )
+                    }
+                }
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Amount Field with DropdownMenu
+            ExposedDropdownMenuBox(
+                expanded = amountExpanded.value,
+                onExpandedChange = { amountExpanded.value = !amountExpanded.value }
+            ) {
+                OutlinedTextField(
+                    value = amount.value,
+                    onValueChange = {},
+                    label = { Text("Amount") },
+                    leadingIcon = { Icon(Icons.Default.AttachMoney, contentDescription = "Amount") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .menuAnchor(),
+                    readOnly = true,
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = amountExpanded.value) }
+                )
+                ExposedDropdownMenu(
+                    expanded = amountExpanded.value,
+                    onDismissRequest = { amountExpanded.value = false }
+                ) {
+                    amountOptions.forEach { option ->
+                        DropdownMenuItem(
+                            onClick = {
+                                amount.value = option
+                                amountExpanded.value = false
+                            },
+                            text = { Text(option) }
+                        )
+                    }
+                }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
