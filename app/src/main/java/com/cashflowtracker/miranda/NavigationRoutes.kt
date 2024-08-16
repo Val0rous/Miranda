@@ -1,6 +1,7 @@
 package com.cashflowtracker.miranda
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Assignment
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Leaderboard
@@ -38,6 +39,9 @@ sealed class NavigationRoute(
 
     data object Profile :
         NavigationRoute("profile", Icons.Default.Person, Icons.Default.Person, "Profile")
+    data object TransactionAdd :
+        NavigationRoute("transaction_add", Icons.Default.Add, Icons.Default.Add, "Add Transaction")
+
 
 
 }

@@ -83,15 +83,15 @@ fun Home(navController: NavHostController) {
 @Composable
 fun Transactions(navController: NavHostController) {
     Box(modifier = Modifier.fillMaxSize()) {
-        // Contenuto della schermata delle transazioni
         Text(
             text = "Transactions Screen",
             modifier = Modifier.align(Alignment.Center)
         )
 
-        // FloatingActionButton in basso a destra con l'etichetta "Add Transaction"
         ExtendedFloatingActionButton(
-            onClick = { /* Azione da eseguire quando il FAB viene premuto */ },
+            onClick = {
+                navController.navigate(NavigationRoute.TransactionAdd.route)  // Modifica qui per navigare a TransactionAdd
+            },
             icon = { Icon(Icons.Outlined.Assignment, contentDescription = "Add Transaction") },
             text = { Text("Add Transaction") },
             modifier = Modifier
@@ -100,6 +100,7 @@ fun Transactions(navController: NavHostController) {
         )
     }
 }
+
 
 @Composable
 fun Recurrents(navController: NavHostController) {

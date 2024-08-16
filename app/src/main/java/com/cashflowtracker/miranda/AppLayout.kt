@@ -21,9 +21,11 @@ fun AppLayout(
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
-    // Mostra la bottom bar solo se non siamo nelle schermate Settings o Profile
+    // Mostra la bottom bar solo se non siamo nelle schermate Settings, Profile, o TransactionAdd
     val showBottomBar = currentRoute != NavigationRoute.Settings.route &&
-            currentRoute != NavigationRoute.Profile.route
+            currentRoute != NavigationRoute.Profile.route &&
+            currentRoute != NavigationRoute.TransactionAdd.route
+
 
     Scaffold(
         topBar = { AppBar(navController, isDarkTheme) },
@@ -63,6 +65,9 @@ fun AppLayout(
                 }
                 composable(NavigationRoute.Profile.route) {
                     ProfileScreen(navController)
+                }
+                composable(NavigationRoute.TransactionAdd.route) {
+                    TransactionAdd(navController)
                 }
             }
         }
