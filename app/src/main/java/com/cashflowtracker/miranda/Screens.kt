@@ -21,6 +21,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 
@@ -92,7 +94,12 @@ fun Transactions(navController: NavHostController) {
             onClick = {
                 navController.navigate(NavigationRoute.AddTransaction.route)  // Modifica qui per navigare a TransactionAdd
             },
-            icon = { Icon(Icons.Outlined.Assignment, contentDescription = "Add Transaction") },
+            icon = {
+                Icon(
+                    imageVector = ImageVector.vectorResource(R.drawable.ic_assignment),
+                    contentDescription = "Add Transaction"
+                )
+            },
             text = { Text("Add Transaction") },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
@@ -114,7 +121,12 @@ fun Recurrents(navController: NavHostController) {
         // FloatingActionButton in basso a destra con l'etichetta "Add Reccurence"
         ExtendedFloatingActionButton(
             onClick = { /* Azione da eseguire quando il FAB viene premuto */ },
-            icon = { Icon(Icons.Filled.Schedule, contentDescription = "Add") },
+            icon = {
+                Icon(
+                    imageVector = ImageVector.vectorResource(R.drawable.ic_schedule),
+                    contentDescription = "Add"
+                )
+            },
             text = { Text("Add Recurrence") },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
