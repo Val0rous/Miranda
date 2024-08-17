@@ -150,23 +150,31 @@ fun SegmentedButtonType(modifier: Modifier) {
 }
 
 @Composable
-fun SegmentedButtonTheme(modifier: Modifier) {
+fun SegmentedButtonTheme(
+    modifier: Modifier,
+    isDarkTheme: Boolean,  // Receives current theme status
+    onThemeChange: (Boolean) -> Unit
+) {
     var selectedIndex by remember {
         mutableStateOf(0)
     }
+    var selectedTheme by remember { mutableStateOf(isDarkTheme) }
 
     SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
         SegmentedButton(
-            selected = selectedIndex == 0,
-            onClick = { selectedIndex = 0 },
+            selected = !selectedTheme,
+            onClick = {
+                selectedTheme = false
+                onThemeChange(false)    // Update theme in AppLayout
+            },
             shape = SegmentedButtonDefaults.itemShape(
                 index = 0,
-                count = 2
+                count = 3
             ),
             modifier = modifier,
         ) {
             Row() {
-                if (selectedIndex != 0) {
+                if (selectedTheme) {
                     // Workaround to display the regular icon when the button is not selected
                     SBIcon(inactive = true, icon = R.drawable.ic_light_mode)
                     Spacer(modifier = Modifier.width(8.dp))
@@ -177,15 +185,39 @@ fun SegmentedButtonTheme(modifier: Modifier) {
 
         SegmentedButton(
             selected = selectedIndex == 1,
-            onClick = { selectedIndex = 1 },
+            onClick = {
+                selectedIndex = 1
+            },
             shape = SegmentedButtonDefaults.itemShape(
                 index = 1,
-                count = 2
+                count = 3
             ),
             modifier = modifier,
         ) {
             Row() {
                 if (selectedIndex != 1) {
+                    // Workaround to display the regular icon when the button is not selected
+                    SBIcon(inactive = true, icon = R.drawable.ic_smartphone)
+                    Spacer(modifier = Modifier.width(8.dp))
+                }
+                Text(text = "System")
+            }
+        }
+
+        SegmentedButton(
+            selected = selectedTheme,
+            onClick = {
+                selectedTheme = true
+                onThemeChange(true) // Update theme in AppLayout
+            },
+            shape = SegmentedButtonDefaults.itemShape(
+                index = 2,
+                count = 3
+            ),
+            modifier = modifier,
+        ) {
+            Row() {
+                if (!selectedTheme) {
                     // Workaround to display the regular icon when the button is not selected
                     SBIcon(inactive = true, icon = R.drawable.ic_dark_mode)
                     Spacer(modifier = Modifier.width(8.dp))

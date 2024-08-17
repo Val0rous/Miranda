@@ -57,7 +57,7 @@ fun AppLayout(
                     Stats(navController)
                 }
                 composable(NavigationRoute.Settings.route) {
-                    SettingsScreen(
+                    Settings(
                         navController = navController,
                         isDarkTheme = isDarkTheme,  // Passa lo stato corrente del tema
                         onThemeChange = onThemeChange
