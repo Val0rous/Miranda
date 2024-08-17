@@ -34,7 +34,7 @@ interface UsersDao {
 @Dao
 interface TransactionsDao {
     @Upsert
-    suspend fun insert(transaction: Transaction)
+    suspend fun upsert(transaction: Transaction)
 
     @Delete
     suspend fun delete(transaction: Transaction)
@@ -49,7 +49,7 @@ interface TransactionsDao {
 @Dao
 interface RecurrencesDao {
     @Upsert
-    suspend fun insert(recurrence: Recurrence)
+    suspend fun upsert(recurrence: Recurrence)
 
     @Delete
     suspend fun delete(recurrence: Recurrence)
@@ -64,7 +64,7 @@ interface RecurrencesDao {
 @Dao
 interface AccountsDao {
     @Upsert
-    suspend fun insert(account: Account)
+    suspend fun upsert(account: Account)
 
     @Delete
     suspend fun delete(account: Account)
@@ -76,7 +76,7 @@ interface AccountsDao {
 @Dao
 interface CustomCategoriesDao {
     @Upsert
-    suspend fun insert(customCategory: CustomCategory)
+    suspend fun upsert(customCategory: CustomCategory)
 
     @Delete
     suspend fun delete(customCategory: CustomCategory)
@@ -88,7 +88,7 @@ interface CustomCategoriesDao {
 @Dao
 interface AchievementsDao {
     @Upsert
-    suspend fun insert(achievement: Achievement)
+    suspend fun upsert(achievement: Achievement)
 
     @Delete
     suspend fun delete(achievement: Achievement)
