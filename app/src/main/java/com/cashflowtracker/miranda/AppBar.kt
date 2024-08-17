@@ -115,12 +115,12 @@ fun AppBar(navController: NavHostController, isDarkTheme: Boolean) {
                 }
                 IconButton(
                     onClick = { navController.navigate(NavigationRoute.Profile.route) },
-                    colors = IconButtonDefaults.iconButtonColors(containerColor = Color.Blue)
+                    colors = IconButtonDefaults.iconButtonColors(containerColor = MaterialTheme.colorScheme.primary)
                 ) {
                     Icon(
                         ImageVector.vectorResource(R.drawable.ic_account_circle_filled),
                         contentDescription = "Profile",
-                        tint = Color.White
+                        tint = MaterialTheme.colorScheme.onPrimary
                     )
                 }
             }

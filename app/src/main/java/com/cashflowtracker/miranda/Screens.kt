@@ -56,7 +56,7 @@ fun Home(navController: NavHostController) {
                         Text("Recurrence")
                         FloatingActionButton(
                             onClick = {
-                                navController.navigate(NavigationRoute.AddTransaction.route) {
+                                navController.navigate(NavigationRoute.AddRecurrence.route) {
                                     popUpTo(navController.graph.startDestinationId) {
                                         saveState = true
                                     }
@@ -83,7 +83,7 @@ fun Home(navController: NavHostController) {
                         Text("Transaction")
                         FloatingActionButton(
                             onClick = {
-                                navController.navigate(NavigationRoute.AddRecurrence.route) {
+                                navController.navigate(NavigationRoute.AddTransaction.route) {
                                     popUpTo(navController.graph.startDestinationId) {
                                         saveState = true
                                     }
