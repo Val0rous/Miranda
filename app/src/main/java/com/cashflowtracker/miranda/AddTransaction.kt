@@ -14,7 +14,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.cashflowtracker.miranda.ui.composables.SegmentedButtons
-import com.cashflowtracker.miranda.ui.composables.SegmentedButtonItem
 import com.cashflowtracker.miranda.ui.composables.SegmentedButtonType
 import com.cashflowtracker.miranda.utils.MapScreen
 import java.util.*

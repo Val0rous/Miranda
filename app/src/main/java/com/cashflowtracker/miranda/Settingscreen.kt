@@ -13,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.cashflowtracker.miranda.ui.composables.SegmentedButtonPreview
 import com.cashflowtracker.miranda.ui.composables.SegmentedButtonTheme
 
 @Composable
