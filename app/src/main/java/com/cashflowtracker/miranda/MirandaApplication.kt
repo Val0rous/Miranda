@@ -5,13 +5,13 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 
-class TravelDiaryApplication : Application() {
+class MirandaApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
         startKoin {
             androidLogger()
-            androidContext(this@TravelDiaryApplication)
+            androidContext(this@MirandaApplication)
             modules(appModule)
         }
     }

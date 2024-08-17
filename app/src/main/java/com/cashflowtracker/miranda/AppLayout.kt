@@ -24,7 +24,7 @@ fun AppLayout(
     // Mostra la bottom bar solo se non siamo nelle schermate Settings, Profile, o TransactionAdd
     val showBottomBar = currentRoute != NavigationRoute.Settings.route &&
             currentRoute != NavigationRoute.Profile.route &&
-            currentRoute != NavigationRoute.TransactionAdd.route
+            currentRoute != NavigationRoute.AddTransaction.route
 
 
     Scaffold(
@@ -66,8 +66,8 @@ fun AppLayout(
                 composable(NavigationRoute.Profile.route) {
                     ProfileScreen(navController)
                 }
-                composable(NavigationRoute.TransactionAdd.route) {
-                    TransactionAdd(navController)
+                composable(NavigationRoute.AddTransaction.route) {
+                    AddTransaction(navController)
                 }
             }
         }

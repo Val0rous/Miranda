@@ -45,7 +45,7 @@ fun Home(navController: NavHostController) {
                 ) {
                     FloatingActionButton(
                         onClick = {
-                            navController.navigate(NavigationRoute.Transactions.route) {
+                            navController.navigate(NavigationRoute.AddTransaction.route) {
                                 popUpTo(navController.graph.startDestinationId) { saveState = true }
                                 launchSingleTop = true
                                 restoreState = true
@@ -57,7 +57,7 @@ fun Home(navController: NavHostController) {
                     }
                     FloatingActionButton(
                         onClick = {
-                            navController.navigate(NavigationRoute.Recurrents.route) {
+                            navController.navigate(NavigationRoute.AddRecurrence.route) {
                                 popUpTo(navController.graph.startDestinationId) { saveState = true }
                                 launchSingleTop = true
                                 restoreState = true
@@ -90,7 +90,7 @@ fun Transactions(navController: NavHostController) {
 
         ExtendedFloatingActionButton(
             onClick = {
-                navController.navigate(NavigationRoute.TransactionAdd.route)  // Modifica qui per navigare a TransactionAdd
+                navController.navigate(NavigationRoute.AddTransaction.route)  // Modifica qui per navigare a TransactionAdd
             },
             icon = { Icon(Icons.Outlined.Assignment, contentDescription = "Add Transaction") },
             text = { Text("Add Transaction") },
