@@ -10,11 +10,13 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.JetpackCompose"
+        android:theme="@style/Theme.Miranda"
         tools:targetApi="31">
 
         <!--below is the code for default activity which is Main Activity-->
-        <activity android:name=".MainActivity" android:exported="true">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
 
             <!--Inside this activity you should be having below code for
                 intent filter which will check the default activity-->
@@ -24,5 +26,5 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-</application>
-    </manifest>
+    </application>
+</manifest>

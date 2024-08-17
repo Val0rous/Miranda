@@ -9,7 +9,7 @@ import java.util.UUID
 
 @Entity(indices = [Index(value = ["email"], unique = true)])
 data class User(
-    @PrimaryKey(autoGenerate = true) val userId: UUID = UUID.randomUUID(),   // Useful in case the user changes their email address
+    @PrimaryKey val userId: UUID = UUID.randomUUID(),   // Useful in case the user changes their email address
     @ColumnInfo val name: String,
     @ColumnInfo val email: String,
     @ColumnInfo val password: String,
@@ -20,10 +20,10 @@ data class User(
 )
 
 @Entity
-data class TransactionLog(
-    @PrimaryKey(autoGenerate = true) val transactionId: UUID = UUID.randomUUID(),
+data class Transaction(
+    @PrimaryKey val transactionId: UUID = UUID.randomUUID(),
     @ColumnInfo val type: String,
-    @ColumnInfo val dateTime: ZonedDateTime,
+    @ColumnInfo val dateTime: String,   // ZonedDateTime
     @ColumnInfo val source: String,
     @ColumnInfo val destination: String,
     @ColumnInfo val amount: Double,
@@ -35,9 +35,9 @@ data class TransactionLog(
 
 @Entity
 data class Recurrence(
-    @PrimaryKey(autoGenerate = true) val recurrenceId: UUID = UUID.randomUUID(),
+    @PrimaryKey val recurrenceId: UUID = UUID.randomUUID(),
     @ColumnInfo val type: String,
-    @ColumnInfo val dateTime: ZonedDateTime,
+    @ColumnInfo val dateTime: String,   // ZonedDateTime
     @ColumnInfo val source: String,
     @ColumnInfo val destination: String,
     @ColumnInfo val amount: Double,
@@ -45,8 +45,12 @@ data class Recurrence(
     @ColumnInfo val comment: String?,
     @ColumnInfo val location: String?,
     @ColumnInfo val repeatIntervalMillis: Long,
-    @ColumnInfo val reoccursOn: ZonedDateTime,
-    @ColumnInfo val notifications: List<ZonedDateTime>?, // Up to 5 notification times
+    @ColumnInfo val reoccursOn: String,   // ZonedDateTime
+    @ColumnInfo val notifications1: String?, // ZonedDateTime
+    @ColumnInfo val notifications2: String?, // ZonedDateTime
+    @ColumnInfo val notifications3: String?, // ZonedDateTime
+    @ColumnInfo val notifications4: String?, // ZonedDateTime
+    @ColumnInfo val notifications5: String?, // ZonedDateTime
     @ColumnInfo val userId: UUID,
 )
 
@@ -55,7 +59,7 @@ data class Account(
     @PrimaryKey val title: String,
     @ColumnInfo val type: String,
     @ColumnInfo val balance: Double,
-    @ColumnInfo val creationDate: ZonedDateTime,
+    @ColumnInfo val creationDate: String,   // ZonedDateTime
     @ColumnInfo val userId: UUID,
 )
 
@@ -68,12 +72,12 @@ data class CustomCategory(
     @ColumnInfo val userId: UUID,
 )
 
-@Entity
+@Entity(primaryKeys = ["name", "level"])
 data class Achievement(
-    @PrimaryKey val name: String,
-    @PrimaryKey val level: Char,
+    val name: String,
+    val level: Char,
     @ColumnInfo val description: String,
     @ColumnInfo val icon: String,
-    @ColumnInfo val achievedOn: ZonedDateTime,
+    @ColumnInfo val achievedOn: String, // ZonedDateTime
     @ColumnInfo val userId: UUID,
 )

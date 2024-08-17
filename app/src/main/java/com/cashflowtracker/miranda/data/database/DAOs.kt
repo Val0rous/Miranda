@@ -4,12 +4,11 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import androidx.room.Update
 import androidx.room.Upsert
 import java.util.UUID
 
 @Dao
-interface UserDao {
+interface UsersDao {
     @Insert
     suspend fun insert(user: User)
 
@@ -17,7 +16,7 @@ interface UserDao {
     suspend fun delete(user: User)
 
     @Query("SELECT userId FROM user WHERE email = :email")
-    suspend fun getUserIdByEmail(email: String): Int
+    suspend fun getUserIdByEmail(email: String): UUID
 
     @Query("SELECT * FROM user WHERE userId = :email")
     suspend fun getByEmail(email: String): User
@@ -33,22 +32,22 @@ interface UserDao {
 }
 
 @Dao
-interface TransactionDao {
+interface TransactionsDao {
     @Upsert
-    suspend fun insert(transaction: TransactionLog)
+    suspend fun insert(transaction: Transaction)
 
     @Delete
-    suspend fun delete(transaction: TransactionLog)
+    suspend fun delete(transaction: Transaction)
 
-    @Query("SELECT * FROM transactionlog WHERE userId = :userId ORDER BY dateTime DESC")
-    suspend fun getAllByUserId(userId: UUID): List<TransactionLog>
+    @Query("SELECT * FROM [transaction] WHERE userId = :userId ORDER BY dateTime DESC")
+    suspend fun getAllByUserId(userId: UUID): List<Transaction>
 
-    @Query("SELECT * FROM transactionlog WHERE transactionId = :transactionId")
-    suspend fun getByTransactionId(transactionId: UUID): TransactionLog
+    @Query("SELECT * FROM [transaction] WHERE transactionId = :transactionId")
+    suspend fun getByTransactionId(transactionId: UUID): Transaction
 }
 
 @Dao
-interface RecurrenceDao {
+interface RecurrencesDao {
     @Upsert
     suspend fun insert(recurrence: Recurrence)
 
@@ -63,7 +62,7 @@ interface RecurrenceDao {
 }
 
 @Dao
-interface AccountDao {
+interface AccountsDao {
     @Upsert
     suspend fun insert(account: Account)
 
@@ -75,7 +74,7 @@ interface AccountDao {
 }
 
 @Dao
-interface CustomCategoryDao {
+interface CustomCategoriesDao {
     @Upsert
     suspend fun insert(customCategory: CustomCategory)
 
@@ -87,7 +86,7 @@ interface CustomCategoryDao {
 }
 
 @Dao
-interface AchievementDao {
+interface AchievementsDao {
     @Upsert
     suspend fun insert(achievement: Achievement)
 
