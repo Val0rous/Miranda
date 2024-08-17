@@ -42,7 +42,7 @@ fun AppBar(navController: NavHostController, isDarkTheme: Boolean) {
                     NavigationRoute.Profile.route -> "Your Profile"
                     else -> ""
                 },
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.fillMaxWidth(),
                 color = MaterialTheme.colorScheme.onBackground
             )
@@ -93,6 +93,6 @@ fun AppBar(navController: NavHostController, isDarkTheme: Boolean) {
         },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = if (isDarkTheme) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.primaryContainer
-        )
+        ),
     )
 }

@@ -9,6 +9,7 @@ import androidx.compose.material.icons.rounded.Download
 import androidx.compose.material.icons.rounded.Upload
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
@@ -30,40 +31,44 @@ fun SettingsScreen(
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         // Theme selection
-        Column {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
             Text(
                 text = "Theme",
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onBackground
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onSurface
             )
-            Spacer(modifier = Modifier.height(16.dp))
-            Row(
-                horizontalArrangement = Arrangement.SpaceAround,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                ThemeToggleButton(
-                    isSelected = !selectedTheme,
-                    text = "Light",
-                    icon = Icons.Filled.LightMode,
-                    onClick = {
-                        selectedTheme = false
-                        onThemeChange(false) // Update theme in AppLayout
-                    }
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                ThemeToggleButton(
-                    isSelected = selectedTheme,
-                    text = "Dark",
-                    icon = Icons.Filled.DarkMode,
-                    onClick = {
-                        selectedTheme = true
-                        onThemeChange(true) // Update theme in AppLayout
-                    }
-                )
-            }
+            Spacer(modifier = Modifier.width(68.dp))
+            SegmentedButtonTheme(modifier = Modifier.fillMaxWidth())
         }
 
-        SegmentedButtonTheme(modifier = Modifier.fillMaxWidth())
+        Row(
+            horizontalArrangement = Arrangement.SpaceAround,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            ThemeToggleButton(
+                isSelected = !selectedTheme,
+                text = "Light",
+                icon = Icons.Filled.LightMode,
+                onClick = {
+                    selectedTheme = false
+                    onThemeChange(false) // Update theme in AppLayout
+                }
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            ThemeToggleButton(
+                isSelected = selectedTheme,
+                text = "Dark",
+                icon = Icons.Filled.DarkMode,
+                onClick = {
+                    selectedTheme = true
+                    onThemeChange(true) // Update theme in AppLayout
+                }
+            )
+        }
+
 
         // Logout and Delete Account buttons
         Column(modifier = Modifier.fillMaxWidth()) {
