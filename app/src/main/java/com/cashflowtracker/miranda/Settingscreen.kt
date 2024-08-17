@@ -14,11 +14,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.cashflowtracker.miranda.ui.composables.SegmentedButtonPreview
+import com.cashflowtracker.miranda.ui.composables.SegmentedButtonTheme
 
 @Composable
 fun SettingsScreen(
     navController: NavHostController,
-    isDarkTheme: Boolean,  // Riceve lo stato corrente del tema
+    isDarkTheme: Boolean,  // Receives current theme status
     onThemeChange: (Boolean) -> Unit
 ) {
     var selectedTheme by remember { mutableStateOf(isDarkTheme) }
@@ -29,7 +30,7 @@ fun SettingsScreen(
             .padding(16.dp),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        // Sezione per la selezione del tema
+        // Theme selection
         Column {
             Text(
                 text = "Theme",
@@ -47,7 +48,7 @@ fun SettingsScreen(
                     icon = Icons.Filled.LightMode,
                     onClick = {
                         selectedTheme = false
-                        onThemeChange(false) // Aggiorna il tema nell'AppLayout
+                        onThemeChange(false) // Update theme in AppLayout
                     }
                 )
                 Spacer(modifier = Modifier.width(8.dp))
@@ -57,18 +58,18 @@ fun SettingsScreen(
                     icon = Icons.Filled.DarkMode,
                     onClick = {
                         selectedTheme = true
-                        onThemeChange(true) // Aggiorna il tema nell'AppLayout
+                        onThemeChange(true) // Update theme in AppLayout
                     }
                 )
             }
         }
 
-        SegmentedButtonPreview()
+        SegmentedButtonTheme(modifier = Modifier.fillMaxWidth())
 
-        // Pulsanti "Logout" e "Delete account"
+        // Logout and Delete Account buttons
         Column(modifier = Modifier.fillMaxWidth()) {
             Button(
-                onClick = { /* Gestisci il Logout */ },
+                onClick = { /* Manage logout */ },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp)
@@ -77,7 +78,7 @@ fun SettingsScreen(
             }
             Spacer(modifier = Modifier.height(16.dp))
             Button(
-                onClick = { /* Gestisci l'eliminazione dell'account */ },
+                onClick = { /* Manage account deletion */ },
                 colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.error),
                 modifier = Modifier
                     .fillMaxWidth()

@@ -85,67 +85,112 @@ fun SegmentedButtons(modifier: Modifier) {
 
 @Composable
 fun SegmentedButtonType(modifier: Modifier) {
-    MirandaTheme {
-        var selectedIndex by remember {
-            mutableStateOf(0)
+    var selectedIndex by remember {
+        mutableStateOf(0)
+    }
+
+    SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
+        SegmentedButton(
+            selected = selectedIndex == 0,
+            onClick = { selectedIndex = 0 },
+            shape = SegmentedButtonDefaults.itemShape(
+                index = 0,
+                count = 3
+            ),
+            modifier = modifier,
+        ) {
+            Row() {
+                if (selectedIndex != 0) {
+                    // Workaround to display the regular icon when the button is not selected
+                    SBIcon(inactive = true, icon = R.drawable.ic_upload)
+                    Spacer(modifier = Modifier.width(8.dp))
+                }
+                Text(text = "Output")
+            }
         }
 
-        SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
-            SegmentedButton(
-                selected = selectedIndex == 0,
-                onClick = { selectedIndex = 0 },
-                shape = SegmentedButtonDefaults.itemShape(
-                    index = 0,
-                    count = 3
-                ),
-                modifier = modifier,
-            ) {
-                Row() {
-                    if (selectedIndex != 0) {
-                        // Workaround to display the regular icon when the button is not selected
-                        SBIcon(inactive = true, icon = R.drawable.ic_upload)
-                        Spacer(modifier = Modifier.width(8.dp))
-                    }
-                    Text(text = "Output")
+        SegmentedButton(
+            selected = selectedIndex == 1,
+            onClick = { selectedIndex = 1 },
+            shape = SegmentedButtonDefaults.itemShape(
+                index = 1,
+                count = 3
+            ),
+            modifier = modifier,
+        ) {
+            Row() {
+                if (selectedIndex != 1) {
+                    // Workaround to display the regular icon when the button is not selected
+                    SBIcon(inactive = true, icon = R.drawable.ic_download)
+                    Spacer(modifier = Modifier.width(8.dp))
                 }
+                Text(text = "Input")
             }
+        }
 
-            SegmentedButton(
-                selected = selectedIndex == 1,
-                onClick = { selectedIndex = 1 },
-                shape = SegmentedButtonDefaults.itemShape(
-                    index = 1,
-                    count = 3
-                ),
-                modifier = modifier,
-            ) {
-                Row() {
-                    if (selectedIndex != 1) {
-                        // Workaround to display the regular icon when the button is not selected
-                        SBIcon(inactive = true, icon = R.drawable.ic_download)
-                        Spacer(modifier = Modifier.width(8.dp))
-                    }
-                    Text(text = "Input")
+        SegmentedButton(
+            selected = selectedIndex == 2,
+            onClick = { selectedIndex = 2 },
+            shape = SegmentedButtonDefaults.itemShape(
+                index = 2,
+                count = 3
+            ),
+            modifier = modifier,
+        ) {
+            Row() {
+                if (selectedIndex != 2) {
+                    // Workaround to display the regular icon when the button is not selected
+                    SBIcon(inactive = true, icon = R.drawable.ic_sync)
+                    Spacer(modifier = Modifier.width(8.dp))
                 }
+                Text(text = "Transfer")
             }
+        }
+    }
+}
 
-            SegmentedButton(
-                selected = selectedIndex == 2,
-                onClick = { selectedIndex = 2 },
-                shape = SegmentedButtonDefaults.itemShape(
-                    index = 2,
-                    count = 3
-                ),
-                modifier = modifier,
-            ) {
-                Row() {
-                    if (selectedIndex != 2) {
-                        // Workaround to display the regular icon when the button is not selected
-                        SBIcon(inactive = true, icon = R.drawable.ic_sync)
-                        Spacer(modifier = Modifier.width(8.dp))
-                    }
-                    Text(text = "Transfer")
+@Composable
+fun SegmentedButtonTheme(modifier: Modifier) {
+    var selectedIndex by remember {
+        mutableStateOf(0)
+    }
+
+    SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
+        SegmentedButton(
+            selected = selectedIndex == 0,
+            onClick = { selectedIndex = 0 },
+            shape = SegmentedButtonDefaults.itemShape(
+                index = 0,
+                count = 2
+            ),
+            modifier = modifier,
+        ) {
+            Row() {
+                if (selectedIndex != 0) {
+                    // Workaround to display the regular icon when the button is not selected
+                    SBIcon(inactive = true, icon = R.drawable.ic_light_mode)
+                    Spacer(modifier = Modifier.width(8.dp))
                 }
+                Text(text = "Light")
+            }
+        }
+
+        SegmentedButton(
+            selected = selectedIndex == 1,
+            onClick = { selectedIndex = 1 },
+            shape = SegmentedButtonDefaults.itemShape(
+                index = 1,
+                count = 2
+            ),
+            modifier = modifier,
+        ) {
+            Row() {
+                if (selectedIndex != 1) {
+                    // Workaround to display the regular icon when the button is not selected
+                    SBIcon(inactive = true, icon = R.drawable.ic_dark_mode)
+                    Spacer(modifier = Modifier.width(8.dp))
+                }
+                Text(text = "Dark")
             }
         }
     }
