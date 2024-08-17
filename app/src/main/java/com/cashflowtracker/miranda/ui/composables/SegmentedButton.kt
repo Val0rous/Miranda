@@ -3,7 +3,13 @@
 package com.cashflowtracker.miranda.ui.composables
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
@@ -19,7 +25,7 @@ import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
-fun SegmentedButton() {
+fun SegmentedButton(modifier: Modifier) {
     MirandaTheme {
         val options = mutableStateListOf("Output", "Input", "Transfer")
         var selectedIndex by remember {
@@ -34,7 +40,8 @@ fun SegmentedButton() {
                     shape = SegmentedButtonDefaults.itemShape(
                         index = index,
                         count = options.size
-                    )
+                    ),
+                    modifier = modifier,
                 ) {
                     Text(text = option)
                 }

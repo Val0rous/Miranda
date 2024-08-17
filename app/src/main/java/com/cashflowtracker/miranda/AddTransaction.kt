@@ -16,6 +16,8 @@ import androidx.navigation.NavHostController
 import com.cashflowtracker.miranda.ui.composables.SegmentedButton
 import com.cashflowtracker.miranda.ui.composables.SegmentedButtonItem
 import com.cashflowtracker.miranda.ui.composables.SegmentedButtonsBeta
+import com.cashflowtracker.miranda.utils.MapScreen
+import com.google.android.gms.maps.GoogleMap
 import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -68,7 +70,7 @@ fun AddTransaction(navController: NavHostController) {
                 .padding(paddingValues)
                 .padding(16.dp)
         ) {
-            SegmentedButton()
+            SegmentedButton(modifier = Modifier.fillMaxWidth())
             SegmentedButtonsBeta {
                 var selectedIndex = -1
                 SegmentedButtonItem(
@@ -280,6 +282,8 @@ fun AddTransaction(navController: NavHostController) {
             )
             Spacer(modifier = Modifier.height(16.dp))
 
+            MapScreen(44.22, 12.00)
+
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -296,7 +300,7 @@ private fun showDatePicker(context: Context, selectedDate: MutableState<String>)
     val datePickerDialog = DatePickerDialog(
         context,
         { _, year, month, dayOfMonth ->
-            selectedDate.value = "$dayOfMonth/${month + 1}/$year"
+            selectedDate.value = "${month + 1}/$dayOfMonth/$year"
         },
         calendar.get(Calendar.YEAR),
         calendar.get(Calendar.MONTH),

@@ -102,4 +102,7 @@ dependencies {
 
     // Google Material Symbols
     implementation("androidx.compose.material:material-icons-extended:1.6.8")
+    
+    // Google Maps
+    implementation("com.google.maps.android:maps-compose:4.3.3")
 }
