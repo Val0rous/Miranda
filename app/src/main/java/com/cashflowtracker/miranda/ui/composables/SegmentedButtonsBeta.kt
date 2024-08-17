@@ -51,7 +51,7 @@ import com.cashflowtracker.miranda.ui.composables.SegmentedButtonsDefaults.outli
  * @param content The content of the SegmentedButtons, usually 3-5 [SegmentedButtonItem].
  */
 @Composable
-fun SegmentedButtonsBeta(
+fun SegmentedButtons(
     modifier: Modifier = Modifier,
     shape: Shape = RoundedCornerShape(percent = 50),
     colors: SegmentedButtonColors = SegmentedButtonsDefaults.colors(),

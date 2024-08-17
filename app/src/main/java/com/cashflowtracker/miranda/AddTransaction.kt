@@ -13,11 +13,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.cashflowtracker.miranda.ui.composables.SegmentedButton
+import com.cashflowtracker.miranda.ui.composables.SegmentedButtons
 import com.cashflowtracker.miranda.ui.composables.SegmentedButtonItem
-import com.cashflowtracker.miranda.ui.composables.SegmentedButtonsBeta
+import com.cashflowtracker.miranda.ui.composables.SegmentedButtonType
 import com.cashflowtracker.miranda.utils.MapScreen
-import com.google.android.gms.maps.GoogleMap
 import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -70,28 +69,28 @@ fun AddTransaction(navController: NavHostController) {
                 .padding(paddingValues)
                 .padding(16.dp)
         ) {
-            SegmentedButton(modifier = Modifier.fillMaxWidth())
-            SegmentedButtonsBeta {
-                var selectedIndex = -1
-                SegmentedButtonItem(
-                    selected = selectedIndex == 0,
-                    onClick = { selectedIndex = 0 },
-                    label = { "Alpha" },
-                    icon = { R.drawable.ic_assignment_add }
-                )
-                SegmentedButtonItem(
-                    selected = selectedIndex == 1,
-                    onClick = { selectedIndex = 1 },
-                    label = { "Bravo" },
-                    icon = { Icons.Rounded.Upload }
-                )
-                SegmentedButtonItem(
-                    selected = selectedIndex == 2,
-                    onClick = { selectedIndex = 2 },
-                    label = { "Charlie" },
-                    icon = { R.drawable.ic_assignment_add }
-                )
-            }
+            SegmentedButtonType(modifier = Modifier.fillMaxWidth())
+//            SegmentedButtonsBeta {
+//                var selectedIndex = -1
+//                SegmentedButtonItem(
+//                    selected = selectedIndex == 0,
+//                    onClick = { selectedIndex = 0 },
+//                    label = { "Alpha" },
+//                    icon = { R.drawable.ic_assignment_add }
+//                )
+//                SegmentedButtonItem(
+//                    selected = selectedIndex == 1,
+//                    onClick = { selectedIndex = 1 },
+//                    label = { "Bravo" },
+//                    icon = { Icons.Rounded.Upload }
+//                )
+//                SegmentedButtonItem(
+//                    selected = selectedIndex == 2,
+//                    onClick = { selectedIndex = 2 },
+//                    label = { "Charlie" },
+//                    icon = { R.drawable.ic_assignment_add }
+//                )
+//            }
 
             // Buttons: Output, Input, Transfer
             Row(
@@ -282,7 +281,7 @@ fun AddTransaction(navController: NavHostController) {
             )
             Spacer(modifier = Modifier.height(16.dp))
 
-            MapScreen(44.22, 12.00)
+            MapScreen(44.2625, 12.3487)
 
             Box(
                 modifier = Modifier
