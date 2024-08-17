@@ -9,7 +9,7 @@ import java.util.UUID
 
 @Entity(indices = [Index(value = ["email"], unique = true)])
 data class User(
-    @PrimaryKey val userId: UUID,   // Useful in case the user changes their email address
+    @PrimaryKey(autoGenerate = true) val userId: UUID = UUID.randomUUID(),   // Useful in case the user changes their email address
     @ColumnInfo val name: String,
     @ColumnInfo val email: String,
     @ColumnInfo val password: String,
@@ -21,7 +21,7 @@ data class User(
 
 @Entity
 data class TransactionLog(
-    @PrimaryKey val transactionId: String,
+    @PrimaryKey(autoGenerate = true) val transactionId: UUID = UUID.randomUUID(),
     @ColumnInfo val type: String,
     @ColumnInfo val dateTime: ZonedDateTime,
     @ColumnInfo val source: String,
@@ -35,7 +35,7 @@ data class TransactionLog(
 
 @Entity
 data class Recurrence(
-    @PrimaryKey val recurrenceId: String,
+    @PrimaryKey(autoGenerate = true) val recurrenceId: UUID = UUID.randomUUID(),
     @ColumnInfo val type: String,
     @ColumnInfo val dateTime: ZonedDateTime,
     @ColumnInfo val source: String,

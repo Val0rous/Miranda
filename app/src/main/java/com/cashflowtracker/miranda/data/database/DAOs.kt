@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
+import androidx.room.Upsert
 import java.util.UUID
 
 @Dao
@@ -33,50 +34,41 @@ interface UserDao {
 
 @Dao
 interface TransactionDao {
-    @Insert
+    @Upsert
     suspend fun insert(transaction: TransactionLog)
 
     @Delete
     suspend fun delete(transaction: TransactionLog)
 
-    @Update
-    suspend fun update(transaction: TransactionLog)
-
     @Query("SELECT * FROM transactionlog WHERE userId = :userId ORDER BY dateTime DESC")
     suspend fun getAllByUserId(userId: UUID): List<TransactionLog>
 
     @Query("SELECT * FROM transactionlog WHERE transactionId = :transactionId")
-    suspend fun getByTransactionId(transactionId: String): TransactionLog
+    suspend fun getByTransactionId(transactionId: UUID): TransactionLog
 }
 
 @Dao
 interface RecurrenceDao {
-    @Insert
+    @Upsert
     suspend fun insert(recurrence: Recurrence)
 
     @Delete
     suspend fun delete(recurrence: Recurrence)
 
-    @Update
-    suspend fun update(recurrence: Recurrence)
-
     @Query("SELECT * FROM recurrence WHERE userId = :userId ORDER BY reoccursOn ASC")
     suspend fun getByUserId(userId: UUID): List<Recurrence>
 
     @Query("SELECT * FROM recurrence WHERE recurrenceId = :recurrenceId")
-    suspend fun getByRecurrenceId(recurrenceId: String): Recurrence
+    suspend fun getByRecurrenceId(recurrenceId: UUID): Recurrence
 }
 
 @Dao
 interface AccountDao {
-    @Insert
+    @Upsert
     suspend fun insert(account: Account)
 
     @Delete
     suspend fun delete(account: Account)
-
-    @Update
-    suspend fun update(account: Account)
 
     @Query("SELECT * FROM account WHERE userId = :userId ORDER BY balance DESC")
     suspend fun getByUserId(userId: UUID): List<Account>
@@ -84,14 +76,11 @@ interface AccountDao {
 
 @Dao
 interface CustomCategoryDao {
-    @Insert
+    @Upsert
     suspend fun insert(customCategory: CustomCategory)
 
     @Delete
     suspend fun delete(customCategory: CustomCategory)
-
-    @Update
-    suspend fun update(customCategory: CustomCategory)
 
     @Query("SELECT * FROM customcategory WHERE userId = :userId GROUP BY type")
     suspend fun getByUserId(userId: UUID): List<CustomCategory>
@@ -99,16 +88,12 @@ interface CustomCategoryDao {
 
 @Dao
 interface AchievementDao {
-    @Insert
+    @Upsert
     suspend fun insert(achievement: Achievement)
 
     @Delete
     suspend fun delete(achievement: Achievement)
 
-    @Update
-    suspend fun update(achievement: Achievement)
-
-    @Query("SELECT * FROM achievement WHERE userId = :userId ORDER BY achievedOn DESC")
+    @Query("SELECT * FROM achievement WHERE userId = :userId GROUP BY name ORDER BY achievedOn DESC, level DESC")
     suspend fun getByUserId(userId: UUID): List<Achievement>
-
 }

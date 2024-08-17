@@ -1,11 +1,11 @@
 package com.cashflowtracker.miranda
 
 import androidx.room.Room
-import com.cashflowtracker.miranda.data.database.MirandaDB
+import com.cashflowtracker.miranda.data.database.MirandaDatabase
 
 
 val db = Room.databaseBuilder(
     applicationContext,
-    MirandaDB::class.java,
+    MirandaDatabase::class.java,
     "database"
 ).build()
