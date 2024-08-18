@@ -20,11 +20,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import java.util.Calendar
 import java.util.TimeZone
+import kotlin.math.absoluteValue
 
 fun getCurrentTimeZone(): String {
     val calendar = Calendar.getInstance()
     val timeZone = calendar.timeZone
     return timeZone.displayName
+}
+
+fun getTimeZoneInGMTFormat(timeZoneId: String): String {
+    val timeZone = TimeZone.getTimeZone(timeZoneId)
+    val offset = timeZone.rawOffset / 3600000 // Convert milliseconds to hours
+    val sign = if (offset >= 0) "+" else "-"
+    return "GMT$sign${offset.absoluteValue}"
 }
 
 @Composable
@@ -35,6 +43,10 @@ fun TimeZonePickerDialog(
     val scrollState = rememberScrollState()
     val timeZones = TimeZone.getAvailableIDs()
     val displayNames = timeZones.map { TimeZone.getTimeZone(it).displayName }
+    val uniqueTimeZonesInGMT = timeZones
+        .map { getTimeZoneInGMTFormat(it) }
+        .toSet()  // Remove duplicates by converting the list to a set
+        .sorted() // Sort the GMT values
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -46,18 +58,30 @@ fun TimeZonePickerDialog(
         },
         text = {
             Column(modifier = Modifier.verticalScroll(scrollState)) {
-                displayNames.forEach { timeZoneName ->
+                uniqueTimeZonesInGMT.forEach { timeZoneDisplayName ->
                     Text(
-                        text = timeZoneName,
+                        text = timeZoneDisplayName,
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable {
-                                onTimeZoneSelected(timeZoneName)
+                                onTimeZoneSelected(timeZoneDisplayName)
                                 onDismiss()
                             }
                             .padding(8.dp)
                     )
                 }
+//                displayNames.forEach { timeZoneName ->
+//                    Text(
+//                        text = timeZoneName,
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                            .clickable {
+//                                onTimeZoneSelected(timeZoneName)
+//                                onDismiss()
+//                            }
+//                            .padding(8.dp)
+//                    )
+//                }
             }
         }
     )
@@ -70,6 +94,10 @@ fun TimeZonePicker(selectedTimeZone: MutableState<String>) {
     // Initialize the selectedTimeZone with the current system time zone
     val currentTimeZone = remember { getCurrentTimeZone() }
 
+    // Initialize the selectedTimeZone with the current system time zone in GMT format
+    val currentTimeZoneId = TimeZone.getDefault().id
+//    val currentTimeZone = remember { getTimeZoneInGMTFormat(currentTimeZoneId) }
+
     if (selectedTimeZone.value.isEmpty()) {
         selectedTimeZone.value = currentTimeZone
     }
@@ -79,11 +107,19 @@ fun TimeZonePicker(selectedTimeZone: MutableState<String>) {
         Text(selectedTimeZone.value, color = MaterialTheme.colorScheme.onBackground)
     }
 
+//    if (isTimeZonePickerVisible) {
+//        TimeZonePickerDialog(
+//            onDismiss = { isTimeZonePickerVisible = false },
+//            onTimeZoneSelected = { timeZoneName ->
+//                selectedTimeZone.value = timeZoneName
+//            }
+//        )
+//    }
     if (isTimeZonePickerVisible) {
         TimeZonePickerDialog(
             onDismiss = { isTimeZonePickerVisible = false },
-            onTimeZoneSelected = { timeZoneName ->
-                selectedTimeZone.value = timeZoneName
+            onTimeZoneSelected = { timeZoneDisplayName ->
+                selectedTimeZone.value = timeZoneDisplayName
             }
         )
     }
