@@ -130,7 +130,7 @@ fun AddTransaction(navController: NavHostController) {
                         label = { Text("Source") },
                         leadingIcon = {
                             Icon(
-                                Icons.Default.AccountBalance,
+                                imageVector = ImageVector.vectorResource(R.drawable.ic_account_balance),
                                 contentDescription = "Source"
                             )
                         },
@@ -182,7 +182,7 @@ fun AddTransaction(navController: NavHostController) {
                         label = { Text("Destination") },
                         leadingIcon = {
                             Icon(
-                                imageVector = ImageVector.vectorResource(R.drawable.ic_account_balance),
+                                imageVector = ImageVector.vectorResource(R.drawable.ic_restaurant_filled),
                                 contentDescription = "Destination"
                             )
                         },

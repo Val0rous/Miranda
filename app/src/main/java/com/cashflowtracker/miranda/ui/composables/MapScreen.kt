@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -19,6 +20,9 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapUiSettings
+import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerInfoWindow
+import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import kotlinx.coroutines.delay
 
@@ -55,7 +59,13 @@ fun MapScreen(latitude: Double, longitude: Double) {
                     zoomControlsEnabled = false,
                     zoomGesturesEnabled = false
                 ),
-            )
+            ) {
+                Marker(
+                    state = MarkerState(position = coordinates),
+                    title = "Cervia", // Optional title
+                    snippet = "Latitude: $latitude, Longitude: $longitude",  // Optional snippet
+                )
+            }
         } else {
             CircularProgressIndicator()
         }
