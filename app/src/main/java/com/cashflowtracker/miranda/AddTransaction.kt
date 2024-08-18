@@ -36,7 +36,6 @@ fun AddTransaction(navController: NavHostController) {
 
     val isSourceExpanded = remember { mutableStateOf(false) }
     val isDestinationExpanded = remember { mutableStateOf(false) }
-    val isAmountExpanded = remember { mutableStateOf(false) }
 
     val sourceOptions = listOf("Deutsche Bank", "N26", "Wallet")
     val destinationOptions = listOf("Restaurant", "Food", "Clothing")
@@ -222,36 +221,13 @@ fun AddTransaction(navController: NavHostController) {
                     contentDescription = "Amount"
                 )
                 Spacer(modifier = Modifier.width(16.dp))
-                // Amount Field with DropdownMenu
-                ExposedDropdownMenuBox(
-                    expanded = isAmountExpanded.value,
-                    onExpandedChange = { isAmountExpanded.value = !isAmountExpanded.value }
-                ) {
-                    OutlinedTextField(
-                        value = amount.value,
-                        onValueChange = {},
-                        label = { Text("Amount") },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .menuAnchor(),
-                        readOnly = true,
-                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isAmountExpanded.value) }
-                    )
-                    ExposedDropdownMenu(
-                        expanded = isAmountExpanded.value,
-                        onDismissRequest = { isAmountExpanded.value = false }
-                    ) {
-                        amountOptions.forEach { option ->
-                            DropdownMenuItem(
-                                onClick = {
-                                    amount.value = option
-                                    isAmountExpanded.value = false
-                                },
-                                text = { Text(option) }
-                            )
-                        }
-                    }
-                }
+                // Amount Field
+                OutlinedTextField(
+                    value = amount.value,
+                    onValueChange = { text -> amount.value = text },
+                    label = { Text("Amount") },
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -305,13 +281,12 @@ fun AddTransaction(navController: NavHostController) {
 
             MapScreen(44.2625, 12.3487)
 
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(150.dp)
-                    .padding(top = 16.dp)
-            ) {
-            }
+//            Box(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .height(150.dp)
+//                    .padding(top = 16.dp)
+//            )
         }
     }
 }

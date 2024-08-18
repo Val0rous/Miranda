@@ -1,7 +1,5 @@
 package com.cashflowtracker.miranda
 
-import android.app.DatePickerDialog
-import android.content.Context
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -9,34 +7,39 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import java.util.*
+import com.cashflowtracker.miranda.ui.composables.SegmentedButtonType
+import com.cashflowtracker.miranda.ui.composables.MapScreen
+import com.cashflowtracker.miranda.ui.composables.DatePicker
+import com.cashflowtracker.miranda.ui.composables.TimePicker
+import com.cashflowtracker.miranda.ui.composables.TimeZonePicker
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddRecurrence(navController: NavHostController) {
-    val transactionType = remember { mutableStateOf("Output") }
-    val context = LocalContext.current
+    val transactionType = remember { mutableStateOf("") }
 
-    // Stato per gestire la selezione della data
-    val selectedDate = remember { mutableStateOf("Select Date") }
-    val selectedTimeZone = remember { mutableStateOf("Select Time Zone") }
+    // State to manage date selection
+    val selectedDate = remember { mutableStateOf("") }
+    val selectedTime = remember { mutableStateOf("") }
+    val selectedTimeZone = remember { mutableStateOf("") }
 
-    // Stato per gestire i selettori
+    // State to manage selectors
     val source = remember { mutableStateOf("") }
     val destination = remember { mutableStateOf("") }
     val amount = remember { mutableStateOf("") }
-    val location = remember { mutableStateOf("1600 Amphitheatre Pkwy") } // Default placeholder
+    val comment = remember { mutableStateOf("") }
+    val location = remember { mutableStateOf("") }
 
-    val sourceExpanded = remember { mutableStateOf(false) }
-    val destinationExpanded = remember { mutableStateOf(false) }
-    val amountExpanded = remember { mutableStateOf(false) }
+    val isSourceExpanded = remember { mutableStateOf(false) }
+    val isDestinationExpanded = remember { mutableStateOf(false) }
 
-    val sourceOptions = listOf("Deutsche Bank", "Savings Account", "Cash")
-    val destinationOptions = listOf("Restaurant", "Grocery Store", "Online Shopping")
-    val amountOptions = listOf("10.00 €", "20.00 €", "50.00 €")
+    val sourceOptions = listOf("Deutsche Bank", "N26", "Wallet")
+    val destinationOptions = listOf("Restaurant", "Food", "Clothing")
+    val amountOptions = listOf("10 €", "20 €", "50 €")
 
     Scaffold(
         topBar = {
@@ -51,228 +54,239 @@ fun AddRecurrence(navController: NavHostController) {
                     Button(
                         onClick = { /* Logic to create the transaction */ },
                         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
-                        modifier = Modifier.padding(end = 8.dp)
+                        modifier = Modifier
+                            .padding(top = 6.dp, bottom = 6.dp, end = 12.dp)
                     ) {
-                        Text("Create")
+                        Text(text = "Create", style = MaterialTheme.typography.labelLarge)
                     }
                 }
             )
         }
     ) { paddingValues ->
-        Column(modifier = Modifier
-            .padding(paddingValues)
-            .padding(16.dp)) {
-            // Buttons: Output, Input, Transfer
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                OutlinedButton(
-                    onClick = { transactionType.value = "Output" },
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Icon(Icons.Default.ArrowOutward, contentDescription = "Output")
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text("Output", maxLines = 1)
-                }
-                OutlinedButton(
-                    onClick = { transactionType.value = "Input" },
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Icon(Icons.Default.ArrowDownward, contentDescription = "Input")
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text("Input", maxLines = 1)
-                }
-                OutlinedButton(
-                    onClick = { transactionType.value = "Transfer" },
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Icon(Icons.Default.SwapHoriz, contentDescription = "Transfer")
-                    Spacer(modifier = Modifier.width(5.dp))
-                    Text("Transfer", maxLines = 1)
-                }
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Date and TimeZone with icons and click actions
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                TextButton(onClick = { showDatePicker(context, selectedDate) }) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Default.CalendarToday, contentDescription = "Date")
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(selectedDate.value, color = MaterialTheme.colorScheme.onBackground)
-                    }
-                }
-                TextButton(onClick = { /* Open TimeZone Picker Logic */ }) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Default.Map, contentDescription = "Time Zone")
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(selectedTimeZone.value, color = MaterialTheme.colorScheme.onBackground)
-                    }
-                }
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Source Field with DropdownMenu
-            ExposedDropdownMenuBox(
-                expanded = sourceExpanded.value,
-                onExpandedChange = { sourceExpanded.value = !sourceExpanded.value }
-            ) {
-                OutlinedTextField(
-                    value = source.value,
-                    onValueChange = {},
-                    label = { Text("Source") },
-                    leadingIcon = {
-                        Icon(
-                            Icons.Default.AccountBalance,
-                            contentDescription = "Source"
-                        )
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .menuAnchor(),
-                    readOnly = true,
-                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = sourceExpanded.value) }
-                )
-                ExposedDropdownMenu(
-                    expanded = sourceExpanded.value,
-                    onDismissRequest = { sourceExpanded.value = false }
-                ) {
-                    sourceOptions.forEach { option ->
-                        DropdownMenuItem(
-                            onClick = {
-                                source.value = option
-                                sourceExpanded.value = false
-                            },
-                            text = { Text(option) }
-                        )
-                    }
-                }
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Destination Field with DropdownMenu
-            ExposedDropdownMenuBox(
-                expanded = destinationExpanded.value,
-                onExpandedChange = { destinationExpanded.value = !destinationExpanded.value }
-            ) {
-                OutlinedTextField(
-                    value = destination.value,
-                    onValueChange = {},
-                    label = { Text("Destination") },
-                    leadingIcon = {
-                        Icon(
-                            Icons.Default.Restaurant,
-                            contentDescription = "Destination"
-                        )
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .menuAnchor(),
-                    readOnly = true,
-                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = destinationExpanded.value) }
-                )
-                ExposedDropdownMenu(
-                    expanded = destinationExpanded.value,
-                    onDismissRequest = { destinationExpanded.value = false }
-                ) {
-                    destinationOptions.forEach { option ->
-                        DropdownMenuItem(
-                            onClick = {
-                                destination.value = option
-                                destinationExpanded.value = false
-                            },
-                            text = { Text(option) }
-                        )
-                    }
-                }
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Amount Field with DropdownMenu
-            ExposedDropdownMenuBox(
-                expanded = amountExpanded.value,
-                onExpandedChange = { amountExpanded.value = !amountExpanded.value }
-            ) {
-                OutlinedTextField(
-                    value = amount.value,
-                    onValueChange = {},
-                    label = { Text("Amount") },
-                    leadingIcon = {
-                        Icon(
-                            Icons.Default.AttachMoney,
-                            contentDescription = "Amount"
-                        )
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .menuAnchor(),
-                    readOnly = true,
-                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = amountExpanded.value) }
-                )
-                ExposedDropdownMenu(
-                    expanded = amountExpanded.value,
-                    onDismissRequest = { amountExpanded.value = false }
-                ) {
-                    amountOptions.forEach { option ->
-                        DropdownMenuItem(
-                            onClick = {
-                                amount.value = option
-                                amountExpanded.value = false
-                            },
-                            text = { Text(option) }
-                        )
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Comment Field
-            OutlinedTextField(
-                value = "Dinner in a nice location",
-                onValueChange = { /* Handle Comment */ },
-                label = { Text("Comment") },
+        Column(
+            modifier = Modifier
+                .padding(paddingValues)
+                .padding(16.dp)
+        ) {
+            SegmentedButtonType(
+                transactionType = transactionType,
                 modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Location Field with Placeholder Map
-            OutlinedTextField(
-                value = location.value,
-                onValueChange = { /* Handle Location Change */ },
-                label = { Text("Location") },
-                leadingIcon = { Icon(Icons.Default.Place, contentDescription = "Location") },
-                modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Box(
+            // Date, Time and TimeZone with icons and click actions
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(150.dp)
-                    .padding(top = 16.dp)
+                    .offset(y = (0).dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(R.drawable.ic_schedule),
+                    contentDescription = "Date & Time"
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                DatePicker(selectedDate = selectedDate)
+                Spacer(modifier = Modifier.weight(1f))
+                TimePicker(selectedTime = selectedTime)
             }
+            //Spacer(modifier = Modifier.height(8.dp))
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .offset(y = (0).dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(R.drawable.ic_public),
+                    contentDescription = "Time Zone"
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                TimeZonePicker(selectedTimeZone = selectedTimeZone)
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .offset(y = (0).dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(R.drawable.ic_logout),
+                    contentDescription = "Source"
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+                // Source Field with DropdownMenu
+                ExposedDropdownMenuBox(
+                    expanded = isSourceExpanded.value,
+                    onExpandedChange = { isSourceExpanded.value = !isSourceExpanded.value }
+                ) {
+                    OutlinedTextField(
+                        value = source.value,
+                        onValueChange = {},
+                        label = { Text("Source") },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = ImageVector.vectorResource(R.drawable.ic_account_balance),
+                                contentDescription = "Source"
+                            )
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .menuAnchor(),
+                        readOnly = true,
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isSourceExpanded.value) }
+                    )
+                    ExposedDropdownMenu(
+                        expanded = isSourceExpanded.value,
+                        onDismissRequest = { isSourceExpanded.value = false }
+                    ) {
+                        sourceOptions.forEach { option ->
+                            DropdownMenuItem(
+                                onClick = {
+                                    source.value = option
+                                    isSourceExpanded.value = false
+                                },
+                                text = { Text(option) }
+                            )
+                        }
+                    }
+                }
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .offset(y = (0).dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(R.drawable.ic_login),
+                    contentDescription = "Destination"
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+                // Destination Field with DropdownMenu
+                ExposedDropdownMenuBox(
+                    expanded = isDestinationExpanded.value,
+                    onExpandedChange = {
+                        isDestinationExpanded.value = !isDestinationExpanded.value
+                    }
+                ) {
+                    OutlinedTextField(
+                        value = destination.value,
+                        onValueChange = {},
+                        label = { Text("Destination") },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = ImageVector.vectorResource(R.drawable.ic_restaurant_filled),
+                                contentDescription = "Destination"
+                            )
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .menuAnchor(),
+                        readOnly = true,
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isDestinationExpanded.value) }
+                    )
+                    ExposedDropdownMenu(
+                        expanded = isDestinationExpanded.value,
+                        onDismissRequest = { isDestinationExpanded.value = false },
+
+                        ) {
+                        destinationOptions.forEach { option ->
+                            DropdownMenuItem(
+                                onClick = {
+                                    destination.value = option
+                                    isDestinationExpanded.value = false
+                                },
+                                text = { Text(option) }
+                            )
+                        }
+                    }
+                }
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .offset(y = (0).dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(R.drawable.ic_payments),
+                    contentDescription = "Amount"
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+                // Amount Field
+                OutlinedTextField(
+                    value = amount.value,
+                    onValueChange = { text -> amount.value = text },
+                    label = { Text("Amount") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .offset(y = (0).dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(R.drawable.ic_chat),
+                    contentDescription = "Comment"
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+                // Comment Field
+                OutlinedTextField(
+                    value = comment.value,
+                    onValueChange = { text -> comment.value = text },
+                    label = { Text("Comment") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .offset(y = (0).dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(R.drawable.ic_location_on),
+                    contentDescription = "Location"
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+                // Location Field with Placeholder Map
+                OutlinedTextField(
+                    value = location.value,
+                    onValueChange = { text -> location.value = text },
+                    label = { Text("Location") },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(R.drawable.ic_my_location_filled),
+                            contentDescription = "Location"
+                        )
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+
+            MapScreen(44.2625, 12.3487)
+
+//            Box(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .height(150.dp)
+//                    .padding(top = 16.dp)
+//            )
         }
     }
 }
-
-private fun showDatePicker(context: Context, selectedDate: MutableState<String>) {
-    val calendar = Calendar.getInstance()
-    val datePickerDialog = DatePickerDialog(
-        context,
-        { _, year, month, dayOfMonth ->
-            selectedDate.value = "$dayOfMonth/${month + 1}/$year"
-        },
-        calendar.get(Calendar.YEAR),
-        calendar.get(Calendar.MONTH),
-        calendar.get(Calendar.DAY_OF_MONTH)
-    )
-    datePickerDialog.show()
-}
-
