@@ -31,6 +31,7 @@ import androidx.compose.material3.SegmentedButtonDefaults.IconSize
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -84,7 +85,7 @@ fun SegmentedButtons(modifier: Modifier) {
 }
 
 @Composable
-fun SegmentedButtonType(modifier: Modifier) {
+fun SegmentedButtonType(transactionType: MutableState<String>, modifier: Modifier) {
     var selectedIndex by remember {
         mutableStateOf(0)
     }
@@ -92,7 +93,10 @@ fun SegmentedButtonType(modifier: Modifier) {
     SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
         SegmentedButton(
             selected = selectedIndex == 0,
-            onClick = { selectedIndex = 0 },
+            onClick = {
+                selectedIndex = 0
+                transactionType.value = "Output"
+            },
             shape = SegmentedButtonDefaults.itemShape(
                 index = 0,
                 count = 3
@@ -105,13 +109,16 @@ fun SegmentedButtonType(modifier: Modifier) {
                     SBIcon(inactive = true, icon = R.drawable.ic_upload)
                     Spacer(modifier = Modifier.width(8.dp))
                 }
-                Text(text = "Output")
+                Text(text = "Output", maxLines = 1)
             }
         }
 
         SegmentedButton(
             selected = selectedIndex == 1,
-            onClick = { selectedIndex = 1 },
+            onClick = {
+                selectedIndex = 1
+                transactionType.value = "Input"
+            },
             shape = SegmentedButtonDefaults.itemShape(
                 index = 1,
                 count = 3
@@ -124,13 +131,16 @@ fun SegmentedButtonType(modifier: Modifier) {
                     SBIcon(inactive = true, icon = R.drawable.ic_download)
                     Spacer(modifier = Modifier.width(8.dp))
                 }
-                Text(text = "Input")
+                Text(text = "Input", maxLines = 1)
             }
         }
 
         SegmentedButton(
             selected = selectedIndex == 2,
-            onClick = { selectedIndex = 2 },
+            onClick = {
+                selectedIndex = 2
+                transactionType.value = "Transfer"
+            },
             shape = SegmentedButtonDefaults.itemShape(
                 index = 2,
                 count = 3
@@ -143,7 +153,7 @@ fun SegmentedButtonType(modifier: Modifier) {
                     SBIcon(inactive = true, icon = R.drawable.ic_sync)
                     Spacer(modifier = Modifier.width(8.dp))
                 }
-                Text(text = "Transfer")
+                Text(text = "Transfer", maxLines = 1)
             }
         }
     }
@@ -179,7 +189,7 @@ fun SegmentedButtonTheme(
                     SBIcon(inactive = true, icon = R.drawable.ic_light_mode)
                     Spacer(modifier = Modifier.width(8.dp))
                 }
-                Text(text = "Light")
+                Text(text = "Light", maxLines = 1)
             }
         }
 
@@ -200,7 +210,7 @@ fun SegmentedButtonTheme(
                     SBIcon(inactive = true, icon = R.drawable.ic_smartphone)
                     Spacer(modifier = Modifier.width(8.dp))
                 }
-                Text(text = "System")
+                Text(text = "System", maxLines = 1)
             }
         }
 
@@ -222,7 +232,7 @@ fun SegmentedButtonTheme(
                     SBIcon(inactive = true, icon = R.drawable.ic_dark_mode)
                     Spacer(modifier = Modifier.width(8.dp))
                 }
-                Text(text = "Dark")
+                Text(text = "Dark", maxLines = 1)
             }
         }
     }

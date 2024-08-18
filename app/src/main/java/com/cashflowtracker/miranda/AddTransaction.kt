@@ -1,35 +1,40 @@
 package com.cashflowtracker.miranda
 
-import android.app.DatePickerDialog
-import android.content.Context
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.rounded.Upload
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.cashflowtracker.miranda.ui.composables.SegmentedButtons
+import com.cashflowtracker.miranda.ui.composables.DatePickerModal
+import com.cashflowtracker.miranda.ui.composables.DialWithDialog
 import com.cashflowtracker.miranda.ui.composables.SegmentedButtonType
+import com.cashflowtracker.miranda.ui.composables.TimePickerDialog
+import com.cashflowtracker.miranda.ui.composables.TimeZonePickerDialog
+import com.cashflowtracker.miranda.ui.composables.getCurrentTimeZone
 import com.cashflowtracker.miranda.utils.MapScreen
+import java.text.SimpleDateFormat
 import java.util.*
+import com.cashflowtracker.miranda.ui.composables.DatePicker
+import com.cashflowtracker.miranda.ui.composables.TimePicker
+import com.cashflowtracker.miranda.ui.composables.TimeZonePicker
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddTransaction(navController: NavHostController) {
-    val transactionType = remember { mutableStateOf("Output") }
-    val context = LocalContext.current
+    val transactionType = remember { mutableStateOf("") }
 
-    // Stato per gestire la selezione della data
-    val selectedDate = remember { mutableStateOf("Select Date") }
-    val selectedTimeZone = remember { mutableStateOf("Select Time Zone") }
+    // State to manage date selection
+    val selectedDate = remember { mutableStateOf("") }
+    val selectedTime = remember { mutableStateOf("") }
+    val selectedTimeZone = remember { mutableStateOf("") }
 
-    // Stato per gestire i selettori
+    // State to manage selectors
     val source = remember { mutableStateOf("") }
     val destination = remember { mutableStateOf("") }
     val amount = remember { mutableStateOf("") }
@@ -56,9 +61,10 @@ fun AddTransaction(navController: NavHostController) {
                     Button(
                         onClick = { /* Logic to create the transaction */ },
                         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
-                        modifier = Modifier.padding(end = 8.dp)
+                        modifier = Modifier
+                            .padding(top = 6.dp, bottom = 6.dp, end = 12.dp)
                     ) {
-                        Text("Create")
+                        Text(text = "Create", style = MaterialTheme.typography.labelLarge)
                     }
                 }
             )
@@ -69,82 +75,56 @@ fun AddTransaction(navController: NavHostController) {
                 .padding(paddingValues)
                 .padding(16.dp)
         ) {
-            SegmentedButtonType(modifier = Modifier.fillMaxWidth())
-//            SegmentedButtonsBeta {
-//                var selectedIndex = -1
-//                SegmentedButtonItem(
-//                    selected = selectedIndex == 0,
-//                    onClick = { selectedIndex = 0 },
-//                    label = { "Alpha" },
-//                    icon = { R.drawable.ic_assignment_add }
-//                )
-//                SegmentedButtonItem(
-//                    selected = selectedIndex == 1,
-//                    onClick = { selectedIndex = 1 },
-//                    label = { "Bravo" },
-//                    icon = { Icons.Rounded.Upload }
-//                )
-//                SegmentedButtonItem(
-//                    selected = selectedIndex == 2,
-//                    onClick = { selectedIndex = 2 },
-//                    label = { "Charlie" },
-//                    icon = { R.drawable.ic_assignment_add }
-//                )
-//            }
+            SegmentedButtonType(
+                transactionType = transactionType,
+                modifier = Modifier.fillMaxWidth()
+            )
 
-            // Buttons: Output, Input, Transfer
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                OutlinedButton(
-                    onClick = { transactionType.value = "Output" },
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Icon(Icons.Default.Upload, contentDescription = "Output")
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text("Output", maxLines = 1)
-                }
-                OutlinedButton(
-                    onClick = { transactionType.value = "Input" },
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Icon(Icons.Default.Download, contentDescription = "Input")
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text("Input", maxLines = 1)
-                }
-                OutlinedButton(
-                    onClick = { transactionType.value = "Transfer" },
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Icon(Icons.Default.SwapVert, contentDescription = "Transfer")
-                    Spacer(modifier = Modifier.width(5.dp))
-                    Text("Transfer", maxLines = 1)
-                }
-            }
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Date and TimeZone with icons and click actions
+            // Date, Time and TimeZone with icons and click actions
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .offset(y = (-8).dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                TextButton(onClick = { showDatePicker(context, selectedDate) }) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Default.Schedule, contentDescription = "Date")
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(selectedDate.value, color = MaterialTheme.colorScheme.onBackground)
-                    }
-                }
-                TextButton(onClick = { /* Open TimeZone Picker Logic */ }) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Default.Public, contentDescription = "Time Zone")
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(selectedTimeZone.value, color = MaterialTheme.colorScheme.onBackground)
-                    }
-                }
+                Icon(
+                    imageVector = ImageVector.vectorResource(R.drawable.ic_schedule),
+                    contentDescription = "Date & Time"
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+                DatePicker(selectedDate = selectedDate)
+                Spacer(modifier = Modifier.weight(1f))
+                TimePicker(selectedTime = selectedTime)
+//                TextButton(onClick = {
+//
+//                }) {
+//                    Text(selectedDate.value, color = MaterialTheme.colorScheme.onBackground)
+//                }
             }
-            Spacer(modifier = Modifier.height(8.dp))
+            //Spacer(modifier = Modifier.height(8.dp))
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .offset(y = (-8).dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(R.drawable.ic_public),
+                    contentDescription = "Time Zone"
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+                TimeZonePicker(selectedTimeZone = selectedTimeZone)
+            }
+//            TextButton(onClick = { /* Open TimeZone Picker Logic */ }) {
+//                Row(verticalAlignment = Alignment.CenterVertically) {
+//
+//                    Spacer(modifier = Modifier.width(8.dp))
+//                    Text(selectedTimeZone.value, color = MaterialTheme.colorScheme.onBackground)
+//                }
+//            }
 
             // Source Field with DropdownMenu
             ExposedDropdownMenuBox(
@@ -293,18 +273,3 @@ fun AddTransaction(navController: NavHostController) {
         }
     }
 }
-
-private fun showDatePicker(context: Context, selectedDate: MutableState<String>) {
-    val calendar = Calendar.getInstance()
-    val datePickerDialog = DatePickerDialog(
-        context,
-        { _, year, month, dayOfMonth ->
-            selectedDate.value = "${month + 1}/$dayOfMonth/$year"
-        },
-        calendar.get(Calendar.YEAR),
-        calendar.get(Calendar.MONTH),
-        calendar.get(Calendar.DAY_OF_MONTH)
-    )
-    datePickerDialog.show()
-}
-

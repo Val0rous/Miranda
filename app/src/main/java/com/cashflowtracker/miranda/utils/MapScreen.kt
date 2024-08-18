@@ -2,6 +2,7 @@ package com.cashflowtracker.miranda.utils
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -24,7 +25,8 @@ fun MapScreen(latitude: Double, longitude: Double) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(28.dp)),
+            .clip(RoundedCornerShape(28.dp))
+            .height(160.dp),
         contentAlignment = Alignment.Center,
     ) {
         GoogleMap(
