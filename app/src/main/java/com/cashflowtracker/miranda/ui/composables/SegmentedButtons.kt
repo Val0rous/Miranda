@@ -12,22 +12,14 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.Download
-import androidx.compose.material.icons.outlined.Star
-import androidx.compose.material.icons.outlined.Sync
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
-import androidx.compose.material3.SegmentedButtonDefaults.ActiveIcon
-import androidx.compose.material3.SegmentedButtonDefaults.IconSize
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -44,6 +36,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
+import com.cashflowtracker.miranda.utils.TransactionType
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
@@ -95,7 +88,7 @@ fun SegmentedButtonType(transactionType: MutableState<String>, modifier: Modifie
             selected = selectedIndex == 0,
             onClick = {
                 selectedIndex = 0
-                transactionType.value = "Output"
+                transactionType.value = TransactionType.OUTPUT.type
             },
             shape = SegmentedButtonDefaults.itemShape(
                 index = 0,
@@ -117,7 +110,7 @@ fun SegmentedButtonType(transactionType: MutableState<String>, modifier: Modifie
             selected = selectedIndex == 1,
             onClick = {
                 selectedIndex = 1
-                transactionType.value = "Input"
+                transactionType.value = TransactionType.INPUT.type
             },
             shape = SegmentedButtonDefaults.itemShape(
                 index = 1,
@@ -139,7 +132,7 @@ fun SegmentedButtonType(transactionType: MutableState<String>, modifier: Modifie
             selected = selectedIndex == 2,
             onClick = {
                 selectedIndex = 2
-                transactionType.value = "Transfer"
+                transactionType.value = TransactionType.TRANSFER.type
             },
             shape = SegmentedButtonDefaults.itemShape(
                 index = 2,
