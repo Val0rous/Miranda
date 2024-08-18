@@ -125,9 +125,7 @@ fun Transactions(navController: NavHostController) {
         )
 
         ExtendedFloatingActionButton(
-            onClick = {
-                navController.navigate(NavigationRoute.AddTransaction.route)  // Modifica qui per navigare a TransactionAdd
-            },
+            onClick = { navController.navigate(NavigationRoute.AddTransaction.route) },
             icon = {
                 Icon(
                     imageVector = ImageVector.vectorResource(R.drawable.ic_assignment),
@@ -146,19 +144,18 @@ fun Transactions(navController: NavHostController) {
 @Composable
 fun Recurrents(navController: NavHostController) {
     Box(modifier = Modifier.fillMaxSize()) {
-        // Contenuto della schermata delle transazioni
         Text(
             text = "Recurrents Screen",
             modifier = Modifier.align(Alignment.Center)
         )
 
-        // FloatingActionButton in basso a destra con l'etichetta "Add Reccurence"
+        // FloatingActionButton in basso a destra con l'etichetta "Add Recurrence"
         ExtendedFloatingActionButton(
-            onClick = { /* Azione da eseguire quando il FAB viene premuto */ },
+            onClick = { navController.navigate(NavigationRoute.AddRecurrence.route) },
             icon = {
                 Icon(
                     imageVector = ImageVector.vectorResource(R.drawable.ic_schedule),
-                    contentDescription = "Add"
+                    contentDescription = "Add Recurrence"
                 )
             },
             text = { Text("Add Recurrence") },

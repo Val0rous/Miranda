@@ -1,6 +1,8 @@
 package com.cashflowtracker.miranda
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -20,6 +22,7 @@ import com.cashflowtracker.miranda.ui.composables.TimeZonePicker
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddTransaction(navController: NavHostController) {
+    val scrollState = rememberScrollState()
     val transactionType = remember { mutableStateOf("") }
 
     // State to manage date selection
@@ -67,6 +70,7 @@ fun AddTransaction(navController: NavHostController) {
             modifier = Modifier
                 .padding(paddingValues)
                 .padding(16.dp)
+                .verticalScroll(scrollState)
         ) {
             SegmentedButtonType(
                 transactionType = transactionType,

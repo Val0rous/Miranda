@@ -1,12 +1,16 @@
 package com.cashflowtracker.miranda
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
@@ -20,6 +24,7 @@ import com.cashflowtracker.miranda.ui.composables.TimeZonePicker
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddRecurrence(navController: NavHostController) {
+    val scrollState = rememberScrollState()
     val transactionType = remember { mutableStateOf("") }
 
     // State to manage date selection
@@ -36,6 +41,7 @@ fun AddRecurrence(navController: NavHostController) {
 
     val isSourceExpanded = remember { mutableStateOf(false) }
     val isDestinationExpanded = remember { mutableStateOf(false) }
+    val isCreateFirstOccurrence = remember { mutableStateOf(false) }
 
     val sourceOptions = listOf("Deutsche Bank", "N26", "Wallet")
     val destinationOptions = listOf("Restaurant", "Food", "Clothing")
@@ -67,6 +73,7 @@ fun AddRecurrence(navController: NavHostController) {
             modifier = Modifier
                 .padding(paddingValues)
                 .padding(16.dp)
+                .verticalScroll(scrollState)
         ) {
             SegmentedButtonType(
                 transactionType = transactionType,
@@ -105,6 +112,59 @@ fun AddRecurrence(navController: NavHostController) {
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 TimeZonePicker(selectedTimeZone = selectedTimeZone)
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(R.drawable.ic_replay),
+                    contentDescription = "Repeat",
+                    modifier = Modifier
+                        .scale(scaleX = -1f, scaleY = 1f)   // Flip horizontally
+                        .rotate(-45f)
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                TextButton(onClick = { /* TODO: Handle repeat button click */ }) {
+                    Text("Every month") // TODO: Replace with DropdownMenu listing repeat options
+                }
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Spacer(modifier = Modifier.width(28.dp))
+                Text("Create First Occurrence")
+                Checkbox(
+                    checked = isCreateFirstOccurrence.value,
+                    onCheckedChange = {
+                        isCreateFirstOccurrence.value = !isCreateFirstOccurrence.value
+                    })
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    ImageVector.vectorResource(R.drawable.ic_notifications),
+                    contentDescription = "Notifications"
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Text("1 day before")    // TODO: Replace with DropdownMenu listing notification options
+                Spacer(modifier = Modifier.weight(1f))
+                Icon(
+                    ImageVector.vectorResource(R.drawable.ic_close),
+                    contentDescription = "Delete Notification"
+                )
             }
 
             Row(

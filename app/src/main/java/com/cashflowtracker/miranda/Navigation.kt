@@ -43,12 +43,7 @@ sealed class NavigationRoute(
         NavigationRoute("profile", Icons.Default.Person, Icons.Default.Person, "Profile")
 
     data object AddTransaction :
-        NavigationRoute(
-            "add_transaction",
-            Icons.Default.Add,
-            Icons.Default.Add,
-            "Add Transaction"
-        )
+        NavigationRoute("add_transaction", Icons.Default.Add, Icons.Default.Add, "Add Transaction")
 
     data object AddRecurrence :
         NavigationRoute("add_recurrence", Icons.Default.Add, Icons.Default.Add, "Add Recurrence")

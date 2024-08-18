@@ -21,10 +21,11 @@ fun AppLayout(
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
-    // Mostra la bottom bar solo se non siamo nelle schermate Settings, Profile, o TransactionAdd
-    val showBottomBar = currentRoute != NavigationRoute.Settings.route &&
-            currentRoute != NavigationRoute.Profile.route &&
-            currentRoute != NavigationRoute.AddTransaction.route
+    // Hide bottom bar in Settings, Profile, AddTransaction and AddRecurrence
+    val showBottomBar = currentRoute != NavigationRoute.Settings.route
+            && currentRoute != NavigationRoute.Profile.route
+            && currentRoute != NavigationRoute.AddTransaction.route
+            && currentRoute != NavigationRoute.AddRecurrence.route
 
 
     Scaffold(
@@ -68,6 +69,9 @@ fun AppLayout(
                 }
                 composable(NavigationRoute.AddTransaction.route) {
                     AddTransaction(navController)
+                }
+                composable(NavigationRoute.AddRecurrence.route) {
+                    AddRecurrence(navController)
                 }
             }
         }

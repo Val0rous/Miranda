@@ -33,7 +33,9 @@ fun AppBar(navController: NavHostController, isDarkTheme: Boolean) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
-    if (currentRoute == NavigationRoute.AddTransaction.route) {
+    if (currentRoute == NavigationRoute.AddTransaction.route
+        || currentRoute == NavigationRoute.AddRecurrence.route
+    ) {
         return
     }
 
