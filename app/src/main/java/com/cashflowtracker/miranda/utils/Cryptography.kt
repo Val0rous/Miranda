@@ -3,7 +3,6 @@ package com.cashflowtracker.miranda.utils
 import com.lambdapioneer.argon2kt.Argon2Kt
 import com.lambdapioneer.argon2kt.Argon2Mode
 
-
 /** Generate a 32-character alphanumeric salt */
 fun generateSalt(): String {
     val allowedChars = ('0'..'9') + ('a'..'z') + ('A'..'Z')

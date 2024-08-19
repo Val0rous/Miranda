@@ -36,11 +36,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.cashflowtracker.miranda.data.database.User
+import com.cashflowtracker.miranda.ui.viewmodels.UsersActions
+import com.cashflowtracker.miranda.ui.viewmodels.UsersState
 import com.cashflowtracker.miranda.utils.generateSalt
 import com.cashflowtracker.miranda.utils.hashPassword
 
 @Composable
-fun Signup(navController: NavHostController) {
+fun Signup(
+    /* navController: NavHostController */
+    state: UsersState,
+    actions: UsersActions
+) {
     val name = remember { mutableStateOf("") }
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
@@ -137,11 +144,22 @@ fun Signup(navController: NavHostController) {
                 )
                 Button(
                     onClick = {
-                        println(password.value)
-                        val salt = generateSalt()
-                        println(salt)
-                        val hashedPassword = hashPassword(password.value, salt)
-                        println(hashedPassword)
+                        if (name.value.isNotEmpty() && email.value.isNotEmpty() && password.value.isNotEmpty()) {
+                            val salt = generateSalt()
+                            actions.addUser(
+                                User(
+                                    name = name.value,
+                                    email = email.value,
+                                    password = hashPassword(password.value, salt),
+                                    salt = salt,
+                                    encryptionKey = null,
+                                    currency = null,
+                                    country = null
+                                )
+                            )
+                        } else {
+                            return@Button
+                        }
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                     modifier = Modifier

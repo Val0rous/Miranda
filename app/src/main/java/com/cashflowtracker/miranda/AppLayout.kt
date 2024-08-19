@@ -74,9 +74,9 @@ fun AppLayout(
                 composable(NavigationRoute.AddRecurrence.route) {
                     AddRecurrence(navController)
                 }
-                composable(NavigationRoute.Signup.route) {
-                    Signup(navController)
-                }
+//                composable(NavigationRoute.Signup.route) {
+//                    Signup(navController)
+//                }
             }
         }
     }

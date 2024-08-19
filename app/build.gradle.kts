@@ -62,8 +62,10 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material3:material3:1.2.1")
     implementation("androidx.compose.material:material-icons-extended:1.6.8")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.4")
     implementation("androidx.navigation:navigation-runtime-ktx:2.7.7")
     implementation("androidx.navigation:navigation-compose:2.7.7")
+    implementation("androidx.media3:media3-test-utils:1.4.0")
     //implementation("androidx.room:room-ktx:2.6.1")
     val roomVersion = "2.6.1"
     implementation("androidx.room:room-runtime:$roomVersion")
@@ -108,6 +110,6 @@ dependencies {
     implementation("com.google.android.gms:play-services-maps:19.0.0")
 
     // Argon2 Hashing Algorithm
-    //implementation("de.mkammerer:argon2-jvm:2.11")
     implementation("com.lambdapioneer.argon2kt:argon2kt:1.5.0") // https://github.com/lambdapioneer/argon2kt
+    //implementation("de.mkammerer:argon2-jvm:2.11")
 }

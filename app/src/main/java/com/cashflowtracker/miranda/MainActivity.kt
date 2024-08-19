@@ -11,7 +11,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
+import com.cashflowtracker.miranda.ui.viewmodels.UsersViewModel
+import org.koin.androidx.compose.koinViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,13 +24,16 @@ class MainActivity : ComponentActivity() {
 
             MirandaTheme(darkTheme = isDarkTheme) {
                 Surface(
-                    color = MaterialTheme.colorScheme.background,
                     modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background,
                 ) {
-                    AppLayout(
-                        isDarkTheme = isDarkTheme,
-                        onThemeChange = { isDarkTheme = it }
-                    )
+                    val vm = koinViewModel<UsersViewModel>()
+                    val state by vm.state.collectAsStateWithLifecycle()
+//                    AppLayout(
+//                        isDarkTheme = isDarkTheme,
+//                        onThemeChange = { isDarkTheme = it }
+//                    )
+                    Signup(state, vm.actions)
                 }
             }
         }
