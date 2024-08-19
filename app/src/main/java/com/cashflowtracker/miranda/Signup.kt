@@ -20,6 +20,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,6 +42,8 @@ import com.cashflowtracker.miranda.ui.viewmodels.UsersActions
 import com.cashflowtracker.miranda.ui.viewmodels.UsersState
 import com.cashflowtracker.miranda.utils.generateSalt
 import com.cashflowtracker.miranda.utils.hashPassword
+import com.cashflowtracker.miranda.utils.validateEmail
+import com.cashflowtracker.miranda.utils.validatePassword
 
 @Composable
 fun Signup(
@@ -51,6 +54,15 @@ fun Signup(
     val name = remember { mutableStateOf("") }
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
+    val isFormValid by remember {
+        derivedStateOf {
+            name.value.isNotEmpty()
+                    && email.value.isNotEmpty()
+                    && validateEmail(email.value)
+                    && password.value.isNotEmpty()
+                    && validatePassword(password.value)
+        }
+    }
 
     val customPadding = PaddingValues(
         start = 16.dp,
@@ -161,6 +173,7 @@ fun Signup(
                             return@Button
                         }
                     },
+                    enabled = isFormValid,
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                     modifier = Modifier
                         .fillMaxWidth()
