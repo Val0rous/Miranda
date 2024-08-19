@@ -198,8 +198,7 @@ fun AddTransaction(navController: NavHostController) {
                     ExposedDropdownMenu(
                         expanded = isDestinationExpanded.value,
                         onDismissRequest = { isDestinationExpanded.value = false },
-
-                        ) {
+                    ) {
                         destinationOptions.forEach { option ->
                             DropdownMenuItem(
                                 onClick = {

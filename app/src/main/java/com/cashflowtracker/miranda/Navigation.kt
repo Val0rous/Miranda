@@ -2,10 +2,12 @@ package com.cashflowtracker.miranda
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Assignment
+import androidx.compose.material.icons.automirrored.filled.Login
 import androidx.compose.material.icons.automirrored.outlined.Assignment
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Leaderboard
+import androidx.compose.material.icons.filled.Login
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.outlined.Home
@@ -47,6 +49,12 @@ sealed class NavigationRoute(
 
     data object AddRecurrence :
         NavigationRoute("add_recurrence", Icons.Default.Add, Icons.Default.Add, "Add Recurrence")
+
+    data object Signup :
+        NavigationRoute(
+            "signup", Icons.AutoMirrored.Filled.Login,
+            Icons.AutoMirrored.Filled.Login, "Signup"
+        )
 }
 
 

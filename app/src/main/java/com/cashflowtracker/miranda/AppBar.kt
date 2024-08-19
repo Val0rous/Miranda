@@ -35,6 +35,8 @@ fun AppBar(navController: NavHostController, isDarkTheme: Boolean) {
 
     if (currentRoute == NavigationRoute.AddTransaction.route
         || currentRoute == NavigationRoute.AddRecurrence.route
+        || currentRoute == NavigationRoute.Signup.route
+    //|| currentRoute == NavigationRoute.Login.route
     ) {
         return
     }

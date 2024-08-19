@@ -29,6 +29,9 @@ interface UsersDao {
 
     @Query("UPDATE user SET email = :newEmail WHERE userId = :userId")
     suspend fun updateEmail(userId: Int, newEmail: String)
+
+    @Query("SELECT * FROM user")
+    suspend fun listAll(): List<User>
 }
 
 @Dao

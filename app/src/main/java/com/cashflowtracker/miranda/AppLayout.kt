@@ -26,7 +26,8 @@ fun AppLayout(
             && currentRoute != NavigationRoute.Profile.route
             && currentRoute != NavigationRoute.AddTransaction.route
             && currentRoute != NavigationRoute.AddRecurrence.route
-
+            && currentRoute != NavigationRoute.Signup.route
+    //&& currentRoute != NavigationRoute.Login.route
 
     Scaffold(
         topBar = { AppBar(navController, isDarkTheme) },
@@ -43,7 +44,7 @@ fun AppLayout(
         ) {
             NavHost(
                 navController = navController,
-                startDestination = NavigationRoute.Home.route
+                startDestination = NavigationRoute.Signup.route
             ) {
                 composable(NavigationRoute.Home.route) {
                     Home(navController)
@@ -72,6 +73,9 @@ fun AppLayout(
                 }
                 composable(NavigationRoute.AddRecurrence.route) {
                     AddRecurrence(navController)
+                }
+                composable(NavigationRoute.Signup.route) {
+                    Signup(navController)
                 }
             }
         }
