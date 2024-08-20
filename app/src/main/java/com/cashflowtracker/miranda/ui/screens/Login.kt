@@ -51,7 +51,6 @@ fun Login(
     state: UsersState,
     actions: UsersActions,
     isDarkTheme: Boolean,
-    onThemeChange: (Boolean) -> Unit
 ) {
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }

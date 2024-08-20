@@ -49,7 +49,6 @@ fun Signup(
     state: UsersState,
     actions: UsersActions,
     isDarkTheme: Boolean,
-    onThemeChange: (Boolean) -> Unit
 ) {
     val name = remember { mutableStateOf("") }
     val email = remember { mutableStateOf("") }

@@ -1,5 +1,6 @@
 package com.cashflowtracker.miranda
 
+import android.content.Context
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -22,6 +23,7 @@ import com.cashflowtracker.miranda.ui.screens.Stats
 import com.cashflowtracker.miranda.ui.screens.Transactions
 import com.cashflowtracker.miranda.ui.viewmodels.UsersActions
 import com.cashflowtracker.miranda.ui.viewmodels.UsersState
+import kotlinx.coroutines.CoroutineScope
 
 @Composable
 fun AppLayout(
@@ -30,7 +32,10 @@ fun AppLayout(
     state: UsersState,
     actions: UsersActions,
     isDarkTheme: Boolean,
-    onThemeChange: (Boolean) -> Unit
+//    onThemeChange: (Boolean) -> Unit
+    followSystem: Boolean,
+    context: Context,
+    coroutineScope: CoroutineScope
 ) {
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -79,7 +84,10 @@ fun AppLayout(
                 Settings(
                     navController = navController,
                     isDarkTheme = isDarkTheme,  // Passa lo stato corrente del tema
-                    onThemeChange = onThemeChange
+//                    onThemeChange = onThemeChange
+                    followSystem = followSystem,
+                    context = context,
+                    coroutineScope = coroutineScope
                 )
             }
             composable(Routes.Profile.route) {
@@ -92,10 +100,10 @@ fun AppLayout(
                 AddRecurrence(navController)
             }
             composable(Routes.Login.route) {
-                Login(navController, state, actions, isDarkTheme, onThemeChange)
+                Login(navController, state, actions, isDarkTheme)
             }
             composable(Routes.Signup.route) {
-                Signup(navController, state, actions, isDarkTheme, onThemeChange)
+                Signup(navController, state, actions, isDarkTheme)
             }
         }
     }

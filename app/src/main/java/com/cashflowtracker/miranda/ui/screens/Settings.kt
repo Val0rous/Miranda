@@ -1,5 +1,6 @@
 package com.cashflowtracker.miranda.ui.screens
 
+import android.content.Context
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -13,14 +14,18 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.cashflowtracker.miranda.ui.composables.SegmentedButtonTheme
+import kotlinx.coroutines.CoroutineScope
 
 @Composable
 fun Settings(
     navController: NavHostController,
     isDarkTheme: Boolean,  // Receives current theme status
-    onThemeChange: (Boolean) -> Unit
+//    onThemeChange: (Boolean) -> Unit
+    followSystem: Boolean,
+    context: Context,
+    coroutineScope: CoroutineScope
 ) {
-    var selectedTheme by remember { mutableStateOf(isDarkTheme) }
+//    var selectedTheme by remember { mutableStateOf(isDarkTheme) }
 
     Column(
         modifier = Modifier
@@ -41,35 +46,38 @@ fun Settings(
             Spacer(modifier = Modifier.width(16.dp))
             SegmentedButtonTheme(
                 modifier = Modifier.fillMaxWidth(),
-                isDarkTheme = selectedTheme,
-                onThemeChange = { onThemeChange }
+                isDarkTheme = isDarkTheme,
+//                onThemeChange = { onThemeChange }
+                followSystem = followSystem,
+                context = context,
+                coroutineScope = coroutineScope
             )
         }
 
-        Row(
-            horizontalArrangement = Arrangement.SpaceAround,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            ThemeToggleButton(
-                isSelected = !selectedTheme,
-                text = "Light",
-                icon = Icons.Filled.LightMode,
-                onClick = {
-                    selectedTheme = false
-                    onThemeChange(false) // Update theme in AppLayout
-                }
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            ThemeToggleButton(
-                isSelected = selectedTheme,
-                text = "Dark",
-                icon = Icons.Filled.DarkMode,
-                onClick = {
-                    selectedTheme = true
-                    onThemeChange(true) // Update theme in AppLayout
-                }
-            )
-        }
+//        Row(
+//            horizontalArrangement = Arrangement.SpaceAround,
+//            modifier = Modifier.fillMaxWidth()
+//        ) {
+//            ThemeToggleButton(
+//                isSelected = !selectedTheme,
+//                text = "Light",
+//                icon = Icons.Filled.LightMode,
+//                onClick = {
+//                    selectedTheme = false
+////                    onThemeChange(false) // Update theme in AppLayout
+//                }
+//            )
+//            Spacer(modifier = Modifier.width(8.dp))
+//            ThemeToggleButton(
+//                isSelected = selectedTheme,
+//                text = "Dark",
+//                icon = Icons.Filled.DarkMode,
+//                onClick = {
+//                    selectedTheme = true
+////                    onThemeChange(true) // Update theme in AppLayout
+//                }
+//            )
+//        }
 
 
         // Logout and Delete Account buttons
@@ -102,7 +110,8 @@ fun ThemeToggleButton(
     isSelected: Boolean,
     text: String,
     icon: ImageVector,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    followSystem: Boolean
 ) {
     OutlinedButton(
         onClick = onClick,
