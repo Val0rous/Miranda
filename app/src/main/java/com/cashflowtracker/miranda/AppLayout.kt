@@ -68,9 +68,9 @@ fun AppLayout(
             startDestination = startDestination,
             modifier = Modifier.padding(paddingValues = paddingValues)
         ) {
-            composable(Routes.Home.route) {
-                Home(navController)
-            }
+//            composable(Routes.Home.route) {
+//                Home(navController)
+//            }
             composable(Routes.Transactions.route) {
                 Transactions(navController)
             }
@@ -80,16 +80,16 @@ fun AppLayout(
             composable(Routes.Stats.route) {
                 Stats(navController)
             }
-            composable(Routes.Settings.route) {
-                Settings(
-                    navController = navController,
-                    isDarkTheme = isDarkTheme,  // Passa lo stato corrente del tema
-//                    onThemeChange = onThemeChange
-                    followSystem = followSystem,
-                    context = context,
-                    coroutineScope = coroutineScope
-                )
-            }
+//            composable(Routes.Settings.route) {
+//                Settings(
+//                    navController = navController,
+//                    isDarkTheme = isDarkTheme,  // Passa lo stato corrente del tema
+////                    onThemeChange = onThemeChange
+//                    followSystem = followSystem,
+//                    context = context,
+//                    coroutineScope = coroutineScope
+//                )
+//            }
             composable(Routes.Profile.route) {
                 Profile(navController)
             }
@@ -99,12 +99,12 @@ fun AppLayout(
             composable(Routes.AddRecurrence.route) {
                 AddRecurrence(navController)
             }
-            composable(Routes.Login.route) {
-                Login(navController, state, actions, isDarkTheme)
-            }
-            composable(Routes.Signup.route) {
-                Signup(navController, state, actions, isDarkTheme)
-            }
+//            composable(Routes.Login.route) {
+//                Login(navController, state, actions, isDarkTheme)
+//            }
+//            composable(Routes.Signup.route) {
+//                Signup(navController, state, actions, isDarkTheme)
+//            }
         }
     }
 }

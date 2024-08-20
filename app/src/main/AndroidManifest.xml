@@ -23,10 +23,13 @@
                 intent filter which will check the default activity-->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ui.screens.Home" />
+        <activity android:name=".ui.screens.Settings" />
+        <activity android:name=".ui.screens.Login" />
+        <activity android:name=".ui.screens.Signup" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

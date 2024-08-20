@@ -1,5 +1,6 @@
 package com.cashflowtracker.miranda
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -20,6 +21,7 @@ import com.cashflowtracker.miranda.data.repositories.LoginRepository.getLoggedUs
 import com.cashflowtracker.miranda.data.repositories.ThemeRepository.getSystemDefaultTheme
 import com.cashflowtracker.miranda.data.repositories.ThemeRepository.getSystemPreference
 import com.cashflowtracker.miranda.data.repositories.ThemeRepository.getThemePreference
+import com.cashflowtracker.miranda.ui.screens.Home
 import com.cashflowtracker.miranda.ui.screens.Login
 import com.cashflowtracker.miranda.ui.screens.Signup
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
@@ -70,23 +72,25 @@ class MainActivity : ComponentActivity() {
                     val vm = koinViewModel<UsersViewModel>()
                     val state by vm.state.collectAsStateWithLifecycle()
 
-                    val startDestination = if (userEmail.isNullOrEmpty()) {
-                        Routes.Login.route
+                    if (!userEmail.isNullOrEmpty()) {
+//                        Routes.Home.route
+                        startActivity(Intent(this@MainActivity, Home::class.java))
                     } else {
-                        Routes.Home.route
+//                        Routes.Login.route
+                        startActivity(Intent(this@MainActivity, Login::class.java))
                     }
 
-                    AppLayout(
-                        navController = navController,
-                        startDestination = startDestination,
-                        state = state,
-                        actions = vm.actions,
-                        isDarkTheme = effectiveIsDarkTheme,
-                        followSystem = followSystem,
-                        context = context,
-                        coroutineScope = coroutineScope,
-//                        onThemeChange = { isDarkTheme = it }
-                    )
+//                    AppLayout(
+//                        navController = navController,
+//                        startDestination = startDestination,
+//                        state = state,
+//                        actions = vm.actions,
+//                        isDarkTheme = effectiveIsDarkTheme,
+//                        followSystem = followSystem,
+//                        context = context,
+//                        coroutineScope = coroutineScope,
+////                        onThemeChange = { isDarkTheme = it }
+//                    )
                 }
             }
         }
