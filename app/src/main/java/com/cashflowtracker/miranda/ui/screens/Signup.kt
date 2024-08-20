@@ -25,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -75,7 +76,9 @@ fun Signup(
         topBar = {
             Row(
                 horizontalArrangement = Arrangement.Center,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 128.dp)
             ) {
                 Text(
                     text = "Miranda",
@@ -91,7 +94,6 @@ fun Signup(
                         )
                     ),
                     color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.padding(top = 128.dp, bottom = 0.dp),
                 )
             }
         },
@@ -99,7 +101,9 @@ fun Signup(
             Row(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp)
             ) {
                 Text("Already have an account? ")
                 TextButton(
@@ -120,11 +124,11 @@ fun Signup(
         content = { paddingValues ->
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
+                verticalArrangement = Arrangement.Top,
                 modifier = Modifier
                     .padding(paddingValues)
                     .fillMaxHeight()
-                    .offset(y = (-32).dp)
+                    .offset(y = 112.dp)
             ) {
                 OutlinedTextField(
                     value = name.value,
