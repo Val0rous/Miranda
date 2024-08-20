@@ -13,7 +13,7 @@ data class User(
     @ColumnInfo val name: String,
     @ColumnInfo val email: String,
     @ColumnInfo val password: String,
-    @ColumnInfo val salt: String?,
+    @ColumnInfo val salt: String,
     @ColumnInfo val encryptionKey: String?,  // Could be useful to encrypt data and password
     @ColumnInfo val currency: String?,   // Maybe it's useless (SharedPreferences)
     @ColumnInfo val country: String?,    // Maybe it's useless, too

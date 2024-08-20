@@ -15,5 +15,5 @@ class UsersRepository(private val usersDao: UsersDao) {
         usersDao.updatePassword(userId, newPassword)
 
     suspend fun updateEmail(userId: UUID, newEmail: String) = usersDao.updateEmail(userId, newEmail)
-    val users: Flow<List<User>> = usersDao.listAll()
+    val users: Flow<List<User>>? = usersDao.listAll()
 }

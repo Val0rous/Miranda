@@ -1,5 +1,6 @@
-package com.cashflowtracker.miranda
+package com.cashflowtracker.miranda.ui.screens
 
+import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -29,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -46,18 +48,18 @@ import com.cashflowtracker.miranda.utils.validateEmail
 import com.cashflowtracker.miranda.utils.validatePassword
 
 @Composable
-fun Signup(
+fun Login(
     /* navController: NavHostController */
     state: UsersState,
-    actions: UsersActions
+    actions: UsersActions,
+    isDarkTheme: Boolean,
+    onThemeChange: (Boolean) -> Unit
 ) {
-    val name = remember { mutableStateOf("") }
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
     val isFormValid by remember {
         derivedStateOf {
-            name.value.isNotEmpty()
-                    && email.value.isNotEmpty()
+            email.value.isNotEmpty()
                     && validateEmail(email.value)
                     && password.value.isNotEmpty()
                     && validatePassword(password.value)
@@ -102,13 +104,13 @@ fun Signup(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Already have an account? ")
+                Text("Don't have an account? ")
                 TextButton(
                     onClick = { /* TODO */ },
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surface),
                 ) {
                     Text(
-                        text = "Sign in",
+                        text = "Sign up",
                         style = TextStyle(
                             fontFamily = MaterialTheme.typography.labelLarge.fontFamily,
                             fontWeight = FontWeight.SemiBold
@@ -127,15 +129,6 @@ fun Signup(
                     .fillMaxHeight()
                     .offset(y = (-32).dp)
             ) {
-                OutlinedTextField(
-                    value = name.value,
-                    onValueChange = { text -> name.value = text },
-                    label = { Text("Name") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 16.dp)
-                )
                 OutlinedTextField(
                     value = email.value,
                     onValueChange = { text -> email.value = text },
@@ -156,19 +149,9 @@ fun Signup(
                 )
                 Button(
                     onClick = {
-                        if (name.value.isNotEmpty() && email.value.isNotEmpty() && password.value.isNotEmpty()) {
-                            val salt = generateSalt()
-                            actions.addUser(
-                                User(
-                                    name = name.value,
-                                    email = email.value,
-                                    password = hashPassword(password.value, salt),
-                                    salt = salt,
-                                    encryptionKey = null,
-                                    currency = null,
-                                    country = null
-                                )
-                            )
+                        if (actions.login(email.value, password.value)) {
+                            //Intent(this, AppLayout::class.java)
+                            // TODO
                         } else {
                             return@Button
                         }

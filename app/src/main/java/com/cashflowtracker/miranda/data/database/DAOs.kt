@@ -17,13 +17,13 @@ interface UsersDao {
     suspend fun delete(user: User)
 
     @Query("SELECT userId FROM user WHERE email = :email")
-    fun getUserIdByEmail(email: String): UUID
+    fun getUserIdByEmail(email: String): UUID?
 
     @Query("SELECT * FROM user WHERE userId = :email")
-    fun getByEmail(email: String): User
+    fun getByEmail(email: String): User?
 
     @Query("SELECT * FROM user WHERE userId = :userId")
-    fun getByUserId(userId: UUID): User
+    fun getByUserId(userId: UUID): User?
 
     @Query("UPDATE user SET password = :newPassword WHERE userId = :userId")
     suspend fun updatePassword(userId: UUID, newPassword: String)
@@ -32,7 +32,7 @@ interface UsersDao {
     suspend fun updateEmail(userId: UUID, newEmail: String)
 
     @Query("SELECT * FROM user")
-    fun listAll(): Flow<List<User>>
+    fun listAll(): Flow<List<User>>?
 }
 
 @Dao

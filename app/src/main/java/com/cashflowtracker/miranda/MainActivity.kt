@@ -12,6 +12,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.cashflowtracker.miranda.ui.screens.Login
+import com.cashflowtracker.miranda.ui.screens.Signup
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 import com.cashflowtracker.miranda.ui.viewmodels.UsersViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -33,7 +35,11 @@ class MainActivity : ComponentActivity() {
 //                        isDarkTheme = isDarkTheme,
 //                        onThemeChange = { isDarkTheme = it }
 //                    )
-                    Signup(state, vm.actions)
+                    Login(
+                        state = state,
+                        actions = vm.actions,
+                        isDarkTheme = isDarkTheme,
+                        onThemeChange = { isDarkTheme = it })
                 }
             }
         }
