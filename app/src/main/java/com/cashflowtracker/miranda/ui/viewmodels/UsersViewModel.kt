@@ -22,7 +22,7 @@ data class CurrentUser(val currentUser: User?)
 interface UsersActions {
     fun addUser(user: User): Job
     fun removeUser(user: User): Job
-    fun login(email: String, password: String): Boolean
+    suspend fun login(email: String, password: String): Boolean
     fun logout(user: User): Job
     fun getByEmail(email: String): User?
     fun getByUserId(userId: UUID): User?
@@ -48,13 +48,11 @@ class UsersViewModel(private val repository: UsersRepository) : ViewModel() {
             repository.delete(user)
         }
 
-        override fun login(email: String, password: String): Boolean {
-            val user = repository.getByEmail(email)
+        override suspend fun login(email: String, password: String): Boolean = viewModelScope.run {
+            val user =
+                async(Dispatchers.IO) { repository.getByEmail(email) }.await() // Only locally, change if client-server
             val saltedPassword = hashPassword(password, user!!.salt)
-            if (user.password == saltedPassword) {
-                return true
-            }
-            return false
+            return user.password == saltedPassword
         }
 
         override fun logout(user: User) = viewModelScope.launch {

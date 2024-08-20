@@ -1,5 +1,6 @@
 package com.cashflowtracker.miranda.ui.screens
 
+import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -18,27 +19,31 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavHostController
 import com.cashflowtracker.miranda.Routes
 import com.cashflowtracker.miranda.ui.viewmodels.UsersActions
 import com.cashflowtracker.miranda.ui.viewmodels.UsersState
 import com.cashflowtracker.miranda.utils.validateEmail
 import com.cashflowtracker.miranda.utils.validatePassword
+import kotlinx.coroutines.launch
 
 @Composable
 fun Login(
@@ -58,7 +63,9 @@ fun Login(
                     && validatePassword(password.value)
         }
     }
-
+    val context = LocalContext.current
+    val home = Home(navController)::class.java
+    val coroutineScope = rememberCoroutineScope()
     val customPadding = PaddingValues(
         start = 16.dp,
         top = 16.dp,
@@ -145,11 +152,16 @@ fun Login(
                 )
                 Button(
                     onClick = {
-                        if (actions.login(email.value, password.value)) {
-                            //Intent(this, AppLayout::class.java)
-                            // TODO
-                        } else {
-                            return@Button
+                        coroutineScope.launch {
+                            if (actions.login(email.value, password.value)) {
+//                                val intentHome = Intent(context, home).apply {
+//
+//                                }
+//                                startActivity(context, intentHome, null)
+                                navController.navigate(Routes.Home.route)
+                            } else {
+                                return@launch
+                            }
                         }
                     },
                     enabled = isFormValid,

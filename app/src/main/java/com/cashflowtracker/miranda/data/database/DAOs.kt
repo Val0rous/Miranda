@@ -19,7 +19,7 @@ interface UsersDao {
     @Query("SELECT userId FROM user WHERE email = :email")
     fun getUserIdByEmail(email: String): UUID?
 
-    @Query("SELECT * FROM user WHERE userId = :email")
+    @Query("SELECT * FROM user WHERE email = :email")
     fun getByEmail(email: String): User?
 
     @Query("SELECT * FROM user WHERE userId = :userId")
