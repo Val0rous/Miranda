@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavHostController
 import com.cashflowtracker.miranda.Routes
+import com.cashflowtracker.miranda.data.repositories.LoginRepository.getLoggedUserEmail
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.saveLoggedUserEmail
 import com.cashflowtracker.miranda.ui.composables.PasswordTextField
 import com.cashflowtracker.miranda.ui.viewmodels.UsersActions
@@ -55,6 +56,19 @@ fun Login(
     actions: UsersActions,
     isDarkTheme: Boolean,
 ) {
+    val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
+    LaunchedEffect(Unit) {
+        context.getLoggedUserEmail().collect { email ->
+            if (!email.isNullOrEmpty()) {
+                navController.navigate(Routes.Home.route)
+//                                val intentHome = Intent(context, home).apply {
+//
+//                                }
+//                                startActivity(context, intentHome, null)
+            }
+        }
+    }
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
     val isFormValid by remember {
@@ -65,9 +79,7 @@ fun Login(
                     && validatePassword(password.value)
         }
     }
-    val context = LocalContext.current
     val home = Home(navController)::class.java
-    val coroutineScope = rememberCoroutineScope()
     val customPadding = PaddingValues(
         start = 16.dp,
         top = 16.dp,
