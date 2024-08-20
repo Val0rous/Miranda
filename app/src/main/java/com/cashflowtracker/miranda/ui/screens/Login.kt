@@ -106,7 +106,7 @@ fun Login(
             ) {
                 Text("Don't have an account? ")
                 TextButton(
-                    onClick = { /* TODO */ },
+                    onClick = { },
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surface),
                 ) {
                     Text(

@@ -24,7 +24,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.cashflowtracker.miranda.NavigationRoute
+import com.cashflowtracker.miranda.Navigation
 import com.cashflowtracker.miranda.R
 
 @Composable
@@ -53,7 +53,7 @@ fun Home(navController: NavHostController) {
                         Text("Recurrence")
                         FloatingActionButton(
                             onClick = {
-                                navController.navigate(NavigationRoute.AddRecurrence.route) {
+                                navController.navigate(Navigation.AddRecurrence.route) {
                                     popUpTo(navController.graph.startDestinationId) {
                                         saveState = true
                                     }
@@ -81,7 +81,7 @@ fun Home(navController: NavHostController) {
                         Text("Transaction")
                         FloatingActionButton(
                             onClick = {
-                                navController.navigate(NavigationRoute.AddTransaction.route) {
+                                navController.navigate(Navigation.AddTransaction.route) {
                                     popUpTo(navController.graph.startDestinationId) {
                                         saveState = true
                                     }

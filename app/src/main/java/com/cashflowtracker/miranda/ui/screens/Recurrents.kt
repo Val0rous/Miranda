@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.cashflowtracker.miranda.NavigationRoute
+import com.cashflowtracker.miranda.Navigation
 import com.cashflowtracker.miranda.R
 
 @Composable
@@ -26,7 +26,7 @@ fun Recurrents(navController: NavHostController) {
 
         // FloatingActionButton in basso a destra con l'etichetta "Add Recurrence"
         ExtendedFloatingActionButton(
-            onClick = { navController.navigate(NavigationRoute.AddRecurrence.route) },
+            onClick = { navController.navigate(Navigation.AddRecurrence.route) },
             icon = {
                 Icon(
                     imageVector = ImageVector.vectorResource(R.drawable.ic_schedule),

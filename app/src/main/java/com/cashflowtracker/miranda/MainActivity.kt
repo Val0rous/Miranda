@@ -31,15 +31,15 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val vm = koinViewModel<UsersViewModel>()
                     val state by vm.state.collectAsStateWithLifecycle()
-//                    AppLayout(
-//                        isDarkTheme = isDarkTheme,
-//                        onThemeChange = { isDarkTheme = it }
-//                    )
-                    Login(
-                        state = state,
-                        actions = vm.actions,
+                    AppLayout(
                         isDarkTheme = isDarkTheme,
-                        onThemeChange = { isDarkTheme = it })
+                        onThemeChange = { isDarkTheme = it }
+                    )
+//                    Login(
+//                        state = state,
+//                        actions = vm.actions,
+//                        isDarkTheme = isDarkTheme,
+//                        onThemeChange = { isDarkTheme = it })
                 }
             }
         }

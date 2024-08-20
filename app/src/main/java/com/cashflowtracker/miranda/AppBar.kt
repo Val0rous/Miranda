@@ -1,15 +1,6 @@
 package com.cashflowtracker.miranda
 
-import android.content.res.Resources
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.FilterList
-import androidx.compose.material.icons.filled.Map
-import androidx.compose.material.icons.filled.SwapVert
-import androidx.compose.material.icons.rounded.Settings
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -21,7 +12,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.navigation.NavHostController
@@ -33,9 +23,9 @@ fun AppBar(navController: NavHostController, isDarkTheme: Boolean) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
-    if (currentRoute == NavigationRoute.AddTransaction.route
-        || currentRoute == NavigationRoute.AddRecurrence.route
-        || currentRoute == NavigationRoute.Signup.route
+    if (currentRoute == Navigation.AddTransaction.route
+        || currentRoute == Navigation.AddRecurrence.route
+        || currentRoute == Navigation.Signup.route
     //|| currentRoute == NavigationRoute.Login.route
     ) {
         return
@@ -45,11 +35,11 @@ fun AppBar(navController: NavHostController, isDarkTheme: Boolean) {
         title = {
             Text(
                 text = when (currentRoute) {
-                    NavigationRoute.Settings.route -> "Settings"
-                    NavigationRoute.Transactions.route -> ""
-                    NavigationRoute.Recurrents.route -> ""
-                    NavigationRoute.Stats.route -> ""
-                    NavigationRoute.Profile.route -> "Your Profile"
+                    Navigation.Settings.route -> "Settings"
+                    Navigation.Transactions.route -> ""
+                    Navigation.Recurrents.route -> ""
+                    Navigation.Stats.route -> ""
+                    Navigation.Profile.route -> "Your Profile"
                     else -> ""
                 },
                 style = MaterialTheme.typography.titleLarge,
@@ -58,7 +48,7 @@ fun AppBar(navController: NavHostController, isDarkTheme: Boolean) {
             )
         },
         navigationIcon = {
-            if (currentRoute == NavigationRoute.Settings.route || currentRoute == NavigationRoute.Profile.route) {
+            if (currentRoute == Navigation.Settings.route || currentRoute == Navigation.Profile.route) {
                 IconButton(onClick = { navController.popBackStack() }) {
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_back),
@@ -68,9 +58,9 @@ fun AppBar(navController: NavHostController, isDarkTheme: Boolean) {
             }
         },
         actions = {
-            if (currentRoute != NavigationRoute.Settings.route && currentRoute != NavigationRoute.Profile.route) {
+            if (currentRoute != Navigation.Settings.route && currentRoute != Navigation.Profile.route) {
                 when (currentRoute) {
-                    NavigationRoute.Transactions.route -> {
+                    Navigation.Transactions.route -> {
                         IconButton(onClick = { /* 1st Action */ }) {
                             Icon(
                                 ImageVector.vectorResource(R.drawable.ic_swap_vert),
@@ -91,7 +81,7 @@ fun AppBar(navController: NavHostController, isDarkTheme: Boolean) {
                         }
                     }
 
-                    NavigationRoute.Recurrents.route -> {
+                    Navigation.Recurrents.route -> {
                         IconButton(onClick = { /* 1st Action */ }) {
                             Icon(
                                 ImageVector.vectorResource(R.drawable.ic_swap_vert),
@@ -106,19 +96,19 @@ fun AppBar(navController: NavHostController, isDarkTheme: Boolean) {
                         }
                     }
 
-                    NavigationRoute.Stats.route -> {
+                    Navigation.Stats.route -> {
                         // Eventually add specific icons for Stats screen
                     }
                 }
 
-                IconButton(onClick = { navController.navigate(NavigationRoute.Settings.route) }) {
+                IconButton(onClick = { navController.navigate(Navigation.Settings.route) }) {
                     Icon(
                         ImageVector.vectorResource(R.drawable.ic_settings),
                         contentDescription = "Settings"
                     )
                 }
                 IconButton(
-                    onClick = { navController.navigate(NavigationRoute.Profile.route) },
+                    onClick = { navController.navigate(Navigation.Profile.route) },
                     colors = IconButtonDefaults.iconButtonColors(containerColor = MaterialTheme.colorScheme.primary)
                 ) {
                     Icon(

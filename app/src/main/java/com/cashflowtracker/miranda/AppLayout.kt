@@ -13,8 +13,12 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.cashflowtracker.miranda.ui.screens.AddRecurrence
 import com.cashflowtracker.miranda.ui.screens.AddTransaction
+import com.cashflowtracker.miranda.ui.screens.Home
 import com.cashflowtracker.miranda.ui.screens.Profile
+import com.cashflowtracker.miranda.ui.screens.Recurrents
 import com.cashflowtracker.miranda.ui.screens.Settings
+import com.cashflowtracker.miranda.ui.screens.Stats
+import com.cashflowtracker.miranda.ui.screens.Transactions
 
 @Composable
 fun AppLayout(
@@ -26,62 +30,64 @@ fun AppLayout(
     val currentRoute = navBackStackEntry?.destination?.route
 
     // Hide bottom bar in Settings, Profile, AddTransaction and AddRecurrence
-    val showBottomBar = currentRoute != NavigationRoute.Settings.route
-            && currentRoute != NavigationRoute.Profile.route
-            && currentRoute != NavigationRoute.AddTransaction.route
-            && currentRoute != NavigationRoute.AddRecurrence.route
-            && currentRoute != NavigationRoute.Signup.route
+    val showBottomBar = currentRoute != Navigation.Settings.route
+            && currentRoute != Navigation.Profile.route
+            && currentRoute != Navigation.AddTransaction.route
+            && currentRoute != Navigation.AddRecurrence.route
+    //&& currentRoute != Navigation.Signup.route
     //&& currentRoute != NavigationRoute.Login.route
 
     Scaffold(
+        modifier = Modifier.fillMaxSize(),
         topBar = { AppBar(navController, isDarkTheme) },
         bottomBar = {
             if (showBottomBar) {
-                NavigationBar(navController)
+                Navbar(navController)
             }
         }
-    ) { contentPadding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(contentPadding)
+    ) { paddingValues ->
+//        Box(
+//            modifier = Modifier
+//                .fillMaxSize()
+//                .padding(paddingValues)
+//        ) {
+        NavHost(
+            navController = navController,
+            startDestination = Navigation.Home.route,
+            modifier = Modifier.padding(paddingValues = paddingValues)
         ) {
-            NavHost(
-                navController = navController,
-                startDestination = NavigationRoute.Signup.route
-            ) {
-                composable(NavigationRoute.Home.route) {
-                    Home(navController)
-                }
-                composable(NavigationRoute.Transactions.route) {
-                    Transactions(navController)
-                }
-                composable(NavigationRoute.Recurrents.route) {
-                    Recurrents(navController)
-                }
-                composable(NavigationRoute.Stats.route) {
-                    Stats(navController)
-                }
-                composable(NavigationRoute.Settings.route) {
-                    Settings(
-                        navController = navController,
-                        isDarkTheme = isDarkTheme,  // Passa lo stato corrente del tema
-                        onThemeChange = onThemeChange
-                    )
-                }
-                composable(NavigationRoute.Profile.route) {
-                    Profile(navController)
-                }
-                composable(NavigationRoute.AddTransaction.route) {
-                    AddTransaction(navController)
-                }
-                composable(NavigationRoute.AddRecurrence.route) {
-                    AddRecurrence(navController)
-                }
+            composable(Navigation.Home.route) {
+                Home(navController)
+            }
+            composable(Navigation.Transactions.route) {
+                Transactions(navController)
+            }
+            composable(Navigation.Recurrents.route) {
+                Recurrents(navController)
+            }
+            composable(Navigation.Stats.route) {
+                Stats(navController)
+            }
+            composable(Navigation.Settings.route) {
+                Settings(
+                    navController = navController,
+                    isDarkTheme = isDarkTheme,  // Passa lo stato corrente del tema
+                    onThemeChange = onThemeChange
+                )
+            }
+            composable(Navigation.Profile.route) {
+                Profile(navController)
+            }
+            composable(Navigation.AddTransaction.route) {
+                AddTransaction(navController)
+            }
+            composable(Navigation.AddRecurrence.route) {
+                AddRecurrence(navController)
+            }
 //                composable(NavigationRoute.Signup.route) {
 //                    Signup(navController)
 //                }
-            }
         }
+//        }
     }
 }

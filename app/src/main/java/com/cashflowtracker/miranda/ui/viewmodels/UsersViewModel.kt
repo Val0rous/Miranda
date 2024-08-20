@@ -18,8 +18,8 @@ data class UsersState(val users: List<User>)
 data class CurrentUser(val currentUser: User?)
 
 interface UsersActions {
-    suspend fun addUser(user: User): Job
-    suspend fun removeUser(user: User): Job
+    fun addUser(user: User): Job
+    fun removeUser(user: User): Job
     fun login(email: String, password: String): Boolean
     fun logout(user: User): Job
     fun getByEmail(email: String): User?
@@ -35,11 +35,11 @@ class UsersViewModel(private val repository: UsersRepository) : ViewModel() {
         )
 
     val actions = object : UsersActions {
-        override suspend fun addUser(user: User) = viewModelScope.launch {
+        override fun addUser(user: User) = viewModelScope.launch {
             repository.insert(user)
         }
 
-        override suspend fun removeUser(user: User) = viewModelScope.launch {
+        override fun removeUser(user: User) = viewModelScope.launch {
             repository.delete(user)
         }
 
