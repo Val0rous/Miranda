@@ -23,10 +23,10 @@ fun AppBar(navController: NavHostController, isDarkTheme: Boolean) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
-    if (currentRoute == Navigation.AddTransaction.route
-        || currentRoute == Navigation.AddRecurrence.route
-        || currentRoute == Navigation.Signup.route
-    //|| currentRoute == NavigationRoute.Login.route
+    if (currentRoute == Routes.AddTransaction.route
+        || currentRoute == Routes.AddRecurrence.route
+        || currentRoute == Routes.Signup.route
+        || currentRoute == Routes.Login.route
     ) {
         return
     }
@@ -35,11 +35,11 @@ fun AppBar(navController: NavHostController, isDarkTheme: Boolean) {
         title = {
             Text(
                 text = when (currentRoute) {
-                    Navigation.Settings.route -> "Settings"
-                    Navigation.Transactions.route -> ""
-                    Navigation.Recurrents.route -> ""
-                    Navigation.Stats.route -> ""
-                    Navigation.Profile.route -> "Your Profile"
+                    Routes.Settings.route -> "Settings"
+                    Routes.Transactions.route -> ""
+                    Routes.Recurrents.route -> ""
+                    Routes.Stats.route -> ""
+                    Routes.Profile.route -> "Your Profile"
                     else -> ""
                 },
                 style = MaterialTheme.typography.titleLarge,
@@ -48,7 +48,7 @@ fun AppBar(navController: NavHostController, isDarkTheme: Boolean) {
             )
         },
         navigationIcon = {
-            if (currentRoute == Navigation.Settings.route || currentRoute == Navigation.Profile.route) {
+            if (currentRoute == Routes.Settings.route || currentRoute == Routes.Profile.route) {
                 IconButton(onClick = { navController.popBackStack() }) {
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_back),
@@ -58,9 +58,9 @@ fun AppBar(navController: NavHostController, isDarkTheme: Boolean) {
             }
         },
         actions = {
-            if (currentRoute != Navigation.Settings.route && currentRoute != Navigation.Profile.route) {
+            if (currentRoute != Routes.Settings.route && currentRoute != Routes.Profile.route) {
                 when (currentRoute) {
-                    Navigation.Transactions.route -> {
+                    Routes.Transactions.route -> {
                         IconButton(onClick = { /* 1st Action */ }) {
                             Icon(
                                 ImageVector.vectorResource(R.drawable.ic_swap_vert),
@@ -81,7 +81,7 @@ fun AppBar(navController: NavHostController, isDarkTheme: Boolean) {
                         }
                     }
 
-                    Navigation.Recurrents.route -> {
+                    Routes.Recurrents.route -> {
                         IconButton(onClick = { /* 1st Action */ }) {
                             Icon(
                                 ImageVector.vectorResource(R.drawable.ic_swap_vert),
@@ -96,19 +96,19 @@ fun AppBar(navController: NavHostController, isDarkTheme: Boolean) {
                         }
                     }
 
-                    Navigation.Stats.route -> {
+                    Routes.Stats.route -> {
                         // Eventually add specific icons for Stats screen
                     }
                 }
 
-                IconButton(onClick = { navController.navigate(Navigation.Settings.route) }) {
+                IconButton(onClick = { navController.navigate(Routes.Settings.route) }) {
                     Icon(
                         ImageVector.vectorResource(R.drawable.ic_settings),
                         contentDescription = "Settings"
                     )
                 }
                 IconButton(
-                    onClick = { navController.navigate(Navigation.Profile.route) },
+                    onClick = { navController.navigate(Routes.Profile.route) },
                     colors = IconButtonDefaults.iconButtonColors(containerColor = MaterialTheme.colorScheme.primary)
                 ) {
                     Icon(

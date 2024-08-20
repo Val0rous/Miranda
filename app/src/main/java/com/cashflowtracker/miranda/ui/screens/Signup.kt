@@ -32,6 +32,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import com.cashflowtracker.miranda.Routes
 import com.cashflowtracker.miranda.data.database.User
 import com.cashflowtracker.miranda.ui.viewmodels.UsersActions
 import com.cashflowtracker.miranda.ui.viewmodels.UsersState
@@ -42,7 +44,7 @@ import com.cashflowtracker.miranda.utils.validatePassword
 
 @Composable
 fun Signup(
-    /* navController: NavHostController */
+    navController: NavHostController,
     state: UsersState,
     actions: UsersActions,
     isDarkTheme: Boolean,
@@ -101,7 +103,7 @@ fun Signup(
             ) {
                 Text("Already have an account? ")
                 TextButton(
-                    onClick = { /* TODO */ },
+                    onClick = { navController.navigate(Routes.Login.route) },
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surface),
                 ) {
                     Text(

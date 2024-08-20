@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.cashflowtracker.miranda.Navigation
+import com.cashflowtracker.miranda.Routes
 import com.cashflowtracker.miranda.R
 
 @Composable
@@ -25,7 +25,7 @@ fun Transactions(navController: NavHostController) {
         )
 
         ExtendedFloatingActionButton(
-            onClick = { navController.navigate(Navigation.AddTransaction.route) },
+            onClick = { navController.navigate(Routes.AddTransaction.route) },
             icon = {
                 Icon(
                     imageVector = ImageVector.vectorResource(R.drawable.ic_assignment),

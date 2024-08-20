@@ -1,8 +1,10 @@
 package com.cashflowtracker.miranda.ui.viewmodels
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cashflowtracker.miranda.data.database.User
+import com.cashflowtracker.miranda.data.repositories.UserPreferencesRepository
 import com.cashflowtracker.miranda.data.repositories.UsersRepository
 import com.cashflowtracker.miranda.utils.hashPassword
 import kotlinx.coroutines.Deferred
@@ -33,6 +35,9 @@ class UsersViewModel(private val repository: UsersRepository) : ViewModel() {
             started = SharingStarted.WhileSubscribed(),
             initialValue = UsersState(emptyList())
         )
+
+    // TODO
+    //val loginState = UserPreferencesRepository(context)
 
     val actions = object : UsersActions {
         override fun addUser(user: User) = viewModelScope.launch {

@@ -1,41 +1,48 @@
 package com.cashflowtracker.miranda
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import com.cashflowtracker.miranda.ui.screens.AddRecurrence
 import com.cashflowtracker.miranda.ui.screens.AddTransaction
 import com.cashflowtracker.miranda.ui.screens.Home
+import com.cashflowtracker.miranda.ui.screens.Login
 import com.cashflowtracker.miranda.ui.screens.Profile
 import com.cashflowtracker.miranda.ui.screens.Recurrents
 import com.cashflowtracker.miranda.ui.screens.Settings
+import com.cashflowtracker.miranda.ui.screens.Signup
 import com.cashflowtracker.miranda.ui.screens.Stats
 import com.cashflowtracker.miranda.ui.screens.Transactions
+import com.cashflowtracker.miranda.ui.viewmodels.UsersActions
+import com.cashflowtracker.miranda.ui.viewmodels.UsersState
 
 @Composable
 fun AppLayout(
+    navController: NavHostController,
+    startDestination: String,
+    state: UsersState,
+    actions: UsersActions,
     isDarkTheme: Boolean,
     onThemeChange: (Boolean) -> Unit
 ) {
-    val navController = rememberNavController()
+
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
     // Hide bottom bar in Settings, Profile, AddTransaction and AddRecurrence
-    val showBottomBar = currentRoute != Navigation.Settings.route
-            && currentRoute != Navigation.Profile.route
-            && currentRoute != Navigation.AddTransaction.route
-            && currentRoute != Navigation.AddRecurrence.route
-    //&& currentRoute != Navigation.Signup.route
-    //&& currentRoute != NavigationRoute.Login.route
+    val showBottomBar = currentRoute != Routes.Settings.route
+            && currentRoute != Routes.Profile.route
+            && currentRoute != Routes.AddTransaction.route
+            && currentRoute != Routes.AddRecurrence.route
+            && currentRoute != Routes.Signup.route
+            && currentRoute != Routes.Login.route
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -53,41 +60,43 @@ fun AppLayout(
 //        ) {
         NavHost(
             navController = navController,
-            startDestination = Navigation.Home.route,
+            startDestination = startDestination,
             modifier = Modifier.padding(paddingValues = paddingValues)
         ) {
-            composable(Navigation.Home.route) {
+            composable(Routes.Home.route) {
                 Home(navController)
             }
-            composable(Navigation.Transactions.route) {
+            composable(Routes.Transactions.route) {
                 Transactions(navController)
             }
-            composable(Navigation.Recurrents.route) {
+            composable(Routes.Recurrents.route) {
                 Recurrents(navController)
             }
-            composable(Navigation.Stats.route) {
+            composable(Routes.Stats.route) {
                 Stats(navController)
             }
-            composable(Navigation.Settings.route) {
+            composable(Routes.Settings.route) {
                 Settings(
                     navController = navController,
                     isDarkTheme = isDarkTheme,  // Passa lo stato corrente del tema
                     onThemeChange = onThemeChange
                 )
             }
-            composable(Navigation.Profile.route) {
+            composable(Routes.Profile.route) {
                 Profile(navController)
             }
-            composable(Navigation.AddTransaction.route) {
+            composable(Routes.AddTransaction.route) {
                 AddTransaction(navController)
             }
-            composable(Navigation.AddRecurrence.route) {
+            composable(Routes.AddRecurrence.route) {
                 AddRecurrence(navController)
             }
-//                composable(NavigationRoute.Signup.route) {
-//                    Signup(navController)
-//                }
+            composable(Routes.Signup.route) {
+                Login(navController, state, actions, isDarkTheme, onThemeChange)
+            }
+            composable(Routes.Signup.route) {
+                Signup(navController, state, actions, isDarkTheme, onThemeChange)
+            }
         }
-//        }
     }
 }
