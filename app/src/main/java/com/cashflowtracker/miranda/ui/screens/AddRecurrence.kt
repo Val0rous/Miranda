@@ -1,4 +1,4 @@
-package com.cashflowtracker.miranda
+package com.cashflowtracker.miranda.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.ui.composables.SegmentedButtonType
 import com.cashflowtracker.miranda.ui.composables.MapScreen
 import com.cashflowtracker.miranda.ui.composables.DatePicker

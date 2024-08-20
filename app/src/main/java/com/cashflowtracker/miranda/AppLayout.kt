@@ -11,6 +11,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.cashflowtracker.miranda.ui.screens.AddRecurrence
+import com.cashflowtracker.miranda.ui.screens.AddTransaction
+import com.cashflowtracker.miranda.ui.screens.Profile
+import com.cashflowtracker.miranda.ui.screens.Settings
 
 @Composable
 fun AppLayout(
@@ -66,7 +70,7 @@ fun AppLayout(
                     )
                 }
                 composable(NavigationRoute.Profile.route) {
-                    ProfileScreen(navController)
+                    Profile(navController)
                 }
                 composable(NavigationRoute.AddTransaction.route) {
                     AddTransaction(navController)

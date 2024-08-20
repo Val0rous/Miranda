@@ -1,4 +1,4 @@
-package com.cashflowtracker.miranda
+package com.cashflowtracker.miranda.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
