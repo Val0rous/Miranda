@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
+import com.cashflowtracker.miranda.data.repositories.LoginRepository.getLoggedUserEmail
 import com.cashflowtracker.miranda.data.repositories.ThemeRepository.getSystemDefaultTheme
 import com.cashflowtracker.miranda.data.repositories.ThemeRepository.getSystemPreference
 import com.cashflowtracker.miranda.data.repositories.ThemeRepository.getThemePreference
@@ -35,18 +36,17 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
             var isDarkTheme by remember { mutableStateOf(false) }
             var followSystem by remember { mutableStateOf(true) }
+            var userEmail: String? by remember { mutableStateOf("") }
 
             LaunchedEffect(Unit) {
                 context.getSystemPreference().collect { isSystem ->
                     followSystem = isSystem
-                    println("followSystem: $followSystem")
                 }
             }
 
             LaunchedEffect(Unit) {
                 context.getThemePreference().collect { isDark ->
                     isDarkTheme = isDark
-                    println("isDarkTheme: $isDarkTheme")
                 }
             }
 
@@ -54,6 +54,12 @@ class MainActivity : ComponentActivity() {
                 context.getSystemDefaultTheme()
             } else {
                 isDarkTheme
+            }
+
+            LaunchedEffect(Unit) {
+                context.getLoggedUserEmail().collect { email ->
+                    userEmail = email
+                }
             }
 
             MirandaTheme(darkTheme = effectiveIsDarkTheme) {
@@ -64,9 +70,7 @@ class MainActivity : ComponentActivity() {
                     val vm = koinViewModel<UsersViewModel>()
                     val state by vm.state.collectAsStateWithLifecycle()
 
-                    val email = ""  // TODO: get email from datastore
-
-                    val startDestination = if (email.isNullOrEmpty()) {
+                    val startDestination = if (userEmail.isNullOrEmpty()) {
                         Routes.Login.route
                     } else {
                         Routes.Home.route

@@ -13,8 +13,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.cashflowtracker.miranda.data.repositories.LoginRepository.clearLoggedUserEmail
 import com.cashflowtracker.miranda.ui.composables.SegmentedButtonTheme
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
 fun Settings(
@@ -83,7 +85,12 @@ fun Settings(
         // Logout and Delete Account buttons
         Column(modifier = Modifier.fillMaxWidth()) {
             Button(
-                onClick = { /* Manage logout */ },
+                onClick = {
+                    coroutineScope.launch {
+                        context.clearLoggedUserEmail()
+                        navController.navigate("login")
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp)
@@ -105,27 +112,27 @@ fun Settings(
 }
 
 
-@Composable
-fun ThemeToggleButton(
-    isSelected: Boolean,
-    text: String,
-    icon: ImageVector,
-    onClick: () -> Unit,
-    followSystem: Boolean
-) {
-    OutlinedButton(
-        onClick = onClick,
-        modifier = Modifier.height(56.dp),
-        colors = ButtonDefaults.outlinedButtonColors(
-            containerColor = if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.1f) else MaterialTheme.colorScheme.surface
-        )
-    ) {
-        Icon(icon, contentDescription = text)
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(text)
-        if (isSelected) {
-            Spacer(modifier = Modifier.width(8.dp))
-            Icon(Icons.Filled.Check, contentDescription = "Selected")
-        }
-    }
-}
+//@Composable
+//fun ThemeToggleButton(
+//    isSelected: Boolean,
+//    text: String,
+//    icon: ImageVector,
+//    onClick: () -> Unit,
+//    followSystem: Boolean
+//) {
+//    OutlinedButton(
+//        onClick = onClick,
+//        modifier = Modifier.height(56.dp),
+//        colors = ButtonDefaults.outlinedButtonColors(
+//            containerColor = if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.1f) else MaterialTheme.colorScheme.surface
+//        )
+//    ) {
+//        Icon(icon, contentDescription = text)
+//        Spacer(modifier = Modifier.width(8.dp))
+//        Text(text)
+//        if (isSelected) {
+//            Spacer(modifier = Modifier.width(8.dp))
+//            Icon(Icons.Filled.Check, contentDescription = "Selected")
+//        }
+//    }
+//}

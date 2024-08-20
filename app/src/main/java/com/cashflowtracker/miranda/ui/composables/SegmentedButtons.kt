@@ -87,7 +87,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun SegmentedButtonType(transactionType: MutableState<String>, modifier: Modifier) {
     var selectedIndex by remember {
-        mutableStateOf(0)
+        mutableIntStateOf(0)
     }
 
     SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
@@ -103,7 +103,7 @@ fun SegmentedButtonType(transactionType: MutableState<String>, modifier: Modifie
             ),
             modifier = modifier,
         ) {
-            Row() {
+            Row {
                 if (selectedIndex != 0) {
                     // Workaround to display the regular icon when the button is not selected
                     SBIcon(inactive = true, icon = R.drawable.ic_upload)
@@ -125,7 +125,7 @@ fun SegmentedButtonType(transactionType: MutableState<String>, modifier: Modifie
             ),
             modifier = modifier,
         ) {
-            Row() {
+            Row {
                 if (selectedIndex != 1) {
                     // Workaround to display the regular icon when the button is not selected
                     SBIcon(inactive = true, icon = R.drawable.ic_download)
@@ -147,7 +147,7 @@ fun SegmentedButtonType(transactionType: MutableState<String>, modifier: Modifie
             ),
             modifier = modifier,
         ) {
-            Row() {
+            Row {
                 if (selectedIndex != 2) {
                     // Workaround to display the regular icon when the button is not selected
                     SBIcon(inactive = true, icon = R.drawable.ic_sync)
@@ -196,7 +196,7 @@ fun SegmentedButtonTheme(
             ),
             modifier = modifier,
         ) {
-            Row() {
+            Row {
                 if (selectedIndex != 0) {
                     // Workaround to display the regular icon when the button is not selected
                     SBIcon(inactive = true, icon = R.drawable.ic_light_mode)
@@ -221,7 +221,7 @@ fun SegmentedButtonTheme(
             ),
             modifier = modifier,
         ) {
-            Row() {
+            Row {
                 if (selectedIndex != 1) {
                     // Workaround to display the regular icon when the button is not selected
                     SBIcon(inactive = true, icon = R.drawable.ic_smartphone)
@@ -246,7 +246,7 @@ fun SegmentedButtonTheme(
             ),
             modifier = modifier,
         ) {
-            Row() {
+            Row {
                 if (selectedIndex != 2) {
                     // Workaround to display the regular icon when the button is not selected
                     SBIcon(inactive = true, icon = R.drawable.ic_dark_mode)
@@ -278,7 +278,7 @@ fun SBIcon(
             inactiveContent()
         }
     } else {
-        Crossfade(targetState = inactive) {
+        Crossfade(targetState = inactive, label = "Segmented Button Icon") {
             if (it) inactiveContent() else activeContent()
         }
     }

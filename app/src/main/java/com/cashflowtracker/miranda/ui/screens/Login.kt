@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavHostController
 import com.cashflowtracker.miranda.Routes
+import com.cashflowtracker.miranda.data.repositories.LoginRepository.saveLoggedUserEmail
 import com.cashflowtracker.miranda.ui.viewmodels.UsersActions
 import com.cashflowtracker.miranda.ui.viewmodels.UsersState
 import com.cashflowtracker.miranda.utils.validateEmail
@@ -157,6 +158,7 @@ fun Login(
 //
 //                                }
 //                                startActivity(context, intentHome, null)
+                                context.saveLoggedUserEmail(email.value)
                                 navController.navigate(Routes.Home.route)
                             } else {
                                 return@launch

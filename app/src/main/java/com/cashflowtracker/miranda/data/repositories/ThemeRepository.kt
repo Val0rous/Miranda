@@ -25,7 +25,7 @@ object ThemeRepository {
     /** Gets theme preference of app
      *  @return true if dark theme, false otherwise
      */
-    suspend fun Context.getThemePreference(): Flow<Boolean> {
+    fun Context.getThemePreference(): Flow<Boolean> {
         return dataStore.data.map { preferences ->
             preferences[IS_DARK_THEME_KEY] ?: false // Defaults to light theme if no key is found
         }
@@ -41,7 +41,7 @@ object ThemeRepository {
     /** Gets system preference of app
      *  @return true if follow system theme, false otherwise
      */
-    suspend fun Context.getSystemPreference(): Flow<Boolean> {
+    fun Context.getSystemPreference(): Flow<Boolean> {
         return dataStore.data.map { preferences ->
             preferences[IS_FOLLOW_SYSTEM_KEY] ?: true // Defaults to system theme if no key is found
         }

@@ -170,6 +170,7 @@ fun Signup(
                                 country = null
                             )
                         )
+                        navController.navigate(Routes.Login.route)
                     },
                     enabled = isFormValid,
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
