@@ -91,7 +91,7 @@ fun AppLayout(
             composable(Routes.AddRecurrence.route) {
                 AddRecurrence(navController)
             }
-            composable(Routes.Signup.route) {
+            composable(Routes.Login.route) {
                 Login(navController, state, actions, isDarkTheme, onThemeChange)
             }
             composable(Routes.Signup.route) {
