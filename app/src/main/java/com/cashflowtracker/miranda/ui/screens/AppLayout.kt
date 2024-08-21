@@ -29,16 +29,7 @@ import com.cashflowtracker.miranda.ui.composables.TransactionsTopAppBar
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 import com.cashflowtracker.miranda.utils.Routes
 
-class AppLayout() : ComponentActivity() {
-    //    navController: NavHostController,
-//    startDestination: String,
-//    state: UsersState,
-//    actions: UsersActions,
-//    isDarkTheme: Boolean,
-////    onThemeChange: (Boolean) -> Unit
-//    followSystem: Boolean,
-//    context: Context,
-//    coroutineScope: CoroutineScope
+class AppLayout : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -57,14 +48,6 @@ class AppLayout() : ComponentActivity() {
                 Modifier
                     .fillMaxSize()
             }
-
-            // Hide bottom bar in Settings, Profile, AddTransaction and AddRecurrence
-//            val showBottomBar = currentRoute != Routes.Settings.route
-//                    && currentRoute != Routes.Profile.route
-//                    && currentRoute != Routes.AddTransaction.route
-//                    && currentRoute != Routes.AddRecurrence.route
-//                    && currentRoute != Routes.Signup.route
-//                    && currentRoute != Routes.Login.route
 
             MirandaTheme() {
                 Scaffold(
