@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -61,7 +62,14 @@ class AddTransaction : ComponentActivity() {
                         TopAppBar(
                             title = { Text("") },
                             navigationIcon = {
-                                IconButton(onClick = { finish() }) {
+                                IconButton(
+                                    onClick = { finish() },
+                                    modifier = Modifier.padding(
+                                        start = 0.dp,
+                                        top = 16.dp,
+                                        bottom = 16.dp
+                                    )
+                                ) {
                                     Icon(
                                         ImageVector.vectorResource(R.drawable.ic_close),
                                         contentDescription = "Close"
@@ -73,11 +81,19 @@ class AddTransaction : ComponentActivity() {
                                     onClick = { /* Logic to create the transaction */ },
                                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                                     modifier = Modifier
-                                        .padding(top = 6.dp, bottom = 6.dp, end = 12.dp)
+                                        .padding(top = 16.dp, bottom = 16.dp, end = 16.dp)
+                                        .height(32.dp),
+                                    contentPadding = PaddingValues(
+                                        horizontal = 12.dp,
+                                        vertical = 5.dp
+                                    )
                                 ) {
                                     Text(
                                         text = "Create",
-                                        style = MaterialTheme.typography.labelLarge
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
+                                        style = MaterialTheme.typography.labelLarge,
+                                        modifier = Modifier.padding(0.dp)
                                     )
                                 }
                             }
