@@ -1,17 +1,10 @@
 package com.cashflowtracker.miranda.ui.screens
 
-import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.DarkMode
-import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,9 +13,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import com.cashflowtracker.miranda.AppBar
-import com.cashflowtracker.miranda.Navbar
 import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.clearLoggedUserEmail
 import com.cashflowtracker.miranda.data.repositories.ThemeRepository.getSystemDefaultTheme
@@ -30,7 +20,6 @@ import com.cashflowtracker.miranda.data.repositories.ThemeRepository.getSystemPr
 import com.cashflowtracker.miranda.data.repositories.ThemeRepository.getThemePreference
 import com.cashflowtracker.miranda.ui.composables.SegmentedButtonTheme
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import androidx.compose.material3.Scaffold
 

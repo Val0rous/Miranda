@@ -1,4 +1,4 @@
-package com.cashflowtracker.miranda
+package com.cashflowtracker.miranda.ui.composables
 
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -6,13 +6,15 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import com.cashflowtracker.miranda.R
+import com.cashflowtracker.miranda.utils.Routes
 
 data class NavbarItem(
     val label: String,
@@ -53,7 +55,7 @@ object NavbarItems {
 
 @Composable
 fun Navbar(navController: NavHostController) {
-    var navigationSelectedItem by remember { mutableStateOf(0) }
+    var navigationSelectedItem by remember { mutableIntStateOf(0) }
 
     NavigationBar {
         NavbarItems.items.forEachIndexed { index, item ->

@@ -1,4 +1,4 @@
-package com.cashflowtracker.miranda
+package com.cashflowtracker.miranda.utils
 
 sealed class Routes(val route: String) {
     data object Home : Routes("home")

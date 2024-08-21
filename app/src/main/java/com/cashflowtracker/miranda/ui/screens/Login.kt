@@ -28,7 +28,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -41,16 +40,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.cashflowtracker.miranda.Routes
+import com.cashflowtracker.miranda.utils.Routes
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getLoggedUserEmail
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.saveLoggedUserEmail
-import com.cashflowtracker.miranda.data.repositories.ThemeRepository.getSystemDefaultTheme
-import com.cashflowtracker.miranda.data.repositories.ThemeRepository.getSystemPreference
-import com.cashflowtracker.miranda.data.repositories.ThemeRepository.getThemePreference
 import com.cashflowtracker.miranda.ui.composables.PasswordTextField
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 import com.cashflowtracker.miranda.ui.viewmodels.UsersViewModel
@@ -80,8 +73,12 @@ class Login : ComponentActivity() {
                 context.getLoggedUserEmail().collect { email ->
                     if (!email.isNullOrEmpty()) {
                         //navController.navigate(Routes.Home.route)
-                        val intentHome = Intent(this@Login, Home::class.java)
-                        startActivity(intentHome)
+                        val intent = Intent(
+                            this@Login,
+                            AppLayout::class.java
+                        )
+                        intent.putExtra("startDestination", Routes.Home.route)
+                        startActivity(intent)
                     }
                 }
             }
@@ -198,7 +195,12 @@ class Login : ComponentActivity() {
 //                                startActivity(context, intentHome, null)
                                             context.saveLoggedUserEmail(email.value)
 //                                            navController.navigate(Routes.Home.route)
-                                            startActivity(Intent(this@Login, Home::class.java))
+                                            val intent = Intent(
+                                                this@Login,
+                                                AppLayout::class.java
+                                            )
+                                            intent.putExtra("startDestination", Routes.Home.route)
+                                            startActivity(intent)
                                         } else {
                                             return@launch
                                         }

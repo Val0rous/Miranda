@@ -21,12 +21,11 @@ import com.cashflowtracker.miranda.data.repositories.LoginRepository.getLoggedUs
 import com.cashflowtracker.miranda.data.repositories.ThemeRepository.getSystemDefaultTheme
 import com.cashflowtracker.miranda.data.repositories.ThemeRepository.getSystemPreference
 import com.cashflowtracker.miranda.data.repositories.ThemeRepository.getThemePreference
-import com.cashflowtracker.miranda.ui.screens.Home
+import com.cashflowtracker.miranda.ui.screens.AppLayout
 import com.cashflowtracker.miranda.ui.screens.Login
-import com.cashflowtracker.miranda.ui.screens.Signup
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 import com.cashflowtracker.miranda.ui.viewmodels.UsersViewModel
-import kotlinx.coroutines.flow.first
+import com.cashflowtracker.miranda.utils.Routes
 import org.koin.androidx.compose.koinViewModel
 
 class MainActivity : ComponentActivity() {
@@ -74,7 +73,12 @@ class MainActivity : ComponentActivity() {
 
                     if (!userEmail.isNullOrEmpty()) {
 //                        Routes.Home.route
-                        startActivity(Intent(this@MainActivity, Home::class.java))
+                        val intent = Intent(
+                            this@MainActivity,
+                            AppLayout::class.java
+                        )
+                        intent.putExtra("startDestination", Routes.Home.route)
+                        startActivity(intent)
                     } else {
 //                        Routes.Login.route
                         startActivity(Intent(this@MainActivity, Login::class.java))
