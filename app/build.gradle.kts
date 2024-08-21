@@ -120,4 +120,6 @@ dependencies {
     // Argon2 Hashing Algorithm
     implementation("com.lambdapioneer.argon2kt:argon2kt:1.5.0") // https://github.com/lambdapioneer/argon2kt
     //implementation("de.mkammerer:argon2-jvm:2.11")
+    // Android Cryptography Library
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")
 }

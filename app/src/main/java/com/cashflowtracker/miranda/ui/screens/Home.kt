@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.cashflowtracker.miranda.data.repositories.LoginRepository.getLoggedUserEmail
 
 @Composable
 fun Home() {
@@ -23,7 +24,7 @@ fun Home() {
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             Text(
-                "Home Screen",
+                "Home Screen\n${LocalContext.current.getLoggedUserEmail()}",
                 modifier = Modifier.align(Alignment.Center)
             )
         }

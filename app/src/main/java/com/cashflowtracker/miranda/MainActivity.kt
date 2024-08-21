@@ -59,7 +59,7 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
 //            var isDarkTheme by remember { mutableStateOf(context.getThemePreference()) }
 //            val followSystem by remember { mutableStateOf(context.getSystemPreference()) }
-            var userEmail by remember { mutableStateOf<String?>(null) }
+            val userEmail by remember { mutableStateOf<String?>(context.getLoggedUserEmail()) }
             val isFabExpanded = remember { mutableStateOf(false) }
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentRoute = navBackStackEntry?.destination?.route
@@ -99,17 +99,17 @@ class MainActivity : ComponentActivity() {
 
             val vm = koinViewModel<UsersViewModel>()
             val state by vm.state.collectAsStateWithLifecycle()
-            LaunchedEffect(Unit) {
-                userEmail = context.getLoggedUserEmail().firstOrNull()
-                if (userEmail.isNullOrEmpty()) {
-                    val intent = Intent(
-                        this@MainActivity,
-                        Login::class.java
-                    )
-                    startActivity(intent)
-                    finish()
-                }
+//            LaunchedEffect(Unit) {
+//                userEmail = context.getLoggedUserEmail().firstOrNull()
+            if (userEmail.isNullOrEmpty()) {
+                val intent = Intent(
+                    this@MainActivity,
+                    Login::class.java
+                )
+                startActivity(intent)
+                finish()
             }
+//            }
 
             MirandaTheme() {
                 Scaffold(

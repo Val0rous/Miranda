@@ -70,19 +70,20 @@ class Login : ComponentActivity() {
             val coroutineScope = rememberCoroutineScope()
             val context = LocalContext.current
 
-            LaunchedEffect(Unit) {
-                context.getLoggedUserEmail().collect { email ->
-                    if (!email.isNullOrEmpty()) {
-                        //navController.navigate(Routes.Home.route)
-                        val intent = Intent(
-                            this@Login,
-                            MainActivity::class.java
-                        )
-                        intent.putExtra("startDestination", Routes.Home.route)
-                        startActivity(intent)
-                    }
-                }
+//            LaunchedEffect(Unit) {
+//                context.getLoggedUserEmail().collect { email ->
+//                    if (!email.isNullOrEmpty()) {
+            if (!context.getLoggedUserEmail().isNullOrEmpty()) {
+                //navController.navigate(Routes.Home.route)
+                val intent = Intent(
+                    this@Login,
+                    MainActivity::class.java
+                )
+                intent.putExtra("startDestination", Routes.Home.route)
+                startActivity(intent)
             }
+//                }
+//            }
 
             val email = remember { mutableStateOf("") }
             val password = remember { mutableStateOf("") }
