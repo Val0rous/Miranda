@@ -72,7 +72,7 @@ class Home : ComponentActivity() {
                                 }
                                 IconButton(
                                     onClick = {
-                                        // TODO: go to profile
+                                        startActivity(Intent(this@Home, Profile::class.java))
                                     },
                                     colors = IconButtonDefaults.iconButtonColors(containerColor = MaterialTheme.colorScheme.primary)
                                 ) {

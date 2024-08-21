@@ -71,9 +71,9 @@ fun AppLayout(
 //            composable(Routes.Home.route) {
 //                Home(navController)
 //            }
-            composable(Routes.Transactions.route) {
-                Transactions(navController)
-            }
+           // composable(Routes.Transactions.route) {
+            //    Transactions(navController)
+           // }
             composable(Routes.Recurrents.route) {
                 Recurrents(navController)
             }
@@ -90,9 +90,9 @@ fun AppLayout(
 //                    coroutineScope = coroutineScope
 //                )
 //            }
-            composable(Routes.Profile.route) {
-                Profile(navController)
-            }
+            //composable(Routes.Profile.route) {
+            //    ProfileScreen()
+            //}
 //            composable(Routes.AddTransaction.route) {
 //                AddTransaction(navController)
 //            }

@@ -31,6 +31,9 @@
         <activity android:name=".ui.screens.Settings" />
         <activity android:name=".ui.screens.Login" />
         <activity android:name=".ui.screens.Signup" />
+        <activity android:name=".ui.screens.Profile" />
+        <activity android:name=".ui.screens.Transactions" />
+
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
