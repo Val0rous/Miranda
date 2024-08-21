@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
+import com.cashflowtracker.miranda.MainActivity
 import com.cashflowtracker.miranda.utils.Routes
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getLoggedUserEmail
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.saveLoggedUserEmail
@@ -75,7 +76,7 @@ class Login : ComponentActivity() {
                         //navController.navigate(Routes.Home.route)
                         val intent = Intent(
                             this@Login,
-                            AppLayout::class.java
+                            MainActivity::class.java
                         )
                         intent.putExtra("startDestination", Routes.Home.route)
                         startActivity(intent)
@@ -197,7 +198,7 @@ class Login : ComponentActivity() {
 //                                            navController.navigate(Routes.Home.route)
                                             val intent = Intent(
                                                 this@Login,
-                                                AppLayout::class.java
+                                                MainActivity::class.java
                                             )
                                             intent.putExtra("startDestination", Routes.Home.route)
                                             startActivity(intent)
