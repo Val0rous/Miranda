@@ -184,11 +184,11 @@ fun SegmentedButtonTheme(
         SegmentedButton(
             selected = selectedIndex == 0,
             onClick = {
-                coroutineScope.launch {
-                    selectedIndex = 0
-                    context.saveThemePreference(isDarkTheme = false)
-                    context.saveSystemPreference(isFollowSystem = false)
-                }
+//                coroutineScope.launch {
+                selectedIndex = 0
+                context.saveThemePreference(isDarkTheme = false)
+                context.saveSystemPreference(isFollowSystem = false)
+//                }
             },
             shape = SegmentedButtonDefaults.itemShape(
                 index = 0,
@@ -209,11 +209,11 @@ fun SegmentedButtonTheme(
         SegmentedButton(
             selected = selectedIndex == 1,
             onClick = {
-                coroutineScope.launch {
-                    selectedIndex = 1
-                    context.saveThemePreference(isDarkTheme = context.getSystemDefaultTheme())
-                    context.saveSystemPreference(isFollowSystem = true)
-                }
+//                coroutineScope.launch {
+                selectedIndex = 1
+                context.saveThemePreference(isDarkTheme = context.getSystemDefaultTheme())
+                context.saveSystemPreference(isFollowSystem = true)
+//                }
             },
             shape = SegmentedButtonDefaults.itemShape(
                 index = 1,
@@ -234,11 +234,11 @@ fun SegmentedButtonTheme(
         SegmentedButton(
             selected = selectedIndex == 2,
             onClick = {
-                coroutineScope.launch {
-                    selectedIndex = 2
-                    context.saveThemePreference(isDarkTheme = true)
-                    context.saveSystemPreference(isFollowSystem = false)
-                }
+//                coroutineScope.launch {
+                selectedIndex = 2
+                context.saveThemePreference(isDarkTheme = true)
+                context.saveSystemPreference(isFollowSystem = false)
+//                }
             },
             shape = SegmentedButtonDefaults.itemShape(
                 index = 2,

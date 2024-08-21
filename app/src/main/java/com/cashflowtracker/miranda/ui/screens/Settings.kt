@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -31,24 +32,25 @@ class Settings : ComponentActivity() {
         setContent {
             val context = LocalContext.current
             val coroutineScope = rememberCoroutineScope()
-            var isDarkTheme by remember { mutableStateOf(false) }
-            var followSystem by remember { mutableStateOf(true) }
+            val isDarkTheme by remember { mutableStateOf(context.getThemePreference()) }
+            val followSystem by remember { mutableStateOf(context.getSystemPreference()) }
             var userEmail: String? by remember { mutableStateOf("") }
 
-            LaunchedEffect(Unit) {
-                context.getSystemPreference().collect { isSystem ->
-                    followSystem = isSystem
-                }
-            }
-
-            LaunchedEffect(Unit) {
-                context.getThemePreference().collect { isDark ->
-                    isDarkTheme = isDark
-                }
-            }
+//            LaunchedEffect(Unit) {
+//                context.getSystemPreference().collect { isSystem ->
+//                    followSystem = isSystem
+//                }
+//            }
+//
+//            LaunchedEffect(Unit) {
+//                context.getThemePreference().collect { isDark ->
+//                    isDarkTheme = isDark
+//                }
+//            }
 
             val effectiveIsDarkTheme = if (followSystem) {
-                context.getSystemDefaultTheme()
+//                context.getSystemDefaultTheme()
+                isSystemInDarkTheme()
             } else {
                 isDarkTheme
             }

@@ -27,7 +27,7 @@ fun TimePickerDialog(
         onDismissRequest = onDismiss,
         dismissButton = {
             TextButton(onClick = { onDismiss() }) {
-                Text("Dismiss")
+                Text("Cancel")
             }
         },
         confirmButton = {

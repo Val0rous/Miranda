@@ -14,6 +14,8 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import com.cashflowtracker.miranda.data.repositories.ThemeRepository.getSystemPreference
+import com.cashflowtracker.miranda.data.repositories.ThemeRepository.getThemePreference
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
@@ -40,10 +42,15 @@ private val LightColorScheme = lightColorScheme(
 
 @Composable
 fun MirandaTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    //darkTheme: Boolean = isSystemInDarkTheme(),
+    darkTheme: Boolean = if (LocalContext.current.getSystemPreference()) {
+        isSystemInDarkTheme()
+    } else {
+        LocalContext.current.getThemePreference()
+    },
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
@@ -54,16 +61,14 @@ fun MirandaTheme(
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
-    val view = LocalView.current
-    if (!view.isInEditMode) {
-        SideEffect {
-            val window = (view.context as Activity).window
-//            window.statusBarColor = colorScheme.primary.toArgb()
-//            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
-            window.statusBarColor = colorScheme.primaryContainer.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
-        }
-    }
+//    val view = LocalView.current
+//    if (!view.isInEditMode) {
+//        SideEffect {
+//            val window = (view.context as Activity).window
+//            window.statusBarColor = colorScheme.surface.toArgb()
+//            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
+//        }
+//    }
 
     MaterialTheme(
         colorScheme = colorScheme,
