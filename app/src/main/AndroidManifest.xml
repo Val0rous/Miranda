@@ -27,6 +27,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.screens.Home" />
+        <activity android:name=".ui.screens.AddTransaction" />
         <activity android:name=".ui.screens.Settings" />
         <activity android:name=".ui.screens.Login" />
         <activity android:name=".ui.screens.Signup" />

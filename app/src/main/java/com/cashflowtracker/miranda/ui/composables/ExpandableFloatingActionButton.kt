@@ -1,5 +1,6 @@
 package com.cashflowtracker.miranda.ui.composables
 
+import android.content.Intent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.tween
@@ -39,13 +40,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityOptionsCompat
+import androidx.core.content.ContextCompat.startActivity
 import com.cashflowtracker.miranda.R
+import com.cashflowtracker.miranda.ui.screens.AddTransaction
+import com.cashflowtracker.miranda.ui.screens.Home
 
 @Composable
 fun ExpandableFloatingActionButton(expanded: MutableState<Boolean>) {
     //var expanded by remember { mutableStateOf(false) }
+    val context = LocalContext.current
     Column(
         horizontalAlignment = Alignment.End,
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -93,7 +100,18 @@ fun ExpandableFloatingActionButton(expanded: MutableState<Boolean>) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.End,
-            modifier = Modifier.clickable { }
+            modifier = Modifier.clickable {
+                expanded.value = false
+                val options = ActivityOptionsCompat.makeCustomAnimation(
+                    context,
+                    R.anim.slide_up_from_bottom,
+                    R.anim.fade_out
+                )
+                context.startActivity(
+                    Intent(context, AddTransaction::class.java),
+                    options.toBundle()
+                )
+            }
         ) {
             if (expanded.value) {
 //                Spacer(modifier = Modifier.weight(1f))
@@ -102,7 +120,20 @@ fun ExpandableFloatingActionButton(expanded: MutableState<Boolean>) {
             }
             FloatingActionButton(
                 onClick = {
-                    expanded.value = !expanded.value
+                    if (!expanded.value) {
+                        expanded.value = true
+                    } else {
+                        expanded.value = false
+                        val options = ActivityOptionsCompat.makeCustomAnimation(
+                            context,
+                            R.anim.slide_up_from_bottom,
+                            R.anim.fade_out
+                        )
+                        context.startActivity(
+                            Intent(context, AddTransaction::class.java),
+                            options.toBundle()
+                        )
+                    }
                 },
                 containerColor = if (expanded.value) {
                     MaterialTheme.colorScheme.primary

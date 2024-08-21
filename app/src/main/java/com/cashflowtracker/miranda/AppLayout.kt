@@ -93,9 +93,9 @@ fun AppLayout(
             composable(Routes.Profile.route) {
                 Profile(navController)
             }
-            composable(Routes.AddTransaction.route) {
-                AddTransaction(navController)
-            }
+//            composable(Routes.AddTransaction.route) {
+//                AddTransaction(navController)
+//            }
             composable(Routes.AddRecurrence.route) {
                 AddRecurrence(navController)
             }
