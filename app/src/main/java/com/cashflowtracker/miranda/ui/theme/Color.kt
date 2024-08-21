@@ -1,5 +1,6 @@
 package com.cashflowtracker.miranda.ui.theme
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.ui.graphics.Color
 
 val Purple80 = Color(0xFFD0BCFF)
