@@ -24,7 +24,7 @@ fun Home() {
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             Text(
-                "Home Screen\n${LocalContext.current.getLoggedUserEmail()}",
+                "Home Screen",
                 modifier = Modifier.align(Alignment.Center)
             )
         }
