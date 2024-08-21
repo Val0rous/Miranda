@@ -75,14 +75,23 @@ class AppLayout : ComponentActivity() {
                             }
 
                             Routes.Transactions.route -> {
-                                ExtendedFAB(R.drawable.ic_assignment, "Add Transaction")
+                                ExtendedFAB(
+                                    R.drawable.ic_assignment,
+                                    "Add Transaction",
+                                    AddTransaction::class.java
+                                )
                             }
 
                             Routes.Recurrents.route -> {
-                                ExtendedFAB(R.drawable.ic_schedule, "Add Recurrence")
+                                ExtendedFAB(
+                                    R.drawable.ic_schedule,
+                                    "Add Recurrence",
+                                    AddRecurrence::class.java
+                                )
                             }
 
-                            else -> { /* No FAB */
+                            else -> {
+                                /* No FAB */
                             }
                         }
                     },

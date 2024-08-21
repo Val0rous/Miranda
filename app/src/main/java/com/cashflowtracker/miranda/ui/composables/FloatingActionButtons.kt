@@ -37,8 +37,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityOptionsCompat
-import androidx.core.content.ContextCompat.startActivity
 import com.cashflowtracker.miranda.R
+import com.cashflowtracker.miranda.ui.screens.AddRecurrence
 import com.cashflowtracker.miranda.ui.screens.AddTransaction
 
 @Composable
@@ -69,7 +69,18 @@ fun ExpandableFAB(expanded: MutableState<Boolean>) {
                 Box { Text("Recurrence") }
                 Spacer(modifier = Modifier.width(28.dp))
                 FloatingActionButton(
-                    onClick = { /*TODO*/ expanded.value = false },
+                    onClick = {
+                        expanded.value = false
+                        val options = ActivityOptionsCompat.makeCustomAnimation(
+                            context,
+                            R.anim.slide_up_from_bottom,
+                            R.anim.fade_out
+                        )
+                        context.startActivity(
+                            Intent(context, AddRecurrence::class.java),
+                            options.toBundle()
+                        )
+                    },
                     containerColor = MaterialTheme.colorScheme.secondaryContainer,
                     contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
                     modifier = Modifier
@@ -158,8 +169,13 @@ fun ExpandableFAB(expanded: MutableState<Boolean>) {
     }
 }
 
+/** Creates an Extended Floating Action Button with an icon and label that launches an activity using an Intent
+ *  @param icon The icon to be displayed in the FAB
+ *  @param label The label to be displayed in the FAB
+ *  @param activity The activity to be launched when the FAB is clicked
+ */
 @Composable
-fun ExtendedFAB(icon: Int, label: String) {
+fun ExtendedFAB(icon: Int, label: String, activity: Class<*>) {
     val context = LocalContext.current
     ExtendedFloatingActionButton(
         onClick = {
@@ -169,10 +185,7 @@ fun ExtendedFAB(icon: Int, label: String) {
                 R.anim.fade_out
             )
             context.startActivity(
-                Intent(
-                    context,
-                    AddTransaction::class.java
-                ), options.toBundle()
+                Intent(context, activity), options.toBundle()
             )
         },
         containerColor = MaterialTheme.colorScheme.primaryContainer,

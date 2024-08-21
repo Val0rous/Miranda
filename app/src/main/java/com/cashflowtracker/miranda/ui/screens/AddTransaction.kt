@@ -61,11 +61,11 @@ class AddTransaction : ComponentActivity() {
                         TopAppBar(
                             title = { Text("") },
                             navigationIcon = {
-                                IconButton(onClick = {
-//                                navController.popBackStack()
-                                    finish()
-                                }) {
-                                    Icon(Icons.Default.Close, contentDescription = "Close")
+                                IconButton(onClick = { finish() }) {
+                                    Icon(
+                                        ImageVector.vectorResource(R.drawable.ic_close),
+                                        contentDescription = "Close"
+                                    )
                                 }
                             },
                             actions = {
@@ -311,13 +311,6 @@ class AddTransaction : ComponentActivity() {
                         Spacer(modifier = Modifier.height(16.dp))
 
                         MapScreen(44.2625, 12.3487)
-
-//            Box(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .height(150.dp)
-//                    .padding(top = 16.dp)
-//            )
                     }
                 }
             }
