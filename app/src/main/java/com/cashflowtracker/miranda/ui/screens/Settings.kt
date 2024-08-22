@@ -118,6 +118,7 @@ class Settings : ComponentActivity() {
                                         context.clearLoggedUserEmail()
 //                                    navController.navigate("login")
                                         startActivity(Intent(this@Settings, Login::class.java))
+                                        finish()
                                     }
                                 },
                                 modifier = Modifier

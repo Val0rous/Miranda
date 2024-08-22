@@ -15,6 +15,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.semantics.password
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.text
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -27,7 +31,6 @@ fun PasswordTextField(
     modifier: Modifier
 ) {
     var passwordVisible by remember { mutableStateOf(false) }
-    val visibleIcon = R.drawable.ic_visibility_filled
 
     OutlinedTextField(
         value = password.value,
@@ -57,5 +60,10 @@ fun PasswordTextField(
             }
         },
         modifier = modifier
+            .semantics {
+                // Semantics for password autofill
+                password()
+                text = AnnotatedString(password.value)
+            }
     )
 }

@@ -141,7 +141,7 @@ class Signup : ComponentActivity() {
                                 .padding(paddingValues)
                                 .padding(horizontal = 16.dp)    // It works just right with two paddings
                                 .fillMaxHeight()
-                                .offset(y = 128.dp)
+                                .offset(y = 112.dp)
                         ) {
                             OutlinedTextField(
                                 value = name.value,

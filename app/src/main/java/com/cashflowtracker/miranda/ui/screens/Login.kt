@@ -162,7 +162,7 @@ class Login : ComponentActivity() {
                                 .padding(paddingValues)
                                 .padding(horizontal = 16.dp)    // It works just right with two paddings
                                 .fillMaxHeight()
-                                .offset(y = 128.dp)
+                                .offset(y = 112.dp)
                         ) {
                             OutlinedTextField(
                                 value = email.value,
@@ -195,6 +195,7 @@ class Login : ComponentActivity() {
                                             )
                                             intent.putExtra("startDestination", Routes.Home.route)
                                             startActivity(intent)
+                                            finish()
                                         } else {
                                             return@launch
                                         }
