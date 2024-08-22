@@ -25,21 +25,21 @@ class UsersRepository(private val usersDao: UsersDao) {
     val users: Flow<List<User>>? = usersDao.listAll()
 }
 
-class UserPreferencesRepository(private val context: Context) {
-    companion object {
-        private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "user_preferences")
-        val LOGGED_IN_EMAIL_KEY = stringPreferencesKey("logged_in_email")
-    }
-
-    // Store logged-in email
-    suspend fun storeLoggedInEmail(email: String) {
-        context.dataStore.edit { preferences ->
-            preferences[LOGGED_IN_EMAIL_KEY] = email
-        }
-    }
-
-    // Retrieve logged-in email
-    val getLoggedInEmail: Flow<String?> = context.dataStore.data.map { preferences ->
-        preferences[LOGGED_IN_EMAIL_KEY]
-    }
-}
+//class UserPreferencesRepository(private val context: Context) {
+//    companion object {
+//        private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "user_preferences")
+//        val LOGGED_IN_EMAIL_KEY = stringPreferencesKey("logged_in_email")
+//    }
+//
+//    // Store logged-in email
+//    suspend fun storeLoggedInEmail(email: String) {
+//        context.dataStore.edit { preferences ->
+//            preferences[LOGGED_IN_EMAIL_KEY] = email
+//        }
+//    }
+//
+//    // Retrieve logged-in email
+//    val getLoggedInEmail: Flow<String?> = context.dataStore.data.map { preferences ->
+//        preferences[LOGGED_IN_EMAIL_KEY]
+//    }
+//}

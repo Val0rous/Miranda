@@ -74,7 +74,10 @@ interface AccountsDao {
     suspend fun delete(account: Account)
 
     @Query("SELECT * FROM account WHERE userId = :userId ORDER BY balance DESC")
-    fun getByUserId(userId: UUID): Flow<List<Account>>
+    fun getAllByUserId(userId: UUID): Flow<List<Account>>?
+
+    @Query("SELECT * FROM account WHERE title = :title AND userId = :userId")
+    fun getByTitle(title: String, userId: UUID): Account?
 }
 
 @Dao
