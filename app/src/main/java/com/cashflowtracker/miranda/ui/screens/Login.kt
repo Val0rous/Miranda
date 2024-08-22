@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -100,24 +101,14 @@ class Login : ComponentActivity() {
             val state by vm.state.collectAsStateWithLifecycle()
             val actions = vm.actions
 
-
-            //    val home = Home(navController)::class.java
-            val customPadding = PaddingValues(
-                start = 16.dp,
-                top = 16.dp,
-                end = 16.dp,
-                bottom = 16.dp
-            )
-
             MirandaTheme() {
                 Scaffold(
-                    modifier = Modifier.padding(customPadding),
                     topBar = {
                         Row(
                             horizontalArrangement = Arrangement.Center,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(top = 128.dp)
+                                .padding(top = 176.dp)
                         ) {
                             Text(
                                 text = "Miranda",
@@ -142,7 +133,7 @@ class Login : ComponentActivity() {
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(bottom = 16.dp)
+                                .padding(bottom = 32.dp)
                         ) {
                             Text("Don't have an account? ")
                             TextButton(
@@ -169,8 +160,9 @@ class Login : ComponentActivity() {
                             verticalArrangement = Arrangement.Top,
                             modifier = Modifier
                                 .padding(paddingValues)
+                                .padding(horizontal = 16.dp)    // It works just right with two paddings
                                 .fillMaxHeight()
-                                .offset(y = 112.dp)
+                                .offset(y = 128.dp)
                         ) {
                             OutlinedTextField(
                                 value = email.value,
@@ -212,6 +204,7 @@ class Login : ComponentActivity() {
                                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                                 modifier = Modifier
                                     .fillMaxWidth()
+                                    .padding(top = 8.dp)
                                     .height(40.dp)
                             ) {
                                 Text(text = "Log in", style = MaterialTheme.typography.labelLarge)

@@ -80,22 +80,14 @@ class Signup : ComponentActivity() {
             val state by vm.state.collectAsStateWithLifecycle()
             val actions = vm.actions
 
-            val customPadding = PaddingValues(
-                start = 16.dp,
-                top = 16.dp,
-                end = 16.dp,
-                bottom = 16.dp
-            )
-
             MirandaTheme() {
                 Scaffold(
-                    modifier = Modifier.padding(customPadding),
                     topBar = {
                         Row(
                             horizontalArrangement = Arrangement.Center,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(top = 128.dp)
+                                .padding(top = 176.dp)
                         ) {
                             Text(
                                 text = "Miranda",
@@ -120,7 +112,7 @@ class Signup : ComponentActivity() {
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(bottom = 16.dp)
+                                .padding(bottom = 32.dp)
                         ) {
                             Text("Already have an account? ")
                             TextButton(
@@ -147,8 +139,9 @@ class Signup : ComponentActivity() {
                             verticalArrangement = Arrangement.Top,
                             modifier = Modifier
                                 .padding(paddingValues)
+                                .padding(horizontal = 16.dp)    // It works just right with two paddings
                                 .fillMaxHeight()
-                                .offset(y = 112.dp)
+                                .offset(y = 128.dp)
                         ) {
                             OutlinedTextField(
                                 value = name.value,
@@ -196,6 +189,7 @@ class Signup : ComponentActivity() {
                                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                                 modifier = Modifier
                                     .fillMaxWidth()
+                                    .padding(top = 8.dp)
                                     .height(40.dp)
                             ) {
                                 Text(text = "Sign up", style = MaterialTheme.typography.labelLarge)
