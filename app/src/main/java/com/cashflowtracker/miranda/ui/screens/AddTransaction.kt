@@ -33,7 +33,7 @@ class AddTransaction : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val navController = rememberNavController()
+//            val navController = rememberNavController()
             val scrollState = rememberScrollState()
             val transactionType = remember { mutableStateOf("") }
 

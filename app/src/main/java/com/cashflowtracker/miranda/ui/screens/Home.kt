@@ -1,5 +1,6 @@
 package com.cashflowtracker.miranda.ui.screens
 
+import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,6 +42,7 @@ import com.cashflowtracker.miranda.ui.composables.BalanceText
 @Composable
 fun Home() {
     var balanceVisible by remember { mutableStateOf(true) }
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -110,7 +112,7 @@ fun Home() {
             Row() {
                 IconButton(
                     onClick = {
-                        // TODO
+                        context.startActivity(Intent(context, AddAccount::class.java))
                     },
                 ) {
                     Icon(
