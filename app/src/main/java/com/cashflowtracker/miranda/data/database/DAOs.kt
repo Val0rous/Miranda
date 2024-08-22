@@ -17,13 +17,16 @@ interface UsersDao {
     suspend fun delete(user: User)
 
     @Query("SELECT userId FROM user WHERE email = :email")
-    fun getUserIdByEmail(email: String): UUID?
+    fun getUserIdByEmail(email: String): UUID
 
     @Query("SELECT * FROM user WHERE email = :email")
-    fun getByEmail(email: String): User?
+    fun getByEmailUnchecked(email: String): User?
+
+    @Query("SELECT * FROM user WHERE email = :email")
+    fun getByEmail(email: String): User
 
     @Query("SELECT * FROM user WHERE userId = :userId")
-    fun getByUserId(userId: UUID): User?
+    fun getByUserId(userId: UUID): User
 
     @Query("UPDATE user SET password = :newPassword WHERE userId = :userId")
     suspend fun updatePassword(userId: UUID, newPassword: String)
@@ -32,7 +35,7 @@ interface UsersDao {
     suspend fun updateEmail(userId: UUID, newEmail: String)
 
     @Query("SELECT * FROM user")
-    fun listAll(): Flow<List<User>>?
+    fun listAll(): Flow<List<User>>
 }
 
 @Dao
@@ -74,7 +77,7 @@ interface AccountsDao {
     suspend fun delete(account: Account)
 
     @Query("SELECT * FROM account WHERE userId = :userId ORDER BY balance DESC")
-    fun getAllByUserId(userId: UUID): Flow<List<Account>>?
+    fun getAllByUserId(userId: UUID): Flow<List<Account>>
 
     @Query("SELECT * FROM account WHERE title = :title AND userId = :userId")
     fun getByTitle(title: String, userId: UUID): Account?

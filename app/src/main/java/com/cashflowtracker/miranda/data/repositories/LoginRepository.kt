@@ -79,6 +79,15 @@ object LoginRepository {
         return decryptEmail(encryptedEmail, key)
     }
 
+    fun Context.getCurrentUserEmail(): String {
+        val sharedPrefs = getSharedPreferences(PREFS_FILE_NAME, Context.MODE_PRIVATE)
+        val encryptedEmailBase64 = sharedPrefs.getString(EMAIL_KEY, null)
+
+        val encryptedEmail = Base64.decode(encryptedEmailBase64, Base64.DEFAULT)
+        val key = generateEncryptionKey()
+        return decryptEmail(encryptedEmail, key)
+    }
+
     fun Context.clearLoggedUserEmail() {
         val sharedPrefs = getSharedPreferences(PREFS_FILE_NAME, Context.MODE_PRIVATE)
         sharedPrefs.edit().remove(EMAIL_KEY).apply()

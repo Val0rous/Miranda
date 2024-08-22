@@ -4,9 +4,11 @@ import android.content.Context
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.room.Room
 import com.cashflowtracker.miranda.data.database.MirandaDatabase
+import com.cashflowtracker.miranda.data.repositories.AccountsRepository
 import com.cashflowtracker.miranda.data.repositories.UsersRepository
 import com.cashflowtracker.miranda.ui.viewmodels.ThemeViewModel
 import com.cashflowtracker.miranda.ui.viewmodels.UsersViewModel
+import com.cashflowtracker.miranda.ui.viewmodels.AccountsViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -24,7 +26,9 @@ val appModule = module {
     }
 
     single { UsersRepository(get<MirandaDatabase>().usersDao()) }
+    single { AccountsRepository(get<MirandaDatabase>().accountsDao()) }
 
-    viewModel { UsersViewModel(get()) }
     viewModel { ThemeViewModel() }
+    viewModel { UsersViewModel(get()) }
+    viewModel { AccountsViewModel(get()) }
 }

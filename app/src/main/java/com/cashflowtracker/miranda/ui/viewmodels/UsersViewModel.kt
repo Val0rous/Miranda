@@ -25,12 +25,14 @@ interface UsersActions {
     suspend fun login(email: String, password: String): Boolean
     suspend fun signup(name: String, email: String, password: String): Boolean
     fun logout(user: User): Job
-    fun getByEmail(email: String): User?
+    fun getByEmail(email: String): User
+    fun getByEmailUnchecked(email: String): User?
+    fun getUserIdByEmail(email: String): UUID
     fun getByUserId(userId: UUID): User?
 }
 
 class UsersViewModel(private val repository: UsersRepository) : ViewModel() {
-    val state = repository.users!!.map { UsersState(it) }
+    val state = repository.users.map { UsersState(it) }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(),
@@ -48,7 +50,7 @@ class UsersViewModel(private val repository: UsersRepository) : ViewModel() {
 
         override suspend fun login(email: String, password: String): Boolean = viewModelScope.run {
             val user =
-                withContext(Dispatchers.IO) { repository.getByEmail(email) } // Only locally, change if client-server
+                withContext(Dispatchers.IO) { repository.getByEmailUnchecked(email) } // Only locally, change if client-server
             if (user == null) {
                 return@run false
             }
@@ -59,7 +61,7 @@ class UsersViewModel(private val repository: UsersRepository) : ViewModel() {
         override suspend fun signup(name: String, email: String, password: String): Boolean =
             viewModelScope.run {
                 val existingUser = withContext(Dispatchers.IO) {
-                    getByEmail(email)
+                    repository.getByEmailUnchecked(email)
                 }
                 if (existingUser != null) {
                     return@run false
@@ -84,11 +86,19 @@ class UsersViewModel(private val repository: UsersRepository) : ViewModel() {
             // TODO
         }
 
-        override fun getByEmail(email: String): User? {
+        override fun getByEmail(email: String): User {
             return repository.getByEmail(email)
         }
 
-        override fun getByUserId(userId: UUID): User? {
+        override fun getByEmailUnchecked(email: String): User? {
+            return repository.getByEmailUnchecked(email)
+        }
+
+        override fun getUserIdByEmail(email: String): UUID {
+            return repository.getUserIdByEmail(email)
+        }
+
+        override fun getByUserId(userId: UUID): User {
             return repository.getByUserId(userId)
         }
     }
