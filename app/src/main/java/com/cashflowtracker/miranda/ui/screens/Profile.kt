@@ -1,5 +1,6 @@
 package com.cashflowtracker.miranda.ui.screens
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -16,40 +17,57 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.cashflowtracker.miranda.R
+import com.cashflowtracker.miranda.data.repositories.LoginRepository.getLoggedUserEmail
 import com.cashflowtracker.miranda.data.repositories.UsersRepository
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
+import com.cashflowtracker.miranda.ui.viewmodels.UsersViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
+import org.koin.androidx.compose.koinViewModel
 
 class Profile : ComponentActivity() {
 
-    private val usersRepository: UsersRepository by inject()
-
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
+        //    private val usersRepository: UsersRepository by inject()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        val email = intent.getStringExtra("email")
-        Log.d("Profile", "Email passed to Profile activity: $email")  // Log per verificare l'email
-
         setContent {
             var userName by remember { mutableStateOf("Loading...") }
+            val context: Context = LocalContext.current
+            val email = context.getLoggedUserEmail()
+            Log.d(
+                "Profile",
+                "Email passed to Profile activity: $email"
+            )  // Log per verificare l'email
+            val usersVm = koinViewModel<UsersViewModel>()
+            val usersState by usersVm.state.collectAsStateWithLifecycle()
 
             LaunchedEffect(email) {
                 if (email != null) {
                     try {
-                        // Effettua la query per recuperare l'utente dal database in base all'email
-                        val user = usersRepository.getByEmail(email)
-                        if (user != null) {
-                            userName = user.name
-                        } else {
-                            userName = "User not found"
-                            Log.e("Profile", "User with email $email not found in the database.")
+                        CoroutineScope(Dispatchers.IO).launch {
+                            val user = usersVm.actions.getByEmail(email)
+                            // Effettua la query per recuperare l'utente dal database in base all'email
+                            if (user != null) {
+                                userName = user.name
+                            } else {
+                                userName = "User not found"
+                                Log.e(
+                                    "Profile",
+                                    "User with email $email not found in the database."
+                                )
+                            }
                         }
                     } catch (e: Exception) {
                         userName = "Error loading user"
@@ -131,7 +149,7 @@ class Profile : ComponentActivity() {
                                 thickness = 1.dp
                             )
 
-                            var selectedTabIndex by remember { mutableStateOf(0) }
+                            var selectedTabIndex by remember { mutableIntStateOf(0) }
                             TabRow(
                                 modifier = Modifier
                                     .fillMaxWidth(),
@@ -179,6 +197,8 @@ class Profile : ComponentActivity() {
             }
         }
     }
+
+
 }
 
 @Composable

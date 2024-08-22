@@ -36,9 +36,7 @@ fun HomeStatsTopAppBar() {
             }
             IconButton(
                 onClick = {
-                    val intent = Intent(context, Profile::class.java)
-                    intent.putExtra("email", userEmail) // Passa l'email all'activity Profile
-                    context.startActivity(intent)
+                    context.startActivity(Intent(context, Profile::class.java))
                 },
                 colors = IconButtonDefaults.iconButtonColors(containerColor = MaterialTheme.colorScheme.primary)
             ) {
@@ -56,7 +54,6 @@ fun HomeStatsTopAppBar() {
 @Composable
 fun TransactionsTopAppBar() {
     val context = LocalContext.current
-    val userEmail = context.getLoggedUserEmail() // Recupera l'email dell'utente loggato
 
     TopAppBar(
         title = { },
@@ -90,9 +87,7 @@ fun TransactionsTopAppBar() {
             }
             IconButton(
                 onClick = {
-                    val intent = Intent(context, Profile::class.java)
-                    intent.putExtra("email", userEmail) // Passa l'email all'activity Profile
-                    context.startActivity(intent)
+                    context.startActivity(Intent(context, Profile::class.java))
                 },
                 colors = IconButtonDefaults.iconButtonColors(containerColor = MaterialTheme.colorScheme.primary)
             ) {
@@ -110,7 +105,6 @@ fun TransactionsTopAppBar() {
 @Composable
 fun RecurrentsTopAppBar() {
     val context = LocalContext.current
-    val userEmail = context.getLoggedUserEmail() // Recupera l'email dell'utente loggato
 
     TopAppBar(
         title = { },
@@ -138,9 +132,7 @@ fun RecurrentsTopAppBar() {
             }
             IconButton(
                 onClick = {
-                    val intent = Intent(context, Profile::class.java)
-                    intent.putExtra("email", userEmail) // Passa l'email all'activity Profile
-                    context.startActivity(intent)
+                    context.startActivity(Intent(context, Profile::class.java))
                 },
                 colors = IconButtonDefaults.iconButtonColors(containerColor = MaterialTheme.colorScheme.primary)
             ) {
