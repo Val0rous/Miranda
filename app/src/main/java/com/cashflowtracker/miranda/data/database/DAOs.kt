@@ -99,4 +99,6 @@ interface AchievementsDao {
 
     @Query("SELECT * FROM achievement WHERE userId = :userId GROUP BY name ORDER BY achievedOn DESC, level DESC")
     fun getByUserId(userId: UUID): List<Achievement>
+
+
 }

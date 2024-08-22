@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import com.cashflowtracker.miranda.R
+import com.cashflowtracker.miranda.data.repositories.LoginRepository.getLoggedUserEmail
 import com.cashflowtracker.miranda.ui.screens.Profile
 import com.cashflowtracker.miranda.ui.screens.Settings
 
@@ -19,6 +20,8 @@ import com.cashflowtracker.miranda.ui.screens.Settings
 @Composable
 fun HomeStatsTopAppBar() {
     val context = LocalContext.current
+    val userEmail = context.getLoggedUserEmail() // Recupera l'email dell'utente loggato
+
     TopAppBar(
         title = { },
         actions = {
@@ -33,7 +36,9 @@ fun HomeStatsTopAppBar() {
             }
             IconButton(
                 onClick = {
-                    context.startActivity(Intent(context, Profile::class.java))
+                    val intent = Intent(context, Profile::class.java)
+                    intent.putExtra("email", userEmail) // Passa l'email all'activity Profile
+                    context.startActivity(intent)
                 },
                 colors = IconButtonDefaults.iconButtonColors(containerColor = MaterialTheme.colorScheme.primary)
             ) {
@@ -51,6 +56,8 @@ fun HomeStatsTopAppBar() {
 @Composable
 fun TransactionsTopAppBar() {
     val context = LocalContext.current
+    val userEmail = context.getLoggedUserEmail() // Recupera l'email dell'utente loggato
+
     TopAppBar(
         title = { },
         actions = {
@@ -83,7 +90,9 @@ fun TransactionsTopAppBar() {
             }
             IconButton(
                 onClick = {
-                    context.startActivity(Intent(context, Profile::class.java))
+                    val intent = Intent(context, Profile::class.java)
+                    intent.putExtra("email", userEmail) // Passa l'email all'activity Profile
+                    context.startActivity(intent)
                 },
                 colors = IconButtonDefaults.iconButtonColors(containerColor = MaterialTheme.colorScheme.primary)
             ) {
@@ -101,6 +110,8 @@ fun TransactionsTopAppBar() {
 @Composable
 fun RecurrentsTopAppBar() {
     val context = LocalContext.current
+    val userEmail = context.getLoggedUserEmail() // Recupera l'email dell'utente loggato
+
     TopAppBar(
         title = { },
         actions = {
@@ -127,7 +138,9 @@ fun RecurrentsTopAppBar() {
             }
             IconButton(
                 onClick = {
-                    context.startActivity(Intent(context, Profile::class.java))
+                    val intent = Intent(context, Profile::class.java)
+                    intent.putExtra("email", userEmail) // Passa l'email all'activity Profile
+                    context.startActivity(intent)
                 },
                 colors = IconButtonDefaults.iconButtonColors(containerColor = MaterialTheme.colorScheme.primary)
             ) {

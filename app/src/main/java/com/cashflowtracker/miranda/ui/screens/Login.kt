@@ -7,10 +7,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -23,16 +21,16 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -40,8 +38,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.compose.rememberNavController
 import com.cashflowtracker.miranda.MainActivity
 import com.cashflowtracker.miranda.utils.Routes
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getLoggedUserEmail
@@ -59,23 +55,12 @@ class Login : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val navController = rememberNavController()
-//            NavHost(
-//                navController = navController,
-//                startDestination = Routes.Login.route,
-//                modifier = Modifier,
-//            ) {
-//                composable("login") { Login(navController) }
-//                composable("signup") { Signup(navController) }
-//            }
             val coroutineScope = rememberCoroutineScope()
             val context = LocalContext.current
 
-//            LaunchedEffect(Unit) {
-//                context.getLoggedUserEmail().collect { email ->
-//                    if (!email.isNullOrEmpty()) {
+            var errorMessage by remember { mutableStateOf("") }
+
             if (!context.getLoggedUserEmail().isNullOrEmpty()) {
-                //navController.navigate(Routes.Home.route)
                 val intent = Intent(
                     this@Login,
                     MainActivity::class.java
@@ -83,25 +68,14 @@ class Login : ComponentActivity() {
                 intent.putExtra("startDestination", Routes.Home.route)
                 startActivity(intent)
             }
-//                }
-//            }
 
             val email = remember { mutableStateOf("") }
             val password = remember { mutableStateOf("") }
-            val isFormValid by remember {
-                derivedStateOf {
-                    email.value.isNotEmpty()
-                            && validateEmail(email.value)
-                            && password.value.isNotEmpty()
-                            && validatePassword(password.value)
-                }
-            }
 
             val vm = koinViewModel<UsersViewModel>()
-            val state by vm.state.collectAsStateWithLifecycle()
             val actions = vm.actions
 
-            MirandaTheme() {
+            MirandaTheme {
                 Scaffold(
                     topBar = {
                         Row(
@@ -114,16 +88,10 @@ class Login : ComponentActivity() {
                                 text = "Miranda",
                                 style = TextStyle(
                                     fontSize = 64.sp,
-                                    fontFamily = MaterialTheme.typography.displayLarge.fontFamily,
-                                    textAlign = TextAlign.Center,
                                     fontWeight = FontWeight.SemiBold,
-                                    shadow = Shadow(
-                                        color = MaterialTheme.colorScheme.onSurface,
-                                        offset = Offset(0f, 8f),
-                                        blurRadius = 4f
-                                    )
-                                ),
-                                color = MaterialTheme.colorScheme.primary,
+                                    textAlign = TextAlign.Center,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
                             )
                         }
                     },
@@ -139,14 +107,12 @@ class Login : ComponentActivity() {
                             TextButton(
                                 onClick = {
                                     startActivity(Intent(this@Login, Signup::class.java))
-//                                    navController.navigate(Routes.Signup.route)
                                 },
                                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surface),
                             ) {
                                 Text(
                                     text = "Sign up",
                                     style = TextStyle(
-                                        fontFamily = MaterialTheme.typography.labelLarge.fontFamily,
                                         fontWeight = FontWeight.SemiBold
                                     ),
                                     color = MaterialTheme.colorScheme.primary
@@ -160,7 +126,7 @@ class Login : ComponentActivity() {
                             verticalArrangement = Arrangement.Top,
                             modifier = Modifier
                                 .padding(paddingValues)
-                                .padding(horizontal = 16.dp)    // It works just right with two paddings
+                                .padding(horizontal = 16.dp)
                                 .fillMaxHeight()
                                 .offset(y = 112.dp)
                         ) {
@@ -179,16 +145,18 @@ class Login : ComponentActivity() {
                                     .fillMaxWidth()
                                     .padding(bottom = 16.dp)
                             )
+                            if (errorMessage.isNotEmpty()) {
+                                Text(
+                                    text = errorMessage,
+                                    color = Color.Red,
+                                    modifier = Modifier.padding(bottom = 8.dp)
+                                )
+                            }
                             Button(
                                 onClick = {
                                     coroutineScope.launch {
                                         if (actions.login(email.value, password.value)) {
-//                                val intentHome = Intent(context, home).apply {
-//
-//                                }
-//                                startActivity(context, intentHome, null)
                                             context.saveLoggedUserEmail(email.value)
-//                                            navController.navigate(Routes.Home.route)
                                             val intent = Intent(
                                                 this@Login,
                                                 MainActivity::class.java
@@ -197,11 +165,10 @@ class Login : ComponentActivity() {
                                             startActivity(intent)
                                             finish()
                                         } else {
-                                            return@launch
+                                            errorMessage = "Invalid email or password."
                                         }
                                     }
                                 },
-                                enabled = isFormValid,
                                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -217,15 +184,3 @@ class Login : ComponentActivity() {
         }
     }
 }
-
-
-//
-//@Composable
-//fun Login(
-//    navController: NavHostController,
-//    state: UsersState,
-//    actions: UsersActions,
-//    isDarkTheme: Boolean,
-//) {
-//
-//}

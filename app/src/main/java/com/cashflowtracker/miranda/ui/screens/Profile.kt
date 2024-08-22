@@ -1,48 +1,67 @@
 package com.cashflowtracker.miranda.ui.screens
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
-import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cashflowtracker.miranda.R
+import com.cashflowtracker.miranda.data.repositories.UsersRepository
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
+import org.koin.android.ext.android.inject
 
 class Profile : ComponentActivity() {
+
+    private val usersRepository: UsersRepository by inject()
+
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContent {
-            var selectedTabIndex by remember { mutableIntStateOf(0) }
 
-            MirandaTheme() {
+        val email = intent.getStringExtra("email")
+        Log.d("Profile", "Email passed to Profile activity: $email")  // Log per verificare l'email
+
+        setContent {
+            var userName by remember { mutableStateOf("Loading...") }
+
+            LaunchedEffect(email) {
+                if (email != null) {
+                    try {
+                        // Effettua la query per recuperare l'utente dal database in base all'email
+                        val user = usersRepository.getByEmail(email)
+                        if (user != null) {
+                            userName = user.name
+                        } else {
+                            userName = "User not found"
+                            Log.e("Profile", "User with email $email not found in the database.")
+                        }
+                    } catch (e: Exception) {
+                        userName = "Error loading user"
+                        Log.e("Profile", "Error loading user with email $email", e)
+                    }
+                } else {
+                    userName = "Email is null"
+                    Log.e("Profile", "No email passed to the Profile activity.")
+                }
+            }
+
+            MirandaTheme {
                 Scaffold(
                     topBar = {
                         TopAppBar(
@@ -63,7 +82,6 @@ class Profile : ComponentActivity() {
                                 .fillMaxSize()
                                 .padding(paddingValues)
                         ) {
-                            // Profile picture and user name
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.Start,
@@ -85,14 +103,13 @@ class Profile : ComponentActivity() {
                                     modifier = Modifier.padding(start = 16.dp)
                                 ) {
                                     Text(
-                                        text = "Francesco Valentini",
+                                        text = userName,
                                         style = MaterialTheme.typography.titleLarge,
                                         modifier = Modifier
                                             .align(Alignment.CenterHorizontally)
                                             .padding(top = 10.dp)
                                     )
 
-                                    // Pulsante per modificare il profilo
                                     AssistChip(
                                         onClick = { /* Azione per modificare il profilo */ },
                                         label = { Text("Edit profile") },
@@ -109,32 +126,16 @@ class Profile : ComponentActivity() {
                                 }
                             }
 
-                            //Spacer(modifier = Modifier.height(24.dp))
-
                             HorizontalDivider(
                                 color = MaterialTheme.colorScheme.surfaceContainerHighest,
                                 thickness = 1.dp
                             )
-                            // Achievements e Analytics
+
+                            var selectedTabIndex by remember { mutableStateOf(0) }
                             TabRow(
                                 modifier = Modifier
                                     .fillMaxWidth(),
                                 selectedTabIndex = selectedTabIndex,
-                                indicator = { tabPositions ->
-                                    Box(
-                                        Modifier
-                                            .tabIndicatorOffset(tabPositions[selectedTabIndex])
-                                            .height(3.dp)
-                                            .padding(horizontal = 48.dp)
-                                            .background(
-                                                color = MaterialTheme.colorScheme.primary,
-                                                shape = RoundedCornerShape(
-                                                    topStart = 16.dp,
-                                                    topEnd = 16.dp
-                                                )
-                                            )
-                                    )
-                                }
                             ) {
                                 Tab(
                                     selected = selectedTabIndex == 0,
@@ -164,24 +165,10 @@ class Profile : ComponentActivity() {
                                         }
                                     }
                                 )
-
-//                                TabButton(
-//                                    text = "Achievements",
-//                                    isSelected = selectedTabIndex == 0,
-//                                    onClick = { selectedTabIndex = 0 },
-//                                    modifier = Modifier.weight(1f)
-//                                )
-//                                TabButton(
-//                                    text = "Analytics",
-//                                    isSelected = selectedTabIndex == 1,
-//                                    onClick = { selectedTabIndex = 1 },
-//                                    modifier = Modifier.weight(1f)
-//                                )
                             }
 
                             Spacer(modifier = Modifier.height(24.dp))
 
-                            // Lista di risultati (Achievements o Analytics)
                             when (selectedTabIndex) {
                                 0 -> AchievementsList()
                                 1 -> AnalyticsList()
@@ -191,27 +178,6 @@ class Profile : ComponentActivity() {
                 )
             }
         }
-    }
-}
-
-@Composable
-fun TabButton(
-    text: String,
-    isSelected: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    TextButton(
-        onClick = onClick,
-        modifier = modifier
-            .padding(horizontal = 8.dp)
-            .wrapContentSize(Alignment.Center)
-    ) {
-        Text(
-            text = text,
-            color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground,
-            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-        )
     }
 }
 
