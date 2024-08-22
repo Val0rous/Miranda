@@ -1,9 +1,11 @@
 package com.cashflowtracker.miranda.ui.screens
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -29,6 +31,7 @@ class Settings : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContent {
             val context = LocalContext.current
             val coroutineScope = rememberCoroutineScope()
@@ -82,7 +85,8 @@ class Settings : ComponentActivity() {
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(paddingValues),
+                            .padding(paddingValues)
+                            .padding(customPadding), // It works just right with two paddings
                         verticalArrangement = Arrangement.SpaceBetween
                     ) {
                         // Theme selection

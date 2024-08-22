@@ -4,20 +4,28 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -32,7 +40,7 @@ class Profile : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val selectedTab = remember { mutableStateOf("Achievements") }
+            var selectedTabIndex by remember { mutableIntStateOf(0) }
 
             MirandaTheme() {
                 Scaffold(
@@ -54,85 +62,129 @@ class Profile : ComponentActivity() {
                             modifier = Modifier
                                 .fillMaxSize()
                                 .padding(paddingValues)
-                                .padding(16.dp)
                         ) {
-                            Spacer(modifier = Modifier.height(24.dp))
-
-                            // Immagine del profilo e nome utente
+                            // Profile picture and user name
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Center,
-                                modifier = Modifier.fillMaxWidth()
+                                horizontalArrangement = Arrangement.Start,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 16.dp, top = 16.dp, bottom = 8.dp)
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.AccountCircle,
-                                    contentDescription = "Profile Image",
+                                    contentDescription = "Profile Picture",
                                     tint = MaterialTheme.colorScheme.onBackground,
                                     modifier = Modifier
-                                        .size(72.dp)
+                                        .size(96.dp)
                                         .clip(CircleShape)
                                 )
 
-                                Spacer(modifier = Modifier.width(16.dp))
-
-                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Column(
+                                    horizontalAlignment = Alignment.Start,
+                                    modifier = Modifier.padding(start = 16.dp)
+                                ) {
                                     Text(
                                         text = "Francesco Valentini",
-                                        fontSize = 20.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                                        style = MaterialTheme.typography.titleLarge,
+                                        modifier = Modifier
+                                            .align(Alignment.CenterHorizontally)
+                                            .padding(top = 10.dp)
                                     )
-                                    Spacer(modifier = Modifier.height(4.dp))
 
                                     // Pulsante per modificare il profilo
-                                    OutlinedButton(
+                                    AssistChip(
                                         onClick = { /* Azione per modificare il profilo */ },
-                                        modifier = Modifier.padding(top = 8.dp)
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.Default.Edit,
-                                            contentDescription = "Edit Profile",
-                                            tint = MaterialTheme.colorScheme.primary,
-                                            modifier = Modifier.size(18.dp)
-                                        )
-                                        Spacer(modifier = Modifier.width(4.dp))
-                                        Text(
-                                            "Edit profile",
-                                            color = MaterialTheme.colorScheme.primary
-                                        )
-                                    }
+                                        label = { Text("Edit profile") },
+                                        leadingIcon = {
+                                            Icon(
+                                                imageVector = ImageVector.vectorResource(R.drawable.ic_person),
+                                                contentDescription = "Edit Profile",
+                                                tint = MaterialTheme.colorScheme.primary,
+                                                modifier = Modifier.size(18.dp)
+                                            )
+                                        },
+                                        modifier = Modifier.padding(top = 2.dp),
+                                    )
                                 }
                             }
 
-                            Spacer(modifier = Modifier.height(24.dp))
+                            //Spacer(modifier = Modifier.height(24.dp))
 
+                            HorizontalDivider(
+                                color = MaterialTheme.colorScheme.surfaceContainerHighest,
+                                thickness = 1.dp
+                            )
                             // Achievements e Analytics
-                            Row(
+                            TabRow(
                                 modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 16.dp)
+                                    .fillMaxWidth(),
+                                selectedTabIndex = selectedTabIndex,
+                                indicator = { tabPositions ->
+                                    Box(
+                                        Modifier
+                                            .tabIndicatorOffset(tabPositions[selectedTabIndex])
+                                            .height(3.dp)
+                                            .padding(horizontal = 48.dp)
+                                            .background(
+                                                color = MaterialTheme.colorScheme.primary,
+                                                shape = RoundedCornerShape(
+                                                    topStart = 16.dp,
+                                                    topEnd = 16.dp
+                                                )
+                                            )
+                                    )
+                                }
                             ) {
-                                TabButton(
-                                    text = "Achievements",
-                                    isSelected = selectedTab.value == "Achievements",
-                                    onClick = { selectedTab.value = "Achievements" },
-                                    modifier = Modifier.weight(1f)
+                                Tab(
+                                    selected = selectedTabIndex == 0,
+                                    onClick = { selectedTabIndex = 0 },
+                                    text = {
+                                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                            Icon(
+                                                imageVector = ImageVector.vectorResource(R.drawable.ic_trophy),
+                                                contentDescription = "Achievements"
+                                            )
+                                            Spacer(modifier = Modifier.height(2.dp))
+                                            Text("Achievements")
+                                        }
+                                    }
                                 )
-                                TabButton(
-                                    text = "Analytics",
-                                    isSelected = selectedTab.value == "Analytics",
-                                    onClick = { selectedTab.value = "Analytics" },
-                                    modifier = Modifier.weight(1f)
+                                Tab(
+                                    selected = selectedTabIndex == 1,
+                                    onClick = { selectedTabIndex = 1 },
+                                    text = {
+                                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                            Icon(
+                                                imageVector = ImageVector.vectorResource(R.drawable.ic_query_stats),
+                                                contentDescription = "Analytics"
+                                            )
+                                            Spacer(modifier = Modifier.height(2.dp))
+                                            Text("Analytics")
+                                        }
+                                    }
                                 )
+
+//                                TabButton(
+//                                    text = "Achievements",
+//                                    isSelected = selectedTabIndex == 0,
+//                                    onClick = { selectedTabIndex = 0 },
+//                                    modifier = Modifier.weight(1f)
+//                                )
+//                                TabButton(
+//                                    text = "Analytics",
+//                                    isSelected = selectedTabIndex == 1,
+//                                    onClick = { selectedTabIndex = 1 },
+//                                    modifier = Modifier.weight(1f)
+//                                )
                             }
 
                             Spacer(modifier = Modifier.height(24.dp))
 
                             // Lista di risultati (Achievements o Analytics)
-                            if (selectedTab.value == "Achievements") {
-                                AchievementsList()
-                            } else {
-                                AnalyticsList()
+                            when (selectedTabIndex) {
+                                0 -> AchievementsList()
+                                1 -> AnalyticsList()
                             }
                         }
                     }
