@@ -93,15 +93,15 @@ class Signup : ComponentActivity() {
                                 text = "Miranda",
                                 style = TextStyle(
                                     fontSize = 64.sp,
-                                    fontFamily = MaterialTheme.typography.displayLarge.fontFamily,
-                                    textAlign = TextAlign.Center,
                                     fontWeight = FontWeight.SemiBold,
-                                    shadow = Shadow(
-                                        color = MaterialTheme.colorScheme.onSurface,
-                                        offset = Offset(0f, 8f),
-                                        blurRadius = 4f
-                                    )
+                                    fontFamily = MaterialTheme.typography.displayLarge.fontFamily,
+//                                    shadow = Shadow(
+//                                        color = MaterialTheme.colorScheme.onSurface,
+//                                        offset = Offset(0f, 8f),
+//                                        blurRadius = 4f
+//                                    )
                                 ),
+                                textAlign = TextAlign.Center,
                                 color = MaterialTheme.colorScheme.primary,
                             )
                         }

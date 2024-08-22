@@ -52,7 +52,12 @@ fun Home() {
                 .fillMaxWidth()
         ) {
             Column(
-                modifier = Modifier.padding(vertical = 20.dp, horizontal = 24.dp),
+                modifier = Modifier.padding(
+                    top = 12.dp,
+                    bottom = 20.dp,
+                    start = 24.dp,
+                    end = 16.dp
+                ),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Row(
@@ -69,7 +74,6 @@ fun Home() {
                         onClick = {
                             balanceVisible = !balanceVisible
                         },
-                        modifier = Modifier.padding(end = 5.dp)
                     ) {
                         Icon(
                             imageVector = if (!balanceVisible) {
@@ -92,6 +96,51 @@ fun Home() {
                     style = MaterialTheme.typography.displayMedium.copy(fontSize = 45.sp),
                     textAlign = TextAlign.Center,
                 )
+            }
+        }
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(top = 20.dp, bottom = 10.dp)
+        ) {
+            Text(
+                "Accounts",
+                style = MaterialTheme.typography.titleLarge
+            )
+            Spacer(Modifier.weight(1f))
+            Row() {
+                IconButton(
+                    onClick = {
+                        // TODO
+                    },
+                ) {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(R.drawable.ic_add),
+                        contentDescription = "Add Account",
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+                IconButton(
+                    onClick = {
+                        // TODO
+                    },
+                ) {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(R.drawable.ic_swap_vert),
+                        contentDescription = "Sort",
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+                IconButton(
+                    onClick = {
+                        // TODO
+                    },
+                ) {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(R.drawable.ic_filter_list),
+                        contentDescription = "Filter",
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             }
         }
         Box(modifier = Modifier.fillMaxSize()) {

@@ -44,7 +44,7 @@ interface TransactionsDao {
     suspend fun delete(transaction: Transaction)
 
     @Query("SELECT * FROM [transaction] WHERE userId = :userId ORDER BY dateTime DESC")
-    fun getAllByUserId(userId: UUID): List<Transaction>
+    fun getAllByUserId(userId: UUID): Flow<List<Transaction>>
 
     @Query("SELECT * FROM [transaction] WHERE transactionId = :transactionId")
     fun getByTransactionId(transactionId: UUID): Transaction
@@ -59,7 +59,7 @@ interface RecurrencesDao {
     suspend fun delete(recurrence: Recurrence)
 
     @Query("SELECT * FROM recurrence WHERE userId = :userId ORDER BY reoccursOn ASC")
-    fun getByUserId(userId: UUID): List<Recurrence>
+    fun getByUserId(userId: UUID): Flow<List<Recurrence>>
 
     @Query("SELECT * FROM recurrence WHERE recurrenceId = :recurrenceId")
     fun getByRecurrenceId(recurrenceId: UUID): Recurrence
@@ -74,7 +74,7 @@ interface AccountsDao {
     suspend fun delete(account: Account)
 
     @Query("SELECT * FROM account WHERE userId = :userId ORDER BY balance DESC")
-    fun getByUserId(userId: UUID): List<Account>
+    fun getByUserId(userId: UUID): Flow<List<Account>>
 }
 
 @Dao
@@ -86,7 +86,7 @@ interface CustomCategoriesDao {
     suspend fun delete(customCategory: CustomCategory)
 
     @Query("SELECT * FROM customcategory WHERE userId = :userId GROUP BY type")
-    fun getByUserId(userId: UUID): List<CustomCategory>
+    fun getByUserId(userId: UUID): Flow<List<CustomCategory>>
 }
 
 @Dao
@@ -98,7 +98,5 @@ interface AchievementsDao {
     suspend fun delete(achievement: Achievement)
 
     @Query("SELECT * FROM achievement WHERE userId = :userId GROUP BY name ORDER BY achievedOn DESC, level DESC")
-    fun getByUserId(userId: UUID): List<Achievement>
-
-
+    fun getByUserId(userId: UUID): Flow<List<Achievement>>
 }

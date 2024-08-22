@@ -6,12 +6,15 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.*
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,6 +47,7 @@ class Profile : ComponentActivity() {
 
         setContent {
             var userName by remember { mutableStateOf("Loading...") }
+            var selectedTabIndex by remember { mutableIntStateOf(0) }
             val context: Context = LocalContext.current
             val email = context.getLoggedUserEmail()
             Log.d(
@@ -149,11 +153,25 @@ class Profile : ComponentActivity() {
                                 thickness = 1.dp
                             )
 
-                            var selectedTabIndex by remember { mutableIntStateOf(0) }
                             TabRow(
                                 modifier = Modifier
                                     .fillMaxWidth(),
                                 selectedTabIndex = selectedTabIndex,
+                                indicator = { tabPositions ->
+                                    Box(
+                                        Modifier
+                                            .tabIndicatorOffset(tabPositions[selectedTabIndex])
+                                            .height(3.dp)
+                                            .padding(horizontal = 48.dp)
+                                            .background(
+                                                color = MaterialTheme.colorScheme.primary,
+                                                shape = RoundedCornerShape(
+                                                    topStart = 16.dp,
+                                                    topEnd = 16.dp
+                                                )
+                                            )
+                                    )
+                                }
                             ) {
                                 Tab(
                                     selected = selectedTabIndex == 0,

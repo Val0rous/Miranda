@@ -23,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -30,7 +31,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -38,6 +41,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.cashflowtracker.miranda.MainActivity
 import com.cashflowtracker.miranda.utils.Routes
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getLoggedUserEmail
@@ -71,8 +75,17 @@ class Login : ComponentActivity() {
 
             val email = remember { mutableStateOf("") }
             val password = remember { mutableStateOf("") }
+            val isFormValid by remember {
+                derivedStateOf {
+                    email.value.isNotEmpty()
+                            && validateEmail(email.value)
+                            && password.value.isNotEmpty()
+                            && validatePassword(password.value)
+                }
+            }
 
             val vm = koinViewModel<UsersViewModel>()
+            val state by vm.state.collectAsStateWithLifecycle()
             val actions = vm.actions
 
             MirandaTheme {
@@ -89,9 +102,15 @@ class Login : ComponentActivity() {
                                 style = TextStyle(
                                     fontSize = 64.sp,
                                     fontWeight = FontWeight.SemiBold,
-                                    textAlign = TextAlign.Center,
-                                    color = MaterialTheme.colorScheme.primary
-                                )
+                                    fontFamily = MaterialTheme.typography.displayLarge.fontFamily,
+//                                    shadow = Shadow(
+//                                        color = MaterialTheme.colorScheme.onSurface,
+//                                        offset = Offset(0f, 8f),
+//                                        blurRadius = 4f
+//                                    )
+                                ),
+                                textAlign = TextAlign.Center,
+                                color = MaterialTheme.colorScheme.primary,
                             )
                         }
                     },
@@ -113,6 +132,7 @@ class Login : ComponentActivity() {
                                 Text(
                                     text = "Sign up",
                                     style = TextStyle(
+                                        fontFamily = MaterialTheme.typography.labelLarge.fontFamily,
                                         fontWeight = FontWeight.SemiBold
                                     ),
                                     color = MaterialTheme.colorScheme.primary
@@ -166,9 +186,11 @@ class Login : ComponentActivity() {
                                             finish()
                                         } else {
                                             errorMessage = "Invalid email or password."
+                                            return@launch
                                         }
                                     }
                                 },
+                                enabled = isFormValid,
                                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                                 modifier = Modifier
                                     .fillMaxWidth()
