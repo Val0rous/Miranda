@@ -17,7 +17,8 @@
         <!--below is the code for default activity which is Main Activity-->
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:configChanges="uiMode">
 
             <!--Inside this activity you should be having below code for
                 intent filter which will check the default activity-->

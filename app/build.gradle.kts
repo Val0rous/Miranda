@@ -58,6 +58,7 @@ dependencies {
     implementation(platform("androidx.compose:compose-bom:2024.08.00"))
     implementation("androidx.lifecycle:lifecycle-runtime-compose-android:2.8.4")
     implementation("androidx.preference:preference-ktx:1.2.1")
+    implementation("androidx.media3:media3-effect:1.4.0")
     androidTestImplementation(platform("androidx.compose:compose-bom:2024.08.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")

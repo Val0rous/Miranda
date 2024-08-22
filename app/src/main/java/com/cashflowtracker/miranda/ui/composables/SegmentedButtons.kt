@@ -163,10 +163,11 @@ fun SegmentedButtonType(transactionType: MutableState<String>, modifier: Modifie
 fun SegmentedButtonTheme(
     modifier: Modifier,
     isDarkTheme: Boolean,  // Receives current theme status
-//    onThemeChange: (Boolean) -> Unit,
     followSystem: Boolean,
+    onThemeChange: (Boolean) -> Unit,
+    onSystemChange: (Boolean) -> Unit,
     context: Context,
-    coroutineScope: CoroutineScope
+//    coroutineScope: CoroutineScope
 ) {
     val currentTheme = when (followSystem to isDarkTheme) {
         (false to false) -> 0  // Light Mode
@@ -185,10 +186,13 @@ fun SegmentedButtonTheme(
             selected = selectedIndex == 0,
             onClick = {
 //                coroutineScope.launch {
-                selectedIndex = 0
-                context.saveThemePreference(isDarkTheme = false)
-                context.saveSystemPreference(isFollowSystem = false)
+//                selectedIndex = 0
+//                context.saveThemePreference(isDarkTheme = false)
+//                context.saveSystemPreference(isFollowSystem = false)
 //                }
+                selectedIndex = 0
+                onThemeChange(false)
+                onSystemChange(false)
             },
             shape = SegmentedButtonDefaults.itemShape(
                 index = 0,
@@ -210,10 +214,13 @@ fun SegmentedButtonTheme(
             selected = selectedIndex == 1,
             onClick = {
 //                coroutineScope.launch {
-                selectedIndex = 1
-                context.saveThemePreference(isDarkTheme = context.getSystemDefaultTheme())
-                context.saveSystemPreference(isFollowSystem = true)
+//                selectedIndex = 1
+//                context.saveThemePreference(isDarkTheme = context.getSystemDefaultTheme())
+//                context.saveSystemPreference(isFollowSystem = true)
 //                }
+                selectedIndex = 1
+                onThemeChange(context.getSystemDefaultTheme())
+                onSystemChange(true)
             },
             shape = SegmentedButtonDefaults.itemShape(
                 index = 1,
@@ -235,10 +242,13 @@ fun SegmentedButtonTheme(
             selected = selectedIndex == 2,
             onClick = {
 //                coroutineScope.launch {
-                selectedIndex = 2
-                context.saveThemePreference(isDarkTheme = true)
-                context.saveSystemPreference(isFollowSystem = false)
+//                selectedIndex = 2
+//                context.saveThemePreference(isDarkTheme = true)
+//                context.saveSystemPreference(isFollowSystem = false)
 //                }
+                selectedIndex = 2
+                onThemeChange(true)
+                onSystemChange(false)
             },
             shape = SegmentedButtonDefaults.itemShape(
                 index = 2,

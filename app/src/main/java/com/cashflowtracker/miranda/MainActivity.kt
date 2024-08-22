@@ -21,6 +21,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -43,22 +45,26 @@ import com.cashflowtracker.miranda.ui.screens.Recurrents
 import com.cashflowtracker.miranda.ui.screens.Stats
 import com.cashflowtracker.miranda.ui.screens.Transactions
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
+import com.cashflowtracker.miranda.ui.viewmodels.ThemeViewModel
 import com.cashflowtracker.miranda.ui.viewmodels.UsersViewModel
 import com.cashflowtracker.miranda.utils.Routes
 import kotlinx.coroutines.flow.firstOrNull
 import org.koin.androidx.compose.koinViewModel
 
 class MainActivity : ComponentActivity() {
+    private lateinit var navController: NavHostController
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        val startDestination = intent.getStringExtra("startDestination") ?: Routes.Home.route
+        val initialStartDestination = intent.getStringExtra("startDestination") ?: Routes.Home.route
         setContent {
             val context = LocalContext.current
             val coroutineScope = rememberCoroutineScope()
-            val navController = rememberNavController()
+            navController = rememberNavController()
 //            var isDarkTheme by remember { mutableStateOf(context.getThemePreference()) }
 //            val followSystem by remember { mutableStateOf(context.getSystemPreference()) }
+            var startDestination by remember { mutableStateOf(initialStartDestination) }
             val userEmail by remember { mutableStateOf<String?>(context.getLoggedUserEmail()) }
             val isFabExpanded = remember { mutableStateOf(false) }
             val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -159,6 +165,11 @@ class MainActivity : ComponentActivity() {
                     },
                     floatingActionButtonPosition = FabPosition.End
                 ) { paddingValues ->
+                    LaunchedEffect(Unit) {
+                        savedInstanceState?.getString("NAVIGATION_STATE")?.let { savedRoute ->
+                            startDestination = savedRoute
+                        }
+                    }
                     NavHost(
                         navController = navController,
                         startDestination = startDestination,
@@ -180,5 +191,14 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        // Save current navigation route
+        outState.putString(
+            "NAVIGATION_STATE",
+            navController.currentBackStackEntry?.destination?.route
+        )
     }
 }

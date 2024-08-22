@@ -25,6 +25,9 @@ import com.cashflowtracker.miranda.ui.composables.SegmentedButtonTheme
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 import kotlinx.coroutines.launch
 import androidx.compose.material3.Scaffold
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.cashflowtracker.miranda.ui.viewmodels.ThemeViewModel
+import org.koin.androidx.compose.koinViewModel
 
 
 class Settings : ComponentActivity() {
@@ -35,8 +38,11 @@ class Settings : ComponentActivity() {
         setContent {
             val context = LocalContext.current
             val coroutineScope = rememberCoroutineScope()
-            val isDarkTheme by remember { mutableStateOf(context.getThemePreference()) }
-            val followSystem by remember { mutableStateOf(context.getSystemPreference()) }
+//            val isDarkTheme by remember { mutableStateOf(context.getThemePreference()) }
+//            val followSystem by remember { mutableStateOf(context.getSystemPreference()) }
+            val themeViewModel = koinViewModel<ThemeViewModel>()
+            val isDarkTheme by themeViewModel.isDarkTheme.collectAsState()
+            val followSystem by themeViewModel.followSystem.collectAsState()
             var userEmail: String? by remember { mutableStateOf("") }
 
 //            LaunchedEffect(Unit) {
@@ -105,8 +111,18 @@ class Settings : ComponentActivity() {
                                 isDarkTheme = isDarkTheme,
 //                onThemeChange = { onThemeChange }
                                 followSystem = followSystem,
+                                onThemeChange = { isDark: Boolean ->
+                                    themeViewModel.setThemePreference(
+                                        isDark
+                                    )
+                                },
+                                onSystemChange = { follow: Boolean ->
+                                    themeViewModel.setSystemPreference(
+                                        follow
+                                    )
+                                },
                                 context = context,
-                                coroutineScope = coroutineScope
+//                                coroutineScope = coroutineScope
                             )
                         }
 
