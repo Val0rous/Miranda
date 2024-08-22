@@ -64,14 +64,14 @@ class Login : ComponentActivity() {
 
             var errorMessage by remember { mutableStateOf("") }
 
-            if (!context.getLoggedUserEmail().isNullOrEmpty()) {
-                val intent = Intent(
-                    this@Login,
-                    MainActivity::class.java
-                )
-                intent.putExtra("startDestination", Routes.Home.route)
-                startActivity(intent)
-            }
+//            if (!context.getLoggedUserEmail().isNullOrEmpty()) {
+//                val intent = Intent(
+//                    this@Login,
+//                    MainActivity::class.java
+//                )
+//                intent.putExtra("startDestination", Routes.Home.route)
+//                startActivity(intent)
+//            }
 
             val email = remember { mutableStateOf("") }
             val password = remember { mutableStateOf("") }
@@ -168,7 +168,7 @@ class Login : ComponentActivity() {
                             if (errorMessage.isNotEmpty()) {
                                 Text(
                                     text = errorMessage,
-                                    color = Color.Red,
+                                    color = MaterialTheme.colorScheme.error,
                                     modifier = Modifier.padding(bottom = 8.dp)
                                 )
                             }
@@ -185,8 +185,8 @@ class Login : ComponentActivity() {
                                             startActivity(intent)
                                             finish()
                                         } else {
-                                            errorMessage = "Invalid email or password."
-                                            return@launch
+                                            errorMessage = "Invalid email or password"
+//                                            return@launch
                                         }
                                     }
                                 },

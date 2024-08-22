@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.cashflowtracker.miranda.data.database.User
 import com.cashflowtracker.miranda.data.repositories.UserPreferencesRepository
 import com.cashflowtracker.miranda.data.repositories.UsersRepository
+import com.cashflowtracker.miranda.utils.generateSalt
 import com.cashflowtracker.miranda.utils.hashPassword
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
@@ -23,6 +24,7 @@ interface UsersActions {
     fun addUser(user: User): Job
     fun removeUser(user: User): Job
     suspend fun login(email: String, password: String): Boolean
+    suspend fun signup(name: String, email: String, password: String): Boolean
     fun logout(user: User): Job
     fun getByEmail(email: String): User?
     fun getByUserId(userId: UUID): User?
@@ -50,10 +52,37 @@ class UsersViewModel(private val repository: UsersRepository) : ViewModel() {
 
         override suspend fun login(email: String, password: String): Boolean = viewModelScope.run {
             val user =
-                async(Dispatchers.IO) { repository.getByEmail(email) }.await() // Only locally, change if client-server
-            val saltedPassword = hashPassword(password, user!!.salt)
-            return user.password == saltedPassword
+                withContext(Dispatchers.IO) { repository.getByEmail(email) } // Only locally, change if client-server
+            if (user == null) {
+                return@run false
+            }
+            val saltedPassword = hashPassword(password, user.salt)
+            return@run user.password == saltedPassword
         }
+
+        override suspend fun signup(name: String, email: String, password: String): Boolean =
+            viewModelScope.run {
+                val existingUser = withContext(Dispatchers.IO) {
+                    getByEmail(email)
+                }
+                if (existingUser != null) {
+                    return@run false
+                } else {
+                    val salt = generateSalt()
+                    addUser(
+                        User(
+                            name = name,
+                            email = email,
+                            password = hashPassword(password, salt),
+                            salt = salt,
+                            encryptionKey = null,
+                            currency = null,
+                            country = null
+                        )
+                    )
+                    return@run true
+                }
+            }
 
         override fun logout(user: User) = viewModelScope.launch {
             // TODO

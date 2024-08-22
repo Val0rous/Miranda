@@ -26,6 +26,8 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -46,6 +48,7 @@ import com.cashflowtracker.miranda.utils.generateSalt
 import com.cashflowtracker.miranda.utils.hashPassword
 import com.cashflowtracker.miranda.utils.validateEmail
 import com.cashflowtracker.miranda.utils.validatePassword
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 class Signup : ComponentActivity() {
@@ -55,6 +58,8 @@ class Signup : ComponentActivity() {
         this.actionBar?.hide()
         setContent {
             val navController = rememberNavController()
+            val coroutineScope = rememberCoroutineScope()
+            var errorMessage by remember { mutableStateOf("") }
 //            NavHost(
 //                navController = navController,
 //                startDestination = Routes.Signup.route,
@@ -167,23 +172,30 @@ class Signup : ComponentActivity() {
                                     .fillMaxWidth()
                                     .padding(bottom = 16.dp)
                             )
+                            if (errorMessage.isNotEmpty()) {
+                                Text(
+                                    text = errorMessage,
+                                    color = MaterialTheme.colorScheme.error,
+                                    modifier = Modifier.padding(bottom = 8.dp)
+                                )
+                            }
                             Button(
                                 onClick = {
-                                    val salt = generateSalt()
-                                    actions.addUser(
-                                        User(
-                                            name = name.value,
-                                            email = email.value,
-                                            password = hashPassword(password.value, salt),
-                                            salt = salt,
-                                            encryptionKey = null,
-                                            currency = null,
-                                            country = null
-                                        )
-                                    )
-
-                                    startActivity(Intent(this@Signup, Login::class.java))
+                                    coroutineScope.launch {
+                                        if (actions.signup(
+                                                name.value,
+                                                email.value,
+                                                password.value
+                                            )
+                                        ) {
+                                            startActivity(Intent(this@Signup, Login::class.java))
+                                            finish()
+                                        } else {
+                                            errorMessage = "User already exists"
+//                                            return@launch
+                                        }
 //                                    navController.navigate(Routes.Login.route)
+                                    }
                                 },
                                 enabled = isFormValid,
                                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
