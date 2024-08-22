@@ -10,6 +10,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -25,12 +26,15 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -148,10 +152,7 @@ class AddAccount : ComponentActivity() {
                             // Type Field
                             Box(modifier = Modifier
                                 .fillMaxWidth()
-                                .clickable(
-                                    indication = null,
-                                    interactionSource = remember { MutableInteractionSource() }) {
-                                    println("dionegro")
+                                .clickable {
                                     val intent =
                                         Intent(
                                             this@AddAccount,
@@ -159,23 +160,30 @@ class AddAccount : ComponentActivity() {
                                         )
                                     intent.putExtra("accountType", accountType)
                                     launcher.launch(intent)
-                                })
-                            OutlinedTextField(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickable { },
-                                value = accountType,
-                                onValueChange = { },
-                                label = { Text("Type") },
-                                readOnly = true,
-                                trailingIcon = {
-                                    Icon(
-                                        imageVector = ImageVector.vectorResource(R.drawable.ic_account_balance),
-                                        contentDescription = "Type"
+                                }
+                            ) {
+                                OutlinedTextField(
+                                    value = accountType,
+                                    onValueChange = { },
+                                    label = { Text("Type") },
+                                    readOnly = true,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    trailingIcon = {
+                                        Icon(
+                                            imageVector = ImageVector.vectorResource(R.drawable.ic_account_balance),
+                                            contentDescription = "Type"
+                                        )
+                                    },
+                                    enabled = false,
+                                    colors = OutlinedTextFieldDefaults.colors(
+                                        disabledTextColor = MaterialTheme.colorScheme.onSurface,
+                                        disabledContainerColor = MaterialTheme.colorScheme.surface,
+                                        disabledBorderColor = MaterialTheme.colorScheme.outline,
+                                        disabledTrailingIconColor = MaterialTheme.colorScheme.onSurface,
+                                        disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
                                     )
-                                },
-                                interactionSource = remember { MutableInteractionSource() }
-                            )
+                                )
+                            }
                         }
                     }
                 }

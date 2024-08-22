@@ -74,6 +74,7 @@ class SelectAccountType : ComponentActivity() {
             ) { paddingValues ->
                 LazyColumn(modifier = Modifier
                     .padding(paddingValues)
+                    .fillMaxSize()
                     .clickable {
                         val resultIntent = Intent().putExtra("accountType", "Bank")
                         setResult(Activity.RESULT_OK, resultIntent)
