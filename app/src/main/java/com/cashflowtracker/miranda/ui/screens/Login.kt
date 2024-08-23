@@ -46,12 +46,15 @@ import com.cashflowtracker.miranda.MainActivity
 import com.cashflowtracker.miranda.utils.Routes
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getLoggedUserEmail
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.saveLoggedUserEmail
+import com.cashflowtracker.miranda.data.repositories.LoginRepository.saveLoggedUserId
 import com.cashflowtracker.miranda.ui.composables.PasswordTextField
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 import com.cashflowtracker.miranda.ui.viewmodels.UsersViewModel
 import com.cashflowtracker.miranda.utils.validateEmail
 import com.cashflowtracker.miranda.utils.validatePassword
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.androidx.compose.koinViewModel
 
 class Login : ComponentActivity() {
@@ -177,6 +180,10 @@ class Login : ComponentActivity() {
                                     coroutineScope.launch {
                                         if (actions.login(email.value, password.value)) {
                                             context.saveLoggedUserEmail(email.value)
+                                            withContext(Dispatchers.IO) {
+                                                val userId = actions.getUserIdByEmail(email.value)
+                                                context.saveLoggedUserId(userId)
+                                            }
                                             val intent = Intent(
                                                 this@Login,
                                                 MainActivity::class.java

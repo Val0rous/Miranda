@@ -12,7 +12,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import com.cashflowtracker.miranda.R
-import com.cashflowtracker.miranda.data.repositories.LoginRepository.getLoggedUserEmail
+import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserEmail
 import com.cashflowtracker.miranda.ui.screens.Profile
 import com.cashflowtracker.miranda.ui.screens.Settings
 
@@ -20,7 +20,7 @@ import com.cashflowtracker.miranda.ui.screens.Settings
 @Composable
 fun HomeStatsTopAppBar() {
     val context = LocalContext.current
-    val userEmail = context.getLoggedUserEmail() // Recupera l'email dell'utente loggato
+//    val userEmail = context.getCurrentUserEmail() // Recupera l'email dell'utente loggato
 
     TopAppBar(
         title = { },

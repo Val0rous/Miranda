@@ -17,7 +17,6 @@ import java.util.UUID
 import kotlinx.coroutines.*
 
 data class UsersState(val users: List<User>)
-//data class CurrentUser(val currentUser: User?)
 
 interface UsersActions {
     fun addUser(user: User): Job

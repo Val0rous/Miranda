@@ -26,6 +26,7 @@ import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 import kotlinx.coroutines.launch
 import androidx.compose.material3.Scaffold
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.cashflowtracker.miranda.data.repositories.LoginRepository.clearLoggedUserId
 import com.cashflowtracker.miranda.ui.viewmodels.ThemeViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -132,6 +133,7 @@ class Settings : ComponentActivity() {
                                 onClick = {
                                     coroutineScope.launch {
                                         context.clearLoggedUserEmail()
+                                        context.clearLoggedUserId()
 //                                    navController.navigate("login")
                                         startActivity(Intent(this@Settings, Login::class.java))
                                         finish()

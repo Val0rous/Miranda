@@ -114,78 +114,78 @@ class MainActivity : ComponentActivity() {
                 )
                 startActivity(intent)
                 finish()
-            }
-//            }
+            } else {
 
-            MirandaTheme() {
-                Scaffold(
-                    modifier = modifier,
-                    topBar = {
-                        when (currentRoute) {
-                            Routes.Home.route, Routes.Stats.route -> {
-                                HomeStatsTopAppBar()
+                MirandaTheme() {
+                    Scaffold(
+                        modifier = modifier,
+                        topBar = {
+                            when (currentRoute) {
+                                Routes.Home.route, Routes.Stats.route -> {
+                                    HomeStatsTopAppBar()
+                                }
+
+                                Routes.Transactions.route -> {
+                                    TransactionsTopAppBar()
+                                }
+
+                                Routes.Recurrents.route -> {
+                                    RecurrentsTopAppBar()
+                                }
                             }
+                        },
+                        bottomBar = { Navbar(navController) },
+                        floatingActionButton = {
+                            when (currentRoute) {
+                                Routes.Home.route -> {
+                                    ExpandableFAB(isFabExpanded)
+                                }
 
-                            Routes.Transactions.route -> {
-                                TransactionsTopAppBar()
+                                Routes.Transactions.route -> {
+                                    ExtendedFAB(
+                                        R.drawable.ic_assignment,
+                                        "Add Transaction",
+                                        AddTransaction::class.java
+                                    )
+                                }
+
+                                Routes.Recurrents.route -> {
+                                    ExtendedFAB(
+                                        R.drawable.ic_schedule,
+                                        "Add Recurrence",
+                                        AddRecurrence::class.java
+                                    )
+                                }
+
+                                else -> {
+                                    /* No FAB */
+                                }
                             }
-
-                            Routes.Recurrents.route -> {
-                                RecurrentsTopAppBar()
+                        },
+                        floatingActionButtonPosition = FabPosition.End
+                    ) { paddingValues ->
+                        LaunchedEffect(Unit) {
+                            savedInstanceState?.getString("NAVIGATION_STATE")?.let { savedRoute ->
+                                startDestination = savedRoute
                             }
                         }
-                    },
-                    bottomBar = { Navbar(navController) },
-                    floatingActionButton = {
-                        when (currentRoute) {
-                            Routes.Home.route -> {
-                                ExpandableFAB(isFabExpanded)
+                        NavHost(
+                            navController = navController,
+                            startDestination = startDestination,
+                            modifier = Modifier.padding(paddingValues = paddingValues)
+                        ) {
+                            composable(Routes.Home.route) {
+                                Home()
                             }
-
-                            Routes.Transactions.route -> {
-                                ExtendedFAB(
-                                    R.drawable.ic_assignment,
-                                    "Add Transaction",
-                                    AddTransaction::class.java
-                                )
+                            composable(Routes.Transactions.route) {
+                                Transactions()
                             }
-
-                            Routes.Recurrents.route -> {
-                                ExtendedFAB(
-                                    R.drawable.ic_schedule,
-                                    "Add Recurrence",
-                                    AddRecurrence::class.java
-                                )
+                            composable(Routes.Recurrents.route) {
+                                Recurrents()
                             }
-
-                            else -> {
-                                /* No FAB */
+                            composable(Routes.Stats.route) {
+                                Stats()
                             }
-                        }
-                    },
-                    floatingActionButtonPosition = FabPosition.End
-                ) { paddingValues ->
-                    LaunchedEffect(Unit) {
-                        savedInstanceState?.getString("NAVIGATION_STATE")?.let { savedRoute ->
-                            startDestination = savedRoute
-                        }
-                    }
-                    NavHost(
-                        navController = navController,
-                        startDestination = startDestination,
-                        modifier = Modifier.padding(paddingValues = paddingValues)
-                    ) {
-                        composable(Routes.Home.route) {
-                            Home()
-                        }
-                        composable(Routes.Transactions.route) {
-                            Transactions()
-                        }
-                        composable(Routes.Recurrents.route) {
-                            Recurrents()
-                        }
-                        composable(Routes.Stats.route) {
-                            Stats()
                         }
                     }
                 }

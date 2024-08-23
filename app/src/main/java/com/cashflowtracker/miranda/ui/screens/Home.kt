@@ -36,7 +36,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.cashflowtracker.miranda.R
+import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserEmail
+import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserId
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getLoggedUserEmail
+import com.cashflowtracker.miranda.data.repositories.LoginRepository.getLoggedUserId
 import com.cashflowtracker.miranda.ui.composables.BalanceText
 
 @Composable
@@ -147,7 +150,7 @@ fun Home() {
         }
         Box(modifier = Modifier.fillMaxSize()) {
             Text(
-                "Home Screen",
+                "Home Screen\n${LocalContext.current.getCurrentUserEmail()}\n${LocalContext.current.getCurrentUserId()}",
                 modifier = Modifier.align(Alignment.Center)
             )
         }

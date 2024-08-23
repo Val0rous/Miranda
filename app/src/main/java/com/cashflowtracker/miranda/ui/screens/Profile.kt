@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.cashflowtracker.miranda.R
-import com.cashflowtracker.miranda.data.repositories.LoginRepository.getLoggedUserEmail
+import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserEmail
 import com.cashflowtracker.miranda.data.repositories.UsersRepository
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 import com.cashflowtracker.miranda.ui.viewmodels.UsersViewModel
@@ -46,40 +46,17 @@ class Profile : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            var userName by remember { mutableStateOf("Loading...") }
+            var userName by remember { mutableStateOf("") }
             var selectedTabIndex by remember { mutableIntStateOf(0) }
             val context: Context = LocalContext.current
-            val email = context.getLoggedUserEmail()
-            Log.d(
-                "Profile",
-                "Email passed to Profile activity: $email"
-            )  // Log per verificare l'email
+            val email = context.getCurrentUserEmail()
             val usersVm = koinViewModel<UsersViewModel>()
             val usersState by usersVm.state.collectAsStateWithLifecycle()
 
             LaunchedEffect(email) {
-                if (email != null) {
-                    try {
-                        CoroutineScope(Dispatchers.IO).launch {
-                            val user = usersVm.actions.getByEmail(email)
-                            // Effettua la query per recuperare l'utente dal database in base all'email
-                            if (user != null) {
-                                userName = user.name
-                            } else {
-                                userName = "User not found"
-                                Log.e(
-                                    "Profile",
-                                    "User with email $email not found in the database."
-                                )
-                            }
-                        }
-                    } catch (e: Exception) {
-                        userName = "Error loading user"
-                        Log.e("Profile", "Error loading user with email $email", e)
-                    }
-                } else {
-                    userName = "Email is null"
-                    Log.e("Profile", "No email passed to the Profile activity.")
+                CoroutineScope(Dispatchers.IO).launch {
+                    val user = usersVm.actions.getByEmail(email)
+                    userName = user.name
                 }
             }
 
