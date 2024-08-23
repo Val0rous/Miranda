@@ -84,6 +84,9 @@ interface AccountsDao {
 
     @Query("SELECT * FROM account WHERE title = :title AND userId = :userId")
     fun getByTitle(title: String, userId: UUID): Account?
+
+    @Query("SELECT SUM(balance) FROM account WHERE userId = :userId")
+    fun getTotalBalance(userId: UUID): Flow<Double>
 }
 
 @Dao

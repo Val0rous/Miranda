@@ -26,6 +26,7 @@ interface AccountsActions {
     fun getAllByUserId(userId: UUID): Flow<List<Account>>
     fun getByTitle(title: String, userId: UUID): Account?
     fun toggleIsFavorite(title: String, userId: UUID, isFavorite: Boolean): Job
+    fun getTotalBalance(userId: UUID): Flow<Double>
 }
 
 class AccountsViewModel(private val repository: AccountsRepository) : ViewModel() {
@@ -59,5 +60,9 @@ class AccountsViewModel(private val repository: AccountsRepository) : ViewModel(
             viewModelScope.launch {
                 repository.setIsFavorite(title, userId, isFavorite)
             }
+
+        override fun getTotalBalance(userId: UUID): Flow<Double> = viewModelScope.run {
+            repository.getTotalBalance(userId)
+        }
     }
 }

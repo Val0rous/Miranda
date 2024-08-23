@@ -67,6 +67,8 @@ fun Home() {
     val vm = koinViewModel<AccountsViewModel>()
     val userId = context.getCurrentUserId()
     val accounts by vm.actions.getAllByUserId(userId).collectAsState(initial = emptyList())
+    val totalBalance by vm.actions.getTotalBalance(userId).collectAsState(initial = 0.0)
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -117,9 +119,10 @@ fun Home() {
                     }
                 }
                 BalanceText(
-                    text = "3470.00 €",
+                    balance = totalBalance,
                     isVisible = balanceVisible,
                     style = MaterialTheme.typography.displayMedium.copy(fontSize = 45.sp),
+                    color = MaterialTheme.colorScheme.onSurface,
                     textAlign = TextAlign.Center,
                 )
             }
@@ -204,8 +207,9 @@ fun Home() {
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.End
                             ) {
-                                Text(
-                                    text = String.format("%.2f €", account.balance),
+                                BalanceText(
+                                    balance = account.balance,
+                                    isVisible = balanceVisible,
                                     style = MaterialTheme.typography.titleMedium,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 )
