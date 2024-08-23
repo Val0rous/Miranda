@@ -7,6 +7,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -31,6 +33,7 @@ import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentU
 import com.cashflowtracker.miranda.data.repositories.UsersRepository
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 import com.cashflowtracker.miranda.ui.viewmodels.UsersViewModel
+import com.cashflowtracker.miranda.utils.AccountType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -88,14 +91,24 @@ class Profile : ComponentActivity() {
                                     .fillMaxWidth()
                                     .padding(start = 16.dp, top = 16.dp, bottom = 8.dp)
                             ) {
-                                Icon(
-                                    imageVector = Icons.Default.AccountCircle,
-                                    contentDescription = "Profile Picture",
-                                    tint = MaterialTheme.colorScheme.onBackground,
+
+
+                                Box(
                                     modifier = Modifier
-                                        .size(96.dp)
+                                        .size(128.dp)
                                         .clip(CircleShape)
-                                )
+                                        .background(MaterialTheme.colorScheme.primary)
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.AccountCircle,
+                                        contentDescription = "Profile Picture",
+                                        tint = MaterialTheme.colorScheme.onPrimary,
+                                        modifier = Modifier
+                                            .size(96.dp)
+                                            .clip(CircleShape)
+                                            .align(Alignment.Center)
+                                    )
+                                }
 
                                 Column(
                                     horizontalAlignment = Alignment.Start,
@@ -127,7 +140,8 @@ class Profile : ComponentActivity() {
 
                             HorizontalDivider(
                                 color = MaterialTheme.colorScheme.surfaceContainerHighest,
-                                thickness = 1.dp
+                                thickness = 1.dp,
+                                modifier = Modifier.padding(top = 8.dp)
                             )
 
                             TabRow(
@@ -180,7 +194,6 @@ class Profile : ComponentActivity() {
                                 )
                             }
 
-                            Spacer(modifier = Modifier.height(24.dp))
 
                             when (selectedTabIndex) {
                                 0 -> AchievementsList()
@@ -201,14 +214,12 @@ fun AchievementsList() {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 16.dp)
     ) {
         items(6) { index -> // Placeholder per 6 risultati
             AchievementItem(
                 title = "Achievement $index",
-                description = "Descrizione dell'achievement $index"
+                description = "Description of achievement $index"
             )
-            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }
@@ -218,43 +229,63 @@ fun AnalyticsList() {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 16.dp)
     ) {
         items(6) { index -> // Placeholder per 6 risultati
             AchievementItem(
                 title = "Analytics $index",
-                description = "Descrizione dell'analytics $index"
+                description = "Description of analytics $index"
             )
-            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }
 
 @Composable
 fun AchievementItem(title: String, description: String) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Surface(
-            modifier = Modifier.size(40.dp),
-            shape = CircleShape,
-            color = MaterialTheme.colorScheme.primary
-        ) {
-            Box(contentAlignment = Alignment.Center) {
-                Text(
-                    text = title.first().toString(),
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    fontSize = 20.sp
+    ListItem(
+        headlineContent = { Text(text = title, fontWeight = FontWeight.SemiBold) },
+        supportingContent = { Text(text = description) },
+        leadingContent = {
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.surfaceTint)
+            ) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(R.drawable.ic_trophy_filled),
+                    contentDescription = "",
+                    tint = MaterialTheme.colorScheme.surface,
+                    modifier = Modifier
+                        .size(24.dp)
+                        .align(Alignment.Center)
                 )
             }
-        }
+        },
+        trailingContent = {
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.primaryContainer)
+                    .border(
+                        width = 3.dp,
+                        color = MaterialTheme.colorScheme.primary,
+                        shape = CircleShape
+                    )
+            ) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(R.drawable.ic_diamond),
+                    contentDescription = "",
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier
+                        .size(24.dp)
+                        .align(Alignment.Center)
+                )
+            }
+        },
+        modifier = Modifier.clickable {
 
-        Spacer(modifier = Modifier.width(16.dp))
-
-        Column {
-            Text(text = title, fontWeight = FontWeight.Bold)
-            Text(text = description, fontSize = 12.sp)
         }
-    }
+    )
+
 }

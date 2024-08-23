@@ -17,7 +17,6 @@ fun Transactions() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             Text(

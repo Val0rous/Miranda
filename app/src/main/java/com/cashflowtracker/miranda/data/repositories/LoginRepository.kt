@@ -108,23 +108,23 @@ object LoginRepository {
     }
 
     /** Use this function for login, when you're not sure user id is saved in SharedPreferences */
-    fun Context.getLoggedUserId(): String? {
+    fun Context.getLoggedUserId(): UUID? {
         val sharedPrefs = getSharedPreferences(PREFS_FILE_NAME, Context.MODE_PRIVATE)
         val encryptedUserIdBase64 = sharedPrefs.getString(USER_ID_KEY, null) ?: return null
 
         val encryptedUserId = Base64.decode(encryptedUserIdBase64, Base64.DEFAULT)
         val key = generateEncryptionKey()
-        return decryptString(encryptedUserId, key)
+        return UUID.fromString(decryptString(encryptedUserId, key))
     }
 
     /** Use this function when you're sure that user is logged in */
-    fun Context.getCurrentUserId(): String {
+    fun Context.getCurrentUserId(): UUID {
         val sharedPrefs = getSharedPreferences(PREFS_FILE_NAME, Context.MODE_PRIVATE)
         val encryptedUserIdBase64 = sharedPrefs.getString(USER_ID_KEY, null)
 
         val encryptedUserId = Base64.decode(encryptedUserIdBase64, Base64.DEFAULT)
         val key = generateEncryptionKey()
-        return decryptString(encryptedUserId, key)
+        return UUID.fromString(decryptString(encryptedUserId, key))
     }
 
     fun Context.clearLoggedUserId() {

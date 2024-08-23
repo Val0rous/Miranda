@@ -10,6 +10,8 @@ class AccountsRepository(private val accountsDao: AccountsDao) {
     suspend fun delete(account: Account) = accountsDao.delete(account)
     fun getByTitle(title: String, userId: UUID) = accountsDao.getByTitle(title, userId)
     fun getAllByUserId(userId: UUID): Flow<List<Account>> = accountsDao.getAllByUserId(userId)
+    suspend fun setIsFavorite(title: String, userId: UUID, isFavorite: Boolean) =
+        accountsDao.setIsFavorite(title, userId, isFavorite)
 //    val accounts: Flow<List<Account>>? = accountsDao.getAllByUserId(userId)
 }
 

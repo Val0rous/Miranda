@@ -61,6 +61,7 @@ data class Account(
     @ColumnInfo val balance: Double,
     @ColumnInfo val creationDate: String,   // ZonedDateTime
     @ColumnInfo val userId: UUID,
+    @ColumnInfo val isFavorite: Boolean,
 )
 
 @Entity

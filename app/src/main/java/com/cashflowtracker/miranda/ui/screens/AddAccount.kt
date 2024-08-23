@@ -55,13 +55,16 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.data.database.Account
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserEmail
+import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserId
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 import com.cashflowtracker.miranda.ui.viewmodels.AccountsViewModel
 import com.cashflowtracker.miranda.ui.viewmodels.UsersViewModel
 import com.cashflowtracker.miranda.utils.Routes
 import com.cashflowtracker.miranda.utils.validateEmail
 import com.cashflowtracker.miranda.utils.validatePassword
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.androidx.compose.koinViewModel
 import java.util.Date
 import java.util.Locale
@@ -74,6 +77,7 @@ class AddAccount : ComponentActivity() {
         setContent {
             val scrollState = rememberScrollState()
             val coroutineScope = rememberCoroutineScope()
+            val context = LocalContext.current
             val accountTitle = remember { mutableStateOf<String>("") }
             var accountType by remember { mutableStateOf("") }
             var accountIcon by remember { mutableStateOf<Int?>(null) }
@@ -125,12 +129,11 @@ class AddAccount : ComponentActivity() {
                                 Button(
                                     onClick = {
                                         coroutineScope.launch {
-                                            val userId = usersVm.actions.getUserIdByEmail(email)
-                                            if (actions.getByTitle(
-                                                    accountTitle.value,
-                                                    userId
-                                                ) != null
-                                            ) {
+                                            val userId = context.getCurrentUserId()
+                                            val existingAccount = withContext(Dispatchers.IO) {
+                                                actions.getByTitle(accountTitle.value, userId)
+                                            }
+                                            if (existingAccount != null) {
                                                 // Account already exists
                                                 return@launch
                                             } else {
@@ -145,9 +148,11 @@ class AddAccount : ComponentActivity() {
                                                         ).format(
                                                             Date()
                                                         ),
-                                                        userId = userId
+                                                        userId = userId,
+                                                        isFavorite = false,
                                                     )
                                                 )
+                                                finish()
                                             }
                                         }
                                     },

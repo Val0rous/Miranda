@@ -76,6 +76,9 @@ interface AccountsDao {
     @Delete
     suspend fun delete(account: Account)
 
+    @Query("UPDATE account SET isFavorite = :isFavorite WHERE title = :title AND userId = :userId")
+    suspend fun setIsFavorite(title: String, userId: UUID, isFavorite: Boolean)
+
     @Query("SELECT * FROM account WHERE userId = :userId ORDER BY balance DESC")
     fun getAllByUserId(userId: UUID): Flow<List<Account>>
 

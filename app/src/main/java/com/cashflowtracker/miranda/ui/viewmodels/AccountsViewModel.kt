@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.cashflowtracker.miranda.data.database.Account
 import com.cashflowtracker.miranda.data.repositories.AccountsRepository
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -22,13 +23,13 @@ interface AccountsActions {
     fun addAccount(account: Account): Job
     fun updateAccount(account: Account): Job
     fun removeAccount(account: Account): Job
-    fun getAllByEmail(email: String): List<Account>?
-    fun getAllByUserId(userId: UUID): List<Account>?
+    fun getAllByUserId(userId: UUID): Flow<List<Account>>
     fun getByTitle(title: String, userId: UUID): Account?
+    fun toggleIsFavorite(title: String, userId: UUID, isFavorite: Boolean): Job
 }
 
 class AccountsViewModel(private val repository: AccountsRepository) : ViewModel() {
-//    val state = repository.accounts!!.map { AccountsState(it) }
+//    val state = repository.getAllByUserId(userId).map { AccountsState(it) }
 //        .stateIn(
 //            scope = viewModelScope,
 //            started = SharingStarted.WhileSubscribed(),
@@ -50,12 +51,13 @@ class AccountsViewModel(private val repository: AccountsRepository) : ViewModel(
             repository.getByTitle(title, userId)
         }
 
-        override fun getAllByEmail(email: String): List<Account>? {
-            return null
+        override fun getAllByUserId(userId: UUID): Flow<List<Account>> = viewModelScope.run {
+            repository.getAllByUserId(userId)
         }
 
-        override fun getAllByUserId(userId: UUID): List<Account>? {
-            return null
-        }
+        override fun toggleIsFavorite(title: String, userId: UUID, isFavorite: Boolean) =
+            viewModelScope.launch {
+                repository.setIsFavorite(title, userId, isFavorite)
+            }
     }
 }
