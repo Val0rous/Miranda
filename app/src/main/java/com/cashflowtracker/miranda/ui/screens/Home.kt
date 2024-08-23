@@ -38,6 +38,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
@@ -54,6 +55,7 @@ import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentU
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getLoggedUserEmail
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getLoggedUserId
 import com.cashflowtracker.miranda.ui.composables.BalanceText
+import com.cashflowtracker.miranda.ui.theme.Red400
 import com.cashflowtracker.miranda.ui.viewmodels.AccountsViewModel
 import com.cashflowtracker.miranda.utils.AccountType
 import org.koin.androidx.compose.koinViewModel
@@ -198,11 +200,24 @@ fun Home() {
                             }
                         },
                         trailingContent = {
-                            Text(
-                                text = String.format("%.2f €", account.balance),
-                                style = MaterialTheme.typography.titleMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.End
+                            ) {
+                                Text(
+                                    text = String.format("%.2f €", account.balance),
+                                    style = MaterialTheme.typography.titleMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                                if (account.isFavorite) {
+                                    Icon(
+                                        imageVector = ImageVector.vectorResource(R.drawable.ic_favorite_filled),
+                                        contentDescription = "",
+                                        tint = Red400,
+                                        modifier = Modifier.padding(start = 16.dp),
+                                    )
+                                }
+                            }
                         },
                         modifier = Modifier.clickable {
 //                            val resultIntent =

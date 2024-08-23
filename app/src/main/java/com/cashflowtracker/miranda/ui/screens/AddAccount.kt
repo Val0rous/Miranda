@@ -99,6 +99,7 @@ class AddAccount : ComponentActivity() {
                             && accountTitle.value.isNotEmpty()
                 }
             }
+            var isError = remember { mutableStateOf(false) }
             val vm = koinViewModel<AccountsViewModel>()
 //            val state by vm.state.collectAsStateWithLifecycle()
             val actions = vm.actions
@@ -135,6 +136,7 @@ class AddAccount : ComponentActivity() {
                                             }
                                             if (existingAccount != null) {
                                                 // Account already exists
+                                                isError.value = true
                                                 return@launch
                                             } else {
                                                 actions.addAccount(
@@ -201,6 +203,7 @@ class AddAccount : ComponentActivity() {
                                 value = accountTitle.value,
                                 onValueChange = { text -> accountTitle.value = text },
                                 label = { Text("Title") },
+                                isError = isError.value,
                                 modifier = Modifier.fillMaxWidth()
                             )
                         }
