@@ -37,9 +37,8 @@ import com.cashflowtracker.miranda.utils.TransactionType
 
 @Composable
 fun SegmentedButtonType(transactionType: MutableState<String>, modifier: Modifier) {
-    var selectedIndex by remember {
-        mutableIntStateOf(0)
-    }
+    var selectedIndex by remember { mutableIntStateOf(0) }
+    transactionType.value = TransactionType.OUTPUT.type
 
     SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
         SegmentedButton(

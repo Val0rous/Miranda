@@ -3,7 +3,6 @@ package com.cashflowtracker.miranda.ui.screens
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -13,8 +12,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -24,8 +21,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.ui.composables.SegmentedButtonType
 import com.cashflowtracker.miranda.ui.composables.MapScreen
@@ -60,8 +55,8 @@ class AddTransaction : ComponentActivity() {
                 contract = ActivityResultContracts.StartActivityForResult()
             ) { result ->
                 if (result.resultCode == Activity.RESULT_OK) {
-                    source = result.data?.getStringExtra("accountType") ?: ""
-                    sourceIcon = result.data?.getStringExtra("accountIcon")?.toInt()
+                    source = result.data?.getStringExtra("sourceTitle") ?: ""
+                    sourceIcon = result.data?.getStringExtra("sourceIcon")?.toInt()
                 }
             }
 
@@ -69,7 +64,7 @@ class AddTransaction : ComponentActivity() {
                 contract = ActivityResultContracts.StartActivityForResult()
             ) { result ->
                 if (result.resultCode == Activity.RESULT_OK) {
-                    destination = result.data?.getStringExtra("destinationCategory") ?: ""
+                    destination = result.data?.getStringExtra("destinationTitle") ?: ""
                     destinationIcon = result.data?.getStringExtra("destinationIcon")?.toInt()
                 }
             }
@@ -82,6 +77,14 @@ class AddTransaction : ComponentActivity() {
                             && source.isNotEmpty()
                             && destination.isNotEmpty()
                 }
+            }
+
+            LaunchedEffect(key1 = transactionType.value) {
+                // Clear dependent fields when transactionType changes
+                source = ""
+                sourceIcon = null
+                destination = ""
+                destinationIcon = null
             }
 
             MirandaTheme {
@@ -108,6 +111,7 @@ class AddTransaction : ComponentActivity() {
                                 Button(
                                     onClick = { /* Logic to create the transaction */ },
                                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+                                    enabled = isFormValid,
                                     modifier = Modifier
                                         .padding(top = 16.dp, bottom = 16.dp, end = 16.dp)
                                         .height(32.dp),
@@ -191,9 +195,9 @@ class AddTransaction : ComponentActivity() {
                                     val intent =
                                         Intent(
                                             this@AddTransaction,
-                                            SelectAccountType::class.java
+                                            SelectSource::class.java
                                         )
-                                    //intent.putExtra("accountType", accountType)
+                                    intent.putExtra("transactionType", transactionType.value)
                                     sourceLauncher.launch(intent)
                                 }
                             ) {
@@ -246,9 +250,9 @@ class AddTransaction : ComponentActivity() {
                                     val intent =
                                         Intent(
                                             this@AddTransaction,
-                                            SelectCategoryType::class.java
+                                            SelectDestination::class.java
                                         )
-                                    //intent.putExtra("accountType", accountType)
+                                    intent.putExtra("transactionType", transactionType.value)
                                     destinationLauncher.launch(intent)
                                 }
                             ) {
@@ -298,6 +302,7 @@ class AddTransaction : ComponentActivity() {
                                 value = amount.value,
                                 onValueChange = { text -> amount.value = text },
                                 label = { Text("Amount") },
+                                placeholder = { Text("0.00 €") },
                                 modifier = Modifier.fillMaxWidth()
                             )
                         }

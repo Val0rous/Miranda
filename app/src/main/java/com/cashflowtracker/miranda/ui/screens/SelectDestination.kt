@@ -6,39 +6,37 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.ListItem
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.R
+import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserId
+import com.cashflowtracker.miranda.ui.composables.AccountListItem
+import com.cashflowtracker.miranda.ui.composables.CategoryListItem
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
+import com.cashflowtracker.miranda.ui.viewmodels.AccountsViewModel
 import com.cashflowtracker.miranda.utils.AccountType
-import com.cashflowtracker.miranda.utils.Routes
+import com.cashflowtracker.miranda.utils.DefaultCategories
+import org.koin.androidx.compose.koinViewModel
 
-class SelectAccountType : ComponentActivity() {
+class SelectDestination : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,12 +44,21 @@ class SelectAccountType : ComponentActivity() {
         //val initialAccountType = intent.getStringExtra("accountType") ?: ""
         setContent {
             //val accountType = remember { mutableStateOf(initialAccountType) }
+            val transactionType by remember {
+                mutableStateOf(
+                    intent.getStringExtra("transactionType") ?: ""
+                )
+            }
+            val context = LocalContext.current
+            val vm = koinViewModel<AccountsViewModel>()
+            val userId = context.getCurrentUserId()
+            val accounts by vm.actions.getAllByUserId(userId).collectAsState(initial = emptyList())
             MirandaTheme {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     topBar = {
                         TopAppBar(
-                            title = { Text("Account Types") },
+                            title = { Text("Destination") },
                             navigationIcon = {
                                 IconButton(
                                     onClick = { finish() },
@@ -90,40 +97,42 @@ class SelectAccountType : ComponentActivity() {
                             .fillMaxSize()
                             .padding(paddingValues)
                     ) {
-                        items(AccountType.entries) { accountType ->
-                            ListItem(
-                                headlineContent = {
-                                    Text(
-                                        text = accountType.type,
-                                        style = MaterialTheme.typography.bodyLarge
-                                    )
-                                },
-                                leadingContent = {
-                                    Box(
-                                        modifier = Modifier
-                                            .size(40.dp)
-                                            .clip(CircleShape)
-                                            .background(MaterialTheme.colorScheme.surfaceTint)
-                                    ) {
-                                        Icon(
-                                            imageVector = ImageVector.vectorResource(accountType.icon),
-                                            contentDescription = accountType.type,
-                                            tint = MaterialTheme.colorScheme.surface,
-                                            modifier = Modifier
-                                                .size(24.dp)
-                                                .align(Alignment.Center)
-                                        )
+                        if (transactionType == "Input" || transactionType == "Transfer") {
+                            // User accounts list - not the enum types
+                            items(accounts) { account ->
+                                AccountListItem(
+                                    account = account,
+                                    modifier = Modifier.clickable {
+                                        val resultIntent =
+                                            Intent().putExtra("destinationTitle", account.title)
+                                                .putExtra(
+                                                    "destinationIcon",
+                                                    AccountType.getIcon(account.type).toString()
+                                                )
+                                        setResult(Activity.RESULT_OK, resultIntent)
+                                        finish()
+                                    })
+                            }
+                        }
+                        if (transactionType == "Output") {
+                            items(DefaultCategories.entries) { category ->
+                                CategoryListItem(
+                                    category = category,
+                                    modifier = Modifier.clickable {
+                                        val resultIntent =
+                                            Intent().putExtra(
+                                                "destinationTitle",
+                                                category.category
+                                            )
+                                                .putExtra(
+                                                    "destinationIcon",
+                                                    category.icon.toString()
+                                                )
+                                        setResult(Activity.RESULT_OK, resultIntent)
+                                        finish()
                                     }
-                                },
-                                modifier = Modifier.clickable {
-                                    val resultIntent =
-                                        Intent().putExtra("accountType", accountType.type)
-                                            .putExtra("accountIcon", accountType.icon.toString())
-                                    setResult(Activity.RESULT_OK, resultIntent)
-                                    finish()
-                                }
-                            )
-                            HorizontalDivider()
+                                )
+                            }
                         }
                     }
                 }
