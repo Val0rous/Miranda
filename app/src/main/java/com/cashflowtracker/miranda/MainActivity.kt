@@ -41,6 +41,7 @@ import com.cashflowtracker.miranda.ui.screens.Recurrents
 import com.cashflowtracker.miranda.ui.screens.Stats
 import com.cashflowtracker.miranda.ui.screens.Transactions
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
+import com.cashflowtracker.miranda.ui.viewmodels.ThemeViewModel
 import com.cashflowtracker.miranda.ui.viewmodels.UsersViewModel
 import com.cashflowtracker.miranda.utils.Routes
 import org.koin.androidx.compose.koinViewModel

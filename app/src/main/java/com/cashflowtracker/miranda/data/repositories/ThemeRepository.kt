@@ -5,6 +5,7 @@ import android.content.res.Configuration
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.preference.PreferenceManager.getDefaultSharedPreferences
 import com.cashflowtracker.miranda.ui.viewmodels.ThemeViewModel
 import kotlinx.coroutines.flow.Flow
 
@@ -16,34 +17,30 @@ object ThemeRepository {
      *  @param isDarkTheme true for dark theme, false for light theme
      */
     fun Context.saveThemePreference(isDarkTheme: Boolean) {
-        val sharedPrefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this)
-        val editor = sharedPrefs.edit()
-        editor.putBoolean(IS_DARK_THEME_KEY, isDarkTheme)
-        editor.apply()
+        val sharedPrefs = getDefaultSharedPreferences(this)
+        sharedPrefs.edit().putBoolean(IS_DARK_THEME_KEY, isDarkTheme).apply()
     }
 
     /** Gets theme preference of app
      *  @return true if dark theme, false if light theme
      */
     fun Context.getThemePreference(): Boolean {
-        val sharedPrefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this)
+        val sharedPrefs = getDefaultSharedPreferences(this)
         return sharedPrefs.getBoolean(IS_DARK_THEME_KEY, false) // Default to light theme
     }
 
     /** Saves system preference of app
      * @param isFollowSystem true to follow system theme, false to use app custom choice */
     fun Context.saveSystemPreference(isFollowSystem: Boolean) {
-        val sharedPrefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this)
-        val editor = sharedPrefs.edit()
-        editor.putBoolean(IS_FOLLOW_SYSTEM_KEY, isFollowSystem)
-        editor.apply()
+        val sharedPrefs = getDefaultSharedPreferences(this)
+        sharedPrefs.edit().putBoolean(IS_FOLLOW_SYSTEM_KEY, isFollowSystem).apply()
     }
 
     /** Gets system preference of app
      *  @return true if following system theme, false if using custom app theme
      */
     fun Context.getSystemPreference(): Boolean {
-        val sharedPrefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this)
+        val sharedPrefs = getDefaultSharedPreferences(this)
         return sharedPrefs.getBoolean(IS_FOLLOW_SYSTEM_KEY, true)   // Default to system theme
     }
 

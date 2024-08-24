@@ -59,8 +59,12 @@ fun MirandaTheme(
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit,
 ) {
-    val isDarkTheme by themeViewModel.isDarkTheme.collectAsState()
-    val followSystem by themeViewModel.followSystem.collectAsState()
+    val isDarkTheme by themeViewModel.isDarkTheme.collectAsState(
+        initial = LocalContext.current.getThemePreference()
+    )
+    val followSystem by themeViewModel.followSystem.collectAsState(
+        initial = LocalContext.current.getSystemPreference()
+    )
 
     val effectiveIsDarkTheme = if (followSystem) {
         isSystemInDarkTheme()
@@ -68,11 +72,13 @@ fun MirandaTheme(
         isDarkTheme
     }
     val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+        dynamicColor && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) -> {
             val context = LocalContext.current
-            if (effectiveIsDarkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(
-                context
-            )
+            if (effectiveIsDarkTheme) {
+                dynamicDarkColorScheme(context)
+            } else {
+                dynamicLightColorScheme(context)
+            }
         }
 
         effectiveIsDarkTheme -> DarkColorScheme
