@@ -1,13 +1,11 @@
 package com.cashflowtracker.miranda.ui.viewmodels
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cashflowtracker.miranda.data.database.User
 import com.cashflowtracker.miranda.data.repositories.UsersRepository
 import com.cashflowtracker.miranda.utils.generateSalt
 import com.cashflowtracker.miranda.utils.hashPassword
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
@@ -25,7 +23,7 @@ interface UsersActions {
     suspend fun signup(name: String, email: String, password: String): Boolean
     fun logout(user: User): Job
     fun getByEmail(email: String): User
-    fun getByEmailUnchecked(email: String): User?
+    fun getByEmailOrNull(email: String): User?
     fun getUserIdByEmail(email: String): UUID
     fun getByUserId(userId: UUID): User?
 }
@@ -49,7 +47,7 @@ class UsersViewModel(private val repository: UsersRepository) : ViewModel() {
 
         override suspend fun login(email: String, password: String): Boolean = viewModelScope.run {
             val user =
-                withContext(Dispatchers.IO) { repository.getByEmailUnchecked(email) } // Only locally, change if client-server
+                withContext(Dispatchers.IO) { repository.getByEmailOrNull(email) } // Only locally, change if client-server
             if (user == null) {
                 return@run false
             }
@@ -60,7 +58,7 @@ class UsersViewModel(private val repository: UsersRepository) : ViewModel() {
         override suspend fun signup(name: String, email: String, password: String): Boolean =
             viewModelScope.run {
                 val existingUser = withContext(Dispatchers.IO) {
-                    repository.getByEmailUnchecked(email)
+                    repository.getByEmailOrNull(email)
                 }
                 if (existingUser != null) {
                     return@run false
@@ -89,8 +87,8 @@ class UsersViewModel(private val repository: UsersRepository) : ViewModel() {
             return repository.getByEmail(email)
         }
 
-        override fun getByEmailUnchecked(email: String): User? {
-            return repository.getByEmailUnchecked(email)
+        override fun getByEmailOrNull(email: String): User? {
+            return repository.getByEmailOrNull(email)
         }
 
         override fun getUserIdByEmail(email: String): UUID {

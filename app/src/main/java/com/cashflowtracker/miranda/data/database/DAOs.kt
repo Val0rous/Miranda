@@ -20,7 +20,7 @@ interface UsersDao {
     fun getUserIdByEmail(email: String): UUID
 
     @Query("SELECT * FROM user WHERE email = :email")
-    fun getByEmailUnchecked(email: String): User?
+    fun getByEmailOrNull(email: String): User?
 
     @Query("SELECT * FROM user WHERE email = :email")
     fun getByEmail(email: String): User

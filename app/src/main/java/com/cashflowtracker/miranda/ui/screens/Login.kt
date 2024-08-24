@@ -44,7 +44,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.cashflowtracker.miranda.MainActivity
 import com.cashflowtracker.miranda.utils.Routes
-import com.cashflowtracker.miranda.data.repositories.LoginRepository.getLoggedUserEmail
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.saveLoggedUserEmail
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.saveLoggedUserId
 import com.cashflowtracker.miranda.ui.composables.PasswordTextField
@@ -66,15 +65,6 @@ class Login : ComponentActivity() {
             val context = LocalContext.current
 
             var errorMessage by remember { mutableStateOf("") }
-
-//            if (!context.getLoggedUserEmail().isNullOrEmpty()) {
-//                val intent = Intent(
-//                    this@Login,
-//                    MainActivity::class.java
-//                )
-//                intent.putExtra("startDestination", Routes.Home.route)
-//                startActivity(intent)
-//            }
 
             val email = remember { mutableStateOf("") }
             val password = remember { mutableStateOf("") }

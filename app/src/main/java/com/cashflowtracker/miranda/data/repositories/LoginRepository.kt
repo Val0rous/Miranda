@@ -73,7 +73,7 @@ object LoginRepository {
     }
 
     /** Use this function for login */
-    fun Context.getLoggedUserEmail(): String? {
+    fun Context.getLoggedUserEmailOrNull(): String? {
         val sharedPrefs = getSharedPreferences(PREFS_FILE_NAME, Context.MODE_PRIVATE)
         val encryptedEmailBase64 = sharedPrefs.getString(EMAIL_KEY, null) ?: return null
 
@@ -108,7 +108,7 @@ object LoginRepository {
     }
 
     /** Use this function for login, when you're not sure user id is saved in SharedPreferences */
-    fun Context.getLoggedUserId(): UUID? {
+    fun Context.getLoggedUserIdOrNull(): UUID? {
         val sharedPrefs = getSharedPreferences(PREFS_FILE_NAME, Context.MODE_PRIVATE)
         val encryptedUserIdBase64 = sharedPrefs.getString(USER_ID_KEY, null) ?: return null
 

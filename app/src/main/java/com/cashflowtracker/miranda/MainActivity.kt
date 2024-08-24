@@ -21,16 +21,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.cashflowtracker.miranda.data.repositories.LoginRepository.getLoggedUserEmail
-import com.cashflowtracker.miranda.data.repositories.ThemeRepository.getSystemDefaultTheme
-import com.cashflowtracker.miranda.data.repositories.ThemeRepository.getSystemPreference
-import com.cashflowtracker.miranda.data.repositories.ThemeRepository.getThemePreference
+import com.cashflowtracker.miranda.data.repositories.LoginRepository.getLoggedUserEmailOrNull
 import com.cashflowtracker.miranda.ui.composables.ExpandableFAB
 import com.cashflowtracker.miranda.ui.composables.ExtendedFAB
 import com.cashflowtracker.miranda.ui.composables.HomeStatsTopAppBar
@@ -45,10 +41,8 @@ import com.cashflowtracker.miranda.ui.screens.Recurrents
 import com.cashflowtracker.miranda.ui.screens.Stats
 import com.cashflowtracker.miranda.ui.screens.Transactions
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
-import com.cashflowtracker.miranda.ui.viewmodels.ThemeViewModel
 import com.cashflowtracker.miranda.ui.viewmodels.UsersViewModel
 import com.cashflowtracker.miranda.utils.Routes
-import kotlinx.coroutines.flow.firstOrNull
 import org.koin.androidx.compose.koinViewModel
 
 class MainActivity : ComponentActivity() {
@@ -65,7 +59,7 @@ class MainActivity : ComponentActivity() {
 //            var isDarkTheme by remember { mutableStateOf(context.getThemePreference()) }
 //            val followSystem by remember { mutableStateOf(context.getSystemPreference()) }
             var startDestination by remember { mutableStateOf(initialStartDestination) }
-            val userEmail by remember { mutableStateOf<String?>(context.getLoggedUserEmail()) }
+            val userEmail by remember { mutableStateOf<String?>(context.getLoggedUserEmailOrNull()) }
             val isFabExpanded = remember { mutableStateOf(false) }
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentRoute = navBackStackEntry?.destination?.route

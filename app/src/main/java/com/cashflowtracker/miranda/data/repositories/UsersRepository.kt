@@ -9,7 +9,7 @@ class UsersRepository(private val usersDao: UsersDao) {
     suspend fun insert(user: User) = usersDao.insert(user)
     suspend fun delete(user: User) = usersDao.delete(user)
     fun getUserIdByEmail(email: String) = usersDao.getUserIdByEmail(email)
-    fun getByEmailUnchecked(email: String) = usersDao.getByEmailUnchecked(email)
+    fun getByEmailOrNull(email: String) = usersDao.getByEmailOrNull(email)
     fun getByEmail(email: String) = usersDao.getByEmail(email)
     fun getByUserId(userId: UUID) = usersDao.getByUserId(userId)
     suspend fun updatePassword(userId: UUID, newPassword: String) =
