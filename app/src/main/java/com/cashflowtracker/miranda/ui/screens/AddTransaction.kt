@@ -1,9 +1,15 @@
 package com.cashflowtracker.miranda.ui.screens
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -14,6 +20,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -35,26 +42,47 @@ class AddTransaction : ComponentActivity() {
         setContent {
 //            val navController = rememberNavController()
             val scrollState = rememberScrollState()
+            val coroutineScope = rememberCoroutineScope()
+            val context = LocalContext.current
             val transactionType = remember { mutableStateOf("") }
-
-            // State to manage date selection
             val selectedDate = remember { mutableStateOf("") }
             val selectedTime = remember { mutableStateOf("") }
             val selectedTimeZone = remember { mutableStateOf("") }
-
-            // State to manage selectors
-            val source = remember { mutableStateOf("") }
-            val destination = remember { mutableStateOf("") }
+            var source by remember { mutableStateOf("") }
+            var sourceIcon by remember { mutableStateOf<Int?>(null) }
+            var destination by remember { mutableStateOf("") }
+            var destinationIcon by remember { mutableStateOf<Int?>(null) }
             val amount = remember { mutableStateOf("") }
             val comment = remember { mutableStateOf("") }
             val location = remember { mutableStateOf("") }
 
-            val isSourceExpanded = remember { mutableStateOf(false) }
-            val isDestinationExpanded = remember { mutableStateOf(false) }
+            val sourceLauncher = rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.StartActivityForResult()
+            ) { result ->
+                if (result.resultCode == Activity.RESULT_OK) {
+                    source = result.data?.getStringExtra("accountType") ?: ""
+                    sourceIcon = result.data?.getStringExtra("accountIcon")?.toInt()
+                }
+            }
 
-            val sourceOptions = listOf("Deutsche Bank", "N26", "Wallet")
-            val destinationOptions = listOf("Restaurant", "Food", "Clothing")
-            val amountOptions = listOf("10 €", "20 €", "50 €")
+            val destinationLauncher = rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.StartActivityForResult()
+            ) { result ->
+                if (result.resultCode == Activity.RESULT_OK) {
+                    destination = result.data?.getStringExtra("destinationCategory") ?: ""
+                    destinationIcon = result.data?.getStringExtra("destinationIcon")?.toInt()
+                }
+            }
+            val isFormValid by remember {
+                derivedStateOf {
+                    transactionType.value.isNotEmpty()
+                            && selectedDate.value.isNotEmpty()
+                            && selectedTime.value.isNotEmpty()
+                            && selectedTimeZone.value.isNotEmpty()
+                            && source.isNotEmpty()
+                            && destination.isNotEmpty()
+                }
+            }
 
             MirandaTheme {
                 Scaffold(
@@ -156,47 +184,45 @@ class AddTransaction : ComponentActivity() {
                                 contentDescription = "Source"
                             )
                             Spacer(modifier = Modifier.width(16.dp))
-                            // Source Field with DropdownMenu
-                            ExposedDropdownMenuBox(
-                                expanded = isSourceExpanded.value,
-                                onExpandedChange = {
-                                    isSourceExpanded.value = !isSourceExpanded.value
+
+                            Box(modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    val intent =
+                                        Intent(
+                                            this@AddTransaction,
+                                            SelectAccountType::class.java
+                                        )
+                                    //intent.putExtra("accountType", accountType)
+                                    sourceLauncher.launch(intent)
                                 }
                             ) {
                                 OutlinedTextField(
-                                    value = source.value,
-                                    onValueChange = {},
+                                    value = source,
+                                    onValueChange = { },
                                     label = { Text("Source") },
-                                    leadingIcon = {
-                                        Icon(
-                                            imageVector = ImageVector.vectorResource(R.drawable.ic_account_balance),
-                                            contentDescription = "Source"
-                                        )
-                                    },
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .menuAnchor(),
                                     readOnly = true,
+                                    modifier = Modifier.fillMaxWidth(),
                                     trailingIcon = {
-                                        ExposedDropdownMenuDefaults.TrailingIcon(
-                                            expanded = isSourceExpanded.value
-                                        )
-                                    }
+                                        sourceIcon?.let { iconId ->
+                                            Icon(
+                                                imageVector = ImageVector.vectorResource(
+                                                    iconId
+                                                ),
+                                                contentDescription = source,
+                                                modifier = Modifier.padding(end = 12.dp)
+                                            )
+                                        }
+                                    },
+                                    enabled = false,
+                                    colors = OutlinedTextFieldDefaults.colors(
+                                        disabledTextColor = MaterialTheme.colorScheme.onSurface,
+                                        disabledContainerColor = MaterialTheme.colorScheme.surface,
+                                        disabledBorderColor = MaterialTheme.colorScheme.outline,
+                                        disabledTrailingIconColor = MaterialTheme.colorScheme.onSurface,
+                                        disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    )
                                 )
-                                ExposedDropdownMenu(
-                                    expanded = isSourceExpanded.value,
-                                    onDismissRequest = { isSourceExpanded.value = false }
-                                ) {
-                                    sourceOptions.forEach { option ->
-                                        DropdownMenuItem(
-                                            onClick = {
-                                                source.value = option
-                                                isSourceExpanded.value = false
-                                            },
-                                            text = { Text(option) }
-                                        )
-                                    }
-                                }
                             }
                         }
                         Spacer(modifier = Modifier.height(8.dp))
@@ -212,47 +238,46 @@ class AddTransaction : ComponentActivity() {
                                 contentDescription = "Destination"
                             )
                             Spacer(modifier = Modifier.width(16.dp))
-                            // Destination Field with DropdownMenu
-                            ExposedDropdownMenuBox(
-                                expanded = isDestinationExpanded.value,
-                                onExpandedChange = {
-                                    isDestinationExpanded.value = !isDestinationExpanded.value
+
+                            // Type Field
+                            Box(modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    val intent =
+                                        Intent(
+                                            this@AddTransaction,
+                                            SelectCategoryType::class.java
+                                        )
+                                    //intent.putExtra("accountType", accountType)
+                                    destinationLauncher.launch(intent)
                                 }
                             ) {
                                 OutlinedTextField(
-                                    value = destination.value,
-                                    onValueChange = {},
+                                    value = destination,
+                                    onValueChange = { },
                                     label = { Text("Destination") },
-                                    leadingIcon = {
-                                        Icon(
-                                            imageVector = ImageVector.vectorResource(R.drawable.ic_restaurant_filled),
-                                            contentDescription = "Destination"
-                                        )
-                                    },
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .menuAnchor(),
                                     readOnly = true,
+                                    modifier = Modifier.fillMaxWidth(),
                                     trailingIcon = {
-                                        ExposedDropdownMenuDefaults.TrailingIcon(
-                                            expanded = isDestinationExpanded.value
-                                        )
-                                    }
+                                        destinationIcon?.let { iconId ->
+                                            Icon(
+                                                imageVector = ImageVector.vectorResource(
+                                                    iconId
+                                                ),
+                                                contentDescription = destination,
+                                                modifier = Modifier.padding(end = 12.dp)
+                                            )
+                                        }
+                                    },
+                                    enabled = false,
+                                    colors = OutlinedTextFieldDefaults.colors(
+                                        disabledTextColor = MaterialTheme.colorScheme.onSurface,
+                                        disabledContainerColor = MaterialTheme.colorScheme.surface,
+                                        disabledBorderColor = MaterialTheme.colorScheme.outline,
+                                        disabledTrailingIconColor = MaterialTheme.colorScheme.onSurface,
+                                        disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    )
                                 )
-                                ExposedDropdownMenu(
-                                    expanded = isDestinationExpanded.value,
-                                    onDismissRequest = { isDestinationExpanded.value = false },
-                                ) {
-                                    destinationOptions.forEach { option ->
-                                        DropdownMenuItem(
-                                            onClick = {
-                                                destination.value = option
-                                                isDestinationExpanded.value = false
-                                            },
-                                            text = { Text(option) }
-                                        )
-                                    }
-                                }
                             }
                         }
                         Spacer(modifier = Modifier.height(8.dp))

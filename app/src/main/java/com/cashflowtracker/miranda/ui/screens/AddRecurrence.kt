@@ -281,7 +281,7 @@ class AddRecurrence : ComponentActivity() {
                                     label = { Text("Destination") },
                                     leadingIcon = {
                                         Icon(
-                                            imageVector = ImageVector.vectorResource(R.drawable.ic_restaurant_filled),
+                                            imageVector = ImageVector.vectorResource(R.drawable.ic_restaurant),
                                             contentDescription = "Destination"
                                         )
                                     },

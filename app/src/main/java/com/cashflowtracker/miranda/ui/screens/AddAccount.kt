@@ -87,10 +87,6 @@ class AddAccount : ComponentActivity() {
                 if (result.resultCode == Activity.RESULT_OK) {
                     accountType = result.data?.getStringExtra("accountType") ?: ""
                     accountIcon = result.data?.getStringExtra("accountIcon")?.toInt()
-                    Log.d(
-                        "AddAccount",
-                        "Received accountType: $accountType, accountIcon: $accountIcon"
-                    )
                 }
             }
             val isFormValid by remember {
