@@ -53,8 +53,6 @@ import androidx.navigation.NavHostController
 import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserEmail
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserId
-import com.cashflowtracker.miranda.data.repositories.LoginRepository.getLoggedUserEmail
-import com.cashflowtracker.miranda.data.repositories.LoginRepository.getLoggedUserId
 import com.cashflowtracker.miranda.ui.composables.BalanceText
 import com.cashflowtracker.miranda.ui.theme.Red400
 import com.cashflowtracker.miranda.ui.viewmodels.AccountsViewModel
