@@ -47,7 +47,7 @@ class SelectAccountType : ComponentActivity() {
         val initialAccountType = intent.getStringExtra("accountType") ?: ""
         setContent {
             val accountType = remember { mutableStateOf(initialAccountType) }
-            MirandaTheme() {
+            MirandaTheme {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     topBar = {

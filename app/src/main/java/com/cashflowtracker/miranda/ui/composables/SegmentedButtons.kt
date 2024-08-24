@@ -2,7 +2,6 @@
 
 package com.cashflowtracker.miranda.ui.composables
 
-import android.annotation.SuppressLint
 import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
@@ -15,8 +14,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.SegmentedButton
@@ -27,8 +24,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -38,51 +33,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.data.repositories.ThemeRepository.getSystemDefaultTheme
-import com.cashflowtracker.miranda.data.repositories.ThemeRepository.saveSystemPreference
-import com.cashflowtracker.miranda.data.repositories.ThemeRepository.saveThemePreference
-import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 import com.cashflowtracker.miranda.utils.TransactionType
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
-
-//@SuppressLint("UnrememberedMutableState")
-//@Composable
-//fun SegmentedButtons(modifier: Modifier) {
-//    MirandaTheme {
-//        val options = mutableStateListOf("Output", "Input", "Transfer")
-//        var selectedIndex by remember {
-//            mutableStateOf(0)
-//        }
-//
-//        SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
-//            options.forEachIndexed { index, option ->
-//                SegmentedButton(
-//                    selected = selectedIndex == index,
-//                    onClick = { selectedIndex = index },
-//                    shape = SegmentedButtonDefaults.itemShape(
-//                        index = index,
-//                        count = options.size
-//                    ),
-//                    modifier = modifier,
-//                ) {
-//                    Row() {
-//                        if (selectedIndex != index) {
-//                            // Workaround to display the regular icon when the button is not selected
-//                            Icon(
-//                                imageVector = Icons.Outlined.Download,
-//                                contentDescription = null,
-//                                modifier = Modifier
-//                                    .size(18.0.dp)
-//                            )
-//                            Spacer(modifier = Modifier.width(8.dp))
-//                        }
-//                        Text(text = option)
-//                    }
-//                }
-//            }
-//        }
-//    }
-//}
 
 @Composable
 fun SegmentedButtonType(transactionType: MutableState<String>, modifier: Modifier) {
@@ -185,11 +136,6 @@ fun SegmentedButtonTheme(
         SegmentedButton(
             selected = selectedIndex == 0,
             onClick = {
-//                coroutineScope.launch {
-//                selectedIndex = 0
-//                context.saveThemePreference(isDarkTheme = false)
-//                context.saveSystemPreference(isFollowSystem = false)
-//                }
                 selectedIndex = 0
                 onThemeChange(false)
                 onSystemChange(false)
@@ -213,11 +159,6 @@ fun SegmentedButtonTheme(
         SegmentedButton(
             selected = selectedIndex == 1,
             onClick = {
-//                coroutineScope.launch {
-//                selectedIndex = 1
-//                context.saveThemePreference(isDarkTheme = context.getSystemDefaultTheme())
-//                context.saveSystemPreference(isFollowSystem = true)
-//                }
                 selectedIndex = 1
                 onThemeChange(context.getSystemDefaultTheme())
                 onSystemChange(true)
@@ -241,11 +182,6 @@ fun SegmentedButtonTheme(
         SegmentedButton(
             selected = selectedIndex == 2,
             onClick = {
-//                coroutineScope.launch {
-//                selectedIndex = 2
-//                context.saveThemePreference(isDarkTheme = true)
-//                context.saveSystemPreference(isFollowSystem = false)
-//                }
                 selectedIndex = 2
                 onThemeChange(true)
                 onSystemChange(false)

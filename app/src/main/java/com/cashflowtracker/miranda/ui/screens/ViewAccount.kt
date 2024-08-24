@@ -93,7 +93,7 @@ class ViewAccount : ComponentActivity() {
                 }
             }
 
-            MirandaTheme() {
+            MirandaTheme {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     topBar = {

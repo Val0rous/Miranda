@@ -56,7 +56,7 @@ class AddTransaction : ComponentActivity() {
             val destinationOptions = listOf("Restaurant", "Food", "Clothing")
             val amountOptions = listOf("10 €", "20 €", "50 €")
 
-            MirandaTheme() {
+            MirandaTheme {
                 Scaffold(
                     topBar = {
                         TopAppBar(

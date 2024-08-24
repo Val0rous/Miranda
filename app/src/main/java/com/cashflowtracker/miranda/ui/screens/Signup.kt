@@ -85,7 +85,7 @@ class Signup : ComponentActivity() {
             val state by vm.state.collectAsStateWithLifecycle()
             val actions = vm.actions
 
-            MirandaTheme() {
+            MirandaTheme {
                 Scaffold(
                     topBar = {
                         Row(

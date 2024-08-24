@@ -77,42 +77,4 @@ object ThemeRepository {
     fun Context.getSystemDefaultTheme(): Boolean {
         return resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
     }
-
-
-//    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
-//    private val IS_DARK_THEME_KEY = booleanPreferencesKey("is_dark_theme")
-//    private val IS_FOLLOW_SYSTEM_KEY = booleanPreferencesKey("is_follow_system")
-//
-//    /** Saves theme preference of app */
-//    suspend fun Context.saveThemePreference(isDarkTheme: Boolean) {
-//        dataStore.edit { preferences ->
-//            preferences[IS_DARK_THEME_KEY] = isDarkTheme
-//        }
-//    }
-//
-//    /** Gets theme preference of app
-//     *  @return true if dark theme, false otherwise
-//     */
-//    fun Context.getThemePreference(): Flow<Boolean> {
-//        return dataStore.data.map { preferences ->
-//            preferences[IS_DARK_THEME_KEY] ?: false // Defaults to light theme if no key is found
-//        }
-//    }
-//
-//    /** Saves system preference of app: if true, follow system theme, if false use app custom choice */
-//    suspend fun Context.saveSystemPreference(isFollowSystem: Boolean) {
-//        dataStore.edit { preferences ->
-//            preferences[IS_FOLLOW_SYSTEM_KEY] = isFollowSystem
-//        }
-//    }
-//
-//    /** Gets system preference of app
-//     *  @return true if follow system theme, false otherwise
-//     */
-//    fun Context.getSystemPreference(): Flow<Boolean> {
-//        return dataStore.data.map { preferences ->
-//            preferences[IS_FOLLOW_SYSTEM_KEY] ?: true // Defaults to system theme if no key is found
-//        }
-
-//    }
 }

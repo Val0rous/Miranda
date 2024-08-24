@@ -106,7 +106,7 @@ class AddAccount : ComponentActivity() {
             val usersVm = koinViewModel<UsersViewModel>()
             val email = LocalContext.current.getCurrentUserEmail()
 
-            MirandaTheme() {
+            MirandaTheme {
                 Scaffold(
                     topBar = {
                         TopAppBar(

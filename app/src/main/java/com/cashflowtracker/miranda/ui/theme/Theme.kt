@@ -48,23 +48,13 @@ private val LightColorScheme = lightColorScheme(
 
 @Composable
 fun MirandaTheme(
-    //darkTheme: Boolean = isSystemInDarkTheme(),
-//    darkTheme: Boolean = if (LocalContext.current.getSystemPreference()) {
-//        isSystemInDarkTheme()
-//    } else {
-//        LocalContext.current.getThemePreference()
-//    },
     themeViewModel: ThemeViewModel = koinViewModel<ThemeViewModel>(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit,
 ) {
-    val isDarkTheme by themeViewModel.isDarkTheme.collectAsState(
-//        initial = LocalContext.current.getThemePreference()
-    )
-    val followSystem by themeViewModel.followSystem.collectAsState(
-//        initial = LocalContext.current.getSystemPreference()
-    )
+    val isDarkTheme by themeViewModel.isDarkTheme.collectAsState()
+    val followSystem by themeViewModel.followSystem.collectAsState()
 
     val effectiveIsDarkTheme = if (followSystem) {
         isSystemInDarkTheme()

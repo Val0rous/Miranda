@@ -30,13 +30,7 @@ val appModule = module {
     single { UsersRepository(get<MirandaDatabase>().usersDao()) }
     single { AccountsRepository(get<MirandaDatabase>().accountsDao()) }
 
-    viewModel {
-        ThemeViewModel(
-//            get<Context>().getThemePreference(),
-//            get<Context>().getSystemPreference()
-            androidContext()
-        )
-    }
+    viewModel { ThemeViewModel(androidContext()) }
     viewModel { UsersViewModel(get()) }
     viewModel { AccountsViewModel(get()) }
 }

@@ -43,31 +43,9 @@ class Settings : ComponentActivity() {
         setContent {
             val context = LocalContext.current
             val coroutineScope = rememberCoroutineScope()
-//            val isDarkTheme by remember { mutableStateOf(context.getThemePreference()) }
-//            val followSystem by remember { mutableStateOf(context.getSystemPreference()) }
             val themeViewModel = koinViewModel<ThemeViewModel>()
             val isDarkTheme by themeViewModel.isDarkTheme.collectAsState()
             val followSystem by themeViewModel.followSystem.collectAsState()
-            var userEmail: String? by remember { mutableStateOf("") }
-
-//            LaunchedEffect(Unit) {
-//                context.getSystemPreference().collect { isSystem ->
-//                    followSystem = isSystem
-//                }
-//            }
-//
-//            LaunchedEffect(Unit) {
-//                context.getThemePreference().collect { isDark ->
-//                    isDarkTheme = isDark
-//                }
-//            }
-
-            val effectiveIsDarkTheme = if (followSystem) {
-//                context.getSystemDefaultTheme()
-                isSystemInDarkTheme()
-            } else {
-                isDarkTheme
-            }
 
             val customPadding = PaddingValues(
                 start = 16.dp,
@@ -76,7 +54,7 @@ class Settings : ComponentActivity() {
                 bottom = 16.dp
             )
 
-            MirandaTheme() {
+            MirandaTheme {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     topBar = {
@@ -114,7 +92,6 @@ class Settings : ComponentActivity() {
                             SegmentedButtonTheme(
                                 modifier = Modifier.fillMaxWidth(),
                                 isDarkTheme = isDarkTheme,
-//                onThemeChange = { onThemeChange }
                                 followSystem = followSystem,
                                 onThemeChange = { isDark: Boolean ->
                                     themeViewModel.setThemePreference(isDark, context)
@@ -123,7 +100,6 @@ class Settings : ComponentActivity() {
                                     themeViewModel.setSystemPreference(follow, context)
                                 },
                                 context = context,
-//                                coroutineScope = coroutineScope
                             )
                         }
 
@@ -162,69 +138,3 @@ class Settings : ComponentActivity() {
         }
     }
 }
-
-
-//@Composable
-//fun Settings(
-//    navController: NavHostController,
-//    isDarkTheme: Boolean,  // Receives current theme status
-////    onThemeChange: (Boolean) -> Unit
-//    followSystem: Boolean,
-//    context: Context,
-//    coroutineScope: CoroutineScope
-//) {
-////    var selectedTheme by remember { mutableStateOf(isDarkTheme) }
-//
-//
-//}
-
-
-//@Composable
-//fun ThemeToggleButton(
-//    isSelected: Boolean,
-//    text: String,
-//    icon: ImageVector,
-//    onClick: () -> Unit,
-//    followSystem: Boolean
-//) {
-//    OutlinedButton(
-//        onClick = onClick,
-//        modifier = Modifier.height(56.dp),
-//        colors = ButtonDefaults.outlinedButtonColors(
-//            containerColor = if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.1f) else MaterialTheme.colorScheme.surface
-//        )
-//    ) {
-//        Icon(icon, contentDescription = text)
-//        Spacer(modifier = Modifier.width(8.dp))
-//        Text(text)
-//        if (isSelected) {
-//            Spacer(modifier = Modifier.width(8.dp))
-//            Icon(Icons.Filled.Check, contentDescription = "Selected")
-//        }
-//    }
-//}
-
-//        Row(
-//            horizontalArrangement = Arrangement.SpaceAround,
-//            modifier = Modifier.fillMaxWidth()
-//        ) {
-//            ThemeToggleButton(
-//                isSelected = !selectedTheme,
-//                text = "Light",
-//                icon = Icons.Filled.LightMode,
-//                onClick = {
-//                    selectedTheme = false
-////                    onThemeChange(false) // Update theme in AppLayout
-//                }
-//            )
-//            Spacer(modifier = Modifier.width(8.dp))
-//            ThemeToggleButton(
-//                isSelected = selectedTheme,
-//                text = "Dark",
-//                icon = Icons.Filled.DarkMode,
-//                onClick = {
-//                    selectedTheme = true
-////                    onThemeChange(true) // Update theme in AppLayout
-//                }
-//            )
-//        }
