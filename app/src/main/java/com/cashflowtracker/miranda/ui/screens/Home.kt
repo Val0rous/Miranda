@@ -53,6 +53,8 @@ import androidx.navigation.NavHostController
 import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserEmail
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserId
+import com.cashflowtracker.miranda.data.repositories.PreferencesRepository.getBalanceVisibility
+import com.cashflowtracker.miranda.data.repositories.PreferencesRepository.setBalanceVisibility
 import com.cashflowtracker.miranda.ui.composables.BalanceText
 import com.cashflowtracker.miranda.ui.theme.Red400
 import com.cashflowtracker.miranda.ui.viewmodels.AccountsViewModel
@@ -61,8 +63,8 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun Home() {
-    var balanceVisible by remember { mutableStateOf(true) }
     val context = LocalContext.current
+    var balanceVisible by remember { mutableStateOf(context.getBalanceVisibility()) }
     val vm = koinViewModel<AccountsViewModel>()
     val userId = context.getCurrentUserId()
     val accounts by vm.actions.getAllByUserId(userId).collectAsState(initial = emptyList())
@@ -100,6 +102,7 @@ fun Home() {
                     IconButton(
                         onClick = {
                             balanceVisible = !balanceVisible
+                            context.setBalanceVisibility(balanceVisible)
                         },
                     ) {
                         Icon(

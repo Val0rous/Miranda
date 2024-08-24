@@ -21,7 +21,7 @@ enum class AccountType(val type: String, val icon: Int) {
         fun getIcon(type: String): Int {
             return entries.find {
                 it.type == type
-            }?.icon ?: R.drawable.ic_android
+            }?.icon ?: R.drawable.ic_default_empty
         }
     }
 }

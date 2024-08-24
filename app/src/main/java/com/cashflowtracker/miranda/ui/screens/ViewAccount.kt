@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.data.database.Account
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserId
+import com.cashflowtracker.miranda.ui.composables.AlertDialogDelete
 import com.cashflowtracker.miranda.ui.composables.BalanceText
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 import com.cashflowtracker.miranda.ui.viewmodels.AccountsViewModel
@@ -85,6 +86,7 @@ class ViewAccount : ComponentActivity() {
             var isFavorite by remember { mutableStateOf(account.isFavorite) }
             val coroutineScope = rememberCoroutineScope()
             var isDeleting by remember { mutableStateOf(false) }
+            val openAlertDialog = remember { mutableStateOf(false) }
 
             LaunchedEffect(key1 = accountId, key2 = isDeleting) {
                 if (!isDeleting) {
@@ -170,11 +172,7 @@ class ViewAccount : ComponentActivity() {
                                 },
                                 enabled = !isDeleting,
                                 onClick = {
-                                    isDeleting = true
-                                    coroutineScope.launch {
-                                        vm.actions.deleteAccount(accountId, userId)
-                                        finish()
-                                    }
+                                    openAlertDialog.value = true
                                 },
                             )
                         }
@@ -259,6 +257,24 @@ class ViewAccount : ComponentActivity() {
                                 }
                             }
                         }
+                    }
+                    if (openAlertDialog.value) {
+                        AlertDialogDelete(
+                            icon = R.drawable.ic_delete,
+                            onDismissRequest = {
+                                openAlertDialog.value = false
+                            },
+                            onConfirmation = {
+                                openAlertDialog.value = false
+                                isDeleting = true
+                                coroutineScope.launch {
+                                    vm.actions.deleteAccount(accountId, userId)
+                                    finish()
+                                }
+                            },
+                            dialogTitle = "Delete account",
+                            dialogText = "This operation is irreversible",
+                        )
                     }
                 }
             }
