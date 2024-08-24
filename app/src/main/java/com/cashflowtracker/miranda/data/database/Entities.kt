@@ -56,7 +56,8 @@ data class Recurrence(
 
 @Entity
 data class Account(
-    @PrimaryKey val title: String,
+    @PrimaryKey val accountId: UUID = UUID.randomUUID(),
+    @ColumnInfo val title: String,
     @ColumnInfo val type: String,
     @ColumnInfo val balance: Double,
     @ColumnInfo val creationDate: String,   // ZonedDateTime

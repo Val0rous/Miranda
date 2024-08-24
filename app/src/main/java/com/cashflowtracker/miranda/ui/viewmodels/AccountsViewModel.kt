@@ -24,9 +24,11 @@ interface AccountsActions {
     fun updateAccount(account: Account): Job
     fun removeAccount(account: Account): Job
     fun getAllByUserId(userId: UUID): Flow<List<Account>>
-    fun getByTitle(title: String, userId: UUID): Account
+    fun getByAccountId(accountId: UUID, userId: UUID): Account
+    fun getByAccountIdFlow(accountId: UUID, userId: UUID): Flow<Account>
+    fun getByAccountIdOrNull(accountId: UUID, userId: UUID): Account?
     fun getByTitleOrNull(title: String, userId: UUID): Account?
-    fun toggleIsFavorite(title: String, userId: UUID, isFavorite: Boolean): Job
+    fun toggleIsFavorite(accountId: UUID, userId: UUID, isFavorite: Boolean): Job
     fun getTotalBalance(userId: UUID): Flow<Double>
 }
 
@@ -49,8 +51,16 @@ class AccountsViewModel(private val repository: AccountsRepository) : ViewModel(
             repository.delete(account)
         }
 
-        override fun getByTitle(title: String, userId: UUID) = viewModelScope.run {
-            repository.getByTitle(title, userId)
+        override fun getByAccountId(accountId: UUID, userId: UUID) = viewModelScope.run {
+            repository.getByAccountId(accountId, userId)
+        }
+
+        override fun getByAccountIdFlow(accountId: UUID, userId: UUID) = viewModelScope.run {
+            repository.getByAccountIdFlow(accountId, userId)
+        }
+
+        override fun getByAccountIdOrNull(accountId: UUID, userId: UUID) = viewModelScope.run {
+            repository.getByAccountIdOrNull(accountId, userId)
         }
 
         override fun getByTitleOrNull(title: String, userId: UUID) = viewModelScope.run {
@@ -61,9 +71,9 @@ class AccountsViewModel(private val repository: AccountsRepository) : ViewModel(
             repository.getAllByUserId(userId)
         }
 
-        override fun toggleIsFavorite(title: String, userId: UUID, isFavorite: Boolean) =
+        override fun toggleIsFavorite(accountId: UUID, userId: UUID, isFavorite: Boolean) =
             viewModelScope.launch {
-                repository.setIsFavorite(title, userId, isFavorite)
+                repository.setIsFavorite(accountId, userId, isFavorite)
             }
 
         override fun getTotalBalance(userId: UUID): Flow<Double> = viewModelScope.run {

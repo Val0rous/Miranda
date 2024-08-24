@@ -1,13 +1,12 @@
 package com.cashflowtracker.miranda.ui.screens
 
-import android.graphics.Color
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,7 +20,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -47,7 +45,6 @@ import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 import com.cashflowtracker.miranda.ui.viewmodels.AccountsViewModel
 import com.cashflowtracker.miranda.utils.AccountType
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import java.util.UUID
@@ -57,11 +54,11 @@ class ViewAccount : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        val initialAccountTitle = intent.getStringExtra("accountTitle") ?: ""
-        println("initialAccountTitle: $initialAccountTitle")
+        val initialAccountId = UUID.fromString(intent.getStringExtra("accountId") ?: "")
+        println("initialAccountTitle: $initialAccountId")
         setContent {
             val userId = LocalContext.current.getCurrentUserId()
-            val accountTitle by remember { mutableStateOf(initialAccountTitle) }
+            val accountId by remember { mutableStateOf(initialAccountId) }
             val balanceVisible by remember {
                 mutableStateOf(
                     intent.getBooleanExtra(
@@ -74,6 +71,7 @@ class ViewAccount : ComponentActivity() {
             var account by remember {
                 mutableStateOf(
                     Account(
+                        UUID.fromString("00000000-0000-0000-0000-000000000000"),
                         "",
                         "",
                         0.0,
@@ -86,10 +84,12 @@ class ViewAccount : ComponentActivity() {
             var isFavorite by remember { mutableStateOf(false) }
             val coroutineScope = rememberCoroutineScope()
 
-            LaunchedEffect(key1 = accountTitle) {
+            LaunchedEffect(key1 = accountId) {
                 coroutineScope.launch(Dispatchers.IO) {
-                    account = vm.actions.getByTitle(accountTitle, userId)
-                    isFavorite = account.isFavorite
+                    vm.actions.getByAccountIdFlow(accountId, userId).collect { retrievedAccount ->
+                        account = retrievedAccount
+                        isFavorite = account.isFavorite
+                    }
                 }
             }
 
@@ -135,7 +135,7 @@ class ViewAccount : ComponentActivity() {
                                 },
                                 onClick = {
                                     isFavorite = !isFavorite
-                                    vm.actions.toggleIsFavorite(accountTitle, userId, isFavorite)
+                                    vm.actions.toggleIsFavorite(accountId, userId, isFavorite)
                                 }
                             )
                             NavigationBarItem(
@@ -147,7 +147,11 @@ class ViewAccount : ComponentActivity() {
                                         contentDescription = "Edit"
                                     )
                                 },
-                                onClick = { /*TODO*/ }
+                                onClick = {
+                                    val intent = Intent(this@ViewAccount, EditAccount::class.java)
+                                    intent.putExtra("accountId", accountId.toString())
+                                    startActivity(intent)
+                                }
                             )
                             NavigationBarItem(
                                 selected = false,

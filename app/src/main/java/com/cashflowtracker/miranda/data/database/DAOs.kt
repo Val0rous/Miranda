@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
@@ -76,16 +77,22 @@ interface AccountsDao {
     @Delete
     suspend fun delete(account: Account)
 
-    @Query("UPDATE account SET isFavorite = :isFavorite WHERE title = :title AND userId = :userId")
-    suspend fun setIsFavorite(title: String, userId: UUID, isFavorite: Boolean)
+    @Query("UPDATE account SET isFavorite = :isFavorite WHERE accountId = :accountId AND userId = :userId")
+    suspend fun setIsFavorite(accountId: UUID, userId: UUID, isFavorite: Boolean)
 
     @Query("SELECT * FROM account WHERE userId = :userId ORDER BY isFavorite DESC, balance DESC, title ASC")
     fun getAllByUserId(userId: UUID): Flow<List<Account>>
 
-    @Query("SELECT * FROM account WHERE title = :title AND userId = :userId")
-    fun getByTitle(title: String, userId: UUID): Account
+    @Query("SELECT * FROM account WHERE accountId = :accountId AND userId = :userId")
+    fun getByAccountId(accountId: UUID, userId: UUID): Account
 
-    @Query("SELECT * FROM account WHERE title = :title AND userId = :userId")
+    @Query("SELECT * FROM account WHERE accountId = :accountId AND userId = :userId")
+    fun getByAccountIdFlow(accountId: UUID, userId: UUID): Flow<Account>
+
+    @Query("SELECT * FROM account WHERE accountId = :accountId AND userId = :userId")
+    fun getByAccountIdOrNull(accountId: UUID, userId: UUID): Account?
+
+    @Query("SELECT * FROM account WHERE LOWER(title) = LOWER(:title) AND userId = :userId")
     fun getByTitleOrNull(title: String, userId: UUID): Account?
 
     @Query("SELECT SUM(balance) FROM account WHERE userId = :userId")

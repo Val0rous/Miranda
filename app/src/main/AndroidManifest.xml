@@ -40,6 +40,7 @@
         <activity android:name=".ui.screens.Signup" />
         <activity android:name=".ui.screens.SelectAccountType" />
         <activity android:name=".ui.screens.ViewAccount" />
+        <activity android:name=".ui.screens.EditAccount" />
 
 
         <meta-data

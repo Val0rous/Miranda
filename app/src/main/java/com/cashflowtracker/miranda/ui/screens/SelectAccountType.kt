@@ -44,9 +44,9 @@ class SelectAccountType : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        val initialAccountType = intent.getStringExtra("accountType") ?: ""
+        //val initialAccountType = intent.getStringExtra("accountType") ?: ""
         setContent {
-            val accountType = remember { mutableStateOf(initialAccountType) }
+            //val accountType = remember { mutableStateOf(initialAccountType) }
             MirandaTheme {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),

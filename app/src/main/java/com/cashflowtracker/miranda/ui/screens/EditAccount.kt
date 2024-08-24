@@ -11,8 +11,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -28,7 +26,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -36,8 +33,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -51,7 +48,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.data.database.Account
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserEmail
@@ -59,17 +55,16 @@ import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentU
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 import com.cashflowtracker.miranda.ui.viewmodels.AccountsViewModel
 import com.cashflowtracker.miranda.ui.viewmodels.UsersViewModel
-import com.cashflowtracker.miranda.utils.Routes
-import com.cashflowtracker.miranda.utils.validateEmail
-import com.cashflowtracker.miranda.utils.validatePassword
+import com.cashflowtracker.miranda.utils.AccountType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.androidx.compose.koinViewModel
 import java.util.Date
 import java.util.Locale
+import java.util.UUID
 
-class AddAccount : ComponentActivity() {
+class EditAccount : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,7 +73,15 @@ class AddAccount : ComponentActivity() {
             val scrollState = rememberScrollState()
             val coroutineScope = rememberCoroutineScope()
             val context = LocalContext.current
-            val accountTitle = remember { mutableStateOf<String>("") }
+            val accountId =
+                remember {
+                    mutableStateOf(
+                        UUID.fromString(
+                            intent.getStringExtra("accountId") ?: ""
+                        )
+                    )
+                }
+            val accountTitle = remember { mutableStateOf("") }
             var accountType by remember { mutableStateOf("") }
             var accountIcon by remember { mutableStateOf<Int?>(null) }
             val launcher = rememberLauncherForActivityResult(
@@ -104,7 +107,29 @@ class AddAccount : ComponentActivity() {
 //            val state by vm.state.collectAsStateWithLifecycle()
             val actions = vm.actions
             val usersVm = koinViewModel<UsersViewModel>()
-            val email = LocalContext.current.getCurrentUserEmail()
+            val email = context.getCurrentUserEmail()
+            val userId = context.getCurrentUserId()
+            var account by remember {
+                mutableStateOf(
+                    Account(
+                        UUID.fromString("00000000-0000-0000-0000-000000000000"),
+                        "",
+                        "",
+                        0.0,
+                        "",
+                        UUID.fromString("00000000-0000-0000-0000-000000000000"),
+                        false
+                    )
+                )
+            }
+            LaunchedEffect(key1 = accountTitle) {
+                coroutineScope.launch(Dispatchers.IO) {
+                    account = vm.actions.getByAccountId(accountId.value, userId)
+                    accountTitle.value = account.title
+                    accountType = account.type
+                    accountIcon = AccountType.getIcon(account.type)
+                }
+            }
 
             MirandaTheme {
                 Scaffold(
@@ -130,28 +155,25 @@ class AddAccount : ComponentActivity() {
                                 Button(
                                     onClick = {
                                         coroutineScope.launch {
-                                            val userId = context.getCurrentUserId()
                                             val existingAccount = withContext(Dispatchers.IO) {
-                                                actions.getByTitleOrNull(accountTitle.value, userId)
+                                                vm.actions.getByTitleOrNull(
+                                                    accountTitle.value,
+                                                    userId
+                                                )
                                             }
                                             if (existingAccount != null) {
-                                                // Account already exists
                                                 isError.value = true
                                                 return@launch
                                             } else {
-                                                actions.addAccount(
+                                                actions.updateAccount(
                                                     Account(
+                                                        accountId = account.accountId,
                                                         title = accountTitle.value,
                                                         type = accountType,
-                                                        balance = 0.00,
-                                                        creationDate = SimpleDateFormat(
-                                                            "yyyy-MM-dd",
-                                                            Locale.getDefault()
-                                                        ).format(
-                                                            Date()
-                                                        ),
-                                                        userId = userId,
-                                                        isFavorite = false,
+                                                        balance = account.balance,
+                                                        creationDate = account.creationDate,
+                                                        userId = account.userId,
+                                                        isFavorite = account.isFavorite,
                                                     )
                                                 )
                                                 finish()
@@ -169,7 +191,7 @@ class AddAccount : ComponentActivity() {
                                     enabled = isFormValid
                                 ) {
                                     Text(
-                                        text = "Create",
+                                        text = "Save",
                                         maxLines = 1,
                                         overflow = TextOverflow.Ellipsis,
                                         style = MaterialTheme.typography.labelLarge,
@@ -225,10 +247,10 @@ class AddAccount : ComponentActivity() {
                                 .clickable {
                                     val intent =
                                         Intent(
-                                            this@AddAccount,
+                                            this@EditAccount,
                                             SelectAccountType::class.java
                                         )
-                                    //intent.putExtra("accountType", accountType)
+                                    intent.putExtra("accountType", accountType)
                                     launcher.launch(intent)
                                 }
                             ) {
