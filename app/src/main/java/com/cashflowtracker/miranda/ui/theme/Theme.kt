@@ -60,10 +60,10 @@ fun MirandaTheme(
     content: @Composable () -> Unit,
 ) {
     val isDarkTheme by themeViewModel.isDarkTheme.collectAsState(
-        initial = LocalContext.current.getThemePreference()
+//        initial = LocalContext.current.getThemePreference()
     )
     val followSystem by themeViewModel.followSystem.collectAsState(
-        initial = LocalContext.current.getSystemPreference()
+//        initial = LocalContext.current.getSystemPreference()
     )
 
     val effectiveIsDarkTheme = if (followSystem) {

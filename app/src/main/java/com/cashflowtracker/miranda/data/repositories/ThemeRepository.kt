@@ -1,13 +1,12 @@
 package com.cashflowtracker.miranda.data.repositories
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.content.res.Configuration
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.preference.PreferenceManager.getDefaultSharedPreferences
-import com.cashflowtracker.miranda.ui.viewmodels.ThemeViewModel
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 
 object ThemeRepository {
     private const val IS_DARK_THEME_KEY = "is_dark_theme"
@@ -29,6 +28,20 @@ object ThemeRepository {
         return sharedPrefs.getBoolean(IS_DARK_THEME_KEY, false) // Default to light theme
     }
 
+    fun Context.getThemePreferenceFlow(): Flow<Boolean> = callbackFlow {
+        val sharedPrefs = getDefaultSharedPreferences(this@getThemePreferenceFlow)
+        val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+            if (key == IS_DARK_THEME_KEY) {
+                trySend(sharedPrefs.getBoolean(IS_DARK_THEME_KEY, false))
+            }
+        }
+        sharedPrefs.registerOnSharedPreferenceChangeListener(listener)
+        trySend(sharedPrefs.getBoolean(IS_DARK_THEME_KEY, false))
+        awaitClose {
+            sharedPrefs.unregisterOnSharedPreferenceChangeListener(listener)
+        }
+    }
+
     /** Saves system preference of app
      * @param isFollowSystem true to follow system theme, false to use app custom choice */
     fun Context.saveSystemPreference(isFollowSystem: Boolean) {
@@ -42,6 +55,20 @@ object ThemeRepository {
     fun Context.getSystemPreference(): Boolean {
         val sharedPrefs = getDefaultSharedPreferences(this)
         return sharedPrefs.getBoolean(IS_FOLLOW_SYSTEM_KEY, true)   // Default to system theme
+    }
+
+    fun Context.getSystemPreferenceFlow(): Flow<Boolean> = callbackFlow {
+        val sharedPrefs = getDefaultSharedPreferences(this@getSystemPreferenceFlow)
+        val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+            if (key == IS_FOLLOW_SYSTEM_KEY) {
+                trySend(sharedPrefs.getBoolean(IS_FOLLOW_SYSTEM_KEY, true))
+            }
+        }
+        sharedPrefs.registerOnSharedPreferenceChangeListener(listener)
+        trySend(sharedPrefs.getBoolean(IS_FOLLOW_SYSTEM_KEY, true))
+        awaitClose {
+            sharedPrefs.unregisterOnSharedPreferenceChangeListener(listener)
+        }
     }
 
     /** Gets current system theme preference

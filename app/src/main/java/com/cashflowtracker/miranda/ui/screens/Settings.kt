@@ -1,6 +1,7 @@
 package com.cashflowtracker.miranda.ui.screens
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -25,8 +26,11 @@ import com.cashflowtracker.miranda.ui.composables.SegmentedButtonTheme
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 import kotlinx.coroutines.launch
 import androidx.compose.material3.Scaffold
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.clearLoggedUserId
+import com.cashflowtracker.miranda.data.repositories.ThemeRepository.saveSystemPreference
+import com.cashflowtracker.miranda.data.repositories.ThemeRepository.saveThemePreference
 import com.cashflowtracker.miranda.ui.viewmodels.ThemeViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -113,14 +117,10 @@ class Settings : ComponentActivity() {
 //                onThemeChange = { onThemeChange }
                                 followSystem = followSystem,
                                 onThemeChange = { isDark: Boolean ->
-                                    themeViewModel.setThemePreference(
-                                        isDark
-                                    )
+                                    themeViewModel.setThemePreference(isDark, context)
                                 },
                                 onSystemChange = { follow: Boolean ->
-                                    themeViewModel.setSystemPreference(
-                                        follow
-                                    )
+                                    themeViewModel.setSystemPreference(follow, context)
                                 },
                                 context = context,
 //                                coroutineScope = coroutineScope
