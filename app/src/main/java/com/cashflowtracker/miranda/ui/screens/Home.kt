@@ -227,6 +227,7 @@ fun Home() {
                         modifier = Modifier.clickable {
                             val intent = Intent(context, ViewAccount::class.java)
                             intent.putExtra("accountTitle", account.title)
+                                .putExtra("balanceVisible", balanceVisible)
                             context.startActivity(intent)
                         }
                     )

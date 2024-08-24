@@ -62,6 +62,14 @@ class ViewAccount : ComponentActivity() {
         setContent {
             val userId = LocalContext.current.getCurrentUserId()
             val accountTitle by remember { mutableStateOf(initialAccountTitle) }
+            val balanceVisible by remember {
+                mutableStateOf(
+                    intent.getBooleanExtra(
+                        "balanceVisible",
+                        false
+                    )
+                )
+            }
             val vm = koinViewModel<AccountsViewModel>()
             var account by remember {
                 mutableStateOf(
@@ -200,7 +208,7 @@ class ViewAccount : ComponentActivity() {
                                 Spacer(modifier = Modifier.weight(1f))
                                 BalanceText(
                                     balance = account.balance,
-                                    isVisible = true,
+                                    isVisible = balanceVisible,
                                     style = MaterialTheme.typography.titleMedium,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                                     textAlign = TextAlign.End
