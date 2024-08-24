@@ -190,9 +190,11 @@ fun Home() {
                                     .background(MaterialTheme.colorScheme.surfaceTint)
                             ) {
                                 Icon(
-                                    imageVector = ImageVector.vectorResource(AccountType.entries.find {
-                                        it.type == account.type
-                                    }?.icon ?: 0),
+                                    imageVector = ImageVector.vectorResource(
+                                        AccountType.getIcon(
+                                            account.type
+                                        )
+                                    ),
                                     contentDescription = account.type,
                                     tint = MaterialTheme.colorScheme.surface,
                                     modifier = Modifier

@@ -15,5 +15,13 @@ enum class AccountType(val type: String, val icon: Int) {
     PAYMENT_PLATFORM("Payment Platform", R.drawable.ic_local_atm),
 
     /** These ones have no bank coordinates */
-    OTHER_ACCOUNT("Other Account", R.drawable.ic_universal_currency),
+    OTHER_ACCOUNT("Other Account", R.drawable.ic_universal_currency);
+
+    companion object {
+        fun getIcon(type: String): Int {
+            return entries.find {
+                it.type == type
+            }?.icon ?: R.drawable.ic_android
+        }
+    }
 }

@@ -184,9 +184,11 @@ class ViewAccount : ComponentActivity() {
                                         .background(MaterialTheme.colorScheme.surfaceTint)
                                 ) {
                                     Icon(
-                                        imageVector = ImageVector.vectorResource(AccountType.entries.find {
-                                            it.type == account.type
-                                        }?.icon ?: R.drawable.ic_android),
+                                        imageVector = ImageVector.vectorResource(
+                                            AccountType.getIcon(
+                                                account.type
+                                            )
+                                        ),
                                         contentDescription = account.type,
                                         tint = MaterialTheme.colorScheme.surface,
                                         modifier = Modifier

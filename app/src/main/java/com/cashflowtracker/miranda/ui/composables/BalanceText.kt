@@ -18,9 +18,19 @@ fun BalanceText(
     color: Color,
     textAlign: TextAlign? = null
 ) {
-    if (isVisible) {
-        Text(text = String.format("%.2f €", balance), style = style, textAlign = textAlign)
+    val effectiveColor = if (balance >= 0) {
+        color
     } else {
-        Text(text = "• • • €", style = style, textAlign = textAlign)
+        MaterialTheme.colorScheme.error
+    }
+    if (isVisible) {
+        Text(
+            text = String.format("%.2f €", balance),
+            style = style,
+            color = effectiveColor,
+            textAlign = textAlign
+        )
+    } else {
+        Text(text = "• • • €", style = style, color = color, textAlign = textAlign)
     }
 }
