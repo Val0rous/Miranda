@@ -23,6 +23,7 @@ interface AccountsActions {
     fun addAccount(account: Account): Job
     fun updateAccount(account: Account): Job
     fun removeAccount(account: Account): Job
+    fun deleteAccount(accountId: UUID, userId: UUID): Job
     fun getAllByUserId(userId: UUID): Flow<List<Account>>
     fun getByAccountId(accountId: UUID, userId: UUID): Account
     fun getByAccountIdFlow(accountId: UUID, userId: UUID): Flow<Account>
@@ -49,6 +50,11 @@ class AccountsViewModel(private val repository: AccountsRepository) : ViewModel(
 
         override fun removeAccount(account: Account) = viewModelScope.launch {
             repository.delete(account)
+        }
+
+
+        override fun deleteAccount(accountId: UUID, userId: UUID) = viewModelScope.launch {
+            repository.deleteByAccountId(accountId, userId)
         }
 
         override fun getByAccountId(accountId: UUID, userId: UUID) = viewModelScope.run {

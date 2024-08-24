@@ -77,6 +77,9 @@ interface AccountsDao {
     @Delete
     suspend fun delete(account: Account)
 
+    @Query("DELETE FROM account WHERE accountId = :accountId AND userId = :userId")
+    suspend fun deleteByAccountId(accountId: UUID, userId: UUID)
+
     @Query("UPDATE account SET isFavorite = :isFavorite WHERE accountId = :accountId AND userId = :userId")
     suspend fun setIsFavorite(accountId: UUID, userId: UUID, isFavorite: Boolean)
 

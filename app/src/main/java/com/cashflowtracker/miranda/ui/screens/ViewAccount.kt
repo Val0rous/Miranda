@@ -46,6 +46,7 @@ import com.cashflowtracker.miranda.ui.viewmodels.AccountsViewModel
 import com.cashflowtracker.miranda.utils.AccountType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.androidx.compose.koinViewModel
 import java.util.UUID
 
@@ -81,14 +82,19 @@ class ViewAccount : ComponentActivity() {
                     )
                 )
             }
-            var isFavorite by remember { mutableStateOf(false) }
+            var isFavorite by remember { mutableStateOf(account.isFavorite) }
             val coroutineScope = rememberCoroutineScope()
+            var isDeleting by remember { mutableStateOf(false) }
 
-            LaunchedEffect(key1 = accountId) {
-                coroutineScope.launch(Dispatchers.IO) {
-                    vm.actions.getByAccountIdFlow(accountId, userId).collect { retrievedAccount ->
-                        account = retrievedAccount
-                        isFavorite = account.isFavorite
+            LaunchedEffect(key1 = accountId, key2 = isDeleting) {
+                if (!isDeleting) {
+                    coroutineScope.launch(Dispatchers.IO) {
+                        vm.actions.getByAccountIdFlow(accountId, userId)
+                            .collect { retrievedAccount ->
+                                withContext(Dispatchers.Main) {
+                                    account = retrievedAccount
+                                }
+                            }
                     }
                 }
             }
@@ -162,9 +168,13 @@ class ViewAccount : ComponentActivity() {
                                         contentDescription = "Delete"
                                     )
                                 },
+                                enabled = !isDeleting,
                                 onClick = {
-                                    vm.actions.removeAccount(account)
-                                    finish()
+                                    isDeleting = true
+                                    coroutineScope.launch {
+                                        vm.actions.deleteAccount(accountId, userId)
+                                        finish()
+                                    }
                                 },
                             )
                         }
@@ -177,74 +187,76 @@ class ViewAccount : ComponentActivity() {
                             .padding(vertical = 32.dp, horizontal = 24.dp)
                     ) {
                         item {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.padding(bottom = 32.dp)
-                            ) {
-                                Box(
-                                    modifier = Modifier
-                                        .size(56.dp)
-                                        .clip(CircleShape)
-                                        .background(MaterialTheme.colorScheme.surfaceTint)
+                            if (!isDeleting) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.padding(bottom = 32.dp)
                                 ) {
-                                    Icon(
-                                        imageVector = ImageVector.vectorResource(
-                                            AccountType.getIcon(
-                                                account.type
-                                            )
-                                        ),
-                                        contentDescription = account.type,
-                                        tint = MaterialTheme.colorScheme.surface,
+                                    Box(
                                         modifier = Modifier
-                                            .size(40.dp)
-                                            .align(Alignment.Center)
+                                            .size(56.dp)
+                                            .clip(CircleShape)
+                                            .background(MaterialTheme.colorScheme.surfaceTint)
+                                    ) {
+                                        Icon(
+                                            imageVector = ImageVector.vectorResource(
+                                                AccountType.getIcon(
+                                                    account.type
+                                                )
+                                            ),
+                                            contentDescription = account.type,
+                                            tint = MaterialTheme.colorScheme.surface,
+                                            modifier = Modifier
+                                                .size(40.dp)
+                                                .align(Alignment.Center)
+                                        )
+                                    }
+                                    Text(
+                                        text = account.title,
+                                        style = MaterialTheme.typography.headlineSmall,
+                                        modifier = Modifier.padding(start = 22.dp)
                                     )
                                 }
-                                Text(
-                                    text = account.title,
-                                    style = MaterialTheme.typography.headlineSmall,
-                                    modifier = Modifier.padding(start = 22.dp)
-                                )
-                            }
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.padding(bottom = 32.dp)
-                            ) {
-                                Text(text = "Current balance")
-                                Spacer(modifier = Modifier.weight(1f))
-                                BalanceText(
-                                    balance = account.balance,
-                                    isVisible = balanceVisible,
-                                    style = MaterialTheme.typography.titleMedium,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    textAlign = TextAlign.End
-                                )
-                            }
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.padding(bottom = 32.dp)
-                            ) {
-                                Text(text = "Type")
-                                Spacer(modifier = Modifier.weight(1f))
-                                Text(
-                                    text = account.type,
-                                    style = MaterialTheme.typography.titleMedium,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    textAlign = TextAlign.End
-                                )
-                            }
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.padding(bottom = 32.dp)
-                            ) {
-                                Text(text = "Created on")
-                                Spacer(modifier = Modifier.weight(1f))
-                                Text(
-                                    text = account.creationDate,
-                                    style = MaterialTheme.typography.titleMedium,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    textAlign = TextAlign.End
-                                )
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.padding(bottom = 32.dp)
+                                ) {
+                                    Text(text = "Current balance")
+                                    Spacer(modifier = Modifier.weight(1f))
+                                    BalanceText(
+                                        balance = account.balance,
+                                        isVisible = balanceVisible,
+                                        style = MaterialTheme.typography.titleMedium,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        textAlign = TextAlign.End
+                                    )
+                                }
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.padding(bottom = 32.dp)
+                                ) {
+                                    Text(text = "Type")
+                                    Spacer(modifier = Modifier.weight(1f))
+                                    Text(
+                                        text = account.type,
+                                        style = MaterialTheme.typography.titleMedium,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        textAlign = TextAlign.End
+                                    )
+                                }
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.padding(bottom = 32.dp)
+                                ) {
+                                    Text(text = "Created on")
+                                    Spacer(modifier = Modifier.weight(1f))
+                                    Text(
+                                        text = account.creationDate,
+                                        style = MaterialTheme.typography.titleMedium,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        textAlign = TextAlign.End
+                                    )
+                                }
                             }
                         }
                     }
