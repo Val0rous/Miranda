@@ -95,6 +95,7 @@ class ViewAccount : ComponentActivity() {
                             .collect { retrievedAccount ->
                                 withContext(Dispatchers.Main) {
                                     account = retrievedAccount
+                                    isFavorite = account.isFavorite
                                 }
                             }
                     }
