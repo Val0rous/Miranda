@@ -33,7 +33,10 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.R
+import com.cashflowtracker.miranda.ui.theme.Green400
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
+import com.cashflowtracker.miranda.ui.theme.Red400
+import com.cashflowtracker.miranda.ui.theme.Yellow400
 import com.cashflowtracker.miranda.utils.AccountType
 import com.cashflowtracker.miranda.utils.CategoryClass
 import com.cashflowtracker.miranda.utils.DefaultCategories
@@ -123,7 +126,7 @@ class SelectCategoryType : ComponentActivity() {
                                                     Icon(
                                                         imageVector = ImageVector.vectorResource(R.drawable.ic_star_filled),
                                                         contentDescription = "",
-                                                        tint = MaterialTheme.colorScheme.surfaceTint,
+                                                        tint = Red400,
                                                         modifier = Modifier
                                                             .size(24.dp)
                                                     )
@@ -137,7 +140,7 @@ class SelectCategoryType : ComponentActivity() {
                                                     Icon(
                                                         imageVector = ImageVector.vectorResource(R.drawable.ic_star_filled),
                                                         contentDescription = "",
-                                                        tint = MaterialTheme.colorScheme.surfaceTint,
+                                                        tint = Yellow400,
                                                         modifier = Modifier
                                                             .size(24.dp)
                                                     )
@@ -150,7 +153,7 @@ class SelectCategoryType : ComponentActivity() {
                                                     Icon(
                                                         imageVector = ImageVector.vectorResource(R.drawable.ic_star_filled),
                                                         contentDescription = "",
-                                                        tint = MaterialTheme.colorScheme.surfaceTint,
+                                                        tint = Green400,
                                                         modifier = Modifier
                                                             .size(24.dp)
                                                     )
