@@ -132,7 +132,7 @@ class AddAccount : ComponentActivity() {
                                         coroutineScope.launch {
                                             val userId = context.getCurrentUserId()
                                             val existingAccount = withContext(Dispatchers.IO) {
-                                                actions.getByTitle(accountTitle.value, userId)
+                                                actions.getByTitleOrNull(accountTitle.value, userId)
                                             }
                                             if (existingAccount != null) {
                                                 // Account already exists

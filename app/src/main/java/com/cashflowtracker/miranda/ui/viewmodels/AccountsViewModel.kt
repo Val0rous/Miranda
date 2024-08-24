@@ -24,7 +24,8 @@ interface AccountsActions {
     fun updateAccount(account: Account): Job
     fun removeAccount(account: Account): Job
     fun getAllByUserId(userId: UUID): Flow<List<Account>>
-    fun getByTitle(title: String, userId: UUID): Account?
+    fun getByTitle(title: String, userId: UUID): Account
+    fun getByTitleOrNull(title: String, userId: UUID): Account?
     fun toggleIsFavorite(title: String, userId: UUID, isFavorite: Boolean): Job
     fun getTotalBalance(userId: UUID): Flow<Double>
 }
@@ -50,6 +51,10 @@ class AccountsViewModel(private val repository: AccountsRepository) : ViewModel(
 
         override fun getByTitle(title: String, userId: UUID) = viewModelScope.run {
             repository.getByTitle(title, userId)
+        }
+
+        override fun getByTitleOrNull(title: String, userId: UUID) = viewModelScope.run {
+            repository.getByTitleOrNull(title, userId)
         }
 
         override fun getAllByUserId(userId: UUID): Flow<List<Account>> = viewModelScope.run {

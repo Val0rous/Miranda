@@ -48,6 +48,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavHostController
 import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserEmail
@@ -224,11 +225,9 @@ fun Home() {
                             }
                         },
                         modifier = Modifier.clickable {
-//                            val resultIntent =
-//                                Intent().putExtra("accountType", accountType.type)
-//                                    .putExtra("accountIcon", accountType.icon.toString())
-//                            setResult(Activity.RESULT_OK, resultIntent)
-//                            finish()
+                            val intent = Intent(context, ViewAccount::class.java)
+                            intent.putExtra("accountTitle", account.title)
+                            context.startActivity(intent)
                         }
                     )
                     HorizontalDivider()

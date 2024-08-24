@@ -9,7 +9,8 @@ class AccountsRepository(private val accountsDao: AccountsDao) {
     suspend fun upsert(account: Account) = accountsDao.upsert(account)
     suspend fun delete(account: Account) = accountsDao.delete(account)
     fun getByTitle(title: String, userId: UUID) = accountsDao.getByTitle(title, userId)
-    fun getAllByUserId(userId: UUID): Flow<List<Account>> = accountsDao.getAllByUserId(userId)
+    fun getByTitleOrNull(title: String, userId: UUID) = accountsDao.getByTitleOrNull(title, userId)
+    fun getAllByUserId(userId: UUID) = accountsDao.getAllByUserId(userId)
     suspend fun setIsFavorite(title: String, userId: UUID, isFavorite: Boolean) =
         accountsDao.setIsFavorite(title, userId, isFavorite)
 

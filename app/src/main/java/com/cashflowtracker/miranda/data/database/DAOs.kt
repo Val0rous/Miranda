@@ -79,11 +79,14 @@ interface AccountsDao {
     @Query("UPDATE account SET isFavorite = :isFavorite WHERE title = :title AND userId = :userId")
     suspend fun setIsFavorite(title: String, userId: UUID, isFavorite: Boolean)
 
-    @Query("SELECT * FROM account WHERE userId = :userId ORDER BY balance DESC")
+    @Query("SELECT * FROM account WHERE userId = :userId ORDER BY isFavorite DESC, balance DESC, title ASC")
     fun getAllByUserId(userId: UUID): Flow<List<Account>>
 
     @Query("SELECT * FROM account WHERE title = :title AND userId = :userId")
-    fun getByTitle(title: String, userId: UUID): Account?
+    fun getByTitle(title: String, userId: UUID): Account
+
+    @Query("SELECT * FROM account WHERE title = :title AND userId = :userId")
+    fun getByTitleOrNull(title: String, userId: UUID): Account?
 
     @Query("SELECT SUM(balance) FROM account WHERE userId = :userId")
     fun getTotalBalance(userId: UUID): Flow<Double>
