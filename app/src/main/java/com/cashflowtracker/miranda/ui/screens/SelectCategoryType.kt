@@ -33,6 +33,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.R
+import com.cashflowtracker.miranda.ui.theme.CustomColors
 import com.cashflowtracker.miranda.ui.theme.Green400
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 import com.cashflowtracker.miranda.ui.theme.Red400
@@ -106,12 +107,19 @@ class SelectCategoryType : ComponentActivity() {
                                         modifier = Modifier
                                             .size(40.dp)
                                             .clip(CircleShape)
-                                            .background(MaterialTheme.colorScheme.surfaceTint)
+                                            //.background(MaterialTheme.colorScheme.surfaceTint)
+                                            .background(
+                                                color = when (categoryType.type) {
+                                                    CategoryClass.NECESSITY -> CustomColors.current.surfaceTintRed
+                                                    CategoryClass.CONVENIENCE -> CustomColors.current.surfaceTintYellow
+                                                    CategoryClass.LUXURY -> CustomColors.current.surfaceTintGreen
+                                                }
+                                            )
                                     ) {
                                         Icon(
                                             imageVector = ImageVector.vectorResource(categoryType.icon),
                                             contentDescription = categoryType.category,
-                                            tint = MaterialTheme.colorScheme.surface,
+                                            tint = CustomColors.current.icon,
                                             modifier = Modifier
                                                 .size(24.dp)
                                                 .align(Alignment.Center)

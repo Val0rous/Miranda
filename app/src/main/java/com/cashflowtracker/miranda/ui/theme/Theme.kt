@@ -9,9 +9,12 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
@@ -46,6 +49,33 @@ private val LightColorScheme = lightColorScheme(
     */
 )
 
+data class CustomColorScheme(
+    val surfaceTintRed: Color,
+    val surfaceTintYellow: Color,
+    val surfaceTintGreen: Color,
+    val surfaceTintBlue: Color,
+    val icon: Color
+)
+
+private val DarkCustomColors = CustomColorScheme(
+    surfaceTintRed = Dark_SurfaceTintRed,
+    surfaceTintYellow = Dark_SurfaceTintYellow,
+    surfaceTintGreen = Dark_SurfaceTintGreen,
+    surfaceTintBlue = Dark_SurfaceTintBlue,
+    icon = Dark_Icon
+)
+
+private val LightCustomColors = CustomColorScheme(
+    surfaceTintRed = Light_SurfaceTintRed,
+    surfaceTintYellow = Light_SurfaceTintYellow,
+    surfaceTintGreen = Light_SurfaceTintGreen,
+    surfaceTintBlue = Light_SurfaceTintBlue,
+    icon = Light_Icon
+)
+
+internal val CustomColors = staticCompositionLocalOf<CustomColorScheme> {
+    error("No custom colors provided")
+}
 
 @Composable
 fun MirandaTheme(
@@ -75,6 +105,13 @@ fun MirandaTheme(
         effectiveIsDarkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
+    val customColors = remember(effectiveIsDarkTheme) {
+        if (effectiveIsDarkTheme) {
+            DarkCustomColors
+        } else {
+            LightCustomColors
+        }
+    }
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
@@ -89,6 +126,13 @@ fun MirandaTheme(
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,
-        content = content,
+        //content = content,
+        content = {
+            CompositionLocalProvider(
+                CustomColors provides customColors,
+            ) {
+                content()
+            }
+        }
     )
 }

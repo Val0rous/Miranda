@@ -1,6 +1,8 @@
 package com.cashflowtracker.miranda.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.ui.graphics.Color
 
 val Purple80 = Color(0xFFD0BCFF)
@@ -16,3 +18,13 @@ val Yellow400 = Color(0xFFFFEE58)
 val Green400 = Color(0xFF66BB6A)
 
 val Dark_SurfaceTintRed = Color(0xFFFFB4A9)
+val Dark_SurfaceTintYellow = Color(0xFFD4C871)
+val Dark_SurfaceTintGreen = Color(0xFFA1D39A)
+val Dark_SurfaceTintBlue = Color(0xFFA0CAFD)
+val Dark_Icon = Color(0xFF111418)
+
+val Light_SurfaceTintRed = Color(0xFFFFDAD5)
+val Light_SurfaceTintYellow = Color(0xFFF1E48A)
+val Light_SurfaceTintGreen = Color(0xFFBCF0B4)
+val Light_SurfaceTintBlue = Color(0xFFD7E3F7)
+val Light_Icon = Color(0xFF191C20)
