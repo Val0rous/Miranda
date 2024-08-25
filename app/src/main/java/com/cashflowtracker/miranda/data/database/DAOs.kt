@@ -47,11 +47,20 @@ interface TransactionsDao {
     @Delete
     suspend fun delete(transaction: Transaction)
 
+    @Query("DELETE FROM [transaction] WHERE transactionId = :transactionId")
+    suspend fun deleteByTransactionId(transactionId: UUID)
+
     @Query("SELECT * FROM [transaction] WHERE userId = :userId ORDER BY dateTime DESC")
     fun getAllByUserId(userId: UUID): Flow<List<Transaction>>
 
     @Query("SELECT * FROM [transaction] WHERE transactionId = :transactionId")
     fun getByTransactionId(transactionId: UUID): Transaction
+
+    @Query("SELECT * FROM [transaction] WHERE transactionId = :transactionId")
+    fun getByTransactionIdFlow(transactionId: UUID): Flow<Transaction>
+
+    @Query("UPDATE [transaction] SET source = CASE WHEN source = :oldTitle THEN :newTitle ELSE source END, destination = CASE WHEN destination = :oldTitle THEN :newTitle ELSE destination END WHERE source = :oldTitle OR destination = :oldTitle")
+    suspend fun updateAllByTitle(oldTitle: String, newTitle: String)
 }
 
 @Dao
@@ -77,8 +86,8 @@ interface AccountsDao {
     @Delete
     suspend fun delete(account: Account)
 
-    @Query("DELETE FROM account WHERE accountId = :accountId AND userId = :userId")
-    suspend fun deleteByAccountId(accountId: UUID, userId: UUID)
+    @Query("DELETE FROM account WHERE accountId = :accountId")
+    suspend fun deleteByAccountId(accountId: UUID)
 
     @Query("UPDATE account SET isFavorite = :isFavorite WHERE accountId = :accountId AND userId = :userId")
     suspend fun setIsFavorite(accountId: UUID, userId: UUID, isFavorite: Boolean)

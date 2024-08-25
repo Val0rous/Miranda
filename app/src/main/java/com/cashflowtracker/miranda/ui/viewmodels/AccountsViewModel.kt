@@ -1,19 +1,12 @@
 package com.cashflowtracker.miranda.ui.viewmodels
 
-import android.content.Context
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cashflowtracker.miranda.data.database.Account
 import com.cashflowtracker.miranda.data.repositories.AccountsRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import org.koin.androidx.compose.koinViewModel
 
 import java.util.UUID
 
@@ -23,7 +16,7 @@ interface AccountsActions {
     fun addAccount(account: Account): Job
     fun updateAccount(account: Account): Job
     fun removeAccount(account: Account): Job
-    fun deleteAccount(accountId: UUID, userId: UUID): Job
+    fun removeAccount(accountId: UUID): Job
     fun getAllByUserId(userId: UUID): Flow<List<Account>>
     fun getByAccountId(accountId: UUID, userId: UUID): Account
     fun getByAccountIdFlow(accountId: UUID, userId: UUID): Flow<Account>
@@ -52,18 +45,18 @@ class AccountsViewModel(private val repository: AccountsRepository) : ViewModel(
             repository.delete(account)
         }
 
-
-        override fun deleteAccount(accountId: UUID, userId: UUID) = viewModelScope.launch {
-            repository.deleteByAccountId(accountId, userId)
+        override fun removeAccount(accountId: UUID) = viewModelScope.launch {
+            repository.deleteByAccountId(accountId)
         }
 
         override fun getByAccountId(accountId: UUID, userId: UUID) = viewModelScope.run {
             repository.getByAccountId(accountId, userId)
         }
 
-        override fun getByAccountIdFlow(accountId: UUID, userId: UUID) = viewModelScope.run {
-            repository.getByAccountIdFlow(accountId, userId)
-        }
+        override fun getByAccountIdFlow(accountId: UUID, userId: UUID): Flow<Account> =
+            viewModelScope.run {
+                repository.getByAccountIdFlow(accountId, userId)
+            }
 
         override fun getByAccountIdOrNull(accountId: UUID, userId: UUID) = viewModelScope.run {
             repository.getByAccountIdOrNull(accountId, userId)

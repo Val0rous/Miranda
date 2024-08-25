@@ -7,14 +7,14 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.style.TextAlign
 
 @Composable
-fun AlertDialogDelete(
+fun AlertDialogIconTitle(
     onDismissRequest: () -> Unit,
     onConfirmation: () -> Unit,
     dialogTitle: String,
     dialogText: String,
+    actionText: String,
     icon: Int
 ) {
     AlertDialog(
@@ -34,7 +34,7 @@ fun AlertDialogDelete(
                     onConfirmation()
                 }
             ) {
-                Text("Delete")
+                Text(text = actionText)
             }
         },
         dismissButton = {
@@ -44,6 +44,42 @@ fun AlertDialogDelete(
                 }
             ) {
                 Text("Cancel")
+            }
+        }
+    )
+}
+
+@Composable
+fun AlertDialogBasic(
+    onDismissRequest: () -> Unit,
+    onConfirmation: () -> Unit,
+    dialogText: String,
+    actionText: String,
+    cancelText: String
+) {
+    AlertDialog(
+        text = {
+            Text(text = dialogText)
+        },
+        onDismissRequest = {
+            onDismissRequest()
+        },
+        dismissButton = {
+            TextButton(
+                onClick = {
+                    onDismissRequest()
+                }
+            ) {
+                Text(cancelText)
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onConfirmation()
+                }
+            ) {
+                Text(actionText)
             }
         }
     )

@@ -11,6 +11,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -19,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.R
@@ -47,7 +49,7 @@ class AddTransaction : ComponentActivity() {
             var sourceIcon by remember { mutableStateOf<Int?>(null) }
             var destination by remember { mutableStateOf("") }
             var destinationIcon by remember { mutableStateOf<Int?>(null) }
-            val amount = remember { mutableStateOf("") }
+            val amount = remember { mutableStateOf(0.0) }
             val comment = remember { mutableStateOf("") }
             val location = remember { mutableStateOf("") }
 
@@ -299,10 +301,23 @@ class AddTransaction : ComponentActivity() {
                             Spacer(modifier = Modifier.width(16.dp))
                             // Amount Field
                             OutlinedTextField(
-                                value = amount.value,
-                                onValueChange = { text -> amount.value = text },
+                                value = if (amount.value == 0.0) {
+                                    ""
+                                } else {
+                                    "%.2f".format(amount.value)
+                                },
+                                onValueChange = { text ->
+                                    amount.value = text.toDoubleOrNull()?.let {
+                                        if (it >= 0) {
+                                            "%.2f".format(it).toDoubleOrNull()
+                                        } else {
+                                            0.0
+                                        }
+                                    } ?: amount.value
+                                },
                                 label = { Text("Amount") },
                                 placeholder = { Text("0.00 €") },
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                                 modifier = Modifier.fillMaxWidth()
                             )
                         }

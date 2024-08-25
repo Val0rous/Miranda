@@ -8,8 +8,8 @@ import java.util.UUID
 class AccountsRepository(private val accountsDao: AccountsDao) {
     suspend fun upsert(account: Account) = accountsDao.upsert(account)
     suspend fun delete(account: Account) = accountsDao.delete(account)
-    suspend fun deleteByAccountId(accountId: UUID, userId: UUID) =
-        accountsDao.deleteByAccountId(accountId, userId)
+    suspend fun deleteByAccountId(accountId: UUID) =
+        accountsDao.deleteByAccountId(accountId)
 
     fun getByAccountId(accountId: UUID, userId: UUID) =
         accountsDao.getByAccountId(accountId, userId)

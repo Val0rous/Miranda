@@ -63,7 +63,18 @@ fun ExpandableFAB(expanded: MutableState<Boolean>) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.End,
-                modifier = Modifier.clickable { }
+                modifier = Modifier.clickable {
+                    expanded.value = false
+                    val options = ActivityOptionsCompat.makeCustomAnimation(
+                        context,
+                        R.anim.slide_up_from_bottom,
+                        R.anim.fade_out
+                    )
+                    context.startActivity(
+                        Intent(context, AddRecurrence::class.java),
+                        options.toBundle()
+                    )
+                }
             ) {
 //                Spacer(modifier = Modifier.weight(1f))
                 Box { Text("Recurrence") }

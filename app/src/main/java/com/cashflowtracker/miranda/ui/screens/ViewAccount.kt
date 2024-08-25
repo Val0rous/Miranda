@@ -40,7 +40,7 @@ import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.data.database.Account
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserId
-import com.cashflowtracker.miranda.ui.composables.AlertDialogDelete
+import com.cashflowtracker.miranda.ui.composables.AlertDialogIconTitle
 import com.cashflowtracker.miranda.ui.composables.BalanceText
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 import com.cashflowtracker.miranda.ui.viewmodels.AccountsViewModel
@@ -260,7 +260,7 @@ class ViewAccount : ComponentActivity() {
                         }
                     }
                     if (openAlertDialog.value) {
-                        AlertDialogDelete(
+                        AlertDialogIconTitle(
                             icon = R.drawable.ic_delete,
                             onDismissRequest = {
                                 openAlertDialog.value = false
@@ -269,12 +269,13 @@ class ViewAccount : ComponentActivity() {
                                 openAlertDialog.value = false
                                 isDeleting = true
                                 coroutineScope.launch {
-                                    vm.actions.deleteAccount(accountId, userId)
+                                    vm.actions.removeAccount(accountId)
                                     finish()
                                 }
                             },
                             dialogTitle = "Delete account",
                             dialogText = "This operation is irreversible",
+                            actionText = "Delete"
                         )
                     }
                 }
