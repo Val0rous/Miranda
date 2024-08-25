@@ -32,3 +32,8 @@ val Light_SurfaceTintBlue = Color(0xFFD7E3F7)
 val Light_SurfaceTintPurple = Color(0xFF7B4E7F)
 val Light_SurfaceTintDeepPurple = Color(0xFF68548E)
 val Light_Icon = Color(0xFF191C20)
+
+val Bronze = Color(0xFFCD7F32)
+val Silver = Color(0xFFC0C0C0)
+val Gold = Color(0xFFFFD700)
+val Diamond = Color(0xFFB9F2FF)

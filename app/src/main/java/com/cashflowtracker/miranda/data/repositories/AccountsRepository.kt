@@ -26,6 +26,8 @@ class AccountsRepository(private val accountsDao: AccountsDao) {
         accountsDao.setIsFavorite(accountId, userId, isFavorite)
 
     fun getTotalBalance(userId: UUID): Flow<Double> = accountsDao.getTotalBalance(userId)
+    suspend fun updateBalance(accountId: UUID, amount: Double) =
+        accountsDao.updateBalance(accountId, amount)
 //    val accounts: Flow<List<Account>>? = accountsDao.getAllByUserId(userId)
 }
 

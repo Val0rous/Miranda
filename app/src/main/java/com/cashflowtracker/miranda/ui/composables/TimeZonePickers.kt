@@ -25,12 +25,14 @@ import kotlin.math.absoluteValue
 fun getCurrentTimeZone(): String {
     val calendar = Calendar.getInstance()
     val timeZone = calendar.timeZone
-    return timeZone.displayName
+    return timeZone.getDisplayName(timeZone.inDaylightTime(calendar.time), TimeZone.LONG)
 }
 
 fun getTimeZoneInGMTFormat(timeZoneId: String): String {
     val timeZone = TimeZone.getTimeZone(timeZoneId)
-    val offset = timeZone.rawOffset / 3600000 // Convert milliseconds to hours
+    val calendar = Calendar.getInstance()
+    val offset =
+        timeZone.getOffset(calendar.timeInMillis) / 3600000 // Convert milliseconds to hours
     val sign = if (offset >= 0) "+" else "-"
     return "GMT$sign${offset.absoluteValue}"
 }
@@ -42,11 +44,16 @@ fun TimeZonePickerDialog(
 ) {
     val scrollState = rememberScrollState()
     val timeZones = TimeZone.getAvailableIDs()
-    val displayNames = timeZones.map { TimeZone.getTimeZone(it).displayName }
+//    val displayNames = timeZones.map { TimeZone.getTimeZone(it).displayName }
     val uniqueTimeZonesInGMT = timeZones
-        .map { getTimeZoneInGMTFormat(it) }
-        .toSet()  // Remove duplicates by converting the list to a set
-        .sorted() // Sort the GMT values
+        .map {
+            getTimeZoneInGMTFormat(it) to TimeZone.getTimeZone(it).getDisplayName(
+                TimeZone.getTimeZone(it).inDaylightTime(Calendar.getInstance().time),
+                TimeZone.LONG
+            )
+        }
+        .distinctBy { it.first }    // Ensure unique GMT offsets
+        .sortedBy { it.first }      // Sort by GMT offset
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -58,13 +65,13 @@ fun TimeZonePickerDialog(
         },
         text = {
             Column(modifier = Modifier.verticalScroll(scrollState)) {
-                uniqueTimeZonesInGMT.forEach { timeZoneDisplayName ->
+                uniqueTimeZonesInGMT.forEach { (gmtFormat, displayName) ->
                     Text(
-                        text = timeZoneDisplayName,
+                        text = "$gmtFormat - $displayName",
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable {
-                                onTimeZoneSelected(timeZoneDisplayName)
+                                onTimeZoneSelected("$gmtFormat - $displayName")
                                 onDismiss()
                             }
                             .padding(8.dp)
@@ -92,10 +99,13 @@ fun TimeZonePicker(selectedTimeZone: MutableState<String>) {
     var isTimeZonePickerVisible by remember { mutableStateOf(false) }
 
     // Initialize the selectedTimeZone with the current system time zone
-    val currentTimeZone = remember { getCurrentTimeZone() }
+    val currentTimeZone = remember {
+        val currentTimeZoneId = TimeZone.getDefault().id
+        "${getTimeZoneInGMTFormat(currentTimeZoneId)} - ${getCurrentTimeZone()}"
+    }
 
     // Initialize the selectedTimeZone with the current system time zone in GMT format
-    val currentTimeZoneId = TimeZone.getDefault().id
+//    val currentTimeZoneId = TimeZone.getDefault().id
 //    val currentTimeZone = remember { getTimeZoneInGMTFormat(currentTimeZoneId) }
 
     if (selectedTimeZone.value.isEmpty()) {

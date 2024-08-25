@@ -109,6 +109,9 @@ interface AccountsDao {
 
     @Query("SELECT SUM(balance) FROM account WHERE userId = :userId")
     fun getTotalBalance(userId: UUID): Flow<Double>
+
+    @Query("UPDATE account SET balance = balance + :amount WHERE accountId = :accountId")
+    suspend fun updateBalance(accountId: UUID, amount: Double)
 }
 
 @Dao

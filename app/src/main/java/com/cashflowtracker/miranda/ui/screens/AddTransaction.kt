@@ -24,12 +24,28 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.R
+import com.cashflowtracker.miranda.data.database.Transaction
+import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserId
 import com.cashflowtracker.miranda.ui.composables.SegmentedButtonType
 import com.cashflowtracker.miranda.ui.composables.MapScreen
 import com.cashflowtracker.miranda.ui.composables.DatePicker
 import com.cashflowtracker.miranda.ui.composables.TimePicker
 import com.cashflowtracker.miranda.ui.composables.TimeZonePicker
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
+import com.cashflowtracker.miranda.ui.viewmodels.AccountsViewModel
+import com.cashflowtracker.miranda.ui.viewmodels.TransactionsViewModel
+import com.cashflowtracker.miranda.utils.buildZonedDateTime
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Locale
+import java.util.UUID
 
 class AddTransaction : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -49,7 +65,7 @@ class AddTransaction : ComponentActivity() {
             var sourceIcon by remember { mutableStateOf<Int?>(null) }
             var destination by remember { mutableStateOf("") }
             var destinationIcon by remember { mutableStateOf<Int?>(null) }
-            val amount = remember { mutableStateOf(0.0) }
+            val amount = remember { mutableDoubleStateOf(0.0) }
             val comment = remember { mutableStateOf("") }
             val location = remember { mutableStateOf("") }
 
@@ -80,6 +96,8 @@ class AddTransaction : ComponentActivity() {
                             && destination.isNotEmpty()
                 }
             }
+            val vm = koinViewModel<TransactionsViewModel>()
+            val accountsVm = koinViewModel<AccountsViewModel>()
 
             LaunchedEffect(key1 = transactionType.value) {
                 // Clear dependent fields when transactionType changes
@@ -111,7 +129,90 @@ class AddTransaction : ComponentActivity() {
                             },
                             actions = {
                                 Button(
-                                    onClick = { /* Logic to create the transaction */ },
+                                    onClick = {
+                                        coroutineScope.launch(Dispatchers.IO) {
+                                            val userId = context.getCurrentUserId()
+                                            val zonedDateTime = buildZonedDateTime(
+                                                selectedDate.value,
+                                                selectedTime.value,
+                                                selectedTimeZone.value
+                                            )
+                                            val formattedDateTime =
+                                                zonedDateTime?.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
+                                                    ?: ""
+//                                            val retrievedZonedDateTime = ZonedDateTime.parse(storedDateTimeString, DateTimeFormatter.ISO_ZONED_DATE_TIME)
+
+                                            vm.actions.addTransaction(
+                                                Transaction(
+                                                    type = transactionType.value,
+                                                    dateTime = formattedDateTime,
+                                                    source = source,
+                                                    destination = destination,
+                                                    amount = amount.doubleValue,
+                                                    currency = "EUR",
+                                                    comment = comment.value,
+                                                    location = location.value,
+                                                    userId = userId
+                                                )
+                                            )
+
+                                            if (amount.doubleValue != 0.0) {
+                                                when (transactionType.value) {
+                                                    "Output" -> {
+                                                        val sourceAccountId =
+                                                            accountsVm.actions.getByTitleOrNull(
+                                                                source,
+                                                                userId
+                                                            )?.accountId
+                                                        if (sourceAccountId != null) {
+                                                            accountsVm.actions.updateBalance(
+                                                                sourceAccountId,
+                                                                -amount.doubleValue
+                                                            )
+                                                        }
+                                                    }
+
+                                                    "Input" -> {
+                                                        val destinationAccountId =
+                                                            accountsVm.actions.getByTitleOrNull(
+                                                                destination,
+                                                                userId
+                                                            )?.accountId
+                                                        if (destinationAccountId != null) {
+                                                            accountsVm.actions.updateBalance(
+                                                                destinationAccountId,
+                                                                amount.doubleValue
+                                                            )
+                                                        }
+                                                    }
+
+                                                    "Transfer" -> {
+                                                        val sourceAccountId =
+                                                            accountsVm.actions.getByTitleOrNull(
+                                                                source,
+                                                                userId
+                                                            )?.accountId
+                                                        val destinationAccountId =
+                                                            accountsVm.actions.getByTitleOrNull(
+                                                                destination,
+                                                                userId
+                                                            )?.accountId
+                                                        if (sourceAccountId != null && destinationAccountId != null) {
+                                                            accountsVm.actions.updateBalance(
+                                                                sourceAccountId,
+                                                                -amount.doubleValue
+                                                            )
+                                                            accountsVm.actions.updateBalance(
+                                                                destinationAccountId,
+                                                                amount.doubleValue
+                                                            )
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            finish()
+                                        }
+                                    },
                                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                                     enabled = isFormValid,
                                     modifier = Modifier
