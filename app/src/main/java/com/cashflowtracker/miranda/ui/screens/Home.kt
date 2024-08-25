@@ -56,6 +56,7 @@ import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentU
 import com.cashflowtracker.miranda.data.repositories.PreferencesRepository.getBalanceVisibility
 import com.cashflowtracker.miranda.data.repositories.PreferencesRepository.setBalanceVisibility
 import com.cashflowtracker.miranda.ui.composables.BalanceText
+import com.cashflowtracker.miranda.ui.theme.CustomColors
 import com.cashflowtracker.miranda.ui.theme.Red400
 import com.cashflowtracker.miranda.ui.viewmodels.AccountsViewModel
 import com.cashflowtracker.miranda.utils.AccountType
@@ -190,7 +191,7 @@ fun Home() {
                                 modifier = Modifier
                                     .size(40.dp)
                                     .clip(CircleShape)
-                                    .background(MaterialTheme.colorScheme.surfaceTint)
+                                    .background(CustomColors.current.surfaceTintBlue)
                             ) {
                                 Icon(
                                     imageVector = ImageVector.vectorResource(
@@ -199,7 +200,7 @@ fun Home() {
                                         )
                                     ),
                                     contentDescription = account.type,
-                                    tint = MaterialTheme.colorScheme.surface,
+                                    tint = CustomColors.current.icon,
                                     modifier = Modifier
                                         .size(24.dp)
                                         .align(Alignment.Center)

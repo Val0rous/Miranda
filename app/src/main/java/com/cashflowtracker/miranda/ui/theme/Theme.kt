@@ -66,10 +66,10 @@ private val DarkCustomColors = CustomColorScheme(
 )
 
 private val LightCustomColors = CustomColorScheme(
-    surfaceTintRed = Light_SurfaceTintRed,
-    surfaceTintYellow = Light_SurfaceTintYellow,
-    surfaceTintGreen = Light_SurfaceTintGreen,
-    surfaceTintBlue = Light_SurfaceTintBlue,
+    surfaceTintRed = Light_PrimaryFixedRed,
+    surfaceTintYellow = Light_PrimaryFixedYellow,
+    surfaceTintGreen = Light_PrimaryFixedGreen,
+    surfaceTintBlue = Light_PrimaryFixedBlue,
     icon = Light_Icon
 )
 

@@ -402,19 +402,19 @@ class AddTransaction : ComponentActivity() {
                             Spacer(modifier = Modifier.width(16.dp))
                             // Amount Field
                             OutlinedTextField(
-                                value = if (amount.value == 0.0) {
+                                value = if (amount.doubleValue == 0.0) {
                                     ""
                                 } else {
-                                    "%.2f".format(amount.value)
+                                    "%.2f".format(amount.doubleValue)
                                 },
                                 onValueChange = { text ->
-                                    amount.value = text.toDoubleOrNull()?.let {
+                                    amount.doubleValue = text.toDoubleOrNull()?.let {
                                         if (it >= 0) {
                                             "%.2f".format(it).toDoubleOrNull()
                                         } else {
                                             0.0
                                         }
-                                    } ?: amount.value
+                                    } ?: amount.doubleValue
                                 },
                                 label = { Text("Amount") },
                                 placeholder = { Text("0.00 €") },
