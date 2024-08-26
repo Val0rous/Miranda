@@ -114,7 +114,7 @@ interface AccountsDao {
     suspend fun updateBalance(accountId: UUID, amount: Double)
 
     @Query("SELECT type FROM account WHERE LOWER(title) = LOWER(:title) AND userId = :userId")
-    fun getTypeByTitle(title: String, userId: UUID): String
+    fun getTypeByTitle(title: String, userId: UUID): Flow<String>
 }
 
 @Dao

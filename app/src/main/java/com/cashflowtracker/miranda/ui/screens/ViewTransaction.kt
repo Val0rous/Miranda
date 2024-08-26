@@ -12,11 +12,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -88,6 +91,9 @@ class ViewTransaction : ComponentActivity() {
             val coroutineScope = rememberCoroutineScope()
             var isDeleting by remember { mutableStateOf(false) }
             val openAlertDialog = remember { mutableStateOf(false) }
+            var sourceType by remember { mutableStateOf("") }
+            var destinationType by remember { mutableStateOf("") }
+            val accountsVm = koinViewModel<AccountsViewModel>()
 
             LaunchedEffect(key1 = transactionId, key2 = isDeleting) {
                 if (!isDeleting) {
@@ -96,15 +102,43 @@ class ViewTransaction : ComponentActivity() {
                             .collect { retrievedTransaction ->
                                 withContext(Dispatchers.Main) {
                                     transaction = retrievedTransaction
-                                    println("TRANSACTION ID: $transactionId")
-                                    println("DATETIME: ${transaction.dateTime}")
                                 }
                             }
                     }
                 }
             }
 
-            val accountsVm = koinViewModel<AccountsViewModel>()
+            LaunchedEffect(key1 = transaction.source, key2 = isDeleting) {
+                if (!isDeleting && transaction.source.isNotEmpty()) {
+                    if (transaction.type == "Output" || transaction.type == "Transfer") {
+                        coroutineScope.launch(Dispatchers.IO) {
+                            accountsVm.actions.getTypeByTitle(transaction.source, userId)
+                                .collect { item ->
+                                    withContext(Dispatchers.Main) {
+                                        sourceType = item
+                                        println("LI HO CONTATI SON 21, PORCO DIO NE MANCA UNO")
+                                    }
+                                }
+                        }
+                    }
+                }
+            }
+
+            LaunchedEffect(key1 = transaction.destination, key2 = isDeleting) {
+                if (!isDeleting && transaction.destination.isNotEmpty()) {
+                    if (transaction.type == "Input" || transaction.type == "Transfer") {
+                        coroutineScope.launch(Dispatchers.IO) {
+                            accountsVm.actions.getTypeByTitle(transaction.destination, userId)
+                                .collect { item ->
+                                    withContext(Dispatchers.Main) {
+                                        destinationType = item
+                                        println("PORCO DIO PORCA MADONNA E TUTTI GLI ANGELI IN COLONNA")
+                                    }
+                                }
+                        }
+                    }
+                }
+            }
 
             MirandaTheme {
                 Scaffold(
@@ -176,10 +210,12 @@ class ViewTransaction : ComponentActivity() {
                             if (!isDeleting) {
                                 Row(
                                     verticalAlignment = Alignment.Top,
+                                    modifier = Modifier.padding(bottom = 24.dp)
                                 ) {
                                     Column(
                                         horizontalAlignment = Alignment.CenterHorizontally,
-                                        modifier = Modifier.weight(1f)
+                                        modifier = Modifier
+                                            .width(128.dp)
                                     ) {
                                         Box(
                                             modifier = Modifier
@@ -197,10 +233,7 @@ class ViewTransaction : ComponentActivity() {
                                                 imageVector = ImageVector.vectorResource(
                                                     when (transaction.type) {
                                                         "Output" -> AccountType.getIcon(
-                                                            accountsVm.actions.getTypeByTitle(
-                                                                transaction.source,
-                                                                userId
-                                                            )
+                                                            sourceType
                                                         )
 
                                                         "Input" -> {
@@ -215,12 +248,7 @@ class ViewTransaction : ComponentActivity() {
                                                             }
                                                         }
 
-                                                        else -> AccountType.getIcon(
-                                                            accountsVm.actions.getTypeByTitle(
-                                                                transaction.source,
-                                                                userId
-                                                            )
-                                                        )
+                                                        else -> AccountType.getIcon(sourceType)
                                                     }
                                                 ),
                                                 contentDescription = transaction.source,
@@ -233,10 +261,11 @@ class ViewTransaction : ComponentActivity() {
                                         Text(
                                             text = transaction.source,
                                             style = MaterialTheme.typography.titleMedium,
-                                            color = MaterialTheme.colorScheme.onSurface
+                                            color = MaterialTheme.colorScheme.onSurface,
+                                            modifier = Modifier.padding(top = 8.dp)
                                         )
                                         if (transaction.type == "Input") {
-                                            Row() {
+                                            Row(modifier = Modifier.padding(top = 4.dp)) {
                                                 when (DefaultCategories.getType(transaction.source)) {
                                                     CategoryClass.NECESSITY -> repeat(1) {
                                                         Icon(
@@ -284,12 +313,13 @@ class ViewTransaction : ComponentActivity() {
                                         tint = MaterialTheme.colorScheme.onSurface,
                                         modifier = Modifier
                                             .size(24.dp)
-                                            .weight(1f)
+                                            .offset(y = 16.dp)
                                     )
 
                                     Column(
                                         horizontalAlignment = Alignment.CenterHorizontally,
-                                        modifier = Modifier.weight(1f)
+                                        modifier = Modifier
+                                            .width(128.dp)
                                     ) {
                                         Box(
                                             modifier = Modifier
@@ -311,17 +341,11 @@ class ViewTransaction : ComponentActivity() {
                                                         )
 
                                                         "Input" -> AccountType.getIcon(
-                                                            accountsVm.actions.getTypeByTitle(
-                                                                transaction.destination,
-                                                                userId
-                                                            )
+                                                            destinationType
                                                         )
 
                                                         else -> AccountType.getIcon(
-                                                            accountsVm.actions.getTypeByTitle(
-                                                                transaction.destination,
-                                                                userId
-                                                            )
+                                                            destinationType
                                                         )
                                                     }
                                                 ),
@@ -335,10 +359,11 @@ class ViewTransaction : ComponentActivity() {
                                         Text(
                                             text = transaction.destination,
                                             style = MaterialTheme.typography.titleMedium,
-                                            color = MaterialTheme.colorScheme.onSurface
+                                            color = MaterialTheme.colorScheme.onSurface,
+                                            modifier = Modifier.padding(top = 8.dp)
                                         )
                                         if (transaction.type == "Output") {
-                                            Row() {
+                                            Row(modifier = Modifier.padding(top = 4.dp)) {
                                                 when (DefaultCategories.getType(transaction.destination)) {
                                                     CategoryClass.NECESSITY -> repeat(1) {
                                                         Icon(
@@ -381,6 +406,8 @@ class ViewTransaction : ComponentActivity() {
                                     }
                                 }
 
+                                HorizontalDivider(modifier = Modifier.padding(bottom = 24.dp))
+
                                 if (transaction.dateTime.isNotEmpty()) {
                                     Text(
                                         text = formatZonedDateTime(transaction.dateTime),
@@ -400,16 +427,20 @@ class ViewTransaction : ComponentActivity() {
                                         "Output" -> CustomColors.current.surfaceTintRed
                                         "Input" -> CustomColors.current.surfaceTintGreen
                                         else -> CustomColors.current.surfaceTintBlue
-                                    }
+                                    },
+                                    modifier = Modifier.padding(top = 24.dp)
                                 )
 
                                 if (transaction.comment!!.isNotEmpty()) {
                                     Text(
                                         text = transaction.comment!!,
                                         style = MaterialTheme.typography.headlineMedium,
-                                        color = MaterialTheme.colorScheme.onSurface
+                                        color = MaterialTheme.colorScheme.onSurface,
+                                        modifier = Modifier.padding(top = 24.dp)
                                     )
                                 }
+
+                                HorizontalDivider(modifier = Modifier.padding(vertical = 24.dp))
                             }
                         }
                     }
