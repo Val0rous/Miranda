@@ -36,3 +36,10 @@ fun buildZonedDateTime(
         null
     }
 }
+
+fun formatZonedDateTime(storedDateTimeString: String): String {
+    val retrievedZonedDateTime =
+        ZonedDateTime.parse(storedDateTimeString, DateTimeFormatter.ISO_ZONED_DATE_TIME)
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd    HH:mm    z")
+    return retrievedZonedDateTime.format(formatter)
+}

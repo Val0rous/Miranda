@@ -28,6 +28,8 @@ class AccountsRepository(private val accountsDao: AccountsDao) {
     fun getTotalBalance(userId: UUID): Flow<Double> = accountsDao.getTotalBalance(userId)
     suspend fun updateBalance(accountId: UUID, amount: Double) =
         accountsDao.updateBalance(accountId, amount)
+
+    fun getTypeByTitle(title: String, userId: UUID) = accountsDao.getTypeByTitle(title, userId)
 //    val accounts: Flow<List<Account>>? = accountsDao.getAllByUserId(userId)
 }
 

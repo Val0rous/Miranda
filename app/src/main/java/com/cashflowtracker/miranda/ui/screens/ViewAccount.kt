@@ -42,6 +42,7 @@ import com.cashflowtracker.miranda.data.database.Account
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserId
 import com.cashflowtracker.miranda.ui.composables.AlertDialogIconTitle
 import com.cashflowtracker.miranda.ui.composables.BalanceText
+import com.cashflowtracker.miranda.ui.theme.CustomColors
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 import com.cashflowtracker.miranda.ui.viewmodels.AccountsViewModel
 import com.cashflowtracker.miranda.utils.AccountType
@@ -57,7 +58,7 @@ class ViewAccount : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         val initialAccountId = UUID.fromString(intent.getStringExtra("accountId") ?: "")
-        println("initialAccountTitle: $initialAccountId")
+//        println("initialAccountTitle: $initialAccountId")
         setContent {
             val userId = LocalContext.current.getCurrentUserId()
             val accountId by remember { mutableStateOf(initialAccountId) }
@@ -195,7 +196,7 @@ class ViewAccount : ComponentActivity() {
                                         modifier = Modifier
                                             .size(56.dp)
                                             .clip(CircleShape)
-                                            .background(MaterialTheme.colorScheme.surfaceTint)
+                                            .background(CustomColors.current.surfaceTintBlue)
                                     ) {
                                         Icon(
                                             imageVector = ImageVector.vectorResource(
@@ -204,7 +205,7 @@ class ViewAccount : ComponentActivity() {
                                                 )
                                             ),
                                             contentDescription = account.type,
-                                            tint = MaterialTheme.colorScheme.surface,
+                                            tint = CustomColors.current.icon,
                                             modifier = Modifier
                                                 .size(40.dp)
                                                 .align(Alignment.Center)

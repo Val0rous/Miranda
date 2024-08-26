@@ -1,5 +1,6 @@
 package com.cashflowtracker.miranda.ui.screens
 
+import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -78,9 +79,7 @@ fun Transactions() {
                                 Icon(
                                     imageVector = ImageVector.vectorResource(
                                         when (transaction.type) {
-                                            "Output" -> {
-                                                DefaultCategories.getIcon(transaction.destination)
-                                            }
+                                            "Output" -> DefaultCategories.getIcon(transaction.destination)
 
                                             "Input" -> {
                                                 when (transaction.source) {
@@ -128,7 +127,9 @@ fun Transactions() {
                             )
                         },
                         modifier = Modifier.clickable {
-
+                            val intent = Intent(context, ViewTransaction::class.java)
+                            intent.putExtra("transactionId", transaction.transactionId.toString())
+                            context.startActivity(intent)
                         }
                     )
                     HorizontalDivider()

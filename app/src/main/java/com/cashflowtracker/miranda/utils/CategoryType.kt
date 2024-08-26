@@ -70,5 +70,11 @@ enum class DefaultCategories(val category: String, val icon: Int, val type: Cate
                 it.category == category
             }?.icon ?: R.drawable.ic_default_empty
         }
+
+        fun getType(category: String): CategoryClass {
+            return DefaultCategories.entries.find {
+                it.category == category
+            }?.type ?: CategoryClass.CONVENIENCE
+        }
     }
 }

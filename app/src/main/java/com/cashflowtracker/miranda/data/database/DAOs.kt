@@ -112,6 +112,9 @@ interface AccountsDao {
 
     @Query("UPDATE account SET balance = balance + :amount WHERE accountId = :accountId")
     suspend fun updateBalance(accountId: UUID, amount: Double)
+
+    @Query("SELECT type FROM account WHERE LOWER(title) = LOWER(:title) AND userId = :userId")
+    fun getTypeByTitle(title: String, userId: UUID): String
 }
 
 @Dao

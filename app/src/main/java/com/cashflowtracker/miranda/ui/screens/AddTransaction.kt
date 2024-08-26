@@ -140,7 +140,6 @@ class AddTransaction : ComponentActivity() {
                                             val formattedDateTime =
                                                 zonedDateTime?.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
                                                     ?: ""
-//                                            val retrievedZonedDateTime = ZonedDateTime.parse(storedDateTimeString, DateTimeFormatter.ISO_ZONED_DATE_TIME)
 
                                             vm.actions.addTransaction(
                                                 Transaction(
