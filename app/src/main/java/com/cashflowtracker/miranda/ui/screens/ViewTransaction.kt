@@ -186,9 +186,10 @@ class ViewTransaction : ComponentActivity() {
                                     )
                                 },
                                 onClick = {
-//                                    val intent = Intent(this@ViewTransaction, EditTransaction::class.java)
-//                                    intent.putExtra("transactionId", transactionId.toString())
-//                                    startActivity(intent)
+                                    val intent =
+                                        Intent(this@ViewTransaction, EditTransaction::class.java)
+                                    intent.putExtra("transactionId", transactionId.toString())
+                                    startActivity(intent)
                                 }
                             )
                             NavigationBarItem(

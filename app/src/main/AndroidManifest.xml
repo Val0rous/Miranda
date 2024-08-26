@@ -44,6 +44,8 @@
         <activity android:name=".ui.screens.ViewAccount" />
         <activity android:name=".ui.screens.ViewTransaction" />
         <activity android:name=".ui.screens.EditAccount" />
+        <activity android:name=".ui.screens.EditTransaction" />
+        <activity android:name=".ui.screens.EditProfile" />
 
 
         <meta-data

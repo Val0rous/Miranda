@@ -84,16 +84,14 @@ class EditAccount : ComponentActivity() {
             val accountTitle = remember { mutableStateOf("") }
             var accountType by remember { mutableStateOf("") }
             var accountIcon by remember { mutableStateOf<Int?>(null) }
+
+            // Launcher to choose account type from intent
             val launcher = rememberLauncherForActivityResult(
                 contract = ActivityResultContracts.StartActivityForResult()
             ) { result ->
                 if (result.resultCode == Activity.RESULT_OK) {
                     accountType = result.data?.getStringExtra("accountType") ?: ""
                     accountIcon = result.data?.getStringExtra("accountIcon")?.toInt()
-                    Log.d(
-                        "AddAccount",
-                        "Received accountType: $accountType, accountIcon: $accountIcon"
-                    )
                 }
             }
             val isFormValid by remember {
@@ -122,7 +120,7 @@ class EditAccount : ComponentActivity() {
                     )
                 )
             }
-            LaunchedEffect(key1 = accountTitle) {
+            LaunchedEffect(key1 = accountId.value) {
                 coroutineScope.launch(Dispatchers.IO) {
                     account = vm.actions.getByAccountId(accountId.value, userId)
                     accountTitle.value = account.title
@@ -135,7 +133,7 @@ class EditAccount : ComponentActivity() {
                 Scaffold(
                     topBar = {
                         TopAppBar(
-                            title = { Text("") },
+                            title = { },
                             navigationIcon = {
                                 IconButton(
                                     onClick = { finish() },
