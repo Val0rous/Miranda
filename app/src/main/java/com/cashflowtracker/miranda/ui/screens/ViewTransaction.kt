@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.data.database.Transaction
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserId
+import com.cashflowtracker.miranda.ui.composables.AlertDialogIconTitle
 import com.cashflowtracker.miranda.ui.theme.CustomColors
 import com.cashflowtracker.miranda.ui.theme.Green400
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
@@ -102,40 +103,44 @@ class ViewTransaction : ComponentActivity() {
                             .collect { retrievedTransaction ->
                                 withContext(Dispatchers.Main) {
                                     transaction = retrievedTransaction
+
+                                    coroutineScope.launch {
+                                        if (!isDeleting) {
+                                            if (transaction.type == "Output" || transaction.type == "Transfer") {
+                                                coroutineScope.launch(Dispatchers.IO) {
+                                                    accountsVm.actions.getTypeByTitle(
+                                                        transaction.source,
+                                                        userId
+                                                    ).collect { item ->
+                                                        withContext(Dispatchers.Main) {
+                                                            sourceType = item
+                                                            println("SOURCETYPE: $sourceType")
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    coroutineScope.launch {
+                                        if (!isDeleting) {
+                                            if (transaction.type == "Input" || transaction.type == "Transfer") {
+                                                coroutineScope.launch(Dispatchers.IO) {
+                                                    accountsVm.actions.getTypeByTitle(
+                                                        transaction.destination,
+                                                        userId
+                                                    ).collect { item ->
+                                                        withContext(Dispatchers.Main) {
+                                                            destinationType = item
+                                                            println("DESTINATIONTYPE: $destinationType")
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
-                    }
-                }
-            }
-
-            LaunchedEffect(key1 = transaction.source, key2 = isDeleting) {
-                if (!isDeleting && transaction.source.isNotEmpty()) {
-                    if (transaction.type == "Output" || transaction.type == "Transfer") {
-                        coroutineScope.launch(Dispatchers.IO) {
-                            accountsVm.actions.getTypeByTitle(transaction.source, userId)
-                                .collect { item ->
-                                    withContext(Dispatchers.Main) {
-                                        sourceType = item
-                                        println("LI HO CONTATI SON 21, PORCO DIO NE MANCA UNO")
-                                    }
-                                }
-                        }
-                    }
-                }
-            }
-
-            LaunchedEffect(key1 = transaction.destination, key2 = isDeleting) {
-                if (!isDeleting && transaction.destination.isNotEmpty()) {
-                    if (transaction.type == "Input" || transaction.type == "Transfer") {
-                        coroutineScope.launch(Dispatchers.IO) {
-                            accountsVm.actions.getTypeByTitle(transaction.destination, userId)
-                                .collect { item ->
-                                    withContext(Dispatchers.Main) {
-                                        destinationType = item
-                                        println("PORCO DIO PORCA MADONNA E TUTTI GLI ANGELI IN COLONNA")
-                                    }
-                                }
-                        }
                     }
                 }
             }
@@ -145,7 +150,11 @@ class ViewTransaction : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     topBar = {
                         TopAppBar(
-                            title = { Text(transaction.type) },
+                            title = {
+                                if (!isDeleting) {
+                                    Text(transaction.type)
+                                }
+                            },
                             navigationIcon = {
                                 IconButton(
                                     onClick = { finish() },
@@ -445,6 +454,73 @@ class ViewTransaction : ComponentActivity() {
                         }
                     }
 
+                    if (openAlertDialog.value) {
+                        AlertDialogIconTitle(
+                            icon = R.drawable.ic_delete,
+                            onDismissRequest = {
+                                openAlertDialog.value = false
+                            },
+                            onConfirmation = {
+                                openAlertDialog.value = false
+                                isDeleting = true
+                                coroutineScope.launch(Dispatchers.IO) {
+                                    when (transaction.type) {
+                                        "Output" -> {
+                                            val sourceId = accountsVm.actions.getByTitleOrNull(
+                                                transaction.source,
+                                                userId
+                                            )?.accountId
+                                            if (sourceId != null) {
+                                                accountsVm.actions.updateBalance(
+                                                    sourceId,
+                                                    transaction.amount
+                                                )
+                                            }
+                                        }
+
+                                        "Input" -> {
+                                            val destinationId = accountsVm.actions.getByTitleOrNull(
+                                                transaction.destination,
+                                                userId
+                                            )?.accountId
+                                            if (destinationId != null) {
+                                                accountsVm.actions.updateBalance(
+                                                    destinationId,
+                                                    -transaction.amount
+                                                )
+                                            }
+                                        }
+
+                                        else -> {
+                                            val sourceId = accountsVm.actions.getByTitleOrNull(
+                                                transaction.source,
+                                                userId
+                                            )?.accountId
+                                            val destinationId = accountsVm.actions.getByTitleOrNull(
+                                                transaction.destination,
+                                                userId
+                                            )?.accountId
+                                            if (sourceId != null && destinationId != null) {
+                                                accountsVm.actions.updateBalance(
+                                                    sourceId,
+                                                    transaction.amount
+                                                )
+                                                accountsVm.actions.updateBalance(
+                                                    destinationId,
+                                                    -transaction.amount
+                                                )
+                                            }
+                                        }
+                                    }
+                                    vm.actions.removeTransaction(transactionId)
+                                    finish()
+                                }
+                            },
+                            dialogTitle = "Delete transaction",
+                            dialogText = "This operation is irreversible. This transaction will be reverted upon deletion",
+                            actionText = "Delete"
+                        )
+                    }
                 }
             }
         }
