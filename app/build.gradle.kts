@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
+    kotlin("plugin.serialization") version "1.9.0"
 }
 
 android {
@@ -100,6 +101,7 @@ dependencies {
 
 
 
+    implementation("com.google.android.gms:play-services-location:21.3.0")
     implementation("com.google.android.gms:play-services-maps:19.0.0")
     implementation("com.google.maps.android:maps-compose:2.5.0")
 
@@ -123,4 +125,14 @@ dependencies {
     //implementation("de.mkammerer:argon2-jvm:2.11")
     // Android Cryptography Library
     implementation("androidx.security:security-crypto:1.1.0-alpha06")
+
+    // Show image from URI
+    implementation("io.coil-kt:coil-compose:2.3.0")
+
+    // HTTP Requests
+    val ktorVersion = "2.3.8"
+    implementation("io.ktor:ktor-client-core:$ktorVersion")
+    implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
+    implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
 }

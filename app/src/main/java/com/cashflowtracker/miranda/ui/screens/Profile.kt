@@ -1,6 +1,7 @@
 package com.cashflowtracker.miranda.ui.screens
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -123,7 +124,14 @@ class Profile : ComponentActivity() {
                                     )
 
                                     AssistChip(
-                                        onClick = { /* Azione per modificare il profilo */ },
+                                        onClick = {
+                                            startActivity(
+                                                Intent(
+                                                    this@Profile,
+                                                    EditProfile::class.java
+                                                )
+                                            )
+                                        },
                                         label = { Text("Edit profile") },
                                         leadingIcon = {
                                             Icon(

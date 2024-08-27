@@ -25,7 +25,7 @@ interface UsersActions {
     fun getByEmail(email: String): User
     fun getByEmailOrNull(email: String): User?
     fun getUserIdByEmail(email: String): UUID
-    fun getByUserId(userId: UUID): User?
+    fun getByUserId(userId: UUID): User
 }
 
 class UsersViewModel(private val repository: UsersRepository) : ViewModel() {
