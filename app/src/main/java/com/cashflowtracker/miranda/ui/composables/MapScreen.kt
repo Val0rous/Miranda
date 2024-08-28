@@ -36,7 +36,7 @@ fun MapScreen(latitude: Double, longitude: Double) {
 
     LaunchedEffect(key1 = Unit) { // Launch a coroutine when the composable enters the composition
         // Simulate map loading delay (replace with actual map loading logic)
-        delay(2000)
+        //delay(2000)
         mapLoaded = true // Set mapLoaded to true once the map is loaded
     }
     Box(

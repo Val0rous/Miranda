@@ -59,7 +59,7 @@ dependencies {
     implementation(platform("androidx.compose:compose-bom:2024.08.00"))
     implementation("androidx.lifecycle:lifecycle-runtime-compose-android:2.8.4")
     implementation("androidx.preference:preference-ktx:1.2.1")
-    implementation("androidx.media3:media3-effect:1.4.0")
+    implementation("androidx.media3:media3-effect:1.4.1")
     androidTestImplementation(platform("androidx.compose:compose-bom:2024.08.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
@@ -74,7 +74,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.4")
     implementation("androidx.navigation:navigation-runtime-ktx:2.7.7")
     implementation("androidx.navigation:navigation-compose:2.7.7")
-    implementation("androidx.media3:media3-test-utils:1.4.0")
+    implementation("androidx.media3:media3-test-utils:1.4.1")
     //implementation("androidx.room:room-ktx:2.6.1")
     val roomVersion = "2.6.1"
     implementation("androidx.room:room-runtime:$roomVersion")

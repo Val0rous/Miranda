@@ -1,9 +1,11 @@
 package com.cashflowtracker.miranda.ui.composables
 
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,6 +26,9 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.R
+import com.cashflowtracker.miranda.utils.LocationService
+import com.cashflowtracker.miranda.utils.PermissionHandler
+import com.cashflowtracker.miranda.utils.StartMonitoringResult
 
 @Composable
 fun PasswordTextField(
@@ -65,5 +70,60 @@ fun PasswordTextField(
                 password()
                 text = AnnotatedString(password.value)
             }
+    )
+}
+
+@Composable
+fun LocationTextField(
+    location: MutableState<String>,
+    locationService: LocationService,
+    locationPermission: PermissionHandler,
+    showLocationDisabledAlert: MutableState<Boolean>,
+
+    modifier: Modifier
+) {
+    var isGps by remember { mutableStateOf(false) }
+
+
+    fun requestLocation() {
+        if (locationPermission.status.isGranted) {
+            val res = locationService.requestCurrentLocation()
+            showLocationDisabledAlert.value = res == StartMonitoringResult.GPSDisabled
+        } else {
+            locationPermission.launchPermissionRequest()
+        }
+    }
+
+    OutlinedTextField(
+        value = location.value,
+        onValueChange = { text -> location.value = text },
+        label = { Text("Location") },
+        singleLine = true,
+        trailingIcon = {
+            IconButton(
+                onClick = {
+                    requestLocation()
+                    isGps = true
+                    location.value =
+                        "${locationService.coordinates?.latitude}, ${locationService.coordinates?.longitude}"
+                },
+                modifier = Modifier.padding(end = 5.dp)
+            ) {
+                Icon(
+                    imageVector = if (isGps) {
+                        ImageVector.vectorResource(R.drawable.ic_my_location_filled)
+                    } else {
+                        ImageVector.vectorResource(R.drawable.ic_location_searching)
+                    },
+                    tint = if (isGps) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.onSurface
+                    },
+                    contentDescription = "Get GPS location"
+                )
+            }
+        },
+        modifier = modifier
     )
 }
