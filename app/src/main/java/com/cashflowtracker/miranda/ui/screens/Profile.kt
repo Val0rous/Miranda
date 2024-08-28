@@ -2,6 +2,7 @@ package com.cashflowtracker.miranda.ui.screens
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -22,6 +23,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
@@ -29,8 +31,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserEmail
+import com.cashflowtracker.miranda.data.repositories.PreferencesRepository.getProfilePicturePathFlow
 import com.cashflowtracker.miranda.data.repositories.UsersRepository
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 import com.cashflowtracker.miranda.ui.viewmodels.UsersViewModel
@@ -56,6 +61,8 @@ class Profile : ComponentActivity() {
             val email = context.getCurrentUserEmail()
             val usersVm = koinViewModel<UsersViewModel>()
             val usersState by usersVm.state.collectAsStateWithLifecycle()
+            val profilePicturePathFlow = remember { context.getProfilePicturePathFlow() }
+            val profilePicturePath by profilePicturePathFlow.collectAsState(initial = null)
 
             LaunchedEffect(email) {
                 CoroutineScope(Dispatchers.IO).launch {
@@ -93,22 +100,32 @@ class Profile : ComponentActivity() {
                                     .padding(start = 16.dp, top = 16.dp, bottom = 8.dp)
                             ) {
 
-
                                 Box(
                                     modifier = Modifier
                                         .size(128.dp)
                                         .clip(CircleShape)
-                                        .background(MaterialTheme.colorScheme.primary)
+                                        .background(MaterialTheme.colorScheme.primary, CircleShape)
+                                        .clickable { }
                                 ) {
-                                    Icon(
-                                        imageVector = Icons.Default.AccountCircle,
-                                        contentDescription = "Profile Picture",
-                                        tint = MaterialTheme.colorScheme.onPrimary,
-                                        modifier = Modifier
-                                            .size(96.dp)
-                                            .clip(CircleShape)
-                                            .align(Alignment.Center)
-                                    )
+                                    if (profilePicturePath != null && profilePicturePath!!.isNotEmpty()) {
+                                        profilePicturePath?.let { path ->
+                                            AsyncImage(
+                                                model = ImageRequest.Builder(context)
+                                                    .data(Uri.parse(path)).crossfade(true).build(),
+                                                contentDescription = "Profile picture"
+                                            )
+                                        }
+                                    } else {
+                                        Icon(
+                                            imageVector = Icons.Default.AccountCircle,
+                                            contentDescription = "Profile Picture",
+                                            tint = MaterialTheme.colorScheme.onPrimary,
+                                            modifier = Modifier
+                                                .size(96.dp)
+                                                .clip(CircleShape)
+                                                .align(Alignment.Center)
+                                        )
+                                    }
                                 }
 
                                 Column(
