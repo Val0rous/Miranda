@@ -18,6 +18,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.cashflowtracker.miranda.data.repositories.PreferencesRepository.getProfilePicturePathFlow
 import com.cashflowtracker.miranda.utils.rememberCameraLauncher
 import com.cashflowtracker.miranda.utils.rememberPermission
 import java.io.File
@@ -42,6 +44,9 @@ fun ProfileImagePicker() {
     val cameraLauncher = rememberCameraLauncher()
     var showDialog by remember { mutableStateOf(false) }
     var bitmap by remember { mutableStateOf<Bitmap?>(null) }
+
+    val profilePicturePathFlow = remember { context.getProfilePicturePathFlow() }
+    val profilePicturePath by profilePicturePathFlow.collectAsState(initial = null)
 
     val pickImageLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
@@ -74,15 +79,21 @@ fun ProfileImagePicker() {
                 showDialog = true
             }
     ) {
-        if (cameraLauncher.capturedImageUri.path?.isNotEmpty() == true) {
+        profilePicturePath?.let { path ->
             AsyncImage(
-                ImageRequest.Builder(context)
-                    .data(cameraLauncher.capturedImageUri)
-                    .crossfade(true)
-                    .build(),
-                "Captured image"
+                model = ImageRequest.Builder(context).data(Uri.parse(path)).crossfade(true).build(),
+                contentDescription = "Profile picture"
             )
         }
+//        if (cameraLauncher.capturedImageUri.path?.isNotEmpty() == true) {
+//            AsyncImage(
+//                ImageRequest.Builder(context)
+//                    .data(cameraLauncher.capturedImageUri)
+//                    .crossfade(true)
+//                    .build(),
+//                "Captured image"
+//            )
+//        }
     }
 
     if (showDialog) {

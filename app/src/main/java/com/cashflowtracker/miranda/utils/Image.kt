@@ -14,6 +14,14 @@ import android.net.Uri
 import android.os.Build
 import android.os.SystemClock
 import android.provider.MediaStore
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.platform.LocalContext
+import com.cashflowtracker.miranda.data.repositories.PreferencesRepository.saveProfilePicturePath
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import java.io.FileNotFoundException
 
 fun uriToBitmap(imageUri: Uri, contentResolver: ContentResolver): Bitmap {
@@ -35,7 +43,7 @@ fun saveImageToStorage(
     imageUri: Uri,
     contentResolver: ContentResolver,
     name: String = "IMG_${SystemClock.uptimeMillis()}"
-) {
+): String {
     val bitmap = uriToBitmap(imageUri, contentResolver)
 
     val values = ContentValues()
@@ -49,4 +57,6 @@ fun saveImageToStorage(
 
     bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
     outputStream.close()
+
+    return savedImageUri.toString()
 }
