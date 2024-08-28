@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Build
 import android.provider.MediaStore
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -22,6 +23,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,13 +36,17 @@ import androidx.core.content.FileProvider
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.cashflowtracker.miranda.data.repositories.PreferencesRepository.getProfilePicturePathFlow
+import com.cashflowtracker.miranda.data.repositories.PreferencesRepository.saveProfilePicturePath
 import com.cashflowtracker.miranda.utils.rememberCameraLauncher
 import com.cashflowtracker.miranda.utils.rememberPermission
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.File
 
 @Composable
 fun ProfileImagePicker() {
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
     val cameraLauncher = rememberCameraLauncher()
     var showDialog by remember { mutableStateOf(false) }
     var bitmap by remember { mutableStateOf<Bitmap?>(null) }
@@ -50,8 +56,11 @@ fun ProfileImagePicker() {
 
     val pickImageLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-            uri?.let {
-                bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
+//            uri?.let {
+//                bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
+//            }
+            coroutineScope.launch(Dispatchers.IO) {
+                context.saveProfilePicturePath(uri.toString())
             }
         }
 
@@ -63,11 +72,36 @@ fun ProfileImagePicker() {
         }
     }
 
+    val readStoragePermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        rememberPermission(Manifest.permission.READ_MEDIA_IMAGES) { status ->
+            if (status.isGranted) {
+                pickImageLauncher.launch("image/*")
+            } else {
+                Toast.makeText(context, "Permission denied", Toast.LENGTH_SHORT).show()
+            }
+        }
+    } else {
+        rememberPermission(Manifest.permission.READ_EXTERNAL_STORAGE) { status ->
+            if (status.isGranted) {
+                pickImageLauncher.launch("image/*")
+            } else {
+                Toast.makeText(context, "Permission denied", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
     fun takePicture() =
         if (cameraPermission.status.isGranted) {
             cameraLauncher.captureImage()
         } else {
             cameraPermission.launchPermissionRequest()
+        }
+
+    fun choosePicture() =
+        if (readStoragePermission.status.isGranted) {
+            pickImageLauncher.launch("image/*")
+        } else {
+            readStoragePermission.launchPermissionRequest()
         }
 
     Box(
@@ -112,7 +146,8 @@ fun ProfileImagePicker() {
             },
             dismissButton = {
                 Button(onClick = {
-                    pickImageLauncher.launch("image/*")
+                    //pickImageLauncher.launch("image/*")
+                    choosePicture()
                     showDialog = false
                 }) {
                     Text("Filesystem")
