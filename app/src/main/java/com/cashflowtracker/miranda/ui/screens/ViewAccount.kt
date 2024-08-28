@@ -42,6 +42,7 @@ import com.cashflowtracker.miranda.data.database.Account
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserId
 import com.cashflowtracker.miranda.ui.composables.AlertDialogIconTitle
 import com.cashflowtracker.miranda.ui.composables.BalanceText
+import com.cashflowtracker.miranda.ui.composables.IconWithBackground
 import com.cashflowtracker.miranda.ui.theme.CustomColors
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 import com.cashflowtracker.miranda.ui.viewmodels.AccountsViewModel
@@ -192,25 +193,15 @@ class ViewAccount : ComponentActivity() {
                                     verticalAlignment = Alignment.CenterVertically,
                                     modifier = Modifier.padding(bottom = 32.dp)
                                 ) {
-                                    Box(
-                                        modifier = Modifier
-                                            .size(56.dp)
-                                            .clip(CircleShape)
-                                            .background(CustomColors.current.surfaceTintBlue)
-                                    ) {
-                                        Icon(
-                                            imageVector = ImageVector.vectorResource(
-                                                AccountType.getIcon(
-                                                    account.type
-                                                )
-                                            ),
-                                            contentDescription = account.type,
-                                            tint = CustomColors.current.icon,
-                                            modifier = Modifier
-                                                .size(40.dp)
-                                                .align(Alignment.Center)
-                                        )
-                                    }
+                                    IconWithBackground(
+                                        icon = AccountType.getIcon(account.type),
+                                        iconSize = 40.dp,
+                                        iconColor = CustomColors.current.icon,
+                                        backgroundSize = 56.dp,
+                                        backgroundColor = CustomColors.current.surfaceTintBlue,
+                                        contentDescription = account.type
+                                    )
+
                                     Text(
                                         text = account.title,
                                         style = MaterialTheme.typography.headlineSmall,

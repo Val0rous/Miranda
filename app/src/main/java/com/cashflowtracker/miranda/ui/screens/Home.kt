@@ -56,6 +56,7 @@ import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentU
 import com.cashflowtracker.miranda.data.repositories.PreferencesRepository.getBalanceVisibility
 import com.cashflowtracker.miranda.data.repositories.PreferencesRepository.setBalanceVisibility
 import com.cashflowtracker.miranda.ui.composables.BalanceText
+import com.cashflowtracker.miranda.ui.composables.IconWithBackground
 import com.cashflowtracker.miranda.ui.theme.CustomColors
 import com.cashflowtracker.miranda.ui.theme.Red400
 import com.cashflowtracker.miranda.ui.viewmodels.AccountsViewModel
@@ -187,25 +188,14 @@ fun Home() {
                             )
                         },
                         leadingContent = {
-                            Box(
-                                modifier = Modifier
-                                    .size(40.dp)
-                                    .clip(CircleShape)
-                                    .background(CustomColors.current.surfaceTintBlue)
-                            ) {
-                                Icon(
-                                    imageVector = ImageVector.vectorResource(
-                                        AccountType.getIcon(
-                                            account.type
-                                        )
-                                    ),
-                                    contentDescription = account.type,
-                                    tint = CustomColors.current.icon,
-                                    modifier = Modifier
-                                        .size(24.dp)
-                                        .align(Alignment.Center)
-                                )
-                            }
+                            IconWithBackground(
+                                icon = AccountType.getIcon(account.type),
+                                iconSize = 24.dp,
+                                iconColor = CustomColors.current.icon,
+                                backgroundSize = 40.dp,
+                                backgroundColor = CustomColors.current.surfaceTintBlue,
+                                contentDescription = account.type
+                            )
                         },
                         trailingContent = {
                             Row(
