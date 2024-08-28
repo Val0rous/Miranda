@@ -39,4 +39,10 @@ object PreferencesRepository {
             preferences[PROFILE_PICTURE_PATH_KEY]
         }
     }
+
+    suspend fun Context.clearProfilePicturePath() {
+        dataStore.edit { preferences ->
+            preferences.remove(PROFILE_PICTURE_PATH_KEY)
+        }
+    }
 }
