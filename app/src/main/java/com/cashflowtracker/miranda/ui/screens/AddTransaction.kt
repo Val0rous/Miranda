@@ -118,6 +118,8 @@ class AddTransaction : ComponentActivity() {
                 destinationIcon = null
             }
 
+            val isLocationLoaded = remember { mutableStateOf(false) }
+
             val snackbarHostState = remember { SnackbarHostState() }
             val showLocationDisabledAlert = remember { mutableStateOf(false) }
             var showPermissionDeniedAlert by remember { mutableStateOf(false) }
@@ -496,6 +498,7 @@ class AddTransaction : ComponentActivity() {
                                 locationService = locationService,
                                 locationPermission = locationPermission,
                                 showLocationDisabledAlert = showLocationDisabledAlert,
+                                isLocationLoaded = isLocationLoaded,
                                 modifier = Modifier.fillMaxWidth()
                             )
                         }
@@ -504,7 +507,8 @@ class AddTransaction : ComponentActivity() {
                         if (locationService.coordinates != null) {
                             MapScreen(
                                 latitude = locationService.coordinates?.latitude ?: 0.0,
-                                longitude = locationService.coordinates?.longitude ?: 0.0
+                                longitude = locationService.coordinates?.longitude ?: 0.0,
+                                isLocationLoaded = isLocationLoaded
                             )
                         }
                     }

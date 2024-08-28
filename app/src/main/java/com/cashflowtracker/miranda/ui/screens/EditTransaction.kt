@@ -523,7 +523,7 @@ class EditTransaction : ComponentActivity() {
                         }
                         Spacer(modifier = Modifier.height(16.dp))
 
-                        MapScreen(44.2625, 12.3487)
+//                        MapScreen(44.2625, 12.3487)
                     }
                 }
             }

@@ -9,6 +9,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -79,11 +80,18 @@ fun LocationTextField(
     locationService: LocationService,
     locationPermission: PermissionHandler,
     showLocationDisabledAlert: MutableState<Boolean>,
-
+    isLocationLoaded: MutableState<Boolean>,
     modifier: Modifier
 ) {
     var isGps by remember { mutableStateOf(false) }
 
+    LaunchedEffect(key1 = locationService.coordinates) {
+        if (locationService.coordinates != null) {
+            location.value =
+                "${locationService.coordinates?.latitude}, ${locationService.coordinates?.longitude}"
+            isLocationLoaded.value = true
+        }
+    }
 
     fun requestLocation() {
         if (locationPermission.status.isGranted) {
@@ -104,16 +112,17 @@ fun LocationTextField(
                 onClick = {
                     requestLocation()
                     isGps = true
-                    location.value =
-                        "${locationService.coordinates?.latitude}, ${locationService.coordinates?.longitude}"
+                    location.value = "Loading..."
                 },
                 modifier = Modifier.padding(end = 5.dp)
             ) {
                 Icon(
-                    imageVector = if (isGps) {
+                    imageVector = if (isGps and isLocationLoaded.value) {
                         ImageVector.vectorResource(R.drawable.ic_my_location_filled)
-                    } else {
+                    } else if (isGps and !isLocationLoaded.value) {
                         ImageVector.vectorResource(R.drawable.ic_location_searching)
+                    } else {
+                        ImageVector.vectorResource(R.drawable.ic_my_location)
                     },
                     tint = if (isGps) {
                         MaterialTheme.colorScheme.primary

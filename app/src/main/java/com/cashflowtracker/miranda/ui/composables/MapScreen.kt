@@ -8,6 +8,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,18 +28,12 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import kotlinx.coroutines.delay
 
 @Composable
-fun MapScreen(latitude: Double, longitude: Double) {
+fun MapScreen(latitude: Double, longitude: Double, isLocationLoaded: MutableState<Boolean>) {
     val coordinates = LatLng(latitude, longitude)
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(coordinates, 15f)
     }
-    var mapLoaded by remember { mutableStateOf(false) }
 
-    LaunchedEffect(key1 = Unit) { // Launch a coroutine when the composable enters the composition
-        // Simulate map loading delay (replace with actual map loading logic)
-        //delay(2000)
-        mapLoaded = true // Set mapLoaded to true once the map is loaded
-    }
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -46,23 +41,24 @@ fun MapScreen(latitude: Double, longitude: Double) {
             .height(160.dp),
         contentAlignment = Alignment.Center,
     ) {
-        if (mapLoaded) {
+        if (isLocationLoaded.value) {
             GoogleMap(
                 modifier = Modifier.fillMaxWidth(),
                 cameraPositionState = cameraPositionState,
                 uiSettings = MapUiSettings(
                     compassEnabled = true,
+                    mapToolbarEnabled = true,
                     myLocationButtonEnabled = true,
-                    scrollGesturesEnabled = false,
+                    scrollGesturesEnabled = true,
                     tiltGesturesEnabled = false,
-                    rotationGesturesEnabled = false,
+                    rotationGesturesEnabled = true,
                     zoomControlsEnabled = false,
-                    zoomGesturesEnabled = false
+                    zoomGesturesEnabled = true
                 ),
             ) {
                 Marker(
                     state = MarkerState(position = coordinates),
-                    title = "Cervia", // Optional title
+                    title = "", // Optional title
                     snippet = "Latitude: $latitude, Longitude: $longitude",  // Optional snippet
                 )
             }

@@ -383,7 +383,8 @@ class AddRecurrence : ComponentActivity() {
                         }
                         Spacer(modifier = Modifier.height(16.dp))
 
-                        MapScreen(44.2625, 12.3487)
+                        val isLocationLoaded = remember { mutableStateOf(false) }
+                        MapScreen(44.2625, 12.3487, isLocationLoaded)
                     }
                 }
             }
