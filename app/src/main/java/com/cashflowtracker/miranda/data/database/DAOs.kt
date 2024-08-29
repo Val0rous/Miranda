@@ -4,7 +4,6 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import androidx.room.Update
 import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
@@ -51,7 +50,10 @@ interface TransactionsDao {
     suspend fun deleteByTransactionId(transactionId: UUID)
 
     @Query("SELECT * FROM 'transaction' WHERE userId = :userId ORDER BY dateTime DESC")
-    fun getAllByUserId(userId: UUID): Flow<List<Transaction>>
+    fun getAllByUserIdFlow(userId: UUID): Flow<List<Transaction>>
+
+    @Query("SELECT * FROM 'transaction' WHERE userId = :userId AND location IS NOT NULL AND location <> '' ORDER BY dateTime DESC")
+    fun getAllWithLocationByUserIdFlow(userId: UUID): Flow<List<Transaction>>
 
     @Query("SELECT * FROM 'transaction' WHERE transactionId = :transactionId")
     fun getByTransactionId(transactionId: UUID): Transaction

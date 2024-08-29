@@ -13,6 +13,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserEmail
+import com.cashflowtracker.miranda.ui.screens.MapView
 import com.cashflowtracker.miranda.ui.screens.Profile
 import com.cashflowtracker.miranda.ui.screens.Settings
 
@@ -70,7 +71,9 @@ fun TransactionsTopAppBar() {
                     contentDescription = "Filter"
                 )
             }
-            IconButton(onClick = { /* TODO: Map View */ }) {
+            IconButton(onClick = {
+                context.startActivity(Intent(context, MapView::class.java))
+            }) {
                 Icon(
                     ImageVector.vectorResource(R.drawable.ic_map),
                     contentDescription = "Map View"

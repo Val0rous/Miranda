@@ -3,7 +3,6 @@ package com.cashflowtracker.miranda.ui.screens
 import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,7 +26,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
 import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserId
 import com.cashflowtracker.miranda.ui.theme.CustomColors
@@ -43,7 +41,7 @@ fun Transactions() {
     val context = LocalContext.current
     val vm = koinViewModel<TransactionsViewModel>()
     val userId = context.getCurrentUserId()
-    val transactions by vm.actions.getAllByUserId(userId).collectAsState(initial = emptyList())
+    val transactions by vm.actions.getAllByUserIdFlow(userId).collectAsState(initial = emptyList())
 
     Column(
         modifier = Modifier

@@ -14,7 +14,8 @@ interface TransactionsActions {
     fun updateTransaction(transaction: Transaction): Job
     fun removeTransaction(transaction: Transaction): Job
     fun removeTransaction(transactionId: UUID): Job
-    fun getAllByUserId(userId: UUID): Flow<List<Transaction>>
+    fun getAllByUserIdFlow(userId: UUID): Flow<List<Transaction>>
+    fun getAllWithLocationByUserIdFlow(userId: UUID): Flow<List<Transaction>>
     fun getByTransactionId(transactionId: UUID): Transaction
     fun getByTransactionIdFlow(transactionId: UUID): Flow<Transaction>
 }
@@ -35,9 +36,15 @@ class TransactionsViewModel(private val repository: TransactionsRepository) : Vi
             repository.deleteByTransactionId(transactionId)
         }
 
-        override fun getAllByUserId(userId: UUID): Flow<List<Transaction>> = viewModelScope.run {
-            repository.getAllByUserId(userId)
-        }
+        override fun getAllByUserIdFlow(userId: UUID): Flow<List<Transaction>> =
+            viewModelScope.run {
+                repository.getAllByUserIdFlow(userId)
+            }
+
+        override fun getAllWithLocationByUserIdFlow(userId: UUID): Flow<List<Transaction>> =
+            viewModelScope.run {
+                repository.getAllWithLocationByUserIdFlow(userId)
+            }
 
         override fun getByTransactionId(transactionId: UUID) = viewModelScope.run {
             repository.getByTransactionId(transactionId)
