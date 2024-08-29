@@ -38,6 +38,7 @@ import com.cashflowtracker.miranda.ui.composables.TimeZonePicker
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 import com.cashflowtracker.miranda.ui.viewmodels.AccountsViewModel
 import com.cashflowtracker.miranda.ui.viewmodels.TransactionsViewModel
+import com.cashflowtracker.miranda.utils.Coordinates
 import com.cashflowtracker.miranda.utils.LocationService
 import com.cashflowtracker.miranda.utils.PermissionStatus
 import com.cashflowtracker.miranda.utils.StartMonitoringResult
@@ -79,6 +80,9 @@ class AddTransaction : ComponentActivity() {
             val amount = remember { mutableDoubleStateOf(0.0) }
             val comment = remember { mutableStateOf("") }
             val location = remember { mutableStateOf("") }
+            val coordinates = remember { mutableStateOf<Coordinates?>(null) }
+            val isError =
+                remember { mutableStateOf(false) }   // Check if manually entered coordinates are valid
 
             val sourceLauncher = rememberLauncherForActivityResult(
                 contract = ActivityResultContracts.StartActivityForResult()
@@ -105,6 +109,7 @@ class AddTransaction : ComponentActivity() {
                             && selectedTimeZone.value.isNotEmpty()
                             && source.isNotEmpty()
                             && destination.isNotEmpty()
+                            && !isError.value
                 }
             }
             val vm = koinViewModel<TransactionsViewModel>()
@@ -499,15 +504,17 @@ class AddTransaction : ComponentActivity() {
                                 locationPermission = locationPermission,
                                 showLocationDisabledAlert = showLocationDisabledAlert,
                                 isLocationLoaded = isLocationLoaded,
+                                coordinates = coordinates,
+                                isError = isError,
                                 modifier = Modifier.fillMaxWidth()
                             )
                         }
                         Spacer(modifier = Modifier.height(16.dp))
 
-                        if (locationService.coordinates != null) {
+                        if (coordinates.value != null) {
                             MapScreen(
-                                latitude = locationService.coordinates?.latitude ?: 0.0,
-                                longitude = locationService.coordinates?.longitude ?: 0.0,
+                                latitude = coordinates.value?.latitude ?: 0.0,
+                                longitude = coordinates.value?.longitude ?: 0.0,
                                 isLocationLoaded = isLocationLoaded
                             )
                         }

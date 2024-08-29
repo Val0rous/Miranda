@@ -103,6 +103,7 @@ dependencies {
 
     implementation("com.google.android.gms:play-services-location:21.3.0")
     implementation("com.google.android.gms:play-services-maps:19.0.0")
+    implementation("com.google.android.libraries.places:places:3.1.0")
     implementation("com.google.maps.android:maps-compose:2.5.0")
 
     // UI Tests

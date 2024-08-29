@@ -25,8 +25,7 @@ enum class StartMonitoringResult { Started, GPSDisabled, PermissionDenied }
 data class Coordinates(val latitude: Double, val longitude: Double)
 
 class LocationService(private val context: Context) {
-    var monitoringStatus by mutableStateOf(MonitoringStatus.NotMonitoring)
-        private set
+    private var monitoringStatus by mutableStateOf(MonitoringStatus.NotMonitoring)
     var coordinates: Coordinates? by mutableStateOf(null)
         private set
 
