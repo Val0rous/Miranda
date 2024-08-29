@@ -95,12 +95,12 @@ fun FullScreenMapView(transactions: List<Transaction>) {
         cameraPositionState = cameraPositionState,
         uiSettings = MapUiSettings(
             compassEnabled = true,
-            mapToolbarEnabled = true,
+            mapToolbarEnabled = false,
             myLocationButtonEnabled = true,
             scrollGesturesEnabled = true,
-            tiltGesturesEnabled = false,
+            tiltGesturesEnabled = true,
             rotationGesturesEnabled = true,
-            zoomControlsEnabled = true,
+            zoomControlsEnabled = false,
             zoomGesturesEnabled = true
         )
     ) {

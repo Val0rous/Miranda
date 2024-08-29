@@ -2,7 +2,6 @@ package com.cashflowtracker.miranda.utils
 
 import android.graphics.Bitmap
 import android.graphics.Paint
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Canvas
@@ -76,7 +75,7 @@ fun createRoundedMarkerIcon(
     val vector = ImageVector.vectorResource(iconResId)
     val painter = rememberVectorPainter(vector)
     // Convert Painter to Bitmap
-    val bitmap = painter.toImageBitmap(
+    val iconBitmap = painter.toImageBitmap(
         density = LocalDensity.current,
         layoutDirection = LayoutDirection.Ltr,
         size = painter.intrinsicSize,
@@ -88,31 +87,50 @@ fun createRoundedMarkerIcon(
 //        Bitmap.Config.ARGB_8888
 //    )
 
+    val padding = 48
+    val offset = -8
     // Create a new bitmap to serve as background
-    val backgroundBitmap = Bitmap.createBitmap(
-        bitmap.width * 2,
-        bitmap.height * 2,
+    val bitmap = Bitmap.createBitmap(
+        iconBitmap.width + padding,
+        iconBitmap.height + padding,
         Bitmap.Config.ARGB_8888
     )
-    // Draw background circle
-    val canvas = android.graphics.Canvas(backgroundBitmap)
-    val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = backgroundColor.toArgb()
+    // Draw shadow first
+    val canvas = android.graphics.Canvas(bitmap)
+    val shadowColor = CustomColors.current.icon
+    val shadowRadius = 2f
+    val shadowPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = shadowColor.toArgb()
+        setShadowLayer(shadowRadius, 0f, 0f, shadowColor.toArgb())
     }
 //    paint.color = backgroundColor.toArgb()
-    val centerX = backgroundBitmap.width / 2f
-    val centerY = backgroundBitmap.height / 2f
+    val centerX = bitmap.width / 2f
+    val centerY = bitmap.height / 2f
     val radius = min(centerX, centerY)
-    canvas.drawCircle(centerX, centerY, radius, paint)
-    // Draw icon on top of circle
+    // Draw shadow circle
+    canvas.drawCircle(centerX, centerY, radius + shadowRadius + offset / 2, shadowPaint)
+    // Draw background circle
+    val backgroundPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = backgroundColor.toArgb()
+    }
+    canvas.drawCircle(centerX, centerY, radius + offset, backgroundPaint)
+    // Draw the border circle
+    val borderColor = Color.White
+    val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = borderColor.toArgb()
+        style = Paint.Style.STROKE
+        strokeWidth = 8f
+    }
+    canvas.drawCircle(centerX, centerY, radius + offset, borderPaint)
+    // Draw icon on top of circles
     canvas.drawBitmap(
-        bitmap,
-        centerX - bitmap.width / 2f,
-        centerY - bitmap.height / 2f,
+        iconBitmap,
+        centerX - iconBitmap.width / 2f,
+        centerY - iconBitmap.height / 2f,
         null
     )
 
-    return BitmapDescriptorFactory.fromBitmap(backgroundBitmap)
+    return BitmapDescriptorFactory.fromBitmap(bitmap)
 }
 
 fun Painter.toImageBitmap(
