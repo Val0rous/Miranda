@@ -20,14 +20,19 @@ import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 
 @Composable
-fun MapScreen(latitude: Double, longitude: Double, isLocationLoaded: MutableState<Boolean>) {
+fun MapScreen(
+    latitude: Double,
+    longitude: Double,
+    isLocationLoaded: MutableState<Boolean>,
+    modifier: Modifier = Modifier
+) {
     val coordinates = LatLng(latitude, longitude)
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(coordinates, 15f)
     }
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(28.dp))
             .height(218.dp),

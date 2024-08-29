@@ -113,8 +113,8 @@ fun Transactions() {
                         trailingContent = {
                             Text(
                                 text = when (transaction.type) {
-                                    "Output" -> "-%.2f €"
-                                    "Input" -> "+%.2f €"
+                                    "Output" -> if (transaction.amount != 0.0) "-%.2f €" else "%.2f €"
+                                    "Input" -> if (transaction.amount != 0.0) "+%.2f €" else "%.2f €"
                                     else -> "%.2f €"
                                 }.format(transaction.amount),
                                 style = MaterialTheme.typography.titleMedium,

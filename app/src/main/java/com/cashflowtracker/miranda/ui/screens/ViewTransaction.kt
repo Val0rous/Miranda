@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -45,6 +46,7 @@ import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.data.database.Transaction
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserId
 import com.cashflowtracker.miranda.ui.composables.AlertDialogIconTitle
+import com.cashflowtracker.miranda.ui.composables.MapScreen
 import com.cashflowtracker.miranda.ui.theme.CustomColors
 import com.cashflowtracker.miranda.ui.theme.Green400
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
@@ -54,6 +56,7 @@ import com.cashflowtracker.miranda.ui.viewmodels.AccountsViewModel
 import com.cashflowtracker.miranda.ui.viewmodels.TransactionsViewModel
 import com.cashflowtracker.miranda.utils.AccountType
 import com.cashflowtracker.miranda.utils.CategoryClass
+import com.cashflowtracker.miranda.utils.Coordinates
 import com.cashflowtracker.miranda.utils.DefaultCategories
 import com.cashflowtracker.miranda.utils.SpecialType
 import com.cashflowtracker.miranda.utils.formatZonedDateTime
@@ -95,6 +98,8 @@ class ViewTransaction : ComponentActivity() {
             var sourceType by remember { mutableStateOf("") }
             var destinationType by remember { mutableStateOf("") }
             val accountsVm = koinViewModel<AccountsViewModel>()
+            val isLocationLoaded = remember { mutableStateOf(false) }
+            val coordinates = remember { mutableStateOf<Coordinates?>(null) }
 
             LaunchedEffect(key1 = transactionId, key2 = isDeleting) {
                 if (!isDeleting) {
@@ -103,6 +108,7 @@ class ViewTransaction : ComponentActivity() {
                             .collect { retrievedTransaction ->
                                 withContext(Dispatchers.Main) {
                                     transaction = retrievedTransaction
+                                    isLocationLoaded.value = !transaction.location.isNullOrEmpty()
 
                                     coroutineScope.launch {
                                         if (!isDeleting) {
@@ -135,6 +141,20 @@ class ViewTransaction : ComponentActivity() {
                                                             println("DESTINATIONTYPE: $destinationType")
                                                         }
                                                     }
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    coroutineScope.launch {
+                                        if (isLocationLoaded.value) {
+                                            transaction.location?.split(", ", limit = 2)?.let {
+                                                if (it.size == 2) {
+                                                    coordinates.value =
+                                                        Coordinates(
+                                                            it[0].toDouble(),
+                                                            it[1].toDouble()
+                                                        )
                                                 }
                                             }
                                         }
@@ -428,8 +448,8 @@ class ViewTransaction : ComponentActivity() {
 
                                 Text(
                                     text = when (transaction.type) {
-                                        "Output" -> "-%.2f €"
-                                        "Input" -> "+%.2f €"
+                                        "Output" -> if (transaction.amount != 0.0) "-%.2f €" else "%.2f €"
+                                        "Input" -> if (transaction.amount != 0.0) "+%.2f €" else "%.2f €"
                                         else -> "%.2f €"
                                     }.format(transaction.amount),
                                     style = MaterialTheme.typography.headlineMedium,
@@ -451,6 +471,15 @@ class ViewTransaction : ComponentActivity() {
                                 }
 
                                 HorizontalDivider(modifier = Modifier.padding(vertical = 24.dp))
+
+                                if (coordinates.value != null) {
+                                    MapScreen(
+                                        latitude = coordinates.value?.latitude ?: 0.0,
+                                        longitude = coordinates.value?.longitude ?: 0.0,
+                                        isLocationLoaded = isLocationLoaded,
+                                        modifier = Modifier.padding(horizontal = 16.dp)
+                                    )
+                                }
                             }
                         }
                     }
