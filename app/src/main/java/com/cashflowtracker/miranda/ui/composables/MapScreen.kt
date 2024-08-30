@@ -67,6 +67,15 @@ fun MapScreen(
     isLocationLoaded: MutableState<Boolean>,
     modifier: Modifier = Modifier
 ) {
+    val themeViewModel = koinViewModel<ThemeViewModel>()
+    val isDarkTheme by themeViewModel.isDarkTheme.collectAsState()
+    val followSystem by themeViewModel.followSystem.collectAsState()
+    val effectiveIsDarkTheme = if (followSystem) {
+        isSystemInDarkTheme()
+    } else {
+        isDarkTheme
+    }
+
     val coordinates = LatLng(latitude, longitude)
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(coordinates, 15f)
@@ -93,6 +102,15 @@ fun MapScreen(
                     zoomControlsEnabled = false,
                     zoomGesturesEnabled = true
                 ),
+                googleMapOptionsFactory = {
+                    GoogleMapOptions().mapColorScheme(
+                        if (effectiveIsDarkTheme) {
+                            MapColorScheme.DARK
+                        } else {
+                            MapColorScheme.LIGHT
+                        }
+                    )
+                }
             ) {
                 Marker(
                     state = MarkerState(position = coordinates),
