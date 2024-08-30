@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,20 +37,26 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
+import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.data.database.Transaction
 import com.cashflowtracker.miranda.ui.screens.ViewTransaction
 import com.cashflowtracker.miranda.ui.theme.CustomColors
+import com.cashflowtracker.miranda.ui.viewmodels.ThemeViewModel
 import com.cashflowtracker.miranda.utils.Coordinates
 import com.cashflowtracker.miranda.utils.createRoundedMarkerIcon
 import com.cashflowtracker.miranda.utils.iconFactory
+import com.google.android.gms.maps.GoogleMapOptions
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MapColorScheme
+import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
+import org.koin.androidx.compose.koinViewModel
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
@@ -104,6 +112,15 @@ fun FullScreenMapView(transactions: List<Transaction>) {
     var showDialog by remember { mutableStateOf(false) }
     var openTransaction by remember { mutableStateOf<Transaction?>(null) }
     val context = LocalContext.current
+    val themeViewModel = koinViewModel<ThemeViewModel>()
+    val isDarkTheme by themeViewModel.isDarkTheme.collectAsState()
+    val followSystem by themeViewModel.followSystem.collectAsState()
+    val effectiveIsDarkTheme = if (followSystem) {
+        isSystemInDarkTheme()
+    } else {
+        isDarkTheme
+    }
+
     val initialCoordinates = transactions.firstOrNull()?.location?.split(", ", limit = 2)?.let {
         if (it.size == 2) {
             LatLng(it[0].toDouble(), it[1].toDouble())
@@ -128,7 +145,16 @@ fun FullScreenMapView(transactions: List<Transaction>) {
             rotationGesturesEnabled = true,
             zoomControlsEnabled = false,
             zoomGesturesEnabled = true
-        )
+        ),
+        googleMapOptionsFactory = {
+            GoogleMapOptions().mapColorScheme(
+                if (effectiveIsDarkTheme) {
+                    MapColorScheme.DARK
+                } else {
+                    MapColorScheme.LIGHT
+                }
+            )
+        }
     ) {
         transactions.forEach { transaction ->
             val coordinates = transaction.location?.split(", ", limit = 2)?.let {
