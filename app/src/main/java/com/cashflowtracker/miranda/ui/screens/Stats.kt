@@ -107,7 +107,7 @@ fun StatsCard(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp),
-            contentAlignment = Alignment.CenterStart
+            contentAlignment = Alignment.TopStart // Align content to the top start
         ) {
             Text(
                 text = title,
