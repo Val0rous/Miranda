@@ -20,18 +20,18 @@ fun Stats() {
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp) // Reduced padding between rows
     ) {
         // First Row with Overall Cashflow and Yearly Report
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp) // Reduced padding between cards
         ) {
             StatsCard(
                 title = "Overall Cashflow",
                 modifier = Modifier
                     .weight(1f)
-                    .height(150.dp) // Set height to make cards narrower
+                    .height(180.dp) // Increased height to make cards longer
             ) {
                 //context.startActivity(Intent(context, OverallCashflowActivity::class.java))
             }
@@ -40,7 +40,7 @@ fun Stats() {
                 title = "Yearly Report",
                 modifier = Modifier
                     .weight(1f)
-                    .height(150.dp) // Set height to make cards narrower
+                    .height(180.dp) // Increased height to make cards longer
             ) {
                 //context.startActivity(Intent(context, YearlyReportActivity::class.java))
             }
@@ -49,13 +49,13 @@ fun Stats() {
         // Second Row with Quarterly Report and Monthly Report
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp) // Reduced padding between cards
         ) {
             StatsCard(
                 title = "Quarterly Report",
                 modifier = Modifier
                     .weight(1f)
-                    .height(150.dp) // Set height to make cards narrower
+                    .height(180.dp) // Increased height to make cards longer
             ) {
                 //context.startActivity(Intent(context, QuarterlyReportActivity::class.java))
             }
@@ -64,25 +64,28 @@ fun Stats() {
                 title = "Monthly Report",
                 modifier = Modifier
                     .weight(1f)
-                    .height(150.dp) // Set height to make cards narrower
+                    .height(180.dp) // Increased height to make cards longer
             ) {
                 //context.startActivity(Intent(context, MonthlyReportActivity::class.java))
             }
         }
 
-        // Single row for Categories at the bottom
+        // Third Row with Categories
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp) // Reduced padding between cards
         ) {
             StatsCard(
                 title = "Categories",
                 modifier = Modifier
                     .weight(1f)
-                    .height(150.dp) // Set height to make cards narrower
+                    .height(180.dp) // Increased height to make cards longer
             ) {
                 //context.startActivity(Intent(context, CategoriesActivity::class.java))
             }
+
+            // Placeholder card to maintain equal row structure
+            Spacer(modifier = Modifier.weight(1f).height(180.dp)) // Increased height to match other cards
         }
     }
 }
@@ -95,8 +98,7 @@ fun StatsCard(
 ) {
     OutlinedCard(
         modifier = modifier
-            .width(150.dp) // Set a fixed width to make cards narrower
-            .padding(8.dp)
+            .padding(4.dp) // Reduced padding inside each card to bring cards closer
             .clickable { onClick() },
         shape = RoundedCornerShape(8.dp),
         colors = CardDefaults.outlinedCardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant) // Use surfaceVariant color
