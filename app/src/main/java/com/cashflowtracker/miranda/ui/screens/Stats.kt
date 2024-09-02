@@ -33,7 +33,7 @@ fun Stats() {
                     .weight(1f)
                     .height(180.dp) // Increased height to make cards longer
             ) {
-                //context.startActivity(Intent(context, OverallCashflowActivity::class.java))
+                context.startActivity(Intent(context, OverallCashflowActivity::class.java))
             }
 
             StatsCard(
@@ -42,7 +42,7 @@ fun Stats() {
                     .weight(1f)
                     .height(180.dp) // Increased height to make cards longer
             ) {
-                //context.startActivity(Intent(context, YearlyReportActivity::class.java))
+                context.startActivity(Intent(context, YearlyReportActivity::class.java))
             }
         }
 
@@ -57,7 +57,7 @@ fun Stats() {
                     .weight(1f)
                     .height(180.dp) // Increased height to make cards longer
             ) {
-                //context.startActivity(Intent(context, QuarterlyReportActivity::class.java))
+                context.startActivity(Intent(context, QuarterlyReportActivity::class.java))
             }
 
             StatsCard(
@@ -66,7 +66,7 @@ fun Stats() {
                     .weight(1f)
                     .height(180.dp) // Increased height to make cards longer
             ) {
-                //context.startActivity(Intent(context, MonthlyReportActivity::class.java))
+                context.startActivity(Intent(context, MonthlyReportActivity::class.java))
             }
         }
 

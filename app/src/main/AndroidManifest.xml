@@ -37,6 +37,7 @@
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_miranda5"
+
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_miranda5_round"
         android:supportsRtl="true"
@@ -77,6 +78,12 @@
         <activity android:name=".ui.screens.EditTransaction" />
         <activity android:name=".ui.screens.EditProfile" />
         <activity android:name=".ui.screens.MapView" />
+        <activity android:name=".ui.screens.OverallCashflowActivity" />
+        <activity android:name=".ui.screens.YearlyReportActivity" />
+        <activity android:name=".ui.screens.QuarterlyReportActivity" />
+        <activity android:name=".ui.screens.MonthlyReportActivity" />
+        <activity android:name=".ui.screens.CategoriesActivity" />
+
 
 
         <meta-data
