@@ -170,8 +170,7 @@ class Profile : ComponentActivity() {
                             )
 
                             TabRow(
-                                modifier = Modifier
-                                    .fillMaxWidth(),
+                                modifier = Modifier.fillMaxWidth(),
                                 selectedTabIndex = selectedTabIndex,
                                 indicator = { tabPositions ->
                                     Box(
