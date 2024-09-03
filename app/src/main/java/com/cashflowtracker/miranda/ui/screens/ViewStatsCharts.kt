@@ -1,6 +1,7 @@
 package com.cashflowtracker.miranda.ui.screens
 
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -25,9 +26,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import androidx.core.view.WindowCompat
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -52,6 +56,16 @@ class ViewStatsCharts : ComponentActivity() {
             var startDestination by remember { mutableStateOf(initialStartDestination) }
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentRoute = navBackStackEntry?.destination?.route
+            when (currentRoute) {
+                Routes.YearlyStats.route,
+                Routes.QuarterlyStats.route,
+                Routes.MonthlyStats.route -> {
+                    WindowCompat.setDecorFitsSystemWindows(window, false)
+                    window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+                    window.navigationBarColor =
+                        MaterialTheme.colorScheme.surfaceContainerLow.toArgb()
+                }
+            }
 
             MirandaTheme {
                 Scaffold(

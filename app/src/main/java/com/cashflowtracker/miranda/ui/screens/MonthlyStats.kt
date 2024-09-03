@@ -13,6 +13,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.InputChip
+import androidx.compose.material3.InputChipDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -54,11 +56,25 @@ fun MonthSelector() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
+            .background(MaterialTheme.colorScheme.surfaceContainerLow),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        IconButton(onClick = { /* Handle left arrow click */ }) {
+        IconButton(
+            onClick = { /* Handle left double arrow click */ },
+            modifier = Modifier.padding(end = 16.dp)
+        ) {
+            Icon(
+                imageVector = ImageVector.vectorResource(R.drawable.ic_keyboard_double_arrow_left),
+                contentDescription = "Previous Year",
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+
+        IconButton(
+            onClick = { /* Handle left arrow click */ },
+            modifier = Modifier.padding(end = 16.dp)
+        ) {
             Icon(
                 imageVector = ImageVector.vectorResource(R.drawable.ic_keyboard_arrow_left),
                 contentDescription = "Previous Month",
@@ -66,18 +82,40 @@ fun MonthSelector() {
             )
         }
 
-        Text(
-            text = "Jan 2024",
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.padding(horizontal = 16.dp)
+        InputChip(
+            modifier = Modifier.padding(vertical = 4.dp),
+            selected = false,
+            onClick = { /*TODO*/ },
+            label = {
+                Text(
+                    text = "Jan 2024",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 8.dp)
+                )
+            },
+            colors = InputChipDefaults.inputChipColors(containerColor = MaterialTheme.colorScheme.surface)
         )
 
-        IconButton(onClick = { /* Handle right arrow click */ }) {
+        IconButton(
+            onClick = { /* Handle right arrow click */ },
+            modifier = Modifier.padding(start = 16.dp)
+        ) {
             Icon(
                 imageVector = ImageVector.vectorResource(R.drawable.ic_keyboard_arrow_right),
                 contentDescription = "Next Month",
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+
+        IconButton(
+            onClick = { /* Handle right double arrow click */ },
+            modifier = Modifier.padding(start = 16.dp)
+        ) {
+            Icon(
+                imageVector = ImageVector.vectorResource(R.drawable.ic_keyboard_double_arrow_right),
+                contentDescription = "Next Year",
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }

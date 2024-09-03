@@ -1,18 +1,24 @@
 package com.cashflowtracker.miranda.ui.screens
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.InputChip
+import androidx.compose.material3.InputChipDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -55,11 +61,14 @@ fun YearSelector() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
+            .background(MaterialTheme.colorScheme.surfaceContainerLow),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        IconButton(onClick = { /* Handle left arrow click */ }) {
+        IconButton(
+            onClick = { /* Handle left arrow click */ },
+            modifier = Modifier.padding(end = 16.dp)
+        ) {
             Icon(
                 imageVector = ImageVector.vectorResource(R.drawable.ic_keyboard_arrow_left),
                 contentDescription = "Previous Year",
@@ -67,14 +76,25 @@ fun YearSelector() {
             )
         }
 
-        Text(
-            text = "2024",
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.padding(horizontal = 16.dp)
+        InputChip(
+            modifier = Modifier.padding(vertical = 4.dp),
+            selected = false,
+            onClick = { /*TODO*/ },
+            label = {
+                Text(
+                    text = "2024",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 8.dp)
+                )
+            },
+            colors = InputChipDefaults.inputChipColors(containerColor = MaterialTheme.colorScheme.surface)
         )
 
-        IconButton(onClick = { /* Handle right arrow click */ }) {
+        IconButton(
+            onClick = { /* Handle right arrow click */ },
+            modifier = Modifier.padding(start = 16.dp)
+        ) {
             Icon(
                 imageVector = ImageVector.vectorResource(R.drawable.ic_keyboard_arrow_right),
                 contentDescription = "Next Year",
