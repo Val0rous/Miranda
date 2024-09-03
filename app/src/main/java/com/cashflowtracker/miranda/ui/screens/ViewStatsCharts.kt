@@ -5,14 +5,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -84,33 +82,27 @@ class ViewStatsCharts : ComponentActivity() {
                         }
                     },
                 ) { paddingValues ->
-                    Column(modifier = Modifier) {
-                        LaunchedEffect(Unit) {
-                            savedInstanceState?.getString("NAVIGATION_STATE")?.let { savedRoute ->
-                                startDestination = savedRoute
-                            }
+                    LaunchedEffect(Unit) {
+                        savedInstanceState?.getString("NAVIGATION_STATE")?.let { savedRoute ->
+                            startDestination = savedRoute
                         }
-                        NavHost(
-                            navController = navController,
-                            startDestination = startDestination,
-                            modifier = Modifier.padding(paddingValues = paddingValues)
-                        ) {
-                            composable(Routes.OverallStats.route) {
-                                OverallPlaceholderForGraph()
-                            }
-                            composable(Routes.YearlyStats.route) {
-                                YearlyReportPlaceholderForGraph()
-                                Spacer(modifier = Modifier.height(16.dp)) // Small spacer for padding
-                                YearSelector()
-                            }
-                            composable(Routes.QuarterlyStats.route) {
-                                QuarterlyReportPlaceholderForGraph()
-                                QuarterlySelector()
-                            }
-                            composable(Routes.MonthlyStats.route) {
-                                MonthlyReportPlaceholderForGraph()
-                                MonthSelector()
-                            }
+                    }
+                    NavHost(
+                        navController = navController,
+                        startDestination = startDestination,
+                        modifier = Modifier.padding(paddingValues = paddingValues)
+                    ) {
+                        composable(Routes.OverallStats.route) {
+                            OverallChart()
+                        }
+                        composable(Routes.YearlyStats.route) {
+                            YearlyChart()
+                        }
+                        composable(Routes.QuarterlyStats.route) {
+                            QuarterlyChart()
+                        }
+                        composable(Routes.MonthlyStats.route) {
+                            MonthlyChart()
                         }
                     }
                 }

@@ -3,8 +3,10 @@ package com.cashflowtracker.miranda.ui.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -17,24 +19,33 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.cashflowtracker.miranda.R
 
 @Composable
-fun MonthlyReportPlaceholderForGraph() {
-    Box(
-        modifier = Modifier
-            .fillMaxHeight(0.85f) // Increase height for graph area to occupy more space
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.surfaceVariant)
-            .padding(16.dp),
-        contentAlignment = Alignment.Center
+fun MonthlyChart() {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(
-            text = "Graph Placeholder",
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            fontSize = 18.sp
-        )
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+//            .background(MaterialTheme.colorScheme.surfaceVariant)
+                .padding(16.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "Graph Placeholder",
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontSize = 18.sp
+            )
+        }
+        MonthSelector()
     }
 }
 
@@ -49,9 +60,9 @@ fun MonthSelector() {
     ) {
         IconButton(onClick = { /* Handle left arrow click */ }) {
             Icon(
-                imageVector = Icons.Default.ArrowBack,
+                imageVector = ImageVector.vectorResource(R.drawable.ic_keyboard_arrow_left),
                 contentDescription = "Previous Month",
-                tint = MaterialTheme.colorScheme.primary
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
 
@@ -64,10 +75,9 @@ fun MonthSelector() {
 
         IconButton(onClick = { /* Handle right arrow click */ }) {
             Icon(
-                imageVector = Icons.Default.ArrowBack,
+                imageVector = ImageVector.vectorResource(R.drawable.ic_keyboard_arrow_right),
                 contentDescription = "Next Month",
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.rotate(180f)
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
     }
