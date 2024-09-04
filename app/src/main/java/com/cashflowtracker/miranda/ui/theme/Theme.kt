@@ -54,7 +54,15 @@ data class CustomColorScheme(
     val surfaceTintYellow: Color,
     val surfaceTintGreen: Color,
     val surfaceTintBlue: Color,
-    val icon: Color
+    val icon: Color,
+    val chartAreaBlue: Color,
+    val chartLineBlue: Color,
+    val chartAreaRed: Color,
+    val chartLineRed: Color,
+    val chartAreaGreen: Color,
+    val chartLineGreen: Color,
+    val chartAreaYellow: Color,
+    val chartLineYellow: Color,
 )
 
 private val DarkCustomColors = CustomColorScheme(
@@ -62,7 +70,15 @@ private val DarkCustomColors = CustomColorScheme(
     surfaceTintYellow = Dark_SurfaceTintYellow,
     surfaceTintGreen = Dark_SurfaceTintGreen,
     surfaceTintBlue = Dark_SurfaceTintBlue,
-    icon = Dark_Icon
+    icon = Dark_Icon,
+    chartAreaBlue = ChartArea_Blue,
+    chartLineBlue = Dark_ChartLine_Blue,
+    chartAreaRed = ChartArea_Red,
+    chartLineRed = Dark_ChartLine_Red,
+    chartAreaGreen = ChartArea_Green,
+    chartLineGreen = Dark_ChartLine_Green,
+    chartAreaYellow = ChartArea_Yellow,
+    chartLineYellow = Dark_ChartLine_Yellow,
 )
 
 private val LightCustomColors = CustomColorScheme(
@@ -70,7 +86,15 @@ private val LightCustomColors = CustomColorScheme(
     surfaceTintYellow = Light_PrimaryFixedYellow,
     surfaceTintGreen = Light_PrimaryFixedGreen,
     surfaceTintBlue = Light_PrimaryFixedBlue,
-    icon = Light_Icon
+    icon = Light_Icon,
+    chartAreaBlue = ChartArea_Blue,
+    chartLineBlue = Light_ChartLine_Blue,
+    chartAreaRed = ChartArea_Red,
+    chartLineRed = Light_ChartLine_Red,
+    chartAreaGreen = ChartArea_Green,
+    chartLineGreen = Light_ChartLine_Green,
+    chartAreaYellow = ChartArea_Yellow,
+    chartLineYellow = Light_ChartLine_Yellow,
 )
 
 internal val CustomColors = staticCompositionLocalOf<CustomColorScheme> {
