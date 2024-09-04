@@ -13,6 +13,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -33,16 +34,13 @@ import com.cashflowtracker.miranda.utils.AccountType
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
-fun AccountsFilter(isVisible: MutableState<Boolean>) {
+fun AccountsFilter(
+    isVisible: MutableState<Boolean>,
+    selections: Map<String, MutableState<Boolean>>
+) {
     ModalBottomSheet(
         onDismissRequest = { isVisible.value = false }
     ) {
-        val selections = remember {
-            AccountType.entries.associate { item ->
-                item.type to mutableStateOf(false)
-            }
-        }
-
         Text(
             text = "Filter Accounts",
             textAlign = TextAlign.Center,
@@ -50,6 +48,13 @@ fun AccountsFilter(isVisible: MutableState<Boolean>) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 24.dp)
+                .padding(bottom = 16.dp)
+        )
+
+        Text(
+            text = "Account type",
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(start = 16.dp)
         )
         FlowRow(
             modifier = Modifier
@@ -85,6 +90,7 @@ fun AccountsFilter(isVisible: MutableState<Boolean>) {
                 )
             }
         }
+        HorizontalDivider(modifier = Modifier.padding(top = 8.dp))
 
         Row(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -93,8 +99,10 @@ fun AccountsFilter(isVisible: MutableState<Boolean>) {
         ) {
             OutlinedButton(
                 onClick = {
+                    selections.values.forEach {
+                        it.value = false
+                    }
                     isVisible.value = false
-                    /*TODO reset*/
                 },
                 modifier = Modifier.weight(1f)
             ) {
