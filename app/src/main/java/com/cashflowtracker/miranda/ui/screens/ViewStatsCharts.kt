@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -21,14 +22,18 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
@@ -38,9 +43,15 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.cashflowtracker.miranda.R
+import com.cashflowtracker.miranda.data.database.Transaction
+import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserId
 import com.cashflowtracker.miranda.ui.composables.ChartTabs
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
+import com.cashflowtracker.miranda.ui.viewmodels.TransactionsViewModel
 import com.cashflowtracker.miranda.utils.Routes
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 
 class ViewStatsCharts : ComponentActivity() {
     private lateinit var navController: NavHostController
@@ -53,6 +64,7 @@ class ViewStatsCharts : ComponentActivity() {
             intent.getStringExtra("startDestination") ?: Routes.OverallStats.route
         setContent {
             navController = rememberNavController()
+            val coroutineScope = rememberCoroutineScope()
             var startDestination by remember { mutableStateOf(initialStartDestination) }
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentRoute = navBackStackEntry?.destination?.route
@@ -66,6 +78,19 @@ class ViewStatsCharts : ComponentActivity() {
                         MaterialTheme.colorScheme.surfaceContainerLow.toArgb()
                 }
             }
+            val context = LocalContext.current
+            val vm = koinViewModel<TransactionsViewModel>()
+            val userId = context.getCurrentUserId()
+            val transactions by vm.actions.getAllByUserIdFlow(userId)
+                .collectAsState(initial = emptyList())
+//            val transactions = produceState<List<Transaction>>(
+//                initialValue = emptyList(),
+//                key1 = userId
+//            ) {
+//                vm.actions.getAllByUserIdFlow(userId).collect { transactions ->
+//                    value = transactions
+//                }
+//            }
 
             MirandaTheme {
                 Scaffold(
@@ -107,7 +132,7 @@ class ViewStatsCharts : ComponentActivity() {
                         modifier = Modifier.padding(paddingValues = paddingValues)
                     ) {
                         composable(Routes.OverallStats.route) {
-                            OverallChart()
+                            OverallChart(transactions)
                         }
                         composable(Routes.YearlyStats.route) {
                             YearlyChart()
