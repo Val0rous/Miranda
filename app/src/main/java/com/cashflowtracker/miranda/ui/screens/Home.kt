@@ -3,6 +3,7 @@ package com.cashflowtracker.miranda.ui.screens
 import android.app.Activity
 import android.content.Intent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,6 +28,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -53,20 +55,25 @@ import androidx.navigation.NavHostController
 import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserEmail
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserId
+import com.cashflowtracker.miranda.data.repositories.PreferencesRepository.clearProfilePicturePath
 import com.cashflowtracker.miranda.data.repositories.PreferencesRepository.getBalanceVisibility
 import com.cashflowtracker.miranda.data.repositories.PreferencesRepository.setBalanceVisibility
+import com.cashflowtracker.miranda.ui.composables.AccountsFilter
 import com.cashflowtracker.miranda.ui.composables.BalanceText
 import com.cashflowtracker.miranda.ui.composables.IconWithBackground
 import com.cashflowtracker.miranda.ui.theme.CustomColors
 import com.cashflowtracker.miranda.ui.theme.Red400
 import com.cashflowtracker.miranda.ui.viewmodels.AccountsViewModel
 import com.cashflowtracker.miranda.utils.AccountType
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun Home() {
     val context = LocalContext.current
     var balanceVisible by remember { mutableStateOf(context.getBalanceVisibility()) }
+    val showFilterDialog = remember { mutableStateOf(false) }
     val vm = koinViewModel<AccountsViewModel>()
     val userId = context.getCurrentUserId()
     val accounts by vm.actions.getAllByUserId(userId).collectAsState(initial = emptyList())
@@ -165,7 +172,7 @@ fun Home() {
                 }
                 IconButton(
                     onClick = {
-                        // TODO
+                        showFilterDialog.value = true
                     },
                 ) {
                     Icon(
@@ -229,6 +236,10 @@ fun Home() {
                 }
             }
         }
+    }
+
+    if (showFilterDialog.value) {
+        AccountsFilter(showFilterDialog)
     }
 }
 
