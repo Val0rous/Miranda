@@ -39,9 +39,10 @@ fun Stats() {
     val userId = context.getCurrentUserId()
     val transactions by vm.actions.getAllByUserIdFlow(userId).collectAsState(initial = emptyList())
 
-    val currentYear = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy"))
-    val currentMonth = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"))
-    val currentQuarter = when (LocalDate.now().month) {
+    val date = LocalDate.now()
+    val currentYear = date.format(DateTimeFormatter.ofPattern("yyyy"))
+    val currentMonth = date.format(DateTimeFormatter.ofPattern("yyyy-MM"))
+    val currentQuarter = when (date.month) {
         Month.JANUARY, Month.FEBRUARY, Month.MARCH -> "Q1"
         Month.APRIL, Month.MAY, Month.JUNE -> "Q2"
         Month.JULY, Month.AUGUST, Month.SEPTEMBER -> "Q3"
