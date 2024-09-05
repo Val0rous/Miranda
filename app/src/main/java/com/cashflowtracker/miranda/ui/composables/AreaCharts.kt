@@ -14,7 +14,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.data.database.Transaction
-import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
 import com.cashflowtracker.miranda.utils.TransactionType
 import com.patrykandpatrick.vico.compose.axis.horizontal.rememberBottomAxis
 import com.patrykandpatrick.vico.compose.axis.vertical.rememberStartAxis
@@ -50,8 +49,8 @@ fun AreaChart(
 ) {
     val chartItems = mutableListOf<ChartItem>()
 
-    val dateList = mutableListOf<ZonedDateTime>()
-    val balanceList = mutableListOf<Double>()
+//    val dateList = mutableListOf<ZonedDateTime>()
+//    val balanceList = mutableListOf<Double>()
     var currentBalance = initialBalance
     transactions.forEach { item ->
         val date = ZonedDateTime.parse(item.dateTime, DateTimeFormatter.ISO_ZONED_DATE_TIME)

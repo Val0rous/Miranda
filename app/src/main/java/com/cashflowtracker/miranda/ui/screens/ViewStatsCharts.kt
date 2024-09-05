@@ -125,16 +125,24 @@ class ViewStatsCharts : ComponentActivity() {
                         modifier = Modifier.padding(paddingValues = paddingValues)
                     ) {
                         composable(Routes.OverallStats.route) {
-                            OverallChart(transactions)
+                            if (transactions.isNotEmpty()) {
+                                OverallChart(transactions)
+                            }
                         }
                         composable(Routes.YearlyStats.route) {
-                            YearlyChart(transactions)
+                            if (transactions.isNotEmpty()) {
+                                YearlyChart(transactions)
+                            }
                         }
                         composable(Routes.QuarterlyStats.route) {
-                            QuarterlyChart(transactions)
+                            if (transactions.isNotEmpty()) {
+                                QuarterlyChart(transactions)
+                            }
                         }
                         composable(Routes.MonthlyStats.route) {
-                            MonthlyChart(transactions)
+                            if (transactions.isNotEmpty()) {
+                                MonthlyChart(transactions)
+                            }
                         }
                     }
                 }

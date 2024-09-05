@@ -17,7 +17,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableIntState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,7 +29,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.data.database.Transaction
 import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
@@ -36,10 +37,17 @@ import java.time.LocalDate
 @Composable
 fun YearlyChart(transactions: List<Transaction>) {
     val year = remember { mutableIntStateOf(LocalDate.now().year) }
-    var filteredTransactions by remember { mutableStateOf<List<Transaction>>(emptyList()) }
-    LaunchedEffect(key1 = year.intValue) {
-        filteredTransactions = transactions.filter { transaction ->
-            transaction.dateTime.startsWith(year.intValue.toString())
+//    var filteredTransactions by remember { mutableStateOf<List<Transaction>>(emptyList()) }
+//    LaunchedEffect(key1 = year.intValue) {
+//        filteredTransactions = transactions.filter { transaction ->
+//            transaction.dateTime.startsWith(year.intValue.toString())
+//        }
+//    }
+    val filteredTransactions by remember(year.intValue) {
+        derivedStateOf {
+            transactions.filter { transaction ->
+                transaction.dateTime.startsWith(year.intValue.toString())
+            }
         }
     }
     Column(
@@ -47,15 +55,17 @@ fun YearlyChart(transactions: List<Transaction>) {
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         if (filteredTransactions.isNotEmpty()) {
-            AreaChart(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                transactions = filteredTransactions.reversed(),
-                chartLineColor = LocalCustomColors.current.chartLineRed,
-                chartAreaColor = LocalCustomColors.current.chartAreaRed
-            )
+            key(filteredTransactions) {
+                AreaChart(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    transactions = filteredTransactions.reversed(),
+                    chartLineColor = LocalCustomColors.current.chartLineRed,
+                    chartAreaColor = LocalCustomColors.current.chartAreaRed
+                )
+            }
         } else {
             Box(
                 modifier = Modifier

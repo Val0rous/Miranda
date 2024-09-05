@@ -15,42 +15,46 @@ import androidx.compose.material3.InputChipDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableIntState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.data.database.Transaction
 import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
 import java.time.LocalDate
 import java.time.Month
 
-fun nextMonth(month: Int): Int {
+fun nextMonth(month: Int, year: MutableIntState): Int {
     return when (month) {
-        12 -> 1
+        12 -> 1.also {
+            year.intValue += 1
+        }
+
         else -> month + 1
     }
 }
 
-fun previousMonth(month: Int): Int {
+fun previousMonth(month: Int, year: MutableIntState): Int {
     return when (month) {
-        1 -> 12
+        1 -> 12.also {
+            year.intValue -= 1
+        }
+
         else -> month - 1
     }
 }
 
 fun getMonthAbbreviation(month: Int): String {
     return if (month in 1..12) {
-        Month.of(month).name.substring(0, 3).replaceFirstChar { it.uppercase() }
+        Month.of(month).name.substring(0, 3).lowercase().replaceFirstChar { it.uppercase() }
     } else {
         ""
     }
@@ -61,29 +65,43 @@ fun MonthlyChart(transactions: List<Transaction>) {
     val date = LocalDate.now()
     val month = remember { mutableIntStateOf(date.month.value) }
     val year = remember { mutableIntStateOf(date.year) }
-    var filteredTransactions by remember { mutableStateOf<List<Transaction>>(emptyList()) }
-    LaunchedEffect(key1 = month.intValue, key2 = year.intValue) {
-        filteredTransactions = transactions.filter { transaction ->
-            transaction.dateTime.startsWith(
-                "${year.intValue}-${String.format("%02d", month.intValue)}"
-            )
+//    var filteredTransactions by remember { mutableStateOf<List<Transaction>>(emptyList()) }
+//    val monthYearKey = remember(month.intValue, year.intValue) {
+//        "${year.intValue}-${String.format("%02d", month.intValue)}"
+//    }
+
+    val filteredTransactions by remember(month.intValue, year.intValue) {
+        derivedStateOf {
+            val monthYear = "${year.intValue}-${String.format("%02d", month.intValue)}"
+            transactions.filter { transaction ->
+                transaction.dateTime.startsWith(monthYear)
+            }
         }
     }
+
+
+//    LaunchedEffect(key1 = monthYearKey) {
+//        filteredTransactions = transactions.filter { transaction ->
+//            transaction.dateTime.startsWith(monthYearKey)
+//        }
+//    }
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         if (filteredTransactions.isNotEmpty()) {
-            AreaChart(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                transactions = filteredTransactions.reversed(),
-                initialBalance = 0.0,
-                chartLineColor = LocalCustomColors.current.chartLineYellow,
-                chartAreaColor = LocalCustomColors.current.chartAreaYellow
-            )
+            key(filteredTransactions) {
+                AreaChart(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    transactions = filteredTransactions.reversed(),
+                    initialBalance = 0.0,
+                    chartLineColor = LocalCustomColors.current.chartLineYellow,
+                    chartAreaColor = LocalCustomColors.current.chartAreaYellow
+                )
+            }
         } else {
             Box(
                 modifier = Modifier
@@ -124,7 +142,7 @@ fun MonthSelector(month: MutableIntState, year: MutableIntState) {
         }
 
         IconButton(
-            onClick = { month.intValue = previousMonth(month.intValue) },
+            onClick = { month.intValue = previousMonth(month.intValue, year) },
             modifier = Modifier.padding(end = 16.dp)
         ) {
             Icon(
@@ -150,7 +168,7 @@ fun MonthSelector(month: MutableIntState, year: MutableIntState) {
         )
 
         IconButton(
-            onClick = { month.intValue = nextMonth(month.intValue) },
+            onClick = { month.intValue = nextMonth(month.intValue, year) },
             modifier = Modifier.padding(start = 16.dp)
         ) {
             Icon(
