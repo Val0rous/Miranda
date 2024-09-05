@@ -207,21 +207,18 @@ fun CategoriesCard(
                 starLineColor = LocalCustomColors.current.starLineYellow,
                 starAreaColor = LocalCustomColors.current.starAreaYellow,
                 starSize = 96.dp,
-                borderSize = 4.dp
             )
-            Column() {
+            Column {
                 StarWithBorder(
                     starLineColor = LocalCustomColors.current.starLineGreen,
                     starAreaColor = LocalCustomColors.current.starAreaGreen,
                     starSize = 48.dp,
-                    borderSize = 3.dp,
                     modifier = Modifier.offset(x = (-4).dp)
                 )
                 StarWithBorder(
                     starLineColor = LocalCustomColors.current.starLineRed,
                     starAreaColor = LocalCustomColors.current.starAreaRed,
                     starSize = 40.dp,
-                    borderSize = 3.dp,
                     modifier = Modifier.offset(x = (-18).dp, y = (-8).dp)
                 )
             }

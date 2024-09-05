@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.times
 import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
 import com.google.android.gms.maps.model.BitmapDescriptor
@@ -176,26 +177,24 @@ fun StarWithBorder(
     starLineColor: Color,
     starAreaColor: Color,
     starSize: Dp,
-    borderSize: Dp,
 ) {
-    val starIcon = painterResource(R.drawable.ic_star_filled)
+
     Box(modifier = modifier.size(starSize)) {
         Icon(
-            painter = starIcon,
+            painter = painterResource(R.drawable.ic_star_filled_300),
+            contentDescription = "",
+            modifier = Modifier
+                .fillMaxSize()
+                .align(Alignment.Center),
+            tint = starAreaColor
+        )
+        Icon(
+            painter = painterResource(R.drawable.ic_star_300),
             contentDescription = "",
             modifier = Modifier
                 .fillMaxSize()
                 .align(Alignment.Center),
             tint = starLineColor
-        )
-        Icon(
-            painter = starIcon,
-            contentDescription = "",
-            modifier = Modifier
-                .size(starSize - borderSize)
-                .align(Alignment.Center)
-                .offset(x = (-2).dp, y = (-2).dp),
-            tint = starAreaColor
         )
     }
 }
