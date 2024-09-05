@@ -1,16 +1,13 @@
-package com.cashflowtracker.miranda.ui.screens
+package com.cashflowtracker.miranda.ui.composables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.InputChip
@@ -18,41 +15,96 @@ import androidx.compose.material3.InputChipDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableIntState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cashflowtracker.miranda.R
+import com.cashflowtracker.miranda.data.database.Transaction
+import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
+import java.time.LocalDate
+import java.time.Month
 
-@Composable
-fun QuarterlyChart() {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.SpaceBetween
-    ) {
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth()
-//            .background(MaterialTheme.colorScheme.surfaceVariant)
-                .padding(16.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = "Graph Placeholder",
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                fontSize = 18.sp
-            )
-        }
-        QuarterlySelector()
+fun nextMonth(month: Int): Int {
+    return when (month) {
+        12 -> 1
+        else -> month + 1
+    }
+}
+
+fun previousMonth(month: Int): Int {
+    return when (month) {
+        1 -> 12
+        else -> month - 1
+    }
+}
+
+fun getMonthAbbreviation(month: Int): String {
+    return if (month in 1..12) {
+        Month.of(month).name.substring(0, 3).replaceFirstChar { it.uppercase() }
+    } else {
+        ""
     }
 }
 
 @Composable
-fun QuarterlySelector() {
+fun MonthlyChart(transactions: List<Transaction>) {
+    val date = LocalDate.now()
+    val month = remember { mutableIntStateOf(date.month.value) }
+    val year = remember { mutableIntStateOf(date.year) }
+    var filteredTransactions by remember { mutableStateOf<List<Transaction>>(emptyList()) }
+    LaunchedEffect(key1 = month.intValue, key2 = year.intValue) {
+        filteredTransactions = transactions.filter { transaction ->
+            transaction.dateTime.startsWith(
+                "${year.intValue}-${String.format("%02d", month.intValue)}"
+            )
+        }
+    }
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
+        if (filteredTransactions.isNotEmpty()) {
+            AreaChart(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                transactions = filteredTransactions.reversed(),
+                initialBalance = 0.0,
+                chartLineColor = LocalCustomColors.current.chartLineYellow,
+                chartAreaColor = LocalCustomColors.current.chartAreaYellow
+            )
+        } else {
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .padding(16.dp),
+            ) {
+                Text(
+                    text = "No transactions in selected month",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
+        }
+        MonthSelector(month, year)
+    }
+}
+
+@Composable
+fun MonthSelector(month: MutableIntState, year: MutableIntState) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -61,7 +113,7 @@ fun QuarterlySelector() {
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(
-            onClick = { /* Handle left double arrow click */ },
+            onClick = { year.intValue -= 1 },
             modifier = Modifier.padding(end = 16.dp)
         ) {
             Icon(
@@ -72,12 +124,12 @@ fun QuarterlySelector() {
         }
 
         IconButton(
-            onClick = { /* Handle left arrow click */ },
+            onClick = { month.intValue = previousMonth(month.intValue) },
             modifier = Modifier.padding(end = 16.dp)
         ) {
             Icon(
                 imageVector = ImageVector.vectorResource(R.drawable.ic_keyboard_arrow_left),
-                contentDescription = "Previous Quarter",
+                contentDescription = "Previous Month",
                 tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
@@ -88,7 +140,7 @@ fun QuarterlySelector() {
             onClick = { /*TODO*/ },
             label = {
                 Text(
-                    text = "Q1 2024",
+                    text = "${getMonthAbbreviation(month.intValue)} ${year.intValue}",
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(horizontal = 8.dp)
@@ -98,18 +150,18 @@ fun QuarterlySelector() {
         )
 
         IconButton(
-            onClick = { /* Handle right arrow click */ },
+            onClick = { month.intValue = nextMonth(month.intValue) },
             modifier = Modifier.padding(start = 16.dp)
         ) {
             Icon(
                 imageVector = ImageVector.vectorResource(R.drawable.ic_keyboard_arrow_right),
-                contentDescription = "Next Quarter",
+                contentDescription = "Next Month",
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
 
         IconButton(
-            onClick = { /* Handle right double arrow click */ },
+            onClick = { year.intValue += 1 },
             modifier = Modifier.padding(start = 16.dp)
         ) {
             Icon(

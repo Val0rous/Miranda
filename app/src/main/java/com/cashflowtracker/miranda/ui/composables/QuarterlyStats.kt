@@ -1,16 +1,13 @@
-package com.cashflowtracker.miranda.ui.screens
+package com.cashflowtracker.miranda.ui.composables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.InputChip
@@ -20,39 +17,37 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cashflowtracker.miranda.R
+import com.cashflowtracker.miranda.data.database.Transaction
+import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
 
 @Composable
-fun MonthlyChart() {
+fun QuarterlyChart(transactions: List<Transaction>) {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth()
-//            .background(MaterialTheme.colorScheme.surfaceVariant)
-                .padding(16.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = "Graph Placeholder",
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                fontSize = 18.sp
+        if (transactions.isNotEmpty()) {
+            AreaChart(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                transactions = transactions.reversed(),
+                chartLineColor = LocalCustomColors.current.chartLineGreen,
+                chartAreaColor = LocalCustomColors.current.chartAreaGreen
             )
         }
-        MonthSelector()
+        QuarterlySelector()
     }
 }
 
 @Composable
-fun MonthSelector() {
+fun QuarterlySelector() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -77,7 +72,7 @@ fun MonthSelector() {
         ) {
             Icon(
                 imageVector = ImageVector.vectorResource(R.drawable.ic_keyboard_arrow_left),
-                contentDescription = "Previous Month",
+                contentDescription = "Previous Quarter",
                 tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
@@ -88,7 +83,7 @@ fun MonthSelector() {
             onClick = { /*TODO*/ },
             label = {
                 Text(
-                    text = "Jan 2024",
+                    text = "Q1 2024",
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(horizontal = 8.dp)
@@ -103,7 +98,7 @@ fun MonthSelector() {
         ) {
             Icon(
                 imageVector = ImageVector.vectorResource(R.drawable.ic_keyboard_arrow_right),
-                contentDescription = "Next Month",
+                contentDescription = "Next Quarter",
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }

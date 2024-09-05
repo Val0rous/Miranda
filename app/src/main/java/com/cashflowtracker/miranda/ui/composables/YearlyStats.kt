@@ -1,20 +1,13 @@
-package com.cashflowtracker.miranda.ui.screens
+package com.cashflowtracker.miranda.ui.composables
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContentPadding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.InputChip
@@ -22,42 +15,68 @@ import androidx.compose.material3.InputChipDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableIntState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cashflowtracker.miranda.R
-import java.nio.InvalidMarkException
+import com.cashflowtracker.miranda.data.database.Transaction
+import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
+import java.time.LocalDate
 
 @Composable
-fun YearlyChart() {
+fun YearlyChart(transactions: List<Transaction>) {
+    val year = remember { mutableIntStateOf(LocalDate.now().year) }
+    var filteredTransactions by remember { mutableStateOf<List<Transaction>>(emptyList()) }
+    LaunchedEffect(key1 = year.intValue) {
+        filteredTransactions = transactions.filter { transaction ->
+            transaction.dateTime.startsWith(year.intValue.toString())
+        }
+    }
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth()
-//            .background(MaterialTheme.colorScheme.surfaceVariant)
-                .padding(16.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = "Graph Placeholder",
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                fontSize = 18.sp
+        if (filteredTransactions.isNotEmpty()) {
+            AreaChart(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                transactions = filteredTransactions.reversed(),
+                chartLineColor = LocalCustomColors.current.chartLineRed,
+                chartAreaColor = LocalCustomColors.current.chartAreaRed
             )
+        } else {
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .padding(16.dp),
+            ) {
+                Text(
+                    text = "No transactions in selected year",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
         }
-        YearSelector()
+        YearSelector(year)
     }
 }
 
 @Composable
-fun YearSelector() {
+fun YearSelector(year: MutableIntState) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -66,7 +85,7 @@ fun YearSelector() {
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(
-            onClick = { /* Handle left arrow click */ },
+            onClick = { year.intValue -= 1 },
             modifier = Modifier.padding(end = 16.dp)
         ) {
             Icon(
@@ -79,10 +98,10 @@ fun YearSelector() {
         InputChip(
             modifier = Modifier.padding(vertical = 4.dp),
             selected = false,
-            onClick = { /*TODO*/ },
+            onClick = { /* TODO */ },
             label = {
                 Text(
-                    text = "2024",
+                    text = year.intValue.toString(),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(horizontal = 8.dp)
@@ -92,7 +111,7 @@ fun YearSelector() {
         )
 
         IconButton(
-            onClick = { /* Handle right arrow click */ },
+            onClick = { year.intValue += 1 },
             modifier = Modifier.padding(start = 16.dp)
         ) {
             Icon(

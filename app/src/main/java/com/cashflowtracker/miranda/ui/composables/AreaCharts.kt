@@ -43,14 +43,16 @@ data class ChartItem(
 @Composable
 fun AreaChart(
     modifier: Modifier,
-    transactions: List<Transaction>
+    transactions: List<Transaction>,
+    initialBalance: Double = 0.0,
+    chartLineColor: Color,
+    chartAreaColor: Color,
 ) {
-    val customColors = LocalCustomColors.current
     val chartItems = mutableListOf<ChartItem>()
 
     val dateList = mutableListOf<ZonedDateTime>()
     val balanceList = mutableListOf<Double>()
-    var currentBalance = 0.0
+    var currentBalance = initialBalance
     transactions.forEach { item ->
         val date = ZonedDateTime.parse(item.dateTime, DateTimeFormatter.ISO_ZONED_DATE_TIME)
         val deltaAmount = when (item.type) {
@@ -70,7 +72,7 @@ fun AreaChart(
     val scrollState = rememberChartScrollState()
     val pointShape = shapeComponent(
         shape = Shapes.pillShape,
-        color = customColors.chartLineBlue
+        color = chartLineColor
     )
 
     LaunchedEffect(key1 = refreshDataset.intValue) {
@@ -81,13 +83,13 @@ fun AreaChart(
 
         datasetLineSpec.add(
             LineChart.LineSpec(
-                lineColor = customColors.chartLineBlue.toArgb(),
+                lineColor = chartLineColor.toArgb(),
                 lineThicknessDp = 3f,
                 lineBackgroundShader = DynamicShaders.fromBrush(
                     brush = Brush.verticalGradient(
                         listOf(
-                            customColors.chartAreaBlue.copy(DefaultAlpha.LINE_BACKGROUND_SHADER_START),
-                            customColors.chartAreaBlue.copy(DefaultAlpha.LINE_BACKGROUND_SHADER_END)
+                            chartAreaColor.copy(DefaultAlpha.LINE_BACKGROUND_SHADER_START),
+                            chartAreaColor.copy(DefaultAlpha.LINE_BACKGROUND_SHADER_END)
                         )
                     )
                 ),

@@ -28,6 +28,9 @@ import com.cashflowtracker.miranda.ui.viewmodels.TransactionsViewModel
 import com.cashflowtracker.miranda.utils.Routes
 import com.cashflowtracker.miranda.utils.StarWithBorder
 import org.koin.androidx.compose.koinViewModel
+import java.time.LocalDate
+import java.time.Month
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun Stats() {
@@ -35,6 +38,16 @@ fun Stats() {
     val vm = koinViewModel<TransactionsViewModel>()
     val userId = context.getCurrentUserId()
     val transactions by vm.actions.getAllByUserIdFlow(userId).collectAsState(initial = emptyList())
+
+    val currentYear = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy"))
+    val currentMonth = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"))
+    val currentQuarter = when (LocalDate.now().month) {
+        Month.JANUARY, Month.FEBRUARY, Month.MARCH -> "Q1"
+        Month.APRIL, Month.MAY, Month.JUNE -> "Q2"
+        Month.JULY, Month.AUGUST, Month.SEPTEMBER -> "Q3"
+        Month.OCTOBER, Month.NOVEMBER, Month.DECEMBER -> "Q4"
+        else -> ""
+    }
 
     Column(
         modifier = Modifier
@@ -63,7 +76,9 @@ fun Stats() {
             StatsCard(
                 title = "Yearly Report",
                 modifier = Modifier.weight(1f),
-                transactions = transactions,
+                transactions = transactions.filter { transaction ->
+                    transaction.dateTime.startsWith(currentYear)
+                },
                 chartLineColor = LocalCustomColors.current.chartLineRed,
                 chartAreaColor = LocalCustomColors.current.chartAreaRed,
                 onClick = {
@@ -82,7 +97,31 @@ fun Stats() {
             StatsCard(
                 title = "Quarterly Report",
                 modifier = Modifier.weight(1f),
-                transactions = transactions,
+                transactions = transactions.filter { transaction ->
+                    val transactionDate =
+                        LocalDate.parse(transaction.dateTime, DateTimeFormatter.ISO_ZONED_DATE_TIME)
+                    val transactionYear = transactionDate.year.toString()
+                    val transactionMonth = transactionDate.month
+                    transactionYear == currentYear && when (currentQuarter) {
+                        "Q1" -> transactionMonth in listOf(
+                            Month.JANUARY, Month.FEBRUARY, Month.MARCH
+                        )
+
+                        "Q2" -> transactionMonth in listOf(
+                            Month.APRIL, Month.MAY, Month.JUNE
+                        )
+
+                        "Q3" -> transactionMonth in listOf(
+                            Month.JULY, Month.AUGUST, Month.SEPTEMBER
+                        )
+
+                        "Q4" -> transactionMonth in listOf(
+                            Month.OCTOBER, Month.NOVEMBER, Month.DECEMBER
+                        )
+
+                        else -> false
+                    }
+                },
                 chartLineColor = LocalCustomColors.current.chartLineGreen,
                 chartAreaColor = LocalCustomColors.current.chartAreaGreen,
                 onClick = {
@@ -95,7 +134,9 @@ fun Stats() {
             StatsCard(
                 title = "Monthly Report",
                 modifier = Modifier.weight(1f),
-                transactions = transactions,
+                transactions = transactions.filter { transaction ->
+                    transaction.dateTime.startsWith(currentMonth)
+                },
                 chartLineColor = LocalCustomColors.current.chartLineYellow,
                 chartAreaColor = LocalCustomColors.current.chartAreaYellow,
                 onClick = {
