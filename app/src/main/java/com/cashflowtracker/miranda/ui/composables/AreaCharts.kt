@@ -32,7 +32,13 @@ import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 import com.patrykandpatrick.vico.core.entry.FloatEntry
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.util.UUID
 
+data class ChartItem(
+    val date: ZonedDateTime,
+    val balance: Double,
+    val transactionId: UUID
+)
 
 @Composable
 fun AreaChart(
@@ -40,20 +46,21 @@ fun AreaChart(
     transactions: List<Transaction>
 ) {
     val customColors = LocalCustomColors.current
+    val chartItems = mutableListOf<ChartItem>()
+
     val dateList = mutableListOf<ZonedDateTime>()
     val balanceList = mutableListOf<Double>()
     var currentBalance = 0.0
     transactions.forEach { item ->
-        dateList.add(ZonedDateTime.parse(item.dateTime, DateTimeFormatter.ISO_ZONED_DATE_TIME))
+        val date = ZonedDateTime.parse(item.dateTime, DateTimeFormatter.ISO_ZONED_DATE_TIME)
         val deltaAmount = when (item.type) {
             TransactionType.OUTPUT.type -> -item.amount
             TransactionType.INPUT.type -> item.amount
             else -> 0.0
         }
         currentBalance += deltaAmount
-        balanceList.add(currentBalance)
+        chartItems.add(ChartItem(date, currentBalance, item.transactionId))
     }
-    val dateBalanceList = dateList.zip(balanceList)
 
     val refreshDataset = remember { mutableIntStateOf(0) }
     val modelProducer = remember { ChartEntryModelProducer() }
@@ -88,7 +95,7 @@ fun AreaChart(
                 pointSizeDp = 12f,
             )
         )
-        dateBalanceList.forEach { (date, balance) ->
+        chartItems.forEach { (date, balance) ->
             dataPoints.add(
                 FloatEntry(
                     x = xPos /*date.toEpochSecond().toFloat()*/,
