@@ -2,7 +2,14 @@ package com.cashflowtracker.miranda.utils
 
 import android.graphics.Bitmap
 import android.graphics.Paint
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.Color
@@ -17,11 +24,14 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.R
-import com.cashflowtracker.miranda.ui.theme.CustomColors
+import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import kotlin.math.min
@@ -67,9 +77,9 @@ fun createRoundedMarkerIcon(
     val context = LocalContext.current
     val iconResId = iconFactory(type, source, destination)
     val backgroundColor = when (type) {
-        "Output" -> CustomColors.current.surfaceTintRed
-        "Input" -> CustomColors.current.surfaceTintGreen
-        else -> CustomColors.current.surfaceTintBlue
+        "Output" -> LocalCustomColors.current.surfaceTintRed
+        "Input" -> LocalCustomColors.current.surfaceTintGreen
+        else -> LocalCustomColors.current.surfaceTintBlue
     }
     // Load vector image
     val vector = ImageVector.vectorResource(iconResId)
@@ -79,7 +89,7 @@ fun createRoundedMarkerIcon(
         density = LocalDensity.current,
         layoutDirection = LayoutDirection.Ltr,
         size = painter.intrinsicSize,
-        color = CustomColors.current.icon
+        color = LocalCustomColors.current.icon
     ).asAndroidBitmap()
 //    val bitmap = Bitmap.createBitmap(
 //        painter.intrinsicSize.width.toInt(),
@@ -97,7 +107,7 @@ fun createRoundedMarkerIcon(
     )
     // Draw shadow first
     val canvas = android.graphics.Canvas(bitmap)
-    val shadowColor = CustomColors.current.icon
+    val shadowColor = LocalCustomColors.current.icon
     val shadowRadius = 2f
     val shadowPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = shadowColor.toArgb()
@@ -158,4 +168,34 @@ fun Painter.toImageBitmap(
         )
     }
     return imageBitmap
+}
+
+@Composable
+fun StarWithBorder(
+    modifier: Modifier = Modifier,
+    starLineColor: Color,
+    starAreaColor: Color,
+    starSize: Dp,
+    borderSize: Dp,
+) {
+    val starIcon = painterResource(R.drawable.ic_star_filled)
+    Box(modifier = modifier.size(starSize)) {
+        Icon(
+            painter = starIcon,
+            contentDescription = "",
+            modifier = Modifier
+                .fillMaxSize()
+                .align(Alignment.Center),
+            tint = starLineColor
+        )
+        Icon(
+            painter = starIcon,
+            contentDescription = "",
+            modifier = Modifier
+                .size(starSize - borderSize)
+                .align(Alignment.Center)
+                .offset(x = (-2).dp, y = (-2).dp),
+            tint = starAreaColor
+        )
+    }
 }

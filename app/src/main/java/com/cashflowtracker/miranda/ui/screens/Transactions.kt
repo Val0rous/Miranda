@@ -28,7 +28,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserId
-import com.cashflowtracker.miranda.ui.theme.CustomColors
+import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
 import com.cashflowtracker.miranda.ui.viewmodels.TransactionsViewModel
 import com.cashflowtracker.miranda.utils.DefaultCategories
 import com.cashflowtracker.miranda.utils.SpecialType
@@ -68,9 +68,9 @@ fun Transactions() {
                                     .clip(CircleShape)
                                     .background(
                                         when (transaction.type) {
-                                            "Output" -> CustomColors.current.surfaceTintRed
-                                            "Input" -> CustomColors.current.surfaceTintGreen
-                                            else -> CustomColors.current.surfaceTintBlue
+                                            "Output" -> LocalCustomColors.current.surfaceTintRed
+                                            "Input" -> LocalCustomColors.current.surfaceTintGreen
+                                            else -> LocalCustomColors.current.surfaceTintBlue
                                         }
                                     )
                             ) {
@@ -93,7 +93,7 @@ fun Transactions() {
                                         }
                                     ),
                                     contentDescription = transaction.type,
-                                    tint = CustomColors.current.icon,
+                                    tint = LocalCustomColors.current.icon,
                                     modifier = Modifier
                                         .size(24.dp)
                                         .align(Alignment.Center)

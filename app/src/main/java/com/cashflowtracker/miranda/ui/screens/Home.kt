@@ -42,7 +42,7 @@ import com.cashflowtracker.miranda.data.repositories.PreferencesRepository.setBa
 import com.cashflowtracker.miranda.ui.composables.AccountsFilter
 import com.cashflowtracker.miranda.ui.composables.BalanceText
 import com.cashflowtracker.miranda.ui.composables.IconWithBackground
-import com.cashflowtracker.miranda.ui.theme.CustomColors
+import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
 import com.cashflowtracker.miranda.ui.theme.Red400
 import com.cashflowtracker.miranda.ui.viewmodels.AccountsViewModel
 import com.cashflowtracker.miranda.utils.AccountType
@@ -190,9 +190,9 @@ fun Home() {
                             IconWithBackground(
                                 icon = AccountType.getIcon(account.type),
                                 iconSize = 24.dp,
-                                iconColor = CustomColors.current.icon,
+                                iconColor = LocalCustomColors.current.icon,
                                 backgroundSize = 40.dp,
-                                backgroundColor = CustomColors.current.surfaceTintBlue,
+                                backgroundColor = LocalCustomColors.current.surfaceTintBlue,
                                 contentDescription = account.type
                             )
                         },

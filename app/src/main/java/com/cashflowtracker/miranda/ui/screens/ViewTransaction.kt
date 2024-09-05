@@ -6,19 +6,16 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -47,7 +44,7 @@ import com.cashflowtracker.miranda.data.database.Transaction
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserId
 import com.cashflowtracker.miranda.ui.composables.AlertDialogIconTitle
 import com.cashflowtracker.miranda.ui.composables.MapScreen
-import com.cashflowtracker.miranda.ui.theme.CustomColors
+import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
 import com.cashflowtracker.miranda.ui.theme.Green400
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 import com.cashflowtracker.miranda.ui.theme.Red400
@@ -253,9 +250,9 @@ class ViewTransaction : ComponentActivity() {
                                                 .clip(CircleShape)
                                                 .background(
                                                     when (transaction.type) {
-                                                        "Output" -> CustomColors.current.surfaceTintRed
-                                                        "Input" -> CustomColors.current.surfaceTintGreen
-                                                        else -> CustomColors.current.surfaceTintBlue
+                                                        "Output" -> LocalCustomColors.current.surfaceTintRed
+                                                        "Input" -> LocalCustomColors.current.surfaceTintGreen
+                                                        else -> LocalCustomColors.current.surfaceTintBlue
                                                     }
                                                 )
                                         ) {
@@ -282,7 +279,7 @@ class ViewTransaction : ComponentActivity() {
                                                     }
                                                 ),
                                                 contentDescription = transaction.source,
-                                                tint = CustomColors.current.icon,
+                                                tint = LocalCustomColors.current.icon,
                                                 modifier = Modifier
                                                     .size(40.dp)
                                                     .align(Alignment.Center)
@@ -357,9 +354,9 @@ class ViewTransaction : ComponentActivity() {
                                                 .clip(CircleShape)
                                                 .background(
                                                     when (transaction.type) {
-                                                        "Output" -> CustomColors.current.surfaceTintRed
-                                                        "Input" -> CustomColors.current.surfaceTintGreen
-                                                        else -> CustomColors.current.surfaceTintBlue
+                                                        "Output" -> LocalCustomColors.current.surfaceTintRed
+                                                        "Input" -> LocalCustomColors.current.surfaceTintGreen
+                                                        else -> LocalCustomColors.current.surfaceTintBlue
                                                     }
                                                 )
                                         ) {
@@ -380,7 +377,7 @@ class ViewTransaction : ComponentActivity() {
                                                     }
                                                 ),
                                                 contentDescription = transaction.destination,
-                                                tint = CustomColors.current.icon,
+                                                tint = LocalCustomColors.current.icon,
                                                 modifier = Modifier
                                                     .size(40.dp)
                                                     .align(Alignment.Center)
@@ -454,9 +451,9 @@ class ViewTransaction : ComponentActivity() {
                                     }.format(transaction.amount),
                                     style = MaterialTheme.typography.headlineMedium,
                                     color = when (transaction.type) {
-                                        "Output" -> CustomColors.current.surfaceTintRed
-                                        "Input" -> CustomColors.current.surfaceTintGreen
-                                        else -> CustomColors.current.surfaceTintBlue
+                                        "Output" -> LocalCustomColors.current.surfaceTintRed
+                                        "Input" -> LocalCustomColors.current.surfaceTintGreen
+                                        else -> LocalCustomColors.current.surfaceTintBlue
                                     },
                                     modifier = Modifier.padding(top = 24.dp)
                                 )

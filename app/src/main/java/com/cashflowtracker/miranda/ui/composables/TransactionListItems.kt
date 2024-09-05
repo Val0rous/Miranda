@@ -20,7 +20,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.data.database.Account
-import com.cashflowtracker.miranda.ui.theme.CustomColors
+import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
 import com.cashflowtracker.miranda.ui.theme.Green400
 import com.cashflowtracker.miranda.ui.theme.Red400
 import com.cashflowtracker.miranda.ui.theme.Yellow400
@@ -81,16 +81,16 @@ fun CategoryListItem(category: DefaultCategories, modifier: Modifier) {
                     //.background(MaterialTheme.colorScheme.surfaceTint)
                     .background(
                         color = when (category.type) {
-                            CategoryClass.NECESSITY -> CustomColors.current.surfaceTintRed
-                            CategoryClass.CONVENIENCE -> CustomColors.current.surfaceTintYellow
-                            CategoryClass.LUXURY -> CustomColors.current.surfaceTintGreen
+                            CategoryClass.NECESSITY -> LocalCustomColors.current.surfaceTintRed
+                            CategoryClass.CONVENIENCE -> LocalCustomColors.current.surfaceTintYellow
+                            CategoryClass.LUXURY -> LocalCustomColors.current.surfaceTintGreen
                         }
                     )
             ) {
                 Icon(
                     imageVector = ImageVector.vectorResource(category.icon),
                     contentDescription = category.category,
-                    tint = CustomColors.current.icon,
+                    tint = LocalCustomColors.current.icon,
                     modifier = Modifier
                         .size(24.dp)
                         .align(Alignment.Center)

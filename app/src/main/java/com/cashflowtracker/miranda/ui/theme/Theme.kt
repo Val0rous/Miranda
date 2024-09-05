@@ -20,10 +20,6 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.media3.effect.Brightness
-import com.cashflowtracker.miranda.data.repositories.ThemeRepository.getSystemPreference
-import com.cashflowtracker.miranda.data.repositories.ThemeRepository.getThemePreference
 import com.cashflowtracker.miranda.ui.viewmodels.ThemeViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -63,6 +59,12 @@ data class CustomColorScheme(
     val chartLineGreen: Color,
     val chartAreaYellow: Color,
     val chartLineYellow: Color,
+    val starAreaYellow: Color,
+    val starLineYellow: Color,
+    val starAreaRed: Color,
+    val starLineRed: Color,
+    val starAreaGreen: Color,
+    val starLineGreen: Color,
 )
 
 private val DarkCustomColors = CustomColorScheme(
@@ -79,6 +81,12 @@ private val DarkCustomColors = CustomColorScheme(
     chartLineGreen = Dark_ChartLine_Green,
     chartAreaYellow = ChartArea_Yellow,
     chartLineYellow = Dark_ChartLine_Yellow,
+    starAreaYellow = Dark_StarArea_Yellow,
+    starLineYellow = Dark_StarLine_Yellow,
+    starAreaRed = Dark_StarArea_Red,
+    starLineRed = Dark_StarLine_Red,
+    starAreaGreen = Dark_StarArea_Green,
+    starLineGreen = Dark_StarLine_Green,
 )
 
 private val LightCustomColors = CustomColorScheme(
@@ -95,9 +103,15 @@ private val LightCustomColors = CustomColorScheme(
     chartLineGreen = Light_ChartLine_Green,
     chartAreaYellow = ChartArea_Yellow,
     chartLineYellow = Light_ChartLine_Yellow,
+    starAreaYellow = Light_StarArea_Yellow,
+    starLineYellow = Light_StarLine_Yellow,
+    starAreaRed = Light_StarArea_Red,
+    starLineRed = Light_StarLine_Red,
+    starAreaGreen = Light_StarArea_Green,
+    starLineGreen = Light_StarLine_Green,
 )
 
-internal val CustomColors = staticCompositionLocalOf<CustomColorScheme> {
+internal val LocalCustomColors = staticCompositionLocalOf<CustomColorScheme> {
     error("No custom colors provided")
 }
 
@@ -153,7 +167,7 @@ fun MirandaTheme(
         //content = content,
         content = {
             CompositionLocalProvider(
-                CustomColors provides customColors,
+                LocalCustomColors provides customColors,
             ) {
                 content()
             }

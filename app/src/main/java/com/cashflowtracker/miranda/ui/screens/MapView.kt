@@ -1,5 +1,6 @@
 package com.cashflowtracker.miranda.ui.screens
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -27,6 +28,7 @@ import com.cashflowtracker.miranda.ui.viewmodels.TransactionsViewModel
 import org.koin.androidx.compose.koinViewModel
 
 class MapView : ComponentActivity() {
+    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

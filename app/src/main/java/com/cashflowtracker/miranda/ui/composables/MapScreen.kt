@@ -2,7 +2,6 @@ package com.cashflowtracker.miranda.ui.composables
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.BitmapFactory
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -31,26 +30,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
-import androidx.core.view.WindowCompat
-import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.data.database.Transaction
 import com.cashflowtracker.miranda.ui.screens.ViewTransaction
-import com.cashflowtracker.miranda.ui.theme.CustomColors
+import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
 import com.cashflowtracker.miranda.ui.viewmodels.ThemeViewModel
 import com.cashflowtracker.miranda.utils.Coordinates
 import com.cashflowtracker.miranda.utils.createRoundedMarkerIcon
 import com.cashflowtracker.miranda.utils.iconFactory
 import com.google.android.gms.maps.GoogleMapOptions
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapColorScheme
-import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
@@ -227,12 +220,12 @@ fun FullScreenMapView(transactions: List<Transaction>) {
                             openTransaction!!.destination
                         ),
                         iconSize = 24.dp,
-                        iconColor = CustomColors.current.icon,
+                        iconColor = LocalCustomColors.current.icon,
                         backgroundSize = 40.dp,
                         backgroundColor = when (openTransaction!!.type) {
-                            "Output" -> CustomColors.current.surfaceTintRed
-                            "Input" -> CustomColors.current.surfaceTintGreen
-                            else -> CustomColors.current.surfaceTintBlue
+                            "Output" -> LocalCustomColors.current.surfaceTintRed
+                            "Input" -> LocalCustomColors.current.surfaceTintGreen
+                            else -> LocalCustomColors.current.surfaceTintBlue
                         }
                     )
                 },

@@ -16,14 +16,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.data.database.Transaction
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserId
 import com.cashflowtracker.miranda.ui.composables.AreaChartThumbnail
-import com.cashflowtracker.miranda.ui.theme.CustomColors
+import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
 import com.cashflowtracker.miranda.ui.viewmodels.TransactionsViewModel
 import com.cashflowtracker.miranda.utils.Routes
+import com.cashflowtracker.miranda.utils.StarWithBorder
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -48,8 +51,8 @@ fun Stats() {
                 title = "Overall Cashflow",
                 modifier = Modifier.weight(1f),
                 transactions = transactions,
-                chartLineColor = CustomColors.current.chartLineBlue,
-                chartAreaColor = CustomColors.current.chartAreaBlue,
+                chartLineColor = LocalCustomColors.current.chartLineBlue,
+                chartAreaColor = LocalCustomColors.current.chartAreaBlue,
                 onClick = {
                     val intent = Intent(context, ViewStatsCharts::class.java)
                     intent.putExtra("startDestination", Routes.OverallStats.route)
@@ -61,8 +64,8 @@ fun Stats() {
                 title = "Yearly Report",
                 modifier = Modifier.weight(1f),
                 transactions = transactions,
-                chartLineColor = CustomColors.current.chartLineRed,
-                chartAreaColor = CustomColors.current.chartAreaRed,
+                chartLineColor = LocalCustomColors.current.chartLineRed,
+                chartAreaColor = LocalCustomColors.current.chartAreaRed,
                 onClick = {
                     val intent = Intent(context, ViewStatsCharts::class.java)
                     intent.putExtra("startDestination", Routes.YearlyStats.route)
@@ -80,8 +83,8 @@ fun Stats() {
                 title = "Quarterly Report",
                 modifier = Modifier.weight(1f),
                 transactions = transactions,
-                chartLineColor = CustomColors.current.chartLineGreen,
-                chartAreaColor = CustomColors.current.chartAreaGreen,
+                chartLineColor = LocalCustomColors.current.chartLineGreen,
+                chartAreaColor = LocalCustomColors.current.chartAreaGreen,
                 onClick = {
                     val intent = Intent(context, ViewStatsCharts::class.java)
                     intent.putExtra("startDestination", Routes.QuarterlyStats.route)
@@ -93,8 +96,8 @@ fun Stats() {
                 title = "Monthly Report",
                 modifier = Modifier.weight(1f),
                 transactions = transactions,
-                chartLineColor = CustomColors.current.chartLineYellow,
-                chartAreaColor = CustomColors.current.chartAreaYellow,
+                chartLineColor = LocalCustomColors.current.chartLineYellow,
+                chartAreaColor = LocalCustomColors.current.chartAreaYellow,
                 onClick = {
                     val intent = Intent(context, ViewStatsCharts::class.java)
                     intent.putExtra("startDestination", Routes.MonthlyStats.route)
@@ -108,12 +111,10 @@ fun Stats() {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(6.dp) // Reduced padding between cards
         ) {
-            StatsCard(
+            CategoriesCard(
                 title = "Categories",
                 modifier = Modifier.weight(1f),
                 transactions = transactions,
-                chartLineColor = CustomColors.current.chartLineBlue,
-                chartAreaColor = CustomColors.current.chartAreaBlue,
                 onClick = {
 //                    context.startActivity(Intent(context, CategoriesActivity::class.java))
                 }
@@ -168,3 +169,63 @@ fun StatsCard(
         }
     }
 }
+
+@Composable
+fun CategoriesCard(
+    title: String,
+    modifier: Modifier = Modifier,
+    transactions: List<Transaction>,
+    onClick: () -> Unit
+) {
+    var width by remember { mutableStateOf(0.dp) }
+    OutlinedCard(
+        modifier = modifier
+            .padding(4.dp) // Reduced padding inside each card to bring cards closer
+            .aspectRatio(1f)
+            .clickable { onClick() }
+            .onGloballyPositioned { coordinates ->
+                width = coordinates.size.width.dp
+            },
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.outlinedCardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow) // Use surfaceVariant color
+    ) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleMedium,
+            //textAlign = Alignment.TopStart, // Align content to the top start
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 0.dp)
+                .padding(bottom = 16.dp)
+        ) {
+            StarWithBorder(
+                starLineColor = LocalCustomColors.current.starLineYellow,
+                starAreaColor = LocalCustomColors.current.starAreaYellow,
+                starSize = 96.dp,
+                borderSize = 4.dp
+            )
+            Column() {
+                StarWithBorder(
+                    starLineColor = LocalCustomColors.current.starLineGreen,
+                    starAreaColor = LocalCustomColors.current.starAreaGreen,
+                    starSize = 48.dp,
+                    borderSize = 3.dp,
+                    modifier = Modifier.offset(x = (-4).dp)
+                )
+                StarWithBorder(
+                    starLineColor = LocalCustomColors.current.starLineRed,
+                    starAreaColor = LocalCustomColors.current.starAreaRed,
+                    starSize = 40.dp,
+                    borderSize = 3.dp,
+                    modifier = Modifier.offset(x = (-18).dp, y = (-8).dp)
+                )
+            }
+        }
+    }
+}
+
