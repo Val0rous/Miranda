@@ -1,5 +1,6 @@
 package com.cashflowtracker.miranda.ui.screens
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
@@ -17,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.vectorResource
 import androidx.core.view.WindowCompat
 import androidx.navigation.NavHostController
@@ -85,6 +88,8 @@ class ViewStatsCharts : ComponentActivity() {
 //                }
 //            }
 
+            val view = LocalView.current
+            val window = (view.context as Activity).window
             MirandaTheme {
                 Scaffold(
                     modifier = Modifier,
@@ -143,6 +148,20 @@ class ViewStatsCharts : ComponentActivity() {
                             if (transactions.isNotEmpty()) {
                                 MonthlyChart(transactions.reversed())
                             }
+                        }
+                    }
+                    when (currentRoute) {
+                        Routes.YearlyStats.route,
+                        Routes.QuarterlyStats.route,
+                        Routes.MonthlyStats.route -> {
+                            window.navigationBarColor =
+                                MaterialTheme.colorScheme.surfaceContainerLow.toArgb()
+                        }
+
+                        else -> {
+                            window.navigationBarColor =
+                                MaterialTheme.colorScheme.surface.toArgb()
+
                         }
                     }
                 }
