@@ -2,12 +2,14 @@ package com.cashflowtracker.miranda.ui.screens
 
 import android.content.Intent
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -22,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.data.database.Transaction
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserId
+import com.cashflowtracker.miranda.data.repositories.ThemeRepository.getThemePreferenceFlow
 import com.cashflowtracker.miranda.ui.composables.AreaChartThumbnail
 import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
 import com.cashflowtracker.miranda.ui.viewmodels.TransactionsViewModel
@@ -250,14 +253,16 @@ fun StatsCard(
                 .padding(16.dp),
         )
         if (transactions.isNotEmpty()) {
-            AreaChartThumbnail(
-                modifier = modifier.fillMaxSize(),
-                transactions = transactions.reversed(),
-                initialBalance = initialBalance,
-                width = width,
-                chartLineColor = chartLineColor,
-                chartAreaColor = chartAreaColor
-            )
+            key(LocalContext.current.getThemePreferenceFlow()) {
+                AreaChartThumbnail(
+                    modifier = modifier.fillMaxSize(),
+                    transactions = transactions.reversed(),
+                    initialBalance = initialBalance,
+                    width = width,
+                    chartLineColor = chartLineColor,
+                    chartAreaColor = chartAreaColor
+                )
+            }
         }
     }
 }
