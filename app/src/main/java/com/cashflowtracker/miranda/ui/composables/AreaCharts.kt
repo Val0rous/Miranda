@@ -25,6 +25,7 @@ import com.patrykandpatrick.vico.compose.component.shapeComponent
 import com.patrykandpatrick.vico.compose.style.ProvideChartStyle
 import com.patrykandpatrick.vico.core.axis.AxisItemPlacer
 import com.patrykandpatrick.vico.core.chart.line.LineChart
+import com.patrykandpatrick.vico.core.chart.values.AxisValuesOverrider
 import com.patrykandpatrick.vico.core.component.shape.Shapes
 import com.patrykandpatrick.vico.core.component.shape.shader.DynamicShaders
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
@@ -155,13 +156,14 @@ fun AreaChart(
 fun AreaChartThumbnail(
     modifier: Modifier,
     transactions: List<Transaction>,
+    initialBalance: Double = 0.0,
     width: Dp,
     chartLineColor: Color,
     chartAreaColor: Color
 ) {
     val dateList = mutableListOf<ZonedDateTime>()
     val balanceList = mutableListOf<Double>()
-    var currentBalance = 0.0
+    var currentBalance = initialBalance
     transactions.forEach { item ->
         dateList.add(ZonedDateTime.parse(item.dateTime, DateTimeFormatter.ISO_ZONED_DATE_TIME))
         val deltaAmount = when (item.type) {
@@ -199,6 +201,12 @@ fun AreaChartThumbnail(
                 ),
             )
         )
+        dataPoints.add(
+            FloatEntry(
+                x = xPos++,
+                y = initialBalance.toFloat()
+            )
+        )
         dateBalanceList.forEach { (date, balance) ->
             dataPoints.add(
                 FloatEntry(
@@ -219,12 +227,12 @@ fun AreaChartThumbnail(
                 modifier = modifier,
                 chart = lineChart(
                     lines = datasetLineSpec,
-//                    axisValuesOverrider = AxisValuesOverrider.fixed(
-//                        minX = 0f,
-//                        maxX = transactions.size.toFloat() - 1f
-//                    ),
+                    axisValuesOverrider = AxisValuesOverrider.fixed(
+                        minX = 0.5f,    // 0f has a little margin to the left
+                        maxX = (transactions.size - 0.5).toFloat() // remove - 0.5 for a little margin to the right
+                    ),
                     spacing = with(LocalDensity.current) {
-                        (width.value / transactions.size).toDp()
+                        (width.value / (transactions.size + 1)).toDp()
                     },
                 ),
                 chartModelProducer = modelProducer,

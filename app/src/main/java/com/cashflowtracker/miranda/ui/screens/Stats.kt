@@ -27,6 +27,7 @@ import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
 import com.cashflowtracker.miranda.ui.viewmodels.TransactionsViewModel
 import com.cashflowtracker.miranda.utils.Routes
 import com.cashflowtracker.miranda.utils.StarWithBorder
+import com.cashflowtracker.miranda.utils.TransactionType
 import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDate
 import java.time.Month
@@ -56,51 +57,66 @@ fun Stats() {
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(6.dp) // Reduced padding between rows
     ) {
-        // First Row with Overall Cashflow and Yearly Report
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(6.dp) // Reduced padding between cards
-        ) {
-            StatsCard(
-                title = "Overall Cashflow",
-                modifier = Modifier.weight(1f),
-                transactions = transactions,
-                chartLineColor = LocalCustomColors.current.chartLineBlue,
-                chartAreaColor = LocalCustomColors.current.chartAreaBlue,
-                onClick = {
-                    val intent = Intent(context, ViewStatsCharts::class.java)
-                    intent.putExtra("startDestination", Routes.OverallStats.route)
-                    context.startActivity(intent)
-                }
-            )
+        if (transactions.isNotEmpty()) {
+            // First Row with Overall Cashflow and Yearly Report
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(6.dp) // Reduced padding between cards
+            ) {
+                StatsCard(
+                    title = "Overall Cashflow",
+                    modifier = Modifier.weight(1f),
+                    transactions = transactions,
+                    chartLineColor = LocalCustomColors.current.chartLineBlue,
+                    chartAreaColor = LocalCustomColors.current.chartAreaBlue,
+                    onClick = {
+                        val intent = Intent(context, ViewStatsCharts::class.java)
+                        intent.putExtra("startDestination", Routes.OverallStats.route)
+                        context.startActivity(intent)
+                    }
+                )
 
-            StatsCard(
-                title = "Yearly Report",
-                modifier = Modifier.weight(1f),
-                transactions = transactions.filter { transaction ->
+                val yearlyTransactions = transactions.filter { transaction ->
                     transaction.dateTime.startsWith(currentYear)
-                },
-                chartLineColor = LocalCustomColors.current.chartLineRed,
-                chartAreaColor = LocalCustomColors.current.chartAreaRed,
-                onClick = {
-                    val intent = Intent(context, ViewStatsCharts::class.java)
-                    intent.putExtra("startDestination", Routes.YearlyStats.route)
-                    context.startActivity(intent)
                 }
-            )
-        }
+                var yearlyInitialBalance = 0.0
+                val firstYearlyTransaction = yearlyTransactions.first()
+                val beforeYearlyTransactions =
+                    transactions.takeWhile { it != firstYearlyTransaction }
+                beforeYearlyTransactions.forEach { item ->
+                    val deltaAmount = when (item.type) {
+                        TransactionType.OUTPUT.type -> -item.amount
+                        TransactionType.INPUT.type -> item.amount
+                        else -> 0.0
+                    }
+                    yearlyInitialBalance += deltaAmount
+                }
+                StatsCard(
+                    title = "Yearly Report",
+                    modifier = Modifier.weight(1f),
+                    transactions = yearlyTransactions,
+                    initialBalance = yearlyInitialBalance,
+                    chartLineColor = LocalCustomColors.current.chartLineRed,
+                    chartAreaColor = LocalCustomColors.current.chartAreaRed,
+                    onClick = {
+                        val intent = Intent(context, ViewStatsCharts::class.java)
+                        intent.putExtra("startDestination", Routes.YearlyStats.route)
+                        context.startActivity(intent)
+                    }
+                )
+            }
 
-        // Second Row with Quarterly Report and Monthly Report
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(6.dp) // Reduced padding between cards
-        ) {
-            StatsCard(
-                title = "Quarterly Report",
-                modifier = Modifier.weight(1f),
-                transactions = transactions.filter { transaction ->
+            // Second Row with Quarterly Report and Monthly Report
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(6.dp) // Reduced padding between cards
+            ) {
+                val quarterlyTransactions = transactions.filter { transaction ->
                     val transactionDate =
-                        LocalDate.parse(transaction.dateTime, DateTimeFormatter.ISO_ZONED_DATE_TIME)
+                        LocalDate.parse(
+                            transaction.dateTime,
+                            DateTimeFormatter.ISO_ZONED_DATE_TIME
+                        )
                     val transactionYear = transactionDate.year.toString()
                     val transactionMonth = transactionDate.month
                     transactionYear == currentYear && when (currentQuarter) {
@@ -122,51 +138,83 @@ fun Stats() {
 
                         else -> false
                     }
-                },
-                chartLineColor = LocalCustomColors.current.chartLineGreen,
-                chartAreaColor = LocalCustomColors.current.chartAreaGreen,
-                onClick = {
-                    val intent = Intent(context, ViewStatsCharts::class.java)
-                    intent.putExtra("startDestination", Routes.QuarterlyStats.route)
-                    context.startActivity(intent)
                 }
-            )
+                var quarterlyInitialBalance = 0.0
+                val firstQuarterlyTransaction = quarterlyTransactions.first()
+                val beforeQuarterlyTransactions =
+                    transactions.takeWhile { it != firstQuarterlyTransaction }
+                beforeQuarterlyTransactions.forEach { item ->
+                    val deltaAmount = when (item.type) {
+                        TransactionType.OUTPUT.type -> -item.amount
+                        TransactionType.INPUT.type -> item.amount
+                        else -> 0.0
+                    }
+                    quarterlyInitialBalance += deltaAmount
+                }
+                StatsCard(
+                    title = "Quarterly Report",
+                    modifier = Modifier.weight(1f),
+                    transactions = quarterlyTransactions,
+                    initialBalance = quarterlyInitialBalance,
+                    chartLineColor = LocalCustomColors.current.chartLineGreen,
+                    chartAreaColor = LocalCustomColors.current.chartAreaGreen,
+                    onClick = {
+                        val intent = Intent(context, ViewStatsCharts::class.java)
+                        intent.putExtra("startDestination", Routes.QuarterlyStats.route)
+                        context.startActivity(intent)
+                    }
+                )
 
-            StatsCard(
-                title = "Monthly Report",
-                modifier = Modifier.weight(1f),
-                transactions = transactions.filter { transaction ->
+                val monthlyTransactions = transactions.filter { transaction ->
                     transaction.dateTime.startsWith(currentMonth)
-                },
-                chartLineColor = LocalCustomColors.current.chartLineYellow,
-                chartAreaColor = LocalCustomColors.current.chartAreaYellow,
-                onClick = {
-                    val intent = Intent(context, ViewStatsCharts::class.java)
-                    intent.putExtra("startDestination", Routes.MonthlyStats.route)
-                    context.startActivity(intent)
                 }
-            )
-        }
+                var monthlyInitialBalance = 0.0
+                val firstMonthlyTransaction = monthlyTransactions.first()
+                val beforeMonthlyTransactions =
+                    transactions.takeWhile { it != firstMonthlyTransaction }
+                beforeMonthlyTransactions.forEach { item ->
+                    val deltaAmount = when (item.type) {
+                        TransactionType.OUTPUT.type -> -item.amount
+                        TransactionType.INPUT.type -> item.amount
+                        else -> 0.0
+                    }
+                    monthlyInitialBalance += deltaAmount
+                }
+                StatsCard(
+                    title = "Monthly Report",
+                    modifier = Modifier.weight(1f),
+                    transactions = monthlyTransactions,
+                    initialBalance = monthlyInitialBalance,
+                    chartLineColor = LocalCustomColors.current.chartLineYellow,
+                    chartAreaColor = LocalCustomColors.current.chartAreaYellow,
+                    onClick = {
+                        val intent = Intent(context, ViewStatsCharts::class.java)
+                        intent.putExtra("startDestination", Routes.MonthlyStats.route)
+                        context.startActivity(intent)
+                    }
+                )
+            }
 
-        // Third Row with Categories
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(6.dp) // Reduced padding between cards
-        ) {
-            CategoriesCard(
-                title = "Categories",
-                modifier = Modifier.weight(1f),
-                transactions = transactions,
-                onClick = {
+            // Third Row with Categories
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(6.dp) // Reduced padding between cards
+            ) {
+                CategoriesCard(
+                    title = "Categories",
+                    modifier = Modifier.weight(1f),
+                    transactions = transactions,
+                    onClick = {
 //                    context.startActivity(Intent(context, CategoriesActivity::class.java))
-                }
-            )
+                    }
+                )
 
-            // Placeholder card to maintain equal row structure
-            Spacer(
-                modifier = Modifier
-                    .weight(1f)
-            )
+                // Placeholder card to maintain equal row structure
+                Spacer(
+                    modifier = Modifier
+                        .weight(1f)
+                )
+            }
         }
     }
 }
@@ -176,6 +224,7 @@ fun StatsCard(
     title: String,
     modifier: Modifier = Modifier,
     transactions: List<Transaction>,
+    initialBalance: Double = 0.0,
     chartLineColor: Color,
     chartAreaColor: Color,
     onClick: () -> Unit
@@ -204,6 +253,7 @@ fun StatsCard(
             AreaChartThumbnail(
                 modifier = modifier.fillMaxSize(),
                 transactions = transactions.reversed(),
+                initialBalance = initialBalance,
                 width = width,
                 chartLineColor = chartLineColor,
                 chartAreaColor = chartAreaColor
