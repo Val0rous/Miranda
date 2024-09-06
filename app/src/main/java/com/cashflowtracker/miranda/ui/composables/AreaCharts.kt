@@ -96,6 +96,12 @@ fun AreaChart(
                 pointSizeDp = 12f,
             )
         )
+        dataPoints.add(
+            FloatEntry(
+                x = xPos++,
+                y = initialBalance.toFloat()
+            )
+        )
         chartItems.forEach { (date, balance) ->
             dataPoints.add(
                 FloatEntry(

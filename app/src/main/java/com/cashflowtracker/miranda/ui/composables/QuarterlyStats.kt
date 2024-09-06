@@ -111,7 +111,7 @@ fun QuarterlyChart(transactions: List<Transaction>) {
                         .weight(1f)
                         .fillMaxWidth()
                         .padding(16.dp),
-                    transactions = filteredTransactions.reversed(),
+                    transactions = filteredTransactions,
                     chartLineColor = LocalCustomColors.current.chartLineGreen,
                     chartAreaColor = LocalCustomColors.current.chartAreaGreen
                 )

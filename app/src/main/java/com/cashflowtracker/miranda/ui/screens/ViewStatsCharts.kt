@@ -126,22 +126,22 @@ class ViewStatsCharts : ComponentActivity() {
                     ) {
                         composable(Routes.OverallStats.route) {
                             if (transactions.isNotEmpty()) {
-                                OverallChart(transactions)
+                                OverallChart(transactions.reversed())
                             }
                         }
                         composable(Routes.YearlyStats.route) {
                             if (transactions.isNotEmpty()) {
-                                YearlyChart(transactions)
+                                YearlyChart(transactions.reversed())
                             }
                         }
                         composable(Routes.QuarterlyStats.route) {
                             if (transactions.isNotEmpty()) {
-                                QuarterlyChart(transactions)
+                                QuarterlyChart(transactions.reversed())
                             }
                         }
                         composable(Routes.MonthlyStats.route) {
                             if (transactions.isNotEmpty()) {
-                                MonthlyChart(transactions)
+                                MonthlyChart(transactions.reversed())
                             }
                         }
                     }
