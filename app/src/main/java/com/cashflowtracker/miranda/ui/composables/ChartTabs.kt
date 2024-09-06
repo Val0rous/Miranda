@@ -12,6 +12,7 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -20,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
 import com.cashflowtracker.miranda.utils.Routes
 
 data class ChartTabsItem(
@@ -62,6 +64,19 @@ fun ChartTabs(navController: NavHostController, startDestination: String) {
         )
     }
 
+    val customColors = LocalCustomColors.current
+    val tabColor by remember {
+        derivedStateOf {
+            when (selectedTabIndex) {
+                0 -> customColors.chartLineBlue
+                1 -> customColors.chartLineRed
+                2 -> customColors.chartLineGreen
+                3 -> customColors.chartLineYellow
+                else -> customColors.chartLineBlue
+            }
+        }
+    }
+
     TabRow(
         modifier = Modifier.fillMaxWidth(),
         selectedTabIndex = selectedTabIndex,
@@ -74,7 +89,7 @@ fun ChartTabs(navController: NavHostController, startDestination: String) {
                     .height(3.dp)
                     .padding(horizontal = 20.dp)
                     .background(
-                        color = MaterialTheme.colorScheme.primary,
+                        color = tabColor,
                         shape = RoundedCornerShape(
                             topStart = 16.dp,
                             topEnd = 16.dp
@@ -100,7 +115,7 @@ fun ChartTabs(navController: NavHostController, startDestination: String) {
                     Text(
                         text = item.label,
                         color = if (selectedTabIndex == index) {
-                            MaterialTheme.colorScheme.primary
+                            tabColor
                         } else {
                             MaterialTheme.colorScheme.onSurface
                         },
