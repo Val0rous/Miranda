@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.data.database.Transaction
 import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
+import com.cashflowtracker.miranda.utils.TransactionType
 import java.time.LocalDate
 
 @Composable
@@ -56,12 +57,27 @@ fun YearlyChart(transactions: List<Transaction>) {
     ) {
         if (filteredTransactions.isNotEmpty()) {
             key(filteredTransactions) {
+                var initialBalance = 0.0
+                val firstFilteredTransaction = filteredTransactions.first()
+                val beforeTransactions =
+                    transactions.takeWhile { it != firstFilteredTransaction }
+
+                beforeTransactions.forEach { item ->
+                    val deltaAmount = when (item.type) {
+                        TransactionType.OUTPUT.type -> -item.amount
+                        TransactionType.INPUT.type -> item.amount
+                        else -> 0.0
+                    }
+                    initialBalance += deltaAmount
+                }
+
                 AreaChart(
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxWidth()
                         .padding(16.dp),
                     transactions = filteredTransactions,
+                    initialBalance = initialBalance,
                     chartLineColor = LocalCustomColors.current.chartLineRed,
                     chartAreaColor = LocalCustomColors.current.chartAreaRed
                 )
