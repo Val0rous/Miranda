@@ -51,7 +51,6 @@ class AddTransaction : ComponentActivity() {
         enableEdgeToEdge()
         locationService = LocationService(this)
         setContent {
-//            val navController = rememberNavController()
             val scrollState = rememberScrollState()
             val coroutineScope = rememberCoroutineScope()
             val context = LocalContext.current
