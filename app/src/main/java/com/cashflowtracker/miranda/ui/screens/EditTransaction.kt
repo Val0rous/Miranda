@@ -196,6 +196,7 @@ class EditTransaction : ComponentActivity() {
                                             zonedDateTime?.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
                                                 ?: ""
 
+                                        //TODO: UPDATE transaction
                                         vm.actions.addTransaction(
                                             Transaction(
                                                 type = transactionType.value,

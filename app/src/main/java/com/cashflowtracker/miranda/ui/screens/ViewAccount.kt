@@ -91,91 +91,91 @@ class ViewAccount : ComponentActivity() {
             }
 
             MirandaTheme {
-                if (isLoaded) {
-                    Scaffold(
-                        modifier = Modifier.fillMaxSize(),
-                        topBar = {
-                            TopAppBar(
-                                title = { Text("Account") },
-                                navigationIcon = {
-                                    IconButton(
-                                        onClick = { finish() },
-                                        modifier = Modifier.padding(
-                                            start = 0.dp,
-                                            top = 16.dp,
-                                            bottom = 16.dp
-                                        )
-                                    ) {
-                                        Icon(
-                                            ImageVector.vectorResource(R.drawable.ic_arrow_back),
-                                            contentDescription = "Back"
-                                        )
-                                    }
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                    topBar = {
+                        TopAppBar(
+                            title = { Text("Account") },
+                            navigationIcon = {
+                                IconButton(
+                                    onClick = { finish() },
+                                    modifier = Modifier.padding(
+                                        start = 0.dp,
+                                        top = 16.dp,
+                                        bottom = 16.dp
+                                    )
+                                ) {
+                                    Icon(
+                                        ImageVector.vectorResource(R.drawable.ic_arrow_back),
+                                        contentDescription = "Back"
+                                    )
+                                }
+                            }
+                        )
+                    },
+                    bottomBar = {
+                        NavigationBar(
+                            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                        ) {
+                            NavigationBarItem(
+                                selected = false,
+                                label = { Text("Favorite") },
+                                icon = {
+                                    Icon(
+                                        imageVector = if (isFavorite) {
+                                            ImageVector.vectorResource(R.drawable.ic_favorite_filled)
+                                        } else {
+                                            ImageVector.vectorResource(R.drawable.ic_favorite)
+                                        },
+                                        contentDescription = "Favorite"
+                                    )
+                                },
+                                onClick = {
+                                    isFavorite = !isFavorite
+                                    vm.actions.toggleIsFavorite(accountId, userId, isFavorite)
                                 }
                             )
-                        },
-                        bottomBar = {
-                            NavigationBar(
-                                containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                            ) {
-                                NavigationBarItem(
-                                    selected = false,
-                                    label = { Text("Favorite") },
-                                    icon = {
-                                        Icon(
-                                            imageVector = if (isFavorite) {
-                                                ImageVector.vectorResource(R.drawable.ic_favorite_filled)
-                                            } else {
-                                                ImageVector.vectorResource(R.drawable.ic_favorite)
-                                            },
-                                            contentDescription = "Favorite"
-                                        )
-                                    },
-                                    onClick = {
-                                        isFavorite = !isFavorite
-                                        vm.actions.toggleIsFavorite(accountId, userId, isFavorite)
-                                    }
-                                )
-                                NavigationBarItem(
-                                    selected = false,
-                                    label = { Text("Edit") },
-                                    icon = {
-                                        Icon(
-                                            ImageVector.vectorResource(R.drawable.ic_edit),
-                                            contentDescription = "Edit"
-                                        )
-                                    },
-                                    onClick = {
-                                        val intent =
-                                            Intent(this@ViewAccount, EditAccount::class.java)
-                                        intent.putExtra("accountId", accountId.toString())
-                                        startActivity(intent)
-                                    }
-                                )
-                                NavigationBarItem(
-                                    selected = false,
-                                    label = { Text("Delete") },
-                                    icon = {
-                                        Icon(
-                                            ImageVector.vectorResource(R.drawable.ic_delete),
-                                            contentDescription = "Delete"
-                                        )
-                                    },
-                                    enabled = !isDeleting,
-                                    onClick = {
-                                        openAlertDialog.value = true
-                                    },
-                                )
-                            }
+                            NavigationBarItem(
+                                selected = false,
+                                label = { Text("Edit") },
+                                icon = {
+                                    Icon(
+                                        ImageVector.vectorResource(R.drawable.ic_edit),
+                                        contentDescription = "Edit"
+                                    )
+                                },
+                                onClick = {
+                                    val intent =
+                                        Intent(this@ViewAccount, EditAccount::class.java)
+                                    intent.putExtra("accountId", accountId.toString())
+                                    startActivity(intent)
+                                }
+                            )
+                            NavigationBarItem(
+                                selected = false,
+                                label = { Text("Delete") },
+                                icon = {
+                                    Icon(
+                                        ImageVector.vectorResource(R.drawable.ic_delete),
+                                        contentDescription = "Delete"
+                                    )
+                                },
+                                enabled = !isDeleting,
+                                onClick = {
+                                    openAlertDialog.value = true
+                                },
+                            )
                         }
-                    ) { paddingValues ->
-                        LazyColumn(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(paddingValues)
-                                .padding(vertical = 32.dp, horizontal = 24.dp)
-                        ) {
-                            item {
+                    }
+                ) { paddingValues ->
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues)
+                            .padding(vertical = 32.dp, horizontal = 24.dp)
+                    ) {
+                        item {
+                            if (isLoaded) {
                                 if (!isDeleting) {
                                     Row(
                                         verticalAlignment = Alignment.CenterVertically,
@@ -239,25 +239,25 @@ class ViewAccount : ComponentActivity() {
                                 }
                             }
                         }
-                        if (openAlertDialog.value) {
-                            AlertDialogIconTitle(
-                                icon = R.drawable.ic_delete,
-                                onDismissRequest = {
-                                    openAlertDialog.value = false
-                                },
-                                onConfirmation = {
-                                    openAlertDialog.value = false
-                                    isDeleting = true
-                                    coroutineScope.launch {
-                                        vm.actions.removeAccount(accountId)
-                                        finish()
-                                    }
-                                },
-                                dialogTitle = "Delete account",
-                                dialogText = "This operation is irreversible",
-                                actionText = "Delete"
-                            )
-                        }
+                    }
+                    if (openAlertDialog.value) {
+                        AlertDialogIconTitle(
+                            icon = R.drawable.ic_delete,
+                            onDismissRequest = {
+                                openAlertDialog.value = false
+                            },
+                            onConfirmation = {
+                                openAlertDialog.value = false
+                                isDeleting = true
+                                coroutineScope.launch {
+                                    vm.actions.removeAccount(accountId)
+                                    finish()
+                                }
+                            },
+                            dialogTitle = "Delete account",
+                            dialogText = "This operation is irreversible",
+                            actionText = "Delete"
+                        )
                     }
                 }
             }

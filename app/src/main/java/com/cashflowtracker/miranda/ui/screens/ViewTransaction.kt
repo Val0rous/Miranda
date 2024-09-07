@@ -151,81 +151,83 @@ class ViewTransaction : ComponentActivity() {
             }
 
             MirandaTheme {
-                if (isLoaded) {
-                    Scaffold(
-                        modifier = Modifier.fillMaxSize(),
-                        topBar = {
-                            TopAppBar(
-                                title = {
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                    topBar = {
+                        TopAppBar(
+                            title = {
+                                if (isLoaded) {
                                     if (!isDeleting) {
                                         Text(transaction!!.type)
                                     }
+                                }
+                            },
+                            navigationIcon = {
+                                IconButton(
+                                    onClick = { finish() },
+                                    modifier = Modifier.padding(
+                                        start = 0.dp,
+                                        top = 16.dp,
+                                        bottom = 16.dp
+                                    )
+                                ) {
+                                    Icon(
+                                        ImageVector.vectorResource(R.drawable.ic_arrow_back),
+                                        contentDescription = "Back"
+                                    )
+                                }
+                            }
+                        )
+                    },
+                    bottomBar = {
+                        NavigationBar(
+                            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                        ) {
+                            NavigationBarItem(
+                                selected = false,
+                                label = { Text("Edit") },
+                                icon = {
+                                    Icon(
+                                        ImageVector.vectorResource(R.drawable.ic_edit),
+                                        contentDescription = "Edit"
+                                    )
                                 },
-                                navigationIcon = {
-                                    IconButton(
-                                        onClick = { finish() },
-                                        modifier = Modifier.padding(
-                                            start = 0.dp,
-                                            top = 16.dp,
-                                            bottom = 16.dp
+                                onClick = {
+                                    val intent =
+                                        Intent(
+                                            this@ViewTransaction,
+                                            EditTransaction::class.java
                                         )
-                                    ) {
-                                        Icon(
-                                            ImageVector.vectorResource(R.drawable.ic_arrow_back),
-                                            contentDescription = "Back"
-                                        )
-                                    }
+                                    intent.putExtra("transactionId", transactionId.toString())
+                                    startActivity(intent)
                                 }
                             )
-                        },
-                        bottomBar = {
-                            NavigationBar(
-                                containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                            ) {
-                                NavigationBarItem(
-                                    selected = false,
-                                    label = { Text("Edit") },
-                                    icon = {
-                                        Icon(
-                                            ImageVector.vectorResource(R.drawable.ic_edit),
-                                            contentDescription = "Edit"
-                                        )
-                                    },
-                                    onClick = {
-                                        val intent =
-                                            Intent(
-                                                this@ViewTransaction,
-                                                EditTransaction::class.java
-                                            )
-                                        intent.putExtra("transactionId", transactionId.toString())
-                                        startActivity(intent)
-                                    }
-                                )
-                                NavigationBarItem(
-                                    selected = false,
-                                    label = { Text("Delete") },
-                                    icon = {
-                                        Icon(
-                                            ImageVector.vectorResource(R.drawable.ic_delete),
-                                            contentDescription = "Delete"
-                                        )
-                                    },
-                                    enabled = !isDeleting,
-                                    onClick = {
-                                        openAlertDialog.value = true
-                                    },
-                                )
-                            }
+                            NavigationBarItem(
+                                selected = false,
+                                label = { Text("Delete") },
+                                icon = {
+                                    Icon(
+                                        ImageVector.vectorResource(R.drawable.ic_delete),
+                                        contentDescription = "Delete"
+                                    )
+                                },
+                                enabled = !isDeleting,
+                                onClick = {
+                                    openAlertDialog.value = true
+                                },
+                            )
                         }
-                    ) { paddingValues ->
-                        LazyColumn(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(paddingValues)
-                                .padding(vertical = 24.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            item {
+                    }
+                ) { paddingValues ->
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues)
+                            .padding(vertical = 24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        item {
+                            if (isLoaded) {
                                 if (!isDeleting) {
                                     Row(
                                         verticalAlignment = Alignment.Top,
@@ -472,76 +474,76 @@ class ViewTransaction : ComponentActivity() {
                                 }
                             }
                         }
+                    }
 
-                        if (openAlertDialog.value) {
-                            AlertDialogIconTitle(
-                                icon = R.drawable.ic_delete,
-                                onDismissRequest = {
-                                    openAlertDialog.value = false
-                                },
-                                onConfirmation = {
-                                    openAlertDialog.value = false
-                                    isDeleting = true
-                                    coroutineScope.launch(Dispatchers.IO) {
-                                        when (transaction!!.type) {
-                                            "Output" -> {
-                                                val sourceId = accountsVm.actions.getByTitleOrNull(
-                                                    transaction!!.source,
-                                                    userId
-                                                )?.accountId
-                                                if (sourceId != null) {
-                                                    accountsVm.actions.updateBalance(
-                                                        sourceId,
-                                                        transaction!!.amount
-                                                    )
-                                                }
-                                            }
-
-                                            "Input" -> {
-                                                val destinationId =
-                                                    accountsVm.actions.getByTitleOrNull(
-                                                        transaction!!.destination,
-                                                        userId
-                                                    )?.accountId
-                                                if (destinationId != null) {
-                                                    accountsVm.actions.updateBalance(
-                                                        destinationId,
-                                                        -transaction!!.amount
-                                                    )
-                                                }
-                                            }
-
-                                            else -> {
-                                                val sourceId = accountsVm.actions.getByTitleOrNull(
-                                                    transaction!!.source,
-                                                    userId
-                                                )?.accountId
-                                                val destinationId =
-                                                    accountsVm.actions.getByTitleOrNull(
-                                                        transaction!!.destination,
-                                                        userId
-                                                    )?.accountId
-                                                if (sourceId != null && destinationId != null) {
-                                                    accountsVm.actions.updateBalance(
-                                                        sourceId,
-                                                        transaction!!.amount
-                                                    )
-                                                    accountsVm.actions.updateBalance(
-                                                        destinationId,
-                                                        -transaction!!.amount
-                                                    )
-                                                }
+                    if (openAlertDialog.value) {
+                        AlertDialogIconTitle(
+                            icon = R.drawable.ic_delete,
+                            onDismissRequest = {
+                                openAlertDialog.value = false
+                            },
+                            onConfirmation = {
+                                openAlertDialog.value = false
+                                isDeleting = true
+                                coroutineScope.launch(Dispatchers.IO) {
+                                    when (transaction!!.type) {
+                                        "Output" -> {
+                                            val sourceId = accountsVm.actions.getByTitleOrNull(
+                                                transaction!!.source,
+                                                userId
+                                            )?.accountId
+                                            if (sourceId != null) {
+                                                accountsVm.actions.updateBalance(
+                                                    sourceId,
+                                                    transaction!!.amount
+                                                )
                                             }
                                         }
-                                        vm.actions.removeTransaction(transactionId)
-                                        finish()
+
+                                        "Input" -> {
+                                            val destinationId =
+                                                accountsVm.actions.getByTitleOrNull(
+                                                    transaction!!.destination,
+                                                    userId
+                                                )?.accountId
+                                            if (destinationId != null) {
+                                                accountsVm.actions.updateBalance(
+                                                    destinationId,
+                                                    -transaction!!.amount
+                                                )
+                                            }
+                                        }
+
+                                        else -> {
+                                            val sourceId = accountsVm.actions.getByTitleOrNull(
+                                                transaction!!.source,
+                                                userId
+                                            )?.accountId
+                                            val destinationId =
+                                                accountsVm.actions.getByTitleOrNull(
+                                                    transaction!!.destination,
+                                                    userId
+                                                )?.accountId
+                                            if (sourceId != null && destinationId != null) {
+                                                accountsVm.actions.updateBalance(
+                                                    sourceId,
+                                                    transaction!!.amount
+                                                )
+                                                accountsVm.actions.updateBalance(
+                                                    destinationId,
+                                                    -transaction!!.amount
+                                                )
+                                            }
+                                        }
                                     }
-                                },
-                                dialogTitle = "Delete transaction",
-                                dialogText = "This operation is irreversible. This transaction will be reverted upon deletion",
-                                actionText = "Delete"
-                            )
-                        }
+                                    vm.actions.removeTransaction(transactionId)
+                                    finish()
+                                }
+                            },
+                            dialogTitle = "Delete transaction",
+                            dialogText = "This operation is irreversible. This transaction will be reverted upon deletion",
+                            actionText = "Delete"
+                        )
                     }
                 }
             }
