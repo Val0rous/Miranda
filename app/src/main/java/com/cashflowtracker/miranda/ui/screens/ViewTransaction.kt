@@ -72,24 +72,10 @@ class ViewTransaction : ComponentActivity() {
         setContent {
             val userId = LocalContext.current.getCurrentUserId()
             val transactionId by remember { mutableStateOf(initialTransactionId) }
-            val vm = koinViewModel<TransactionsViewModel>()
-            var transaction by remember {
-                mutableStateOf(
-                    Transaction(
-                        UUID.fromString("00000000-0000-0000-0000-000000000000"),
-                        "",
-                        "",
-                        "",
-                        "",
-                        0.0,
-                        "",
-                        "",
-                        "",
-                        UUID.fromString("00000000-0000-0000-0000-000000000000")
-                    )
-                )
-            }
             val coroutineScope = rememberCoroutineScope()
+            val vm = koinViewModel<TransactionsViewModel>()
+            var isLoaded by remember { mutableStateOf(false) }
+            var transaction by remember { mutableStateOf<Transaction?>(null) }
             var isDeleting by remember { mutableStateOf(false) }
             val openAlertDialog = remember { mutableStateOf(false) }
             var sourceType by remember { mutableStateOf("") }
@@ -102,60 +88,64 @@ class ViewTransaction : ComponentActivity() {
                 if (!isDeleting) {
                     coroutineScope.launch(Dispatchers.IO) {
                         vm.actions.getByTransactionIdFlow(transactionId)
-                            .collect { retrievedTransaction ->
+                            .collect {
                                 withContext(Dispatchers.Main) {
-                                    transaction = retrievedTransaction
-                                    isLocationLoaded.value = !transaction.location.isNullOrEmpty()
+                                    transaction = it.also {
+                                        isLocationLoaded.value = !it.location.isNullOrEmpty()
 
-                                    coroutineScope.launch {
-                                        if (!isDeleting) {
-                                            if (transaction.type == "Output" || transaction.type == "Transfer") {
-                                                coroutineScope.launch(Dispatchers.IO) {
-                                                    accountsVm.actions.getTypeByTitle(
-                                                        transaction.source,
-                                                        userId
-                                                    ).collect { item ->
-                                                        withContext(Dispatchers.Main) {
-                                                            sourceType = item
-                                                            println("SOURCETYPE: $sourceType")
+                                        coroutineScope.launch {
+                                            if (!isDeleting) {
+                                                if (it.type == "Output" || it.type == "Transfer") {
+                                                    coroutineScope.launch(Dispatchers.IO) {
+                                                        accountsVm.actions.getTypeByTitle(
+                                                            it.source,
+                                                            userId
+                                                        ).collect { item ->
+                                                            withContext(Dispatchers.Main) {
+                                                                sourceType = item
+                                                                println("SOURCETYPE: $sourceType")
+                                                            }
                                                         }
                                                     }
                                                 }
                                             }
                                         }
-                                    }
 
-                                    coroutineScope.launch {
-                                        if (!isDeleting) {
-                                            if (transaction.type == "Input" || transaction.type == "Transfer") {
-                                                coroutineScope.launch(Dispatchers.IO) {
-                                                    accountsVm.actions.getTypeByTitle(
-                                                        transaction.destination,
-                                                        userId
-                                                    ).collect { item ->
-                                                        withContext(Dispatchers.Main) {
-                                                            destinationType = item
-                                                            println("DESTINATIONTYPE: $destinationType")
+                                        coroutineScope.launch {
+                                            if (!isDeleting) {
+                                                if (it.type == "Input" || it.type == "Transfer") {
+                                                    coroutineScope.launch(Dispatchers.IO) {
+                                                        accountsVm.actions.getTypeByTitle(
+                                                            it.destination,
+                                                            userId
+                                                        ).collect { item ->
+                                                            withContext(Dispatchers.Main) {
+                                                                destinationType = item
+                                                                println("DESTINATIONTYPE: $destinationType")
+                                                            }
                                                         }
                                                     }
                                                 }
                                             }
                                         }
-                                    }
 
-                                    coroutineScope.launch {
-                                        if (isLocationLoaded.value) {
-                                            transaction.location?.split(", ", limit = 2)?.let {
-                                                if (it.size == 2) {
-                                                    coordinates.value =
-                                                        Coordinates(
-                                                            it[0].toDouble(),
-                                                            it[1].toDouble()
-                                                        )
+                                        coroutineScope.launch {
+                                            if (isLocationLoaded.value) {
+                                                it.location?.split(", ", limit = 2)?.let {
+                                                    if (it.size == 2) {
+                                                        coordinates.value =
+                                                            Coordinates(
+                                                                it[0].toDouble(),
+                                                                it[1].toDouble()
+                                                            )
+                                                    }
                                                 }
                                             }
                                         }
+
+                                        isLoaded = true
                                     }
+
                                 }
                             }
                     }
@@ -163,390 +153,397 @@ class ViewTransaction : ComponentActivity() {
             }
 
             MirandaTheme {
-                Scaffold(
-                    modifier = Modifier.fillMaxSize(),
-                    topBar = {
-                        TopAppBar(
-                            title = {
-                                if (!isDeleting) {
-                                    Text(transaction.type)
-                                }
-                            },
-                            navigationIcon = {
-                                IconButton(
-                                    onClick = { finish() },
-                                    modifier = Modifier.padding(
-                                        start = 0.dp,
-                                        top = 16.dp,
-                                        bottom = 16.dp
-                                    )
-                                ) {
-                                    Icon(
-                                        ImageVector.vectorResource(R.drawable.ic_arrow_back),
-                                        contentDescription = "Back"
-                                    )
-                                }
-                            }
-                        )
-                    },
-                    bottomBar = {
-                        NavigationBar(
-                            containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                        ) {
-                            NavigationBarItem(
-                                selected = false,
-                                label = { Text("Edit") },
-                                icon = {
-                                    Icon(
-                                        ImageVector.vectorResource(R.drawable.ic_edit),
-                                        contentDescription = "Edit"
-                                    )
+                if (isLoaded) {
+                    Scaffold(
+                        modifier = Modifier.fillMaxSize(),
+                        topBar = {
+                            TopAppBar(
+                                title = {
+                                    if (!isDeleting) {
+                                        Text(transaction!!.type)
+                                    }
                                 },
-                                onClick = {
-                                    val intent =
-                                        Intent(this@ViewTransaction, EditTransaction::class.java)
-                                    intent.putExtra("transactionId", transactionId.toString())
-                                    startActivity(intent)
-                                }
-                            )
-                            NavigationBarItem(
-                                selected = false,
-                                label = { Text("Delete") },
-                                icon = {
-                                    Icon(
-                                        ImageVector.vectorResource(R.drawable.ic_delete),
-                                        contentDescription = "Delete"
-                                    )
-                                },
-                                enabled = !isDeleting,
-                                onClick = {
-                                    openAlertDialog.value = true
-                                },
-                            )
-                        }
-                    }
-                ) { paddingValues ->
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(paddingValues)
-                            .padding(vertical = 24.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        item {
-                            if (!isDeleting) {
-                                Row(
-                                    verticalAlignment = Alignment.Top,
-                                    modifier = Modifier.padding(bottom = 24.dp)
-                                ) {
-                                    Column(
-                                        horizontalAlignment = Alignment.CenterHorizontally,
-                                        modifier = Modifier
-                                            .width(128.dp)
+                                navigationIcon = {
+                                    IconButton(
+                                        onClick = { finish() },
+                                        modifier = Modifier.padding(
+                                            start = 0.dp,
+                                            top = 16.dp,
+                                            bottom = 16.dp
+                                        )
                                     ) {
-                                        Box(
+                                        Icon(
+                                            ImageVector.vectorResource(R.drawable.ic_arrow_back),
+                                            contentDescription = "Back"
+                                        )
+                                    }
+                                }
+                            )
+                        },
+                        bottomBar = {
+                            NavigationBar(
+                                containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                            ) {
+                                NavigationBarItem(
+                                    selected = false,
+                                    label = { Text("Edit") },
+                                    icon = {
+                                        Icon(
+                                            ImageVector.vectorResource(R.drawable.ic_edit),
+                                            contentDescription = "Edit"
+                                        )
+                                    },
+                                    onClick = {
+                                        val intent =
+                                            Intent(
+                                                this@ViewTransaction,
+                                                EditTransaction::class.java
+                                            )
+                                        intent.putExtra("transactionId", transactionId.toString())
+                                        startActivity(intent)
+                                    }
+                                )
+                                NavigationBarItem(
+                                    selected = false,
+                                    label = { Text("Delete") },
+                                    icon = {
+                                        Icon(
+                                            ImageVector.vectorResource(R.drawable.ic_delete),
+                                            contentDescription = "Delete"
+                                        )
+                                    },
+                                    enabled = !isDeleting,
+                                    onClick = {
+                                        openAlertDialog.value = true
+                                    },
+                                )
+                            }
+                        }
+                    ) { paddingValues ->
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(paddingValues)
+                                .padding(vertical = 24.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            item {
+                                if (!isDeleting) {
+                                    Row(
+                                        verticalAlignment = Alignment.Top,
+                                        modifier = Modifier.padding(bottom = 24.dp)
+                                    ) {
+                                        Column(
+                                            horizontalAlignment = Alignment.CenterHorizontally,
                                             modifier = Modifier
-                                                .size(56.dp)
-                                                .clip(CircleShape)
-                                                .background(
-                                                    when (transaction.type) {
-                                                        "Output" -> LocalCustomColors.current.surfaceTintRed
-                                                        "Input" -> LocalCustomColors.current.surfaceTintGreen
-                                                        else -> LocalCustomColors.current.surfaceTintBlue
-                                                    }
-                                                )
+                                                .width(128.dp)
                                         ) {
-                                            Icon(
-                                                imageVector = ImageVector.vectorResource(
-                                                    when (transaction.type) {
-                                                        "Output" -> AccountType.getIcon(
-                                                            sourceType
-                                                        )
+                                            Box(
+                                                modifier = Modifier
+                                                    .size(56.dp)
+                                                    .clip(CircleShape)
+                                                    .background(
+                                                        when (transaction!!.type) {
+                                                            "Output" -> LocalCustomColors.current.surfaceTintRed
+                                                            "Input" -> LocalCustomColors.current.surfaceTintGreen
+                                                            else -> LocalCustomColors.current.surfaceTintBlue
+                                                        }
+                                                    )
+                                            ) {
+                                                Icon(
+                                                    imageVector = ImageVector.vectorResource(
+                                                        when (transaction!!.type) {
+                                                            "Output" -> AccountType.getIcon(
+                                                                sourceType
+                                                            )
 
-                                                        "Input" -> {
-                                                            when (transaction.source) {
-                                                                SpecialType.POCKET.category, SpecialType.EXTRA.category -> SpecialType.getIcon(
-                                                                    transaction.source
-                                                                )
+                                                            "Input" -> {
+                                                                when (transaction!!.source) {
+                                                                    SpecialType.POCKET.category, SpecialType.EXTRA.category -> SpecialType.getIcon(
+                                                                        transaction!!.source
+                                                                    )
 
-                                                                else -> DefaultCategories.getIcon(
-                                                                    transaction.source
-                                                                )
+                                                                    else -> DefaultCategories.getIcon(
+                                                                        transaction!!.source
+                                                                    )
+                                                                }
                                                             }
+
+                                                            else -> AccountType.getIcon(sourceType)
+                                                        }
+                                                    ),
+                                                    contentDescription = transaction!!.source,
+                                                    tint = LocalCustomColors.current.icon,
+                                                    modifier = Modifier
+                                                        .size(40.dp)
+                                                        .align(Alignment.Center)
+                                                )
+                                            }
+                                            Text(
+                                                text = transaction!!.source,
+                                                style = MaterialTheme.typography.titleMedium,
+                                                color = MaterialTheme.colorScheme.onSurface,
+                                                modifier = Modifier.padding(top = 8.dp)
+                                            )
+                                            if (transaction!!.type == "Input") {
+                                                Row(modifier = Modifier.padding(top = 4.dp)) {
+                                                    when (DefaultCategories.getType(transaction!!.source)) {
+                                                        CategoryClass.NECESSITY -> repeat(1) {
+                                                            Icon(
+                                                                imageVector = ImageVector.vectorResource(
+                                                                    R.drawable.ic_star_filled
+                                                                ),
+                                                                contentDescription = "",
+                                                                tint = Red400,
+                                                                modifier = Modifier
+                                                                    .size(24.dp)
+                                                            )
                                                         }
 
-                                                        else -> AccountType.getIcon(sourceType)
-                                                    }
-                                                ),
-                                                contentDescription = transaction.source,
-                                                tint = LocalCustomColors.current.icon,
-                                                modifier = Modifier
-                                                    .size(40.dp)
-                                                    .align(Alignment.Center)
-                                            )
-                                        }
-                                        Text(
-                                            text = transaction.source,
-                                            style = MaterialTheme.typography.titleMedium,
-                                            color = MaterialTheme.colorScheme.onSurface,
-                                            modifier = Modifier.padding(top = 8.dp)
-                                        )
-                                        if (transaction.type == "Input") {
-                                            Row(modifier = Modifier.padding(top = 4.dp)) {
-                                                when (DefaultCategories.getType(transaction.source)) {
-                                                    CategoryClass.NECESSITY -> repeat(1) {
-                                                        Icon(
-                                                            imageVector = ImageVector.vectorResource(
-                                                                R.drawable.ic_star_filled
-                                                            ),
-                                                            contentDescription = "",
-                                                            tint = Red400,
-                                                            modifier = Modifier
-                                                                .size(24.dp)
-                                                        )
-                                                    }
+                                                        CategoryClass.CONVENIENCE -> repeat(2) {
+                                                            Icon(
+                                                                imageVector = ImageVector.vectorResource(
+                                                                    R.drawable.ic_star_filled
+                                                                ),
+                                                                contentDescription = "",
+                                                                tint = Yellow400,
+                                                                modifier = Modifier
+                                                                    .size(24.dp)
+                                                            )
+                                                        }
 
-                                                    CategoryClass.CONVENIENCE -> repeat(2) {
-                                                        Icon(
-                                                            imageVector = ImageVector.vectorResource(
-                                                                R.drawable.ic_star_filled
-                                                            ),
-                                                            contentDescription = "",
-                                                            tint = Yellow400,
-                                                            modifier = Modifier
-                                                                .size(24.dp)
-                                                        )
-                                                    }
-
-                                                    CategoryClass.LUXURY -> repeat(3) {
-                                                        Icon(
-                                                            imageVector = ImageVector.vectorResource(
-                                                                R.drawable.ic_star_filled
-                                                            ),
-                                                            contentDescription = "",
-                                                            tint = Green400,
-                                                            modifier = Modifier
-                                                                .size(24.dp)
-                                                        )
+                                                        CategoryClass.LUXURY -> repeat(3) {
+                                                            Icon(
+                                                                imageVector = ImageVector.vectorResource(
+                                                                    R.drawable.ic_star_filled
+                                                                ),
+                                                                contentDescription = "",
+                                                                tint = Green400,
+                                                                modifier = Modifier
+                                                                    .size(24.dp)
+                                                            )
+                                                        }
                                                     }
                                                 }
                                             }
                                         }
-                                    }
 
-                                    Icon(
-                                        imageVector = ImageVector.vectorResource(R.drawable.ic_east),
-                                        contentDescription = "To",
-                                        tint = MaterialTheme.colorScheme.onSurface,
-                                        modifier = Modifier
-                                            .size(24.dp)
-                                            .offset(y = 16.dp)
-                                    )
-
-                                    Column(
-                                        horizontalAlignment = Alignment.CenterHorizontally,
-                                        modifier = Modifier
-                                            .width(128.dp)
-                                    ) {
-                                        Box(
+                                        Icon(
+                                            imageVector = ImageVector.vectorResource(R.drawable.ic_east),
+                                            contentDescription = "To",
+                                            tint = MaterialTheme.colorScheme.onSurface,
                                             modifier = Modifier
-                                                .size(56.dp)
-                                                .clip(CircleShape)
-                                                .background(
-                                                    when (transaction.type) {
-                                                        "Output" -> LocalCustomColors.current.surfaceTintRed
-                                                        "Input" -> LocalCustomColors.current.surfaceTintGreen
-                                                        else -> LocalCustomColors.current.surfaceTintBlue
-                                                    }
-                                                )
-                                        ) {
-                                            Icon(
-                                                imageVector = ImageVector.vectorResource(
-                                                    when (transaction.type) {
-                                                        "Output" -> DefaultCategories.getIcon(
-                                                            transaction.destination
-                                                        )
-
-                                                        "Input" -> AccountType.getIcon(
-                                                            destinationType
-                                                        )
-
-                                                        else -> AccountType.getIcon(
-                                                            destinationType
-                                                        )
-                                                    }
-                                                ),
-                                                contentDescription = transaction.destination,
-                                                tint = LocalCustomColors.current.icon,
-                                                modifier = Modifier
-                                                    .size(40.dp)
-                                                    .align(Alignment.Center)
-                                            )
-                                        }
-                                        Text(
-                                            text = transaction.destination,
-                                            style = MaterialTheme.typography.titleMedium,
-                                            color = MaterialTheme.colorScheme.onSurface,
-                                            modifier = Modifier.padding(top = 8.dp)
+                                                .size(24.dp)
+                                                .offset(y = 16.dp)
                                         )
-                                        if (transaction.type == "Output") {
-                                            Row(modifier = Modifier.padding(top = 4.dp)) {
-                                                when (DefaultCategories.getType(transaction.destination)) {
-                                                    CategoryClass.NECESSITY -> repeat(1) {
-                                                        Icon(
-                                                            imageVector = ImageVector.vectorResource(
-                                                                R.drawable.ic_star_filled
-                                                            ),
-                                                            contentDescription = "",
-                                                            tint = Red400,
-                                                            modifier = Modifier
-                                                                .size(24.dp)
-                                                        )
-                                                    }
 
-                                                    CategoryClass.CONVENIENCE -> repeat(2) {
-                                                        Icon(
-                                                            imageVector = ImageVector.vectorResource(
-                                                                R.drawable.ic_star_filled
-                                                            ),
-                                                            contentDescription = "",
-                                                            tint = Yellow400,
-                                                            modifier = Modifier
-                                                                .size(24.dp)
-                                                        )
-                                                    }
+                                        Column(
+                                            horizontalAlignment = Alignment.CenterHorizontally,
+                                            modifier = Modifier
+                                                .width(128.dp)
+                                        ) {
+                                            Box(
+                                                modifier = Modifier
+                                                    .size(56.dp)
+                                                    .clip(CircleShape)
+                                                    .background(
+                                                        when (transaction!!.type) {
+                                                            "Output" -> LocalCustomColors.current.surfaceTintRed
+                                                            "Input" -> LocalCustomColors.current.surfaceTintGreen
+                                                            else -> LocalCustomColors.current.surfaceTintBlue
+                                                        }
+                                                    )
+                                            ) {
+                                                Icon(
+                                                    imageVector = ImageVector.vectorResource(
+                                                        when (transaction!!.type) {
+                                                            "Output" -> DefaultCategories.getIcon(
+                                                                transaction!!.destination
+                                                            )
 
-                                                    CategoryClass.LUXURY -> repeat(3) {
-                                                        Icon(
-                                                            imageVector = ImageVector.vectorResource(
-                                                                R.drawable.ic_star_filled
-                                                            ),
-                                                            contentDescription = "",
-                                                            tint = Green400,
-                                                            modifier = Modifier
-                                                                .size(24.dp)
-                                                        )
+                                                            "Input" -> AccountType.getIcon(
+                                                                destinationType
+                                                            )
+
+                                                            else -> AccountType.getIcon(
+                                                                destinationType
+                                                            )
+                                                        }
+                                                    ),
+                                                    contentDescription = transaction!!.destination,
+                                                    tint = LocalCustomColors.current.icon,
+                                                    modifier = Modifier
+                                                        .size(40.dp)
+                                                        .align(Alignment.Center)
+                                                )
+                                            }
+                                            Text(
+                                                text = transaction!!.destination,
+                                                style = MaterialTheme.typography.titleMedium,
+                                                color = MaterialTheme.colorScheme.onSurface,
+                                                modifier = Modifier.padding(top = 8.dp)
+                                            )
+                                            if (transaction!!.type == "Output") {
+                                                Row(modifier = Modifier.padding(top = 4.dp)) {
+                                                    when (DefaultCategories.getType(transaction!!.destination)) {
+                                                        CategoryClass.NECESSITY -> repeat(1) {
+                                                            Icon(
+                                                                imageVector = ImageVector.vectorResource(
+                                                                    R.drawable.ic_star_filled
+                                                                ),
+                                                                contentDescription = "",
+                                                                tint = Red400,
+                                                                modifier = Modifier
+                                                                    .size(24.dp)
+                                                            )
+                                                        }
+
+                                                        CategoryClass.CONVENIENCE -> repeat(2) {
+                                                            Icon(
+                                                                imageVector = ImageVector.vectorResource(
+                                                                    R.drawable.ic_star_filled
+                                                                ),
+                                                                contentDescription = "",
+                                                                tint = Yellow400,
+                                                                modifier = Modifier
+                                                                    .size(24.dp)
+                                                            )
+                                                        }
+
+                                                        CategoryClass.LUXURY -> repeat(3) {
+                                                            Icon(
+                                                                imageVector = ImageVector.vectorResource(
+                                                                    R.drawable.ic_star_filled
+                                                                ),
+                                                                contentDescription = "",
+                                                                tint = Green400,
+                                                                modifier = Modifier
+                                                                    .size(24.dp)
+                                                            )
+                                                        }
                                                     }
                                                 }
                                             }
                                         }
                                     }
-                                }
 
-                                HorizontalDivider(modifier = Modifier.padding(bottom = 24.dp))
+                                    HorizontalDivider(modifier = Modifier.padding(bottom = 24.dp))
 
-                                if (transaction.dateTime.isNotEmpty()) {
+                                    if (transaction!!.dateTime.isNotEmpty()) {
+                                        Text(
+                                            text = formatZonedDateTime(transaction!!.dateTime),
+                                            style = MaterialTheme.typography.titleMedium,
+                                            color = MaterialTheme.colorScheme.onSurface
+                                        )
+                                    }
+
                                     Text(
-                                        text = formatZonedDateTime(transaction.dateTime),
-                                        style = MaterialTheme.typography.titleMedium,
-                                        color = MaterialTheme.colorScheme.onSurface
-                                    )
-                                }
-
-                                Text(
-                                    text = when (transaction.type) {
-                                        "Output" -> if (transaction.amount != 0.0) "-%.2f €" else "%.2f €"
-                                        "Input" -> if (transaction.amount != 0.0) "+%.2f €" else "%.2f €"
-                                        else -> "%.2f €"
-                                    }.format(transaction.amount),
-                                    style = MaterialTheme.typography.headlineMedium,
-                                    color = when (transaction.type) {
-                                        "Output" -> LocalCustomColors.current.surfaceTintRed
-                                        "Input" -> LocalCustomColors.current.surfaceTintGreen
-                                        else -> LocalCustomColors.current.surfaceTintBlue
-                                    },
-                                    modifier = Modifier.padding(top = 24.dp)
-                                )
-
-                                if (transaction.comment!!.isNotEmpty()) {
-                                    Text(
-                                        text = transaction.comment!!,
+                                        text = when (transaction!!.type) {
+                                            "Output" -> if (transaction!!.amount != 0.0) "-%.2f €" else "%.2f €"
+                                            "Input" -> if (transaction!!.amount != 0.0) "+%.2f €" else "%.2f €"
+                                            else -> "%.2f €"
+                                        }.format(transaction!!.amount),
                                         style = MaterialTheme.typography.headlineMedium,
-                                        color = MaterialTheme.colorScheme.onSurface,
+                                        color = when (transaction!!.type) {
+                                            "Output" -> LocalCustomColors.current.surfaceTintRed
+                                            "Input" -> LocalCustomColors.current.surfaceTintGreen
+                                            else -> LocalCustomColors.current.surfaceTintBlue
+                                        },
                                         modifier = Modifier.padding(top = 24.dp)
                                     )
-                                }
 
-                                HorizontalDivider(modifier = Modifier.padding(vertical = 24.dp))
+                                    if (transaction!!.comment!!.isNotEmpty()) {
+                                        Text(
+                                            text = transaction!!.comment!!,
+                                            style = MaterialTheme.typography.headlineMedium,
+                                            color = MaterialTheme.colorScheme.onSurface,
+                                            modifier = Modifier.padding(top = 24.dp)
+                                        )
+                                    }
 
-                                if (coordinates.value != null) {
-                                    MapScreen(
-                                        latitude = coordinates.value?.latitude ?: 0.0,
-                                        longitude = coordinates.value?.longitude ?: 0.0,
-                                        isLocationLoaded = isLocationLoaded,
-                                        modifier = Modifier.padding(horizontal = 16.dp)
-                                    )
+                                    HorizontalDivider(modifier = Modifier.padding(vertical = 24.dp))
+
+                                    if (coordinates.value != null) {
+                                        MapScreen(
+                                            latitude = coordinates.value?.latitude ?: 0.0,
+                                            longitude = coordinates.value?.longitude ?: 0.0,
+                                            isLocationLoaded = isLocationLoaded,
+                                            modifier = Modifier.padding(horizontal = 16.dp)
+                                        )
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    if (openAlertDialog.value) {
-                        AlertDialogIconTitle(
-                            icon = R.drawable.ic_delete,
-                            onDismissRequest = {
-                                openAlertDialog.value = false
-                            },
-                            onConfirmation = {
-                                openAlertDialog.value = false
-                                isDeleting = true
-                                coroutineScope.launch(Dispatchers.IO) {
-                                    when (transaction.type) {
-                                        "Output" -> {
-                                            val sourceId = accountsVm.actions.getByTitleOrNull(
-                                                transaction.source,
-                                                userId
-                                            )?.accountId
-                                            if (sourceId != null) {
-                                                accountsVm.actions.updateBalance(
-                                                    sourceId,
-                                                    transaction.amount
-                                                )
+                        if (openAlertDialog.value) {
+                            AlertDialogIconTitle(
+                                icon = R.drawable.ic_delete,
+                                onDismissRequest = {
+                                    openAlertDialog.value = false
+                                },
+                                onConfirmation = {
+                                    openAlertDialog.value = false
+                                    isDeleting = true
+                                    coroutineScope.launch(Dispatchers.IO) {
+                                        when (transaction!!.type) {
+                                            "Output" -> {
+                                                val sourceId = accountsVm.actions.getByTitleOrNull(
+                                                    transaction!!.source,
+                                                    userId
+                                                )?.accountId
+                                                if (sourceId != null) {
+                                                    accountsVm.actions.updateBalance(
+                                                        sourceId,
+                                                        transaction!!.amount
+                                                    )
+                                                }
+                                            }
+
+                                            "Input" -> {
+                                                val destinationId =
+                                                    accountsVm.actions.getByTitleOrNull(
+                                                        transaction!!.destination,
+                                                        userId
+                                                    )?.accountId
+                                                if (destinationId != null) {
+                                                    accountsVm.actions.updateBalance(
+                                                        destinationId,
+                                                        -transaction!!.amount
+                                                    )
+                                                }
+                                            }
+
+                                            else -> {
+                                                val sourceId = accountsVm.actions.getByTitleOrNull(
+                                                    transaction!!.source,
+                                                    userId
+                                                )?.accountId
+                                                val destinationId =
+                                                    accountsVm.actions.getByTitleOrNull(
+                                                        transaction!!.destination,
+                                                        userId
+                                                    )?.accountId
+                                                if (sourceId != null && destinationId != null) {
+                                                    accountsVm.actions.updateBalance(
+                                                        sourceId,
+                                                        transaction!!.amount
+                                                    )
+                                                    accountsVm.actions.updateBalance(
+                                                        destinationId,
+                                                        -transaction!!.amount
+                                                    )
+                                                }
                                             }
                                         }
-
-                                        "Input" -> {
-                                            val destinationId = accountsVm.actions.getByTitleOrNull(
-                                                transaction.destination,
-                                                userId
-                                            )?.accountId
-                                            if (destinationId != null) {
-                                                accountsVm.actions.updateBalance(
-                                                    destinationId,
-                                                    -transaction.amount
-                                                )
-                                            }
-                                        }
-
-                                        else -> {
-                                            val sourceId = accountsVm.actions.getByTitleOrNull(
-                                                transaction.source,
-                                                userId
-                                            )?.accountId
-                                            val destinationId = accountsVm.actions.getByTitleOrNull(
-                                                transaction.destination,
-                                                userId
-                                            )?.accountId
-                                            if (sourceId != null && destinationId != null) {
-                                                accountsVm.actions.updateBalance(
-                                                    sourceId,
-                                                    transaction.amount
-                                                )
-                                                accountsVm.actions.updateBalance(
-                                                    destinationId,
-                                                    -transaction.amount
-                                                )
-                                            }
-                                        }
+                                        vm.actions.removeTransaction(transactionId)
+                                        finish()
                                     }
-                                    vm.actions.removeTransaction(transactionId)
-                                    finish()
-                                }
-                            },
-                            dialogTitle = "Delete transaction",
-                            dialogText = "This operation is irreversible. This transaction will be reverted upon deletion",
-                            actionText = "Delete"
-                        )
+                                },
+                                dialogTitle = "Delete transaction",
+                                dialogText = "This operation is irreversible. This transaction will be reverted upon deletion",
+                                actionText = "Delete"
+                            )
+                        }
                     }
                 }
             }

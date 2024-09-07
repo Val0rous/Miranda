@@ -66,22 +66,11 @@ class ViewAccount : ComponentActivity() {
                     )
                 )
             }
-            val vm = koinViewModel<AccountsViewModel>()
-            var account by remember {
-                mutableStateOf(
-                    Account(
-                        UUID.fromString("00000000-0000-0000-0000-000000000000"),
-                        "",
-                        "",
-                        0.0,
-                        "",
-                        UUID.fromString("00000000-0000-0000-0000-000000000000"),
-                        false
-                    )
-                )
-            }
-            var isFavorite by remember { mutableStateOf(account.isFavorite) }
             val coroutineScope = rememberCoroutineScope()
+            val vm = koinViewModel<AccountsViewModel>()
+            var isLoaded by remember { mutableStateOf(false) }
+            var account by remember { mutableStateOf<Account?>(null) }
+            var isFavorite by remember { mutableStateOf(false) }
             var isDeleting by remember { mutableStateOf(false) }
             val openAlertDialog = remember { mutableStateOf(false) }
 
@@ -89,10 +78,12 @@ class ViewAccount : ComponentActivity() {
                 if (!isDeleting) {
                     coroutineScope.launch(Dispatchers.IO) {
                         vm.actions.getByAccountIdFlow(accountId, userId)
-                            .collect { retrievedAccount ->
+                            .collect {
                                 withContext(Dispatchers.Main) {
-                                    account = retrievedAccount
-                                    isFavorite = account.isFavorite
+                                    account = it.also {
+                                        isFavorite = it.isFavorite
+                                        isLoaded = true
+                                    }
                                 }
                             }
                     }
@@ -100,170 +91,173 @@ class ViewAccount : ComponentActivity() {
             }
 
             MirandaTheme {
-                Scaffold(
-                    modifier = Modifier.fillMaxSize(),
-                    topBar = {
-                        TopAppBar(
-                            title = { Text("Account") },
-                            navigationIcon = {
-                                IconButton(
-                                    onClick = { finish() },
-                                    modifier = Modifier.padding(
-                                        start = 0.dp,
-                                        top = 16.dp,
-                                        bottom = 16.dp
-                                    )
-                                ) {
-                                    Icon(
-                                        ImageVector.vectorResource(R.drawable.ic_arrow_back),
-                                        contentDescription = "Back"
-                                    )
+                if (isLoaded) {
+                    Scaffold(
+                        modifier = Modifier.fillMaxSize(),
+                        topBar = {
+                            TopAppBar(
+                                title = { Text("Account") },
+                                navigationIcon = {
+                                    IconButton(
+                                        onClick = { finish() },
+                                        modifier = Modifier.padding(
+                                            start = 0.dp,
+                                            top = 16.dp,
+                                            bottom = 16.dp
+                                        )
+                                    ) {
+                                        Icon(
+                                            ImageVector.vectorResource(R.drawable.ic_arrow_back),
+                                            contentDescription = "Back"
+                                        )
+                                    }
                                 }
+                            )
+                        },
+                        bottomBar = {
+                            NavigationBar(
+                                containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                            ) {
+                                NavigationBarItem(
+                                    selected = false,
+                                    label = { Text("Favorite") },
+                                    icon = {
+                                        Icon(
+                                            imageVector = if (isFavorite) {
+                                                ImageVector.vectorResource(R.drawable.ic_favorite_filled)
+                                            } else {
+                                                ImageVector.vectorResource(R.drawable.ic_favorite)
+                                            },
+                                            contentDescription = "Favorite"
+                                        )
+                                    },
+                                    onClick = {
+                                        isFavorite = !isFavorite
+                                        vm.actions.toggleIsFavorite(accountId, userId, isFavorite)
+                                    }
+                                )
+                                NavigationBarItem(
+                                    selected = false,
+                                    label = { Text("Edit") },
+                                    icon = {
+                                        Icon(
+                                            ImageVector.vectorResource(R.drawable.ic_edit),
+                                            contentDescription = "Edit"
+                                        )
+                                    },
+                                    onClick = {
+                                        val intent =
+                                            Intent(this@ViewAccount, EditAccount::class.java)
+                                        intent.putExtra("accountId", accountId.toString())
+                                        startActivity(intent)
+                                    }
+                                )
+                                NavigationBarItem(
+                                    selected = false,
+                                    label = { Text("Delete") },
+                                    icon = {
+                                        Icon(
+                                            ImageVector.vectorResource(R.drawable.ic_delete),
+                                            contentDescription = "Delete"
+                                        )
+                                    },
+                                    enabled = !isDeleting,
+                                    onClick = {
+                                        openAlertDialog.value = true
+                                    },
+                                )
                             }
-                        )
-                    },
-                    bottomBar = {
-                        NavigationBar(
-                            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                        }
+                    ) { paddingValues ->
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(paddingValues)
+                                .padding(vertical = 32.dp, horizontal = 24.dp)
                         ) {
-                            NavigationBarItem(
-                                selected = false,
-                                label = { Text("Favorite") },
-                                icon = {
-                                    Icon(
-                                        imageVector = if (isFavorite) {
-                                            ImageVector.vectorResource(R.drawable.ic_favorite_filled)
-                                        } else {
-                                            ImageVector.vectorResource(R.drawable.ic_favorite)
-                                        },
-                                        contentDescription = "Favorite"
-                                    )
-                                },
-                                onClick = {
-                                    isFavorite = !isFavorite
-                                    vm.actions.toggleIsFavorite(accountId, userId, isFavorite)
-                                }
-                            )
-                            NavigationBarItem(
-                                selected = false,
-                                label = { Text("Edit") },
-                                icon = {
-                                    Icon(
-                                        ImageVector.vectorResource(R.drawable.ic_edit),
-                                        contentDescription = "Edit"
-                                    )
-                                },
-                                onClick = {
-                                    val intent = Intent(this@ViewAccount, EditAccount::class.java)
-                                    intent.putExtra("accountId", accountId.toString())
-                                    startActivity(intent)
-                                }
-                            )
-                            NavigationBarItem(
-                                selected = false,
-                                label = { Text("Delete") },
-                                icon = {
-                                    Icon(
-                                        ImageVector.vectorResource(R.drawable.ic_delete),
-                                        contentDescription = "Delete"
-                                    )
-                                },
-                                enabled = !isDeleting,
-                                onClick = {
-                                    openAlertDialog.value = true
-                                },
-                            )
-                        }
-                    }
-                ) { paddingValues ->
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(paddingValues)
-                            .padding(vertical = 32.dp, horizontal = 24.dp)
-                    ) {
-                        item {
-                            if (!isDeleting) {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    modifier = Modifier.padding(bottom = 32.dp)
-                                ) {
-                                    IconWithBackground(
-                                        icon = AccountType.getIcon(account.type),
-                                        iconSize = 40.dp,
-                                        iconColor = LocalCustomColors.current.icon,
-                                        backgroundSize = 56.dp,
-                                        backgroundColor = LocalCustomColors.current.surfaceTintBlue,
-                                        contentDescription = account.type
-                                    )
+                            item {
+                                if (!isDeleting) {
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        modifier = Modifier.padding(bottom = 32.dp)
+                                    ) {
+                                        IconWithBackground(
+                                            icon = AccountType.getIcon(account!!.type),
+                                            iconSize = 40.dp,
+                                            iconColor = LocalCustomColors.current.icon,
+                                            backgroundSize = 56.dp,
+                                            backgroundColor = LocalCustomColors.current.surfaceTintBlue,
+                                            contentDescription = account!!.type
+                                        )
 
-                                    Text(
-                                        text = account.title,
-                                        style = MaterialTheme.typography.headlineSmall,
-                                        modifier = Modifier.padding(start = 22.dp)
-                                    )
-                                }
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    modifier = Modifier.padding(bottom = 32.dp)
-                                ) {
-                                    Text(text = "Current balance")
-                                    Spacer(modifier = Modifier.weight(1f))
-                                    BalanceText(
-                                        balance = account.balance,
-                                        isVisible = balanceVisible,
-                                        style = MaterialTheme.typography.titleMedium,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                        textAlign = TextAlign.End
-                                    )
-                                }
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    modifier = Modifier.padding(bottom = 32.dp)
-                                ) {
-                                    Text(text = "Type")
-                                    Spacer(modifier = Modifier.weight(1f))
-                                    Text(
-                                        text = account.type,
-                                        style = MaterialTheme.typography.titleMedium,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                        textAlign = TextAlign.End
-                                    )
-                                }
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    modifier = Modifier.padding(bottom = 32.dp)
-                                ) {
-                                    Text(text = "Created on")
-                                    Spacer(modifier = Modifier.weight(1f))
-                                    Text(
-                                        text = account.creationDate,
-                                        style = MaterialTheme.typography.titleMedium,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                        textAlign = TextAlign.End
-                                    )
+                                        Text(
+                                            text = account!!.title,
+                                            style = MaterialTheme.typography.headlineSmall,
+                                            modifier = Modifier.padding(start = 22.dp)
+                                        )
+                                    }
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        modifier = Modifier.padding(bottom = 32.dp)
+                                    ) {
+                                        Text(text = "Current balance")
+                                        Spacer(modifier = Modifier.weight(1f))
+                                        BalanceText(
+                                            balance = account!!.balance,
+                                            isVisible = balanceVisible,
+                                            style = MaterialTheme.typography.titleMedium,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            textAlign = TextAlign.End
+                                        )
+                                    }
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        modifier = Modifier.padding(bottom = 32.dp)
+                                    ) {
+                                        Text(text = "Type")
+                                        Spacer(modifier = Modifier.weight(1f))
+                                        Text(
+                                            text = account!!.type,
+                                            style = MaterialTheme.typography.titleMedium,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            textAlign = TextAlign.End
+                                        )
+                                    }
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        modifier = Modifier.padding(bottom = 32.dp)
+                                    ) {
+                                        Text(text = "Created on")
+                                        Spacer(modifier = Modifier.weight(1f))
+                                        Text(
+                                            text = account!!.creationDate,
+                                            style = MaterialTheme.typography.titleMedium,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            textAlign = TextAlign.End
+                                        )
+                                    }
                                 }
                             }
                         }
-                    }
-                    if (openAlertDialog.value) {
-                        AlertDialogIconTitle(
-                            icon = R.drawable.ic_delete,
-                            onDismissRequest = {
-                                openAlertDialog.value = false
-                            },
-                            onConfirmation = {
-                                openAlertDialog.value = false
-                                isDeleting = true
-                                coroutineScope.launch {
-                                    vm.actions.removeAccount(accountId)
-                                    finish()
-                                }
-                            },
-                            dialogTitle = "Delete account",
-                            dialogText = "This operation is irreversible",
-                            actionText = "Delete"
-                        )
+                        if (openAlertDialog.value) {
+                            AlertDialogIconTitle(
+                                icon = R.drawable.ic_delete,
+                                onDismissRequest = {
+                                    openAlertDialog.value = false
+                                },
+                                onConfirmation = {
+                                    openAlertDialog.value = false
+                                    isDeleting = true
+                                    coroutineScope.launch {
+                                        vm.actions.removeAccount(accountId)
+                                        finish()
+                                    }
+                                },
+                                dialogTitle = "Delete account",
+                                dialogText = "This operation is irreversible",
+                                actionText = "Delete"
+                            )
+                        }
                     }
                 }
             }
