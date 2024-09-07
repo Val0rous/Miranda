@@ -225,7 +225,7 @@ fun LocationTextField(
                     } else if (isGps and !isLocationLoaded.value) {
                         ImageVector.vectorResource(R.drawable.ic_location_searching)
                     } else {
-                        ImageVector.vectorResource(R.drawable.ic_my_location)
+                        ImageVector.vectorResource(R.drawable.ic_location_searching)
                     },
                     tint = if (isGps) {
                         MaterialTheme.colorScheme.primary

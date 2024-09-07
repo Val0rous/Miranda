@@ -52,6 +52,7 @@ import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.data.database.Transaction
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserId
+import com.cashflowtracker.miranda.ui.composables.AddEditTopAppBar
 import com.cashflowtracker.miranda.ui.composables.AmountForm
 import com.cashflowtracker.miranda.ui.composables.CommentForm
 import com.cashflowtracker.miranda.ui.composables.DatePicker
@@ -67,8 +68,10 @@ import com.cashflowtracker.miranda.ui.composables.TimeZonePicker
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 import com.cashflowtracker.miranda.ui.viewmodels.AccountsViewModel
 import com.cashflowtracker.miranda.ui.viewmodels.TransactionsViewModel
+import com.cashflowtracker.miranda.utils.DefaultCategories
 import com.cashflowtracker.miranda.utils.LocationService
 import com.cashflowtracker.miranda.utils.buildZonedDateTime
+import com.cashflowtracker.miranda.utils.formatZonedDateTime
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -137,205 +140,175 @@ class EditTransaction : ComponentActivity() {
                 }
             }
 
+            var isLoaded by remember { mutableStateOf(false) }
+            val isTypeChanged = remember { mutableStateOf(false) }
             val vm = koinViewModel<TransactionsViewModel>()
             val accountsVm = koinViewModel<AccountsViewModel>()
-            var transaction by remember {
-                mutableStateOf(
-                    Transaction(
-                        UUID.fromString("00000000-0000-0000-0000-000000000000"),
-                        "",
-                        "",
-                        "",
-                        "",
-                        0.0,
-                        "",
-                        "",
-                        "",
-                        UUID.fromString("00000000-0000-0000-0000-000000000000")
-                    )
-                )
-            }
+            var transaction by remember { mutableStateOf<Transaction?>(null) }
 
-            LaunchedEffect(key1 = transactionId.value) {
-                coroutineScope.launch(Dispatchers.IO) {
-                    transaction = vm.actions.getByTransactionId(transactionId.value)
-                    transactionType.value = transaction.type
-                    // TODO
-                }
-            }
-
-            LaunchedEffect(key1 = transactionType.value) {
+            LaunchedEffect(key1 = isTypeChanged.value) {
                 // Clear dependent fields when transactionType changes
                 source = ""
                 sourceIcon = null
                 destination = ""
                 destinationIcon = null
+                isTypeChanged.value = false
+            }
+
+            LaunchedEffect(Unit) {
+                coroutineScope.launch(Dispatchers.IO) {
+                    transaction = vm.actions.getByTransactionId(transactionId.value).also {
+                        transactionType.value = it.type
+                        val dateTimeParts = formatZonedDateTime(it.dateTime).split("\\s+".toRegex())
+                            .filter { item -> item.isNotBlank() }
+                        selectedDate.value = dateTimeParts[0]
+                        selectedTime.value = dateTimeParts[1]
+                        selectedTimeZone.value = dateTimeParts[2]
+                        source = it.source
+                        sourceIcon = DefaultCategories.getIcon(it.source)
+                        destination = it.destination
+                        destinationIcon = DefaultCategories.getIcon(it.destination)
+                        amount.doubleValue = it.amount
+                        comment.value = it.comment ?: ""
+                        location.value = it.location ?: ""
+                        isLoaded = true
+                    }
+                }
             }
 
             MirandaTheme {
-                Scaffold(
-                    topBar = {
-                        TopAppBar(
-                            title = { },
-                            navigationIcon = {
-                                IconButton(
-                                    onClick = { finish() },
-                                    modifier = Modifier.padding(
-                                        start = 0.dp,
-                                        top = 16.dp,
-                                        bottom = 16.dp
-                                    )
-                                ) {
-                                    Icon(
-                                        ImageVector.vectorResource(R.drawable.ic_close),
-                                        contentDescription = "Close"
-                                    )
-                                }
-                            },
-                            actions = {
-                                Button(
-                                    onClick = {
-                                        coroutineScope.launch(Dispatchers.IO) {
-                                            val userId = context.getCurrentUserId()
-                                            val zonedDateTime = buildZonedDateTime(
-                                                selectedDate.value,
-                                                selectedTime.value,
-                                                selectedTimeZone.value
+                if (isLoaded) {
+                    Scaffold(
+                        topBar = {
+                            AddEditTopAppBar(
+                                buttonText = "Save",
+                                isButtonEnabled = isFormValid,
+                                onIconButtonClick = { finish() },
+                                onButtonClick = {
+                                    coroutineScope.launch(Dispatchers.IO) {
+                                        val userId = context.getCurrentUserId()
+                                        val zonedDateTime = buildZonedDateTime(
+                                            selectedDate.value,
+                                            selectedTime.value,
+                                            selectedTimeZone.value
+                                        )
+                                        val formattedDateTime =
+                                            zonedDateTime?.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
+                                                ?: ""
+
+                                        vm.actions.addTransaction(
+                                            Transaction(
+                                                type = transactionType.value,
+                                                dateTime = formattedDateTime,
+                                                source = source,
+                                                destination = destination,
+                                                amount = amount.doubleValue,
+                                                currency = "EUR",
+                                                comment = comment.value,
+                                                location = location.value,
+                                                userId = userId
                                             )
-                                            val formattedDateTime =
-                                                zonedDateTime?.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
-                                                    ?: ""
+                                        )
 
-                                            vm.actions.addTransaction(
-                                                Transaction(
-                                                    type = transactionType.value,
-                                                    dateTime = formattedDateTime,
-                                                    source = source,
-                                                    destination = destination,
-                                                    amount = amount.doubleValue,
-                                                    currency = "EUR",
-                                                    comment = comment.value,
-                                                    location = location.value,
-                                                    userId = userId
-                                                )
-                                            )
-
-                                            if (amount.doubleValue != 0.0) {
-                                                when (transactionType.value) {
-                                                    "Output" -> {
-                                                        val sourceAccountId =
-                                                            accountsVm.actions.getByTitleOrNull(
-                                                                source,
-                                                                userId
-                                                            )?.accountId
-                                                        if (sourceAccountId != null) {
-                                                            accountsVm.actions.updateBalance(
-                                                                sourceAccountId,
-                                                                -amount.doubleValue
-                                                            )
-                                                        }
+                                        if (amount.doubleValue != 0.0) {
+                                            when (transactionType.value) {
+                                                "Output" -> {
+                                                    val sourceAccountId =
+                                                        accountsVm.actions.getByTitleOrNull(
+                                                            source,
+                                                            userId
+                                                        )?.accountId
+                                                    if (sourceAccountId != null) {
+                                                        accountsVm.actions.updateBalance(
+                                                            sourceAccountId,
+                                                            -amount.doubleValue
+                                                        )
                                                     }
+                                                }
 
-                                                    "Input" -> {
-                                                        val destinationAccountId =
-                                                            accountsVm.actions.getByTitleOrNull(
-                                                                destination,
-                                                                userId
-                                                            )?.accountId
-                                                        if (destinationAccountId != null) {
-                                                            accountsVm.actions.updateBalance(
-                                                                destinationAccountId,
-                                                                amount.doubleValue
-                                                            )
-                                                        }
+                                                "Input" -> {
+                                                    val destinationAccountId =
+                                                        accountsVm.actions.getByTitleOrNull(
+                                                            destination,
+                                                            userId
+                                                        )?.accountId
+                                                    if (destinationAccountId != null) {
+                                                        accountsVm.actions.updateBalance(
+                                                            destinationAccountId,
+                                                            amount.doubleValue
+                                                        )
                                                     }
+                                                }
 
-                                                    "Transfer" -> {
-                                                        val sourceAccountId =
-                                                            accountsVm.actions.getByTitleOrNull(
-                                                                source,
-                                                                userId
-                                                            )?.accountId
-                                                        val destinationAccountId =
-                                                            accountsVm.actions.getByTitleOrNull(
-                                                                destination,
-                                                                userId
-                                                            )?.accountId
-                                                        if (sourceAccountId != null && destinationAccountId != null) {
-                                                            accountsVm.actions.updateBalance(
-                                                                sourceAccountId,
-                                                                -amount.doubleValue
-                                                            )
-                                                            accountsVm.actions.updateBalance(
-                                                                destinationAccountId,
-                                                                amount.doubleValue
-                                                            )
-                                                        }
+                                                "Transfer" -> {
+                                                    val sourceAccountId =
+                                                        accountsVm.actions.getByTitleOrNull(
+                                                            source,
+                                                            userId
+                                                        )?.accountId
+                                                    val destinationAccountId =
+                                                        accountsVm.actions.getByTitleOrNull(
+                                                            destination,
+                                                            userId
+                                                        )?.accountId
+                                                    if (sourceAccountId != null && destinationAccountId != null) {
+                                                        accountsVm.actions.updateBalance(
+                                                            sourceAccountId,
+                                                            -amount.doubleValue
+                                                        )
+                                                        accountsVm.actions.updateBalance(
+                                                            destinationAccountId,
+                                                            amount.doubleValue
+                                                        )
                                                     }
                                                 }
                                             }
-                                            finish()
                                         }
-                                    },
-                                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
-                                    enabled = isFormValid,
-                                    modifier = Modifier
-                                        .padding(top = 16.dp, bottom = 16.dp, end = 16.dp)
-                                        .height(32.dp),
-                                    contentPadding = PaddingValues(
-                                        horizontal = 12.dp,
-                                        vertical = 5.dp
-                                    )
-                                ) {
-                                    Text(
-                                        text = "Create",
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis,
-                                        style = MaterialTheme.typography.labelLarge,
-                                        modifier = Modifier.padding(0.dp)
-                                    )
+                                        finish()
+                                    }
                                 }
-                            }
-                        )
-                    }
-                ) { paddingValues ->
-                    Column(
-                        modifier = Modifier
-                            .padding(paddingValues)
-                            .padding(16.dp)
-                            .verticalScroll(scrollState)
-                    ) {
-                        SegmentedButtonType(
-                            transactionType = transactionType,
-                            modifier = Modifier.fillMaxWidth()
-                        )
+                            )
+                        }
+                    ) { paddingValues ->
+                        Column(
+                            modifier = Modifier
+                                .padding(paddingValues)
+                                .padding(16.dp)
+                                .verticalScroll(scrollState)
+                        ) {
+                            SegmentedButtonType(
+                                transactionType = transactionType,
+                                isTypeChanged = isTypeChanged,
+                                modifier = Modifier.fillMaxWidth()
+                            )
 
-                        Spacer(modifier = Modifier.height(16.dp))
+                            Spacer(modifier = Modifier.height(16.dp))
 
-                        // Date, Time and TimeZone with icons and click actions
-                        DateTimeForm(selectedDate, selectedTime)
-                        //Spacer(modifier = Modifier.height(8.dp))
+                            // Date, Time and TimeZone with icons and click actions
+                            DateTimeForm(selectedDate, selectedTime)
+                            //Spacer(modifier = Modifier.height(8.dp))
 
-                        TimeZoneForm(selectedTimeZone)
+                            TimeZoneForm(selectedTimeZone)
 
-                        SourceForm(source, sourceIcon, transactionType, sourceLauncher)
-                        Spacer(modifier = Modifier.height(8.dp))
+                            SourceForm(source, sourceIcon, transactionType, sourceLauncher)
+                            Spacer(modifier = Modifier.height(8.dp))
 
-                        DestinationForm(
-                            destination,
-                            destinationIcon,
-                            transactionType,
-                            destinationLauncher
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
+                            DestinationForm(
+                                destination,
+                                destinationIcon,
+                                transactionType,
+                                destinationLauncher
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
 
-                        AmountForm(amount)
-                        Spacer(modifier = Modifier.height(16.dp))
+                            AmountForm(amount)
+                            Spacer(modifier = Modifier.height(16.dp))
 
-                        CommentForm(comment)
-                        Spacer(modifier = Modifier.height(16.dp))
+                            CommentForm(comment)
+                            Spacer(modifier = Modifier.height(16.dp))
 
-                        LocationForm(location, locationService, isError)
+                            LocationForm(location, locationService, isError)
+                        }
                     }
                 }
             }

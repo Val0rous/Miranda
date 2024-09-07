@@ -59,6 +59,8 @@ class AddRecurrence : ComponentActivity() {
             val destinationOptions = listOf("Restaurant", "Food", "Clothing")
             val amountOptions = listOf("10 €", "20 €", "50 €")
 
+            val isTypeChanged = remember { mutableStateOf(false) }
+
             MirandaTheme {
                 Scaffold(
                     topBar = {
@@ -111,6 +113,7 @@ class AddRecurrence : ComponentActivity() {
                     ) {
                         SegmentedButtonType(
                             transactionType = transactionType,
+                            isTypeChanged = isTypeChanged,
                             modifier = Modifier.fillMaxWidth()
                         )
 

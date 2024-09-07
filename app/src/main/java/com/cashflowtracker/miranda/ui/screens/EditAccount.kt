@@ -107,73 +107,67 @@ class EditAccount : ComponentActivity() {
             val usersVm = koinViewModel<UsersViewModel>()
             val email = context.getCurrentUserEmail()
             val userId = context.getCurrentUserId()
-            var account by remember {
-                mutableStateOf(
-                    Account(
-                        UUID.fromString("00000000-0000-0000-0000-000000000000"),
-                        "",
-                        "",
-                        0.0,
-                        "",
-                        UUID.fromString("00000000-0000-0000-0000-000000000000"),
-                        false
-                    )
-                )
-            }
-            LaunchedEffect(key1 = accountId.value) {
+            var isLoaded by remember { mutableStateOf(false) }
+
+            var account by remember { mutableStateOf<Account?>(null) }
+            LaunchedEffect(Unit) {
                 coroutineScope.launch(Dispatchers.IO) {
-                    account = vm.actions.getByAccountId(accountId.value, userId)
-                    accountTitle.value = account.title
-                    accountType = account.type
-                    accountIcon = AccountType.getIcon(account.type)
+                    account = vm.actions.getByAccountId(accountId.value, userId).also {
+                        accountTitle.value = it.title
+                        accountType = it.type
+                        accountIcon = AccountType.getIcon(it.type)
+                        isLoaded = true
+                    }
                 }
             }
 
             MirandaTheme {
-                Scaffold(
-                    topBar = {
-                        AddEditTopAppBar(
-                            buttonText = "Save",
-                            isButtonEnabled = isFormValid,
-                            onIconButtonClick = { finish() },
-                            onButtonClick = {
-                                coroutineScope.launch {
-                                    val existingAccount = withContext(Dispatchers.IO) {
-                                        vm.actions.getByTitleOrNull(
-                                            accountTitle.value,
-                                            userId
-                                        )
-                                    }
-                                    if (existingAccount != null) {
-                                        isError.value = true
-                                        return@launch
-                                    } else {
-                                        actions.updateAccount(
-                                            Account(
-                                                accountId = account.accountId,
-                                                title = accountTitle.value,
-                                                type = accountType,
-                                                balance = account.balance,
-                                                creationDate = account.creationDate,
-                                                userId = account.userId,
-                                                isFavorite = account.isFavorite,
+                if (isLoaded) {
+                    Scaffold(
+                        topBar = {
+                            AddEditTopAppBar(
+                                buttonText = "Save",
+                                isButtonEnabled = isFormValid,
+                                onIconButtonClick = { finish() },
+                                onButtonClick = {
+                                    coroutineScope.launch {
+                                        val existingAccount = withContext(Dispatchers.IO) {
+                                            vm.actions.getByTitleOrNull(
+                                                accountTitle.value,
+                                                userId
                                             )
-                                        )
-                                        finish()
+                                        }
+                                        if (existingAccount != null) {
+                                            isError.value = true
+                                            return@launch
+                                        } else {
+                                            actions.updateAccount(
+                                                Account(
+                                                    accountId = account!!.accountId,
+                                                    title = accountTitle.value,
+                                                    type = accountType,
+                                                    balance = account!!.balance,
+                                                    creationDate = account!!.creationDate,
+                                                    userId = account!!.userId,
+                                                    isFavorite = account!!.isFavorite,
+                                                )
+                                            )
+                                            finish()
+                                        }
                                     }
                                 }
-                            }
-                        )
-                    }
-                ) { paddingValues ->
-                    Column(
-                        modifier = Modifier
-                            .padding(paddingValues)
-                            .padding(16.dp)
-                            .verticalScroll(scrollState)
-                    ) {
-                        AccountTitleForm(accountTitle, isError)
-                        AccountTypeForm(accountType, accountIcon, launcher)
+                            )
+                        }
+                    ) { paddingValues ->
+                        Column(
+                            modifier = Modifier
+                                .padding(paddingValues)
+                                .padding(16.dp)
+                                .verticalScroll(scrollState)
+                        ) {
+                            AccountTitleForm(accountTitle, isError)
+                            AccountTypeForm(accountType, accountIcon, launcher)
+                        }
                     }
                 }
             }

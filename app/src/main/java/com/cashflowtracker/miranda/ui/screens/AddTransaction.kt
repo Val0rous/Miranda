@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.data.database.Transaction
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserId
+import com.cashflowtracker.miranda.ui.composables.AddEditTopAppBar
 import com.cashflowtracker.miranda.ui.composables.AmountForm
 import com.cashflowtracker.miranda.ui.composables.CommentForm
 import com.cashflowtracker.miranda.ui.composables.SegmentedButtonType
@@ -99,137 +100,105 @@ class AddTransaction : ComponentActivity() {
             val vm = koinViewModel<TransactionsViewModel>()
             val accountsVm = koinViewModel<AccountsViewModel>()
 
-            LaunchedEffect(key1 = transactionType.value) {
+            val isTypeChanged = remember { mutableStateOf(false) }
+            LaunchedEffect(key1 = isTypeChanged.value) {
                 // Clear dependent fields when transactionType changes
                 source = ""
                 sourceIcon = null
                 destination = ""
                 destinationIcon = null
+                isTypeChanged.value = false
             }
 
 
             MirandaTheme {
                 Scaffold(
                     topBar = {
-                        TopAppBar(
-                            title = { Text("") },
-                            navigationIcon = {
-                                IconButton(
-                                    onClick = { finish() },
-                                    modifier = Modifier.padding(
-                                        start = 0.dp,
-                                        top = 16.dp,
-                                        bottom = 16.dp
+                        AddEditTopAppBar(
+                            buttonText = "Create",
+                            isButtonEnabled = isFormValid,
+                            onIconButtonClick = { finish() },
+                            onButtonClick = {
+                                coroutineScope.launch(Dispatchers.IO) {
+                                    val userId = context.getCurrentUserId()
+                                    val zonedDateTime = buildZonedDateTime(
+                                        selectedDate.value,
+                                        selectedTime.value,
+                                        selectedTimeZone.value
                                     )
-                                ) {
-                                    Icon(
-                                        ImageVector.vectorResource(R.drawable.ic_close),
-                                        contentDescription = "Close"
+                                    val formattedDateTime =
+                                        zonedDateTime?.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
+                                            ?: ""
+
+                                    vm.actions.addTransaction(
+                                        Transaction(
+                                            type = transactionType.value,
+                                            dateTime = formattedDateTime,
+                                            source = source,
+                                            destination = destination,
+                                            amount = amount.doubleValue,
+                                            currency = "EUR",
+                                            comment = comment.value,
+                                            location = location.value,
+                                            userId = userId
+                                        )
                                     )
-                                }
-                            },
-                            actions = {
-                                Button(
-                                    onClick = {
-                                        coroutineScope.launch(Dispatchers.IO) {
-                                            val userId = context.getCurrentUserId()
-                                            val zonedDateTime = buildZonedDateTime(
-                                                selectedDate.value,
-                                                selectedTime.value,
-                                                selectedTimeZone.value
-                                            )
-                                            val formattedDateTime =
-                                                zonedDateTime?.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
-                                                    ?: ""
 
-                                            vm.actions.addTransaction(
-                                                Transaction(
-                                                    type = transactionType.value,
-                                                    dateTime = formattedDateTime,
-                                                    source = source,
-                                                    destination = destination,
-                                                    amount = amount.doubleValue,
-                                                    currency = "EUR",
-                                                    comment = comment.value,
-                                                    location = location.value,
-                                                    userId = userId
-                                                )
-                                            )
-
-                                            if (amount.doubleValue != 0.0) {
-                                                when (transactionType.value) {
-                                                    "Output" -> {
-                                                        val sourceAccountId =
-                                                            accountsVm.actions.getByTitleOrNull(
-                                                                source,
-                                                                userId
-                                                            )?.accountId
-                                                        if (sourceAccountId != null) {
-                                                            accountsVm.actions.updateBalance(
-                                                                sourceAccountId,
-                                                                -amount.doubleValue
-                                                            )
-                                                        }
-                                                    }
-
-                                                    "Input" -> {
-                                                        val destinationAccountId =
-                                                            accountsVm.actions.getByTitleOrNull(
-                                                                destination,
-                                                                userId
-                                                            )?.accountId
-                                                        if (destinationAccountId != null) {
-                                                            accountsVm.actions.updateBalance(
-                                                                destinationAccountId,
-                                                                amount.doubleValue
-                                                            )
-                                                        }
-                                                    }
-
-                                                    "Transfer" -> {
-                                                        val sourceAccountId =
-                                                            accountsVm.actions.getByTitleOrNull(
-                                                                source,
-                                                                userId
-                                                            )?.accountId
-                                                        val destinationAccountId =
-                                                            accountsVm.actions.getByTitleOrNull(
-                                                                destination,
-                                                                userId
-                                                            )?.accountId
-                                                        if (sourceAccountId != null && destinationAccountId != null) {
-                                                            accountsVm.actions.updateBalance(
-                                                                sourceAccountId,
-                                                                -amount.doubleValue
-                                                            )
-                                                            accountsVm.actions.updateBalance(
-                                                                destinationAccountId,
-                                                                amount.doubleValue
-                                                            )
-                                                        }
-                                                    }
+                                    if (amount.doubleValue != 0.0) {
+                                        when (transactionType.value) {
+                                            "Output" -> {
+                                                val sourceAccountId =
+                                                    accountsVm.actions.getByTitleOrNull(
+                                                        source,
+                                                        userId
+                                                    )?.accountId
+                                                if (sourceAccountId != null) {
+                                                    accountsVm.actions.updateBalance(
+                                                        sourceAccountId,
+                                                        -amount.doubleValue
+                                                    )
                                                 }
                                             }
-                                            finish()
+
+                                            "Input" -> {
+                                                val destinationAccountId =
+                                                    accountsVm.actions.getByTitleOrNull(
+                                                        destination,
+                                                        userId
+                                                    )?.accountId
+                                                if (destinationAccountId != null) {
+                                                    accountsVm.actions.updateBalance(
+                                                        destinationAccountId,
+                                                        amount.doubleValue
+                                                    )
+                                                }
+                                            }
+
+                                            "Transfer" -> {
+                                                val sourceAccountId =
+                                                    accountsVm.actions.getByTitleOrNull(
+                                                        source,
+                                                        userId
+                                                    )?.accountId
+                                                val destinationAccountId =
+                                                    accountsVm.actions.getByTitleOrNull(
+                                                        destination,
+                                                        userId
+                                                    )?.accountId
+                                                if (sourceAccountId != null && destinationAccountId != null) {
+                                                    accountsVm.actions.updateBalance(
+                                                        sourceAccountId,
+                                                        -amount.doubleValue
+                                                    )
+                                                    accountsVm.actions.updateBalance(
+                                                        destinationAccountId,
+                                                        amount.doubleValue
+                                                    )
+                                                }
+                                            }
                                         }
-                                    },
-                                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
-                                    enabled = isFormValid,
-                                    modifier = Modifier
-                                        .padding(top = 16.dp, bottom = 16.dp, end = 16.dp)
-                                        .height(32.dp),
-                                    contentPadding = PaddingValues(
-                                        horizontal = 12.dp,
-                                        vertical = 5.dp
-                                    )
-                                ) {
-                                    Text(
-                                        text = "Create",
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis,
-                                        style = MaterialTheme.typography.labelLarge,
-                                        modifier = Modifier.padding(0.dp)
-                                    )
+                                    }
+                                    finish()
                                 }
                             }
                         )
@@ -243,6 +212,7 @@ class AddTransaction : ComponentActivity() {
                     ) {
                         SegmentedButtonType(
                             transactionType = transactionType,
+                            isTypeChanged = isTypeChanged,
                             modifier = Modifier.fillMaxWidth()
                         )
 

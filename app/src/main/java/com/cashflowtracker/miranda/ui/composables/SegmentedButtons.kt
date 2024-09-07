@@ -36,7 +36,11 @@ import com.cashflowtracker.miranda.data.repositories.ThemeRepository.getSystemDe
 import com.cashflowtracker.miranda.utils.TransactionType
 
 @Composable
-fun SegmentedButtonType(transactionType: MutableState<String>, modifier: Modifier) {
+fun SegmentedButtonType(
+    transactionType: MutableState<String>,
+    isTypeChanged: MutableState<Boolean>,
+    modifier: Modifier
+) {
     var selectedIndex by remember { mutableIntStateOf(0) }
     transactionType.value = TransactionType.OUTPUT.type
 
@@ -46,6 +50,7 @@ fun SegmentedButtonType(transactionType: MutableState<String>, modifier: Modifie
             onClick = {
                 selectedIndex = 0
                 transactionType.value = TransactionType.OUTPUT.type
+                isTypeChanged.value = true
             },
             shape = SegmentedButtonDefaults.itemShape(
                 index = 0,
@@ -68,6 +73,7 @@ fun SegmentedButtonType(transactionType: MutableState<String>, modifier: Modifie
             onClick = {
                 selectedIndex = 1
                 transactionType.value = TransactionType.INPUT.type
+                isTypeChanged.value = true
             },
             shape = SegmentedButtonDefaults.itemShape(
                 index = 1,
@@ -90,6 +96,7 @@ fun SegmentedButtonType(transactionType: MutableState<String>, modifier: Modifie
             onClick = {
                 selectedIndex = 2
                 transactionType.value = TransactionType.TRANSFER.type
+                isTypeChanged.value = true
             },
             shape = SegmentedButtonDefaults.itemShape(
                 index = 2,
