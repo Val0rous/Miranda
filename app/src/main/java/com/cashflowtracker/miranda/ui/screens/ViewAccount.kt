@@ -81,8 +81,10 @@ class ViewAccount : ComponentActivity() {
                             .collect {
                                 withContext(Dispatchers.Main) {
                                     account = it.also {
-                                        isFavorite = it.isFavorite
-                                        isLoaded = true
+                                        if (!isDeleting) {
+                                            isFavorite = it.isFavorite
+                                            isLoaded = true
+                                        }
                                     }
                                 }
                             }

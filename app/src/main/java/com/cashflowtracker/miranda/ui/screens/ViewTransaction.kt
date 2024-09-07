@@ -91,57 +91,60 @@ class ViewTransaction : ComponentActivity() {
                             .collect {
                                 withContext(Dispatchers.Main) {
                                     transaction = it.also {
-                                        isLocationLoaded.value = !it.location.isNullOrEmpty()
+                                        if (!isDeleting) {
+                                            isLocationLoaded.value = !it.location.isNullOrEmpty()
 
-                                        coroutineScope.launch(Dispatchers.IO) {
-                                            if (!isDeleting) {
-                                                if (it.type == "Output" || it.type == "Transfer") {
+                                            coroutineScope.launch(Dispatchers.IO) {
+                                                if (!isDeleting) {
+                                                    if (it.type == "Output" || it.type == "Transfer") {
 //                                                    coroutineScope.launch(Dispatchers.IO) {
-                                                    accountsVm.actions.getTypeByTitle(
-                                                        it.source,
-                                                        userId
-                                                    ).collect { item ->
+                                                        accountsVm.actions.getTypeByTitle(
+                                                            it.source,
+                                                            userId
+                                                        ).collect { item ->
 //                                                        withContext(Dispatchers.Main) {
-                                                        sourceType = item
+                                                            sourceType = item
 //                                                        }
-                                                    }
+                                                        }
 //                                                    }
+                                                    }
                                                 }
                                             }
-                                        }
 
-                                        coroutineScope.launch(Dispatchers.IO) {
-                                            if (!isDeleting) {
-                                                if (it.type == "Input" || it.type == "Transfer") {
+                                            coroutineScope.launch(Dispatchers.IO) {
+                                                if (!isDeleting) {
+                                                    if (it.type == "Input" || it.type == "Transfer") {
 //                                                    coroutineScope.launch(Dispatchers.IO) {
-                                                    accountsVm.actions.getTypeByTitle(
-                                                        it.destination,
-                                                        userId
-                                                    ).collect { item ->
+                                                        accountsVm.actions.getTypeByTitle(
+                                                            it.destination,
+                                                            userId
+                                                        ).collect { item ->
 //                                                        withContext(Dispatchers.Main) {
-                                                        destinationType = item
+                                                            destinationType = item
 //                                                        }
-                                                    }
+                                                        }
 //                                                    }
-                                                }
-                                            }
-                                        }
-
-                                        coroutineScope.launch {
-                                            if (isLocationLoaded.value) {
-                                                it.location?.split(", ", limit = 2)?.let { item ->
-                                                    if (item.size == 2) {
-                                                        coordinates.value =
-                                                            Coordinates(
-                                                                item[0].toDouble(),
-                                                                item[1].toDouble()
-                                                            )
                                                     }
                                                 }
                                             }
-                                        }
 
-                                        isLoaded = true
+                                            coroutineScope.launch {
+                                                if (isLocationLoaded.value) {
+                                                    it.location?.split(", ", limit = 2)
+                                                        ?.let { item ->
+                                                            if (item.size == 2) {
+                                                                coordinates.value =
+                                                                    Coordinates(
+                                                                        item[0].toDouble(),
+                                                                        item[1].toDouble()
+                                                                    )
+                                                            }
+                                                        }
+                                                }
+                                            }
+
+                                            isLoaded = true
+                                        }
                                     }
 
                                 }

@@ -122,49 +122,49 @@ class EditAccount : ComponentActivity() {
             }
 
             MirandaTheme {
-                if (isLoaded) {
-                    Scaffold(
-                        topBar = {
-                            AddEditTopAppBar(
-                                buttonText = "Save",
-                                isButtonEnabled = isFormValid,
-                                onIconButtonClick = { finish() },
-                                onButtonClick = {
-                                    coroutineScope.launch {
-                                        val existingAccount = withContext(Dispatchers.IO) {
-                                            vm.actions.getByTitleOrNull(
-                                                accountTitle.value,
-                                                userId
+                Scaffold(
+                    topBar = {
+                        AddEditTopAppBar(
+                            buttonText = "Save",
+                            isButtonEnabled = isFormValid,
+                            onIconButtonClick = { finish() },
+                            onButtonClick = {
+                                coroutineScope.launch {
+                                    val existingAccount = withContext(Dispatchers.IO) {
+                                        vm.actions.getByTitleOrNull(
+                                            accountTitle.value,
+                                            userId
+                                        )
+                                    }
+                                    if (existingAccount != null) {
+                                        isError.value = true
+                                        return@launch
+                                    } else {
+                                        actions.updateAccount(
+                                            Account(
+                                                accountId = account!!.accountId,
+                                                title = accountTitle.value,
+                                                type = accountType,
+                                                balance = account!!.balance,
+                                                creationDate = account!!.creationDate,
+                                                userId = account!!.userId,
+                                                isFavorite = account!!.isFavorite,
                                             )
-                                        }
-                                        if (existingAccount != null) {
-                                            isError.value = true
-                                            return@launch
-                                        } else {
-                                            actions.updateAccount(
-                                                Account(
-                                                    accountId = account!!.accountId,
-                                                    title = accountTitle.value,
-                                                    type = accountType,
-                                                    balance = account!!.balance,
-                                                    creationDate = account!!.creationDate,
-                                                    userId = account!!.userId,
-                                                    isFavorite = account!!.isFavorite,
-                                                )
-                                            )
-                                            finish()
-                                        }
+                                        )
+                                        finish()
                                     }
                                 }
-                            )
-                        }
-                    ) { paddingValues ->
-                        Column(
-                            modifier = Modifier
-                                .padding(paddingValues)
-                                .padding(16.dp)
-                                .verticalScroll(scrollState)
-                        ) {
+                            }
+                        )
+                    }
+                ) { paddingValues ->
+                    Column(
+                        modifier = Modifier
+                            .padding(paddingValues)
+                            .padding(16.dp)
+                            .verticalScroll(scrollState)
+                    ) {
+                        if (isLoaded) {
                             AccountTitleForm(accountTitle, isError)
                             AccountTypeForm(accountType, accountIcon, launcher)
                         }
