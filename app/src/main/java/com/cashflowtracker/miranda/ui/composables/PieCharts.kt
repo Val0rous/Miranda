@@ -75,7 +75,7 @@ fun PieChart(
     // if you want to stabilize the Pie Chart you can use value -90f
     // 90f is used to complete 1/4 of the rotation
     val animateRotation by animateFloatAsState(
-        targetValue = if (animationPlayed) 90f * 11f else 0f,
+        targetValue = if (animationPlayed) 90f * 3f else 0f,
         animationSpec = tween(
             durationMillis = animDuration,
             delayMillis = 0,
@@ -88,9 +88,13 @@ fun PieChart(
         animationPlayed = true
     }
 
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 48.dp, top = 32.dp, bottom = 32.dp, end = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(48.dp)
+//        horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
         // Pie Chart using Canvas Arc
@@ -134,9 +138,9 @@ fun DetailsPieChart(
     colors: List<Color>
 ) {
     Column(
-        modifier = Modifier
-            .padding(top = 80.dp)
-            .fillMaxWidth(),
+        modifier = Modifier,
+        //.padding(top = 80.dp),
+        //.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // create the data items
@@ -153,7 +157,7 @@ fun DetailsPieChart(
 @Composable
 fun DetailsPieChartItem(
     data: Pair<String, Int>,
-    height: Dp = 24.dp,
+    height: Dp = 32.dp,
     color: Color
 ) {
     Row(
@@ -165,7 +169,7 @@ fun DetailsPieChartItem(
                 .background(
                     color = color,
 //                    shape = RoundedCornerShape(10.dp)
-                    shape = RoundedCornerShape(6.dp)
+                    shape = RoundedCornerShape(8.dp)
                 )
                 .size(height)
         )
@@ -173,10 +177,15 @@ fun DetailsPieChartItem(
         Column(modifier = Modifier.fillMaxWidth()) {
             Text(
                 modifier = Modifier.padding(start = 12.dp),
-                text = "${data.first}: ${data.second}",
-                fontWeight = FontWeight.Medium,
-                fontSize = 22.sp,
+                text = data.first,
+                style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurface
+            )
+            Text(
+                modifier = Modifier.padding(start = 12.dp),
+                text = data.second.toString(),
+                style = MaterialTheme.typography.titleMedium,
+                color = Color.Gray
             )
         }
 

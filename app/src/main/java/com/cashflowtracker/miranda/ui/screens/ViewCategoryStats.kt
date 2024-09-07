@@ -4,9 +4,12 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -18,15 +21,21 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserId
+import com.cashflowtracker.miranda.ui.composables.DonutChart
+import com.cashflowtracker.miranda.ui.composables.DonutChartData
+import com.cashflowtracker.miranda.ui.composables.DonutChartDataCollection
 import com.cashflowtracker.miranda.ui.composables.PieChart
 import com.cashflowtracker.miranda.ui.theme.Green400
+import com.cashflowtracker.miranda.ui.theme.Light_ChartLine_Blue
 import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 import com.cashflowtracker.miranda.ui.theme.Red400
@@ -35,6 +44,7 @@ import com.cashflowtracker.miranda.ui.viewmodels.TransactionsViewModel
 import com.cashflowtracker.miranda.utils.CategoryClass
 import com.cashflowtracker.miranda.utils.DefaultCategories
 import com.cashflowtracker.miranda.utils.TransactionType
+import com.cashflowtracker.miranda.utils.toMoneyFormat
 import org.koin.androidx.compose.koinViewModel
 
 class ViewCategoryStats : ComponentActivity() {
@@ -60,13 +70,13 @@ class ViewCategoryStats : ComponentActivity() {
                     .let { map -> transactionOrder.associateWith { map[it] ?: 0 } }
 
             val categoryOrder = listOf(
-                CategoryClass.NECESSITY.name,
-                CategoryClass.CONVENIENCE.name,
-                CategoryClass.LUXURY.name
+                CategoryClass.NECESSITY.label,
+                CategoryClass.CONVENIENCE.label,
+                CategoryClass.LUXURY.label
             )
             val transactionCategoryCounts =
                 transactions.filter { it.type == TransactionType.OUTPUT.type }
-                    .groupingBy { DefaultCategories.getType(it.destination).name }.eachCount()
+                    .groupingBy { DefaultCategories.getType(it.destination).label }.eachCount()
                     .let { map -> categoryOrder.associateWith { map[it] ?: 0 } }
 
 
@@ -127,6 +137,54 @@ class ViewCategoryStats : ComponentActivity() {
                                     customColors.surfaceTintBlue
                                 )
                             )
+                        }
+
+                        item {
+                            val viewData = DonutChartDataCollection(
+                                listOf(
+                                    DonutChartData(
+                                        transactionCategoryCounts["Necessity"]!!.toFloat(),
+                                        Red400,
+                                        "Necessary"
+                                    ),
+                                    DonutChartData(
+                                        transactionCategoryCounts["Convenience"]!!.toFloat(),
+                                        Yellow400,
+                                        "Convenience"
+                                    ),
+                                    DonutChartData(
+                                        transactionCategoryCounts["Luxury"]!!.toFloat(),
+                                        Green400,
+                                        "Luxury"
+                                    )
+                                )
+                            )
+                            DonutChart(
+                                Modifier.padding(paddingValues),
+                                chartSize = 200.dp,
+                                data = viewData
+                            ) { selected ->
+                                AnimatedContent(targetState = selected, label = "") {
+                                    val amount = it?.amount ?: viewData.totalAmount
+                                    val text = it?.title ?: "Total"
+
+                                    Column(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        Text(
+                                            "$amount",
+                                            style = MaterialTheme.typography.titleLarge,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                        Text(
+                                            text,
+                                            style = MaterialTheme.typography.titleMedium,
+                                            color = MaterialTheme.colorScheme.onSurface
+                                        )
+                                    }
+                                }
+                            }
                         }
                     }
                 }
