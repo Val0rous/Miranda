@@ -42,6 +42,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.R
+import com.cashflowtracker.miranda.ui.screens.SelectAccountType
 import com.cashflowtracker.miranda.ui.screens.SelectDestination
 import com.cashflowtracker.miranda.ui.screens.SelectSource
 import com.cashflowtracker.miranda.utils.Coordinates
@@ -402,6 +403,91 @@ fun LocationForm(
                 }
             }
             showPermissionPermanentlyDeniedSnackbar = false
+        }
+    }
+}
+
+@Composable
+fun AccountTitleForm(
+    accountTitle: MutableState<String>,
+    isError: MutableState<Boolean>
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .offset(y = (0).dp)
+            .padding(bottom = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = ImageVector.vectorResource(R.drawable.ic_match_case),
+            contentDescription = "Title"
+        )
+        Spacer(modifier = Modifier.width(16.dp))
+        // Title Field
+        OutlinedTextField(
+            value = accountTitle.value,
+            onValueChange = { text -> accountTitle.value = text },
+            label = { Text("Title") },
+            isError = isError.value,
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+}
+
+@Composable
+fun AccountTypeForm(
+    accountType: String,
+    accountIcon: Int?,
+    launcher: ManagedActivityResultLauncher<Intent, ActivityResult>
+) {
+    val context = LocalContext.current
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .offset(y = (0).dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = ImageVector.vectorResource(R.drawable.ic_category),
+            contentDescription = "Type"
+        )
+        Spacer(modifier = Modifier.width(16.dp))
+        // Type Field
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                val intent = Intent(context, SelectAccountType::class.java)
+                //intent.putExtra("accountType", accountType)
+                launcher.launch(intent)
+            }
+        ) {
+            OutlinedTextField(
+                value = accountType,
+                onValueChange = { },
+                label = { Text("Type") },
+                readOnly = true,
+                modifier = Modifier.fillMaxWidth(),
+                trailingIcon = {
+                    accountIcon?.let { iconId ->
+                        Icon(
+                            imageVector = ImageVector.vectorResource(
+                                iconId
+                            ),
+                            contentDescription = accountType,
+                            modifier = Modifier.padding(end = 12.dp)
+                        )
+                    }
+                },
+                enabled = false,
+                colors = OutlinedTextFieldDefaults.colors(
+                    disabledTextColor = MaterialTheme.colorScheme.onSurface,
+                    disabledContainerColor = MaterialTheme.colorScheme.surface,
+                    disabledBorderColor = MaterialTheme.colorScheme.outline,
+                    disabledTrailingIconColor = MaterialTheme.colorScheme.onSurface,
+                    disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            )
         }
     }
 }

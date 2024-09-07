@@ -52,14 +52,22 @@ import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.data.database.Transaction
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserId
+import com.cashflowtracker.miranda.ui.composables.AmountForm
+import com.cashflowtracker.miranda.ui.composables.CommentForm
 import com.cashflowtracker.miranda.ui.composables.DatePicker
+import com.cashflowtracker.miranda.ui.composables.DateTimeForm
+import com.cashflowtracker.miranda.ui.composables.DestinationForm
+import com.cashflowtracker.miranda.ui.composables.LocationForm
 import com.cashflowtracker.miranda.ui.composables.MapScreen
 import com.cashflowtracker.miranda.ui.composables.SegmentedButtonType
+import com.cashflowtracker.miranda.ui.composables.SourceForm
 import com.cashflowtracker.miranda.ui.composables.TimePicker
+import com.cashflowtracker.miranda.ui.composables.TimeZoneForm
 import com.cashflowtracker.miranda.ui.composables.TimeZonePicker
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 import com.cashflowtracker.miranda.ui.viewmodels.AccountsViewModel
 import com.cashflowtracker.miranda.ui.viewmodels.TransactionsViewModel
+import com.cashflowtracker.miranda.utils.LocationService
 import com.cashflowtracker.miranda.utils.buildZonedDateTime
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -68,10 +76,13 @@ import java.time.format.DateTimeFormatter
 import java.util.UUID
 
 class EditTransaction : ComponentActivity() {
+    private lateinit var locationService: LocationService
+
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        locationService = LocationService(this)
         setContent {
             val scrollState = rememberScrollState()
             val coroutineScope = rememberCoroutineScope()
@@ -94,6 +105,8 @@ class EditTransaction : ComponentActivity() {
             val amount = remember { mutableDoubleStateOf(0.0) }
             val comment = remember { mutableStateOf("") }
             val location = remember { mutableStateOf("") }
+            val isError =
+                remember { mutableStateOf(false) } // Check if manually entered coordinates are valid
 
             val sourceLauncher = rememberLauncherForActivityResult(
                 contract = ActivityResultContracts.StartActivityForResult()
@@ -300,230 +313,29 @@ class EditTransaction : ComponentActivity() {
                         Spacer(modifier = Modifier.height(16.dp))
 
                         // Date, Time and TimeZone with icons and click actions
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .offset(y = (0).dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                imageVector = ImageVector.vectorResource(R.drawable.ic_schedule),
-                                contentDescription = "Date & Time"
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            DatePicker(selectedDate = selectedDate)
-                            Spacer(modifier = Modifier.weight(1f))
-                            TimePicker(selectedTime = selectedTime)
-                        }
+                        DateTimeForm(selectedDate, selectedTime)
                         //Spacer(modifier = Modifier.height(8.dp))
 
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .offset(y = (0).dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                imageVector = ImageVector.vectorResource(R.drawable.ic_public),
-                                contentDescription = "Time Zone"
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            TimeZonePicker(selectedTimeZone = selectedTimeZone)
-                        }
+                        TimeZoneForm(selectedTimeZone)
 
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .offset(y = (0).dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                imageVector = ImageVector.vectorResource(R.drawable.ic_logout),
-                                contentDescription = "Source"
-                            )
-                            Spacer(modifier = Modifier.width(16.dp))
-
-                            Box(modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable {
-                                    val intent =
-                                        Intent(
-                                            this@EditTransaction,
-                                            SelectSource::class.java
-                                        )
-                                    intent.putExtra("transactionType", transactionType.value)
-                                    sourceLauncher.launch(intent)
-                                }
-                            ) {
-                                OutlinedTextField(
-                                    value = source,
-                                    onValueChange = { },
-                                    label = { Text("Source") },
-                                    readOnly = true,
-                                    modifier = Modifier.fillMaxWidth(),
-                                    trailingIcon = {
-                                        sourceIcon?.let { iconId ->
-                                            Icon(
-                                                imageVector = ImageVector.vectorResource(
-                                                    iconId
-                                                ),
-                                                contentDescription = source,
-                                                modifier = Modifier.padding(end = 12.dp)
-                                            )
-                                        }
-                                    },
-                                    enabled = false,
-                                    colors = OutlinedTextFieldDefaults.colors(
-                                        disabledTextColor = MaterialTheme.colorScheme.onSurface,
-                                        disabledContainerColor = MaterialTheme.colorScheme.surface,
-                                        disabledBorderColor = MaterialTheme.colorScheme.outline,
-                                        disabledTrailingIconColor = MaterialTheme.colorScheme.onSurface,
-                                        disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    )
-                                )
-                            }
-                        }
+                        SourceForm(source, sourceIcon, transactionType, sourceLauncher)
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .offset(y = (0).dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                imageVector = ImageVector.vectorResource(R.drawable.ic_login),
-                                contentDescription = "Destination"
-                            )
-                            Spacer(modifier = Modifier.width(16.dp))
-
-                            // Type Field
-                            Box(modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable {
-                                    val intent =
-                                        Intent(
-                                            this@EditTransaction,
-                                            SelectDestination::class.java
-                                        )
-                                    intent.putExtra("transactionType", transactionType.value)
-                                    destinationLauncher.launch(intent)
-                                }
-                            ) {
-                                OutlinedTextField(
-                                    value = destination,
-                                    onValueChange = { },
-                                    label = { Text("Destination") },
-                                    readOnly = true,
-                                    modifier = Modifier.fillMaxWidth(),
-                                    trailingIcon = {
-                                        destinationIcon?.let { iconId ->
-                                            Icon(
-                                                imageVector = ImageVector.vectorResource(
-                                                    iconId
-                                                ),
-                                                contentDescription = destination,
-                                                modifier = Modifier.padding(end = 12.dp)
-                                            )
-                                        }
-                                    },
-                                    enabled = false,
-                                    colors = OutlinedTextFieldDefaults.colors(
-                                        disabledTextColor = MaterialTheme.colorScheme.onSurface,
-                                        disabledContainerColor = MaterialTheme.colorScheme.surface,
-                                        disabledBorderColor = MaterialTheme.colorScheme.outline,
-                                        disabledTrailingIconColor = MaterialTheme.colorScheme.onSurface,
-                                        disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    )
-                                )
-                            }
-                        }
+                        DestinationForm(
+                            destination,
+                            destinationIcon,
+                            transactionType,
+                            destinationLauncher
+                        )
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .offset(y = (0).dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                imageVector = ImageVector.vectorResource(R.drawable.ic_payments),
-                                contentDescription = "Amount"
-                            )
-                            Spacer(modifier = Modifier.width(16.dp))
-                            // Amount Field
-                            OutlinedTextField(
-                                value = if (amount.doubleValue == 0.0) {
-                                    ""
-                                } else {
-                                    "%.2f".format(amount.doubleValue)
-                                },
-                                onValueChange = { text ->
-                                    amount.doubleValue = text.toDoubleOrNull()?.let {
-                                        if (it >= 0) {
-                                            "%.2f".format(it).toDoubleOrNull()
-                                        } else {
-                                            0.0
-                                        }
-                                    } ?: amount.doubleValue
-                                },
-                                label = { Text("Amount") },
-                                placeholder = { Text("0.00 €") },
-                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                                modifier = Modifier.fillMaxWidth()
-                            )
-                        }
+                        AmountForm(amount)
                         Spacer(modifier = Modifier.height(16.dp))
 
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .offset(y = (0).dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                imageVector = ImageVector.vectorResource(R.drawable.ic_chat),
-                                contentDescription = "Comment"
-                            )
-                            Spacer(modifier = Modifier.width(16.dp))
-                            // Comment Field
-                            OutlinedTextField(
-                                value = comment.value,
-                                onValueChange = { text -> comment.value = text },
-                                label = { Text("Comment") },
-                                modifier = Modifier.fillMaxWidth()
-                            )
-                        }
+                        CommentForm(comment)
                         Spacer(modifier = Modifier.height(16.dp))
 
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .offset(y = (0).dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                imageVector = ImageVector.vectorResource(R.drawable.ic_location_on),
-                                contentDescription = "Location"
-                            )
-                            Spacer(modifier = Modifier.width(16.dp))
-                            // Location Field with Placeholder Map
-                            OutlinedTextField(
-                                value = location.value,
-                                onValueChange = { text -> location.value = text },
-                                label = { Text("Location") },
-                                leadingIcon = {
-                                    Icon(
-                                        imageVector = ImageVector.vectorResource(R.drawable.ic_my_location_filled),
-                                        contentDescription = "Location"
-                                    )
-                                },
-                                modifier = Modifier.fillMaxWidth()
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(16.dp))
-
-//                        MapScreen(44.2625, 12.3487)
+                        LocationForm(location, locationService, isError)
                     }
                 }
             }
