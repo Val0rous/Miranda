@@ -52,6 +52,9 @@ import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.data.database.Account
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserEmail
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserId
+import com.cashflowtracker.miranda.ui.composables.AccountTitleForm
+import com.cashflowtracker.miranda.ui.composables.AccountTypeForm
+import com.cashflowtracker.miranda.ui.composables.AddEditTopAppBar
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 import com.cashflowtracker.miranda.ui.viewmodels.AccountsViewModel
 import com.cashflowtracker.miranda.ui.viewmodels.UsersViewModel
@@ -73,14 +76,11 @@ class EditAccount : ComponentActivity() {
             val scrollState = rememberScrollState()
             val coroutineScope = rememberCoroutineScope()
             val context = LocalContext.current
-            val accountId =
-                remember {
-                    mutableStateOf(
-                        UUID.fromString(
-                            intent.getStringExtra("accountId") ?: ""
-                        )
-                    )
-                }
+            val accountId = remember {
+                mutableStateOf(
+                    UUID.fromString(intent.getStringExtra("accountId") ?: "")
+                )
+            }
             val accountTitle = remember { mutableStateOf("") }
             var accountType by remember { mutableStateOf("") }
             var accountIcon by remember { mutableStateOf<Int?>(null) }
@@ -132,69 +132,35 @@ class EditAccount : ComponentActivity() {
             MirandaTheme {
                 Scaffold(
                     topBar = {
-                        TopAppBar(
-                            title = { },
-                            navigationIcon = {
-                                IconButton(
-                                    onClick = { finish() },
-                                    modifier = Modifier.padding(
-                                        start = 0.dp,
-                                        top = 16.dp,
-                                        bottom = 16.dp
-                                    )
-                                ) {
-                                    Icon(
-                                        ImageVector.vectorResource(R.drawable.ic_close),
-                                        contentDescription = "Close"
-                                    )
-                                }
-                            },
-                            actions = {
-                                Button(
-                                    onClick = {
-                                        coroutineScope.launch {
-                                            val existingAccount = withContext(Dispatchers.IO) {
-                                                vm.actions.getByTitleOrNull(
-                                                    accountTitle.value,
-                                                    userId
-                                                )
-                                            }
-                                            if (existingAccount != null) {
-                                                isError.value = true
-                                                return@launch
-                                            } else {
-                                                actions.updateAccount(
-                                                    Account(
-                                                        accountId = account.accountId,
-                                                        title = accountTitle.value,
-                                                        type = accountType,
-                                                        balance = account.balance,
-                                                        creationDate = account.creationDate,
-                                                        userId = account.userId,
-                                                        isFavorite = account.isFavorite,
-                                                    )
-                                                )
-                                                finish()
-                                            }
-                                        }
-                                    },
-                                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
-                                    modifier = Modifier
-                                        .padding(top = 16.dp, bottom = 16.dp, end = 16.dp)
-                                        .height(32.dp),
-                                    contentPadding = PaddingValues(
-                                        horizontal = 12.dp,
-                                        vertical = 5.dp
-                                    ),
-                                    enabled = isFormValid
-                                ) {
-                                    Text(
-                                        text = "Save",
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis,
-                                        style = MaterialTheme.typography.labelLarge,
-                                        modifier = Modifier.padding(0.dp)
-                                    )
+                        AddEditTopAppBar(
+                            buttonText = "Save",
+                            isButtonEnabled = isFormValid,
+                            onIconButtonClick = { finish() },
+                            onButtonClick = {
+                                coroutineScope.launch {
+                                    val existingAccount = withContext(Dispatchers.IO) {
+                                        vm.actions.getByTitleOrNull(
+                                            accountTitle.value,
+                                            userId
+                                        )
+                                    }
+                                    if (existingAccount != null) {
+                                        isError.value = true
+                                        return@launch
+                                    } else {
+                                        actions.updateAccount(
+                                            Account(
+                                                accountId = account.accountId,
+                                                title = accountTitle.value,
+                                                type = accountType,
+                                                balance = account.balance,
+                                                creationDate = account.creationDate,
+                                                userId = account.userId,
+                                                isFavorite = account.isFavorite,
+                                            )
+                                        )
+                                        finish()
+                                    }
                                 }
                             }
                         )
@@ -206,80 +172,8 @@ class EditAccount : ComponentActivity() {
                             .padding(16.dp)
                             .verticalScroll(scrollState)
                     ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .offset(y = (0).dp)
-                                .padding(bottom = 16.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                imageVector = ImageVector.vectorResource(R.drawable.ic_match_case),
-                                contentDescription = "Title"
-                            )
-                            Spacer(modifier = Modifier.width(16.dp))
-                            // Title Field
-                            OutlinedTextField(
-                                value = accountTitle.value,
-                                onValueChange = { text -> accountTitle.value = text },
-                                label = { Text("Title") },
-                                isError = isError.value,
-                                modifier = Modifier.fillMaxWidth()
-                            )
-                        }
-
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .offset(y = (0).dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                imageVector = ImageVector.vectorResource(R.drawable.ic_category),
-                                contentDescription = "Type"
-                            )
-                            Spacer(modifier = Modifier.width(16.dp))
-                            // Type Field
-                            Box(modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable {
-                                    val intent =
-                                        Intent(
-                                            this@EditAccount,
-                                            SelectAccountType::class.java
-                                        )
-                                    intent.putExtra("accountType", accountType)
-                                    launcher.launch(intent)
-                                }
-                            ) {
-                                OutlinedTextField(
-                                    value = accountType,
-                                    onValueChange = { },
-                                    label = { Text("Type") },
-                                    readOnly = true,
-                                    modifier = Modifier.fillMaxWidth(),
-                                    trailingIcon = {
-                                        accountIcon?.let { iconId ->
-                                            Icon(
-                                                imageVector = ImageVector.vectorResource(
-                                                    iconId
-                                                ),
-                                                contentDescription = accountType,
-                                                modifier = Modifier.padding(end = 12.dp)
-                                            )
-                                        }
-                                    },
-                                    enabled = false,
-                                    colors = OutlinedTextFieldDefaults.colors(
-                                        disabledTextColor = MaterialTheme.colorScheme.onSurface,
-                                        disabledContainerColor = MaterialTheme.colorScheme.surface,
-                                        disabledBorderColor = MaterialTheme.colorScheme.outline,
-                                        disabledTrailingIconColor = MaterialTheme.colorScheme.onSurface,
-                                        disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    )
-                                )
-                            }
-                        }
+                        AccountTitleForm(accountTitle, isError)
+                        AccountTypeForm(accountType, accountIcon, launcher)
                     }
                 }
             }

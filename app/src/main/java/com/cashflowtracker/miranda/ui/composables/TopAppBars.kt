@@ -175,7 +175,7 @@ fun AddEditTopAppBar(
     onButtonClick: () -> Unit
 ) {
     TopAppBar(
-        title = { Text("") },
+        title = { },
         navigationIcon = {
             IconButton(
                 onClick = { onIconButtonClick() },
