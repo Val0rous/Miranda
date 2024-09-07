@@ -93,50 +93,48 @@ class ViewTransaction : ComponentActivity() {
                                     transaction = it.also {
                                         isLocationLoaded.value = !it.location.isNullOrEmpty()
 
-                                        coroutineScope.launch {
+                                        coroutineScope.launch(Dispatchers.IO) {
                                             if (!isDeleting) {
                                                 if (it.type == "Output" || it.type == "Transfer") {
-                                                    coroutineScope.launch(Dispatchers.IO) {
-                                                        accountsVm.actions.getTypeByTitle(
-                                                            it.source,
-                                                            userId
-                                                        ).collect { item ->
-                                                            withContext(Dispatchers.Main) {
-                                                                sourceType = item
-                                                                println("SOURCETYPE: $sourceType")
-                                                            }
-                                                        }
+//                                                    coroutineScope.launch(Dispatchers.IO) {
+                                                    accountsVm.actions.getTypeByTitle(
+                                                        it.source,
+                                                        userId
+                                                    ).collect { item ->
+//                                                        withContext(Dispatchers.Main) {
+                                                        sourceType = item
+//                                                        }
                                                     }
+//                                                    }
                                                 }
                                             }
                                         }
 
-                                        coroutineScope.launch {
+                                        coroutineScope.launch(Dispatchers.IO) {
                                             if (!isDeleting) {
                                                 if (it.type == "Input" || it.type == "Transfer") {
-                                                    coroutineScope.launch(Dispatchers.IO) {
-                                                        accountsVm.actions.getTypeByTitle(
-                                                            it.destination,
-                                                            userId
-                                                        ).collect { item ->
-                                                            withContext(Dispatchers.Main) {
-                                                                destinationType = item
-                                                                println("DESTINATIONTYPE: $destinationType")
-                                                            }
-                                                        }
+//                                                    coroutineScope.launch(Dispatchers.IO) {
+                                                    accountsVm.actions.getTypeByTitle(
+                                                        it.destination,
+                                                        userId
+                                                    ).collect { item ->
+//                                                        withContext(Dispatchers.Main) {
+                                                        destinationType = item
+//                                                        }
                                                     }
+//                                                    }
                                                 }
                                             }
                                         }
 
                                         coroutineScope.launch {
                                             if (isLocationLoaded.value) {
-                                                it.location?.split(", ", limit = 2)?.let {
-                                                    if (it.size == 2) {
+                                                it.location?.split(", ", limit = 2)?.let { item ->
+                                                    if (item.size == 2) {
                                                         coordinates.value =
                                                             Coordinates(
-                                                                it[0].toDouble(),
-                                                                it[1].toDouble()
+                                                                item[0].toDouble(),
+                                                                item[1].toDouble()
                                                             )
                                                     }
                                                 }
