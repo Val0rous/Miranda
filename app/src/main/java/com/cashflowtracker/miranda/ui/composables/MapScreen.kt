@@ -1,7 +1,9 @@
 package com.cashflowtracker.miranda.ui.composables
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -190,11 +192,15 @@ fun FullScreenMapView(transactions: List<Transaction>) {
                     ),
                     title = transaction.comment ?: transaction.location,
                     snippet = transaction.type,
-                    icon = markerIcon,
+                    icon = if (openTransaction != transaction) {
+                        markerIcon
+                    } else {
+                        null
+                    },
                     onClick = {
                         showDialog = true
                         openTransaction = transaction
-                        false // Return false to keep default behavior, true to prevent default behavior
+                        true // Return false to keep default behavior, true to prevent default behavior
                     }
                 )
             }
