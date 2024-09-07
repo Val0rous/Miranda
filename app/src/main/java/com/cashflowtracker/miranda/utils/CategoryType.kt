@@ -2,15 +2,15 @@ package com.cashflowtracker.miranda.utils
 
 import com.cashflowtracker.miranda.R
 
-enum class CategoryClass(val stars: Char) {
+enum class CategoryClass(val stars: Char, val label: String) {
     /** One Star */
-    NECESSITY('1'),
+    NECESSITY('1', "Necessity"),
 
     /** Two Stars */
-    CONVENIENCE('2'),
+    CONVENIENCE('2', "Convenience"),
 
     /** Three Stars */
-    LUXURY('3'),
+    LUXURY('3', "Luxury"),
 }
 
 /** Default categories

@@ -18,7 +18,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,7 +48,7 @@ import com.cashflowtracker.miranda.ui.viewmodels.TransactionsViewModel
 import com.cashflowtracker.miranda.utils.Routes
 import org.koin.androidx.compose.koinViewModel
 
-class ViewStatsCharts : ComponentActivity() {
+class ViewChartStats : ComponentActivity() {
     private lateinit var navController: NavHostController
 
     @OptIn(ExperimentalMaterial3Api::class)

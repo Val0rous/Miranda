@@ -77,8 +77,8 @@
         <activity android:name=".ui.screens.EditTransaction" />
         <activity android:name=".ui.screens.EditProfile" />
         <activity android:name=".ui.screens.MapView" />
-        <activity android:name=".ui.screens.ViewStatsCharts" />
-        <!--        <activity android:name=".ui.screens.CategoriesStats" />-->
+        <activity android:name=".ui.screens.ViewChartStats" />
+        <activity android:name=".ui.screens.ViewCategoryStats" />
 
 
         <meta-data

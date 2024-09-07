@@ -2,7 +2,6 @@ package com.cashflowtracker.miranda.ui.screens
 
 import android.content.Intent
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -13,15 +12,11 @@ import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.data.database.Transaction
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserId
 import com.cashflowtracker.miranda.data.repositories.ThemeRepository.getThemePreferenceFlow
@@ -73,7 +68,7 @@ fun Stats() {
                     chartLineColor = LocalCustomColors.current.chartLineBlue,
                     chartAreaColor = LocalCustomColors.current.chartAreaBlue,
                     onClick = {
-                        val intent = Intent(context, ViewStatsCharts::class.java)
+                        val intent = Intent(context, ViewChartStats::class.java)
                         intent.putExtra("startDestination", Routes.OverallStats.route)
                         context.startActivity(intent)
                     }
@@ -102,7 +97,7 @@ fun Stats() {
                     chartLineColor = LocalCustomColors.current.chartLineRed,
                     chartAreaColor = LocalCustomColors.current.chartAreaRed,
                     onClick = {
-                        val intent = Intent(context, ViewStatsCharts::class.java)
+                        val intent = Intent(context, ViewChartStats::class.java)
                         intent.putExtra("startDestination", Routes.YearlyStats.route)
                         context.startActivity(intent)
                     }
@@ -162,7 +157,7 @@ fun Stats() {
                     chartLineColor = LocalCustomColors.current.chartLineGreen,
                     chartAreaColor = LocalCustomColors.current.chartAreaGreen,
                     onClick = {
-                        val intent = Intent(context, ViewStatsCharts::class.java)
+                        val intent = Intent(context, ViewChartStats::class.java)
                         intent.putExtra("startDestination", Routes.QuarterlyStats.route)
                         context.startActivity(intent)
                     }
@@ -191,7 +186,7 @@ fun Stats() {
                     chartLineColor = LocalCustomColors.current.chartLineYellow,
                     chartAreaColor = LocalCustomColors.current.chartAreaYellow,
                     onClick = {
-                        val intent = Intent(context, ViewStatsCharts::class.java)
+                        val intent = Intent(context, ViewChartStats::class.java)
                         intent.putExtra("startDestination", Routes.MonthlyStats.route)
                         context.startActivity(intent)
                     }
@@ -206,9 +201,8 @@ fun Stats() {
                 CategoriesCard(
                     title = "Categories",
                     modifier = Modifier.weight(1f),
-                    transactions = transactions,
                     onClick = {
-//                    context.startActivity(Intent(context, CategoriesActivity::class.java))
+                        context.startActivity(Intent(context, ViewCategoryStats::class.java))
                     }
                 )
 
@@ -271,7 +265,6 @@ fun StatsCard(
 fun CategoriesCard(
     title: String,
     modifier: Modifier = Modifier,
-    transactions: List<Transaction>,
     onClick: () -> Unit
 ) {
     var width by remember { mutableStateOf(0.dp) }
@@ -289,7 +282,6 @@ fun CategoriesCard(
         Text(
             text = title,
             style = MaterialTheme.typography.titleMedium,
-            //textAlign = Alignment.TopStart, // Align content to the top start
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
