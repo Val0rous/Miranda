@@ -8,6 +8,7 @@ import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.result.ActivityResult
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,7 +18,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -34,8 +37,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
@@ -87,6 +93,68 @@ fun TimeZoneForm(selectedTimeZone: MutableState<String>) {
         )
         Spacer(modifier = Modifier.width(4.dp))
         TimeZonePicker(selectedTimeZone = selectedTimeZone)
+    }
+}
+
+@Composable
+fun RepeatForm(selectedRepeat: MutableState<String>) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = ImageVector.vectorResource(R.drawable.ic_replay),
+            contentDescription = "Repeat",
+            modifier = Modifier
+                .scale(scaleX = -1f, scaleY = 1f)   // Flip horizontally
+                .rotate(-45f)
+        )
+        Spacer(modifier = Modifier.width(4.dp))
+        RepeatPicker(selectedRepeat = selectedRepeat)
+    }
+}
+
+@Composable
+fun CreateFirstOccurrenceForm(isCreateFirstOccurrence: MutableState<Boolean>) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 27.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Spacer(modifier = Modifier.width(12.dp))
+        Text(
+            "Create First Occurrence",
+            style = MaterialTheme.typography.titleSmall
+        )
+        Spacer(modifier = Modifier.weight(1f))
+        Checkbox(
+            checked = isCreateFirstOccurrence.value,
+            onCheckedChange = {
+                isCreateFirstOccurrence.value = !isCreateFirstOccurrence.value
+            }
+        )
+    }
+}
+
+@Composable
+fun NotificationsForm(notifications: SnapshotStateList<String>) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 8.dp),
+        verticalAlignment = Alignment.Top
+    ) {
+        Box(modifier = Modifier.padding(top = 12.dp)) {
+            Icon(
+                ImageVector.vectorResource(R.drawable.ic_notifications),
+                contentDescription = "Notifications"
+            )
+        }
+        Spacer(modifier = Modifier.width(4.dp))
+        Column {
+            NotificationPicker(notifications)
+        }
     }
 }
 

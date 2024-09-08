@@ -10,35 +10,23 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
-import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.ui.composables.AddEditTopAppBar
 import com.cashflowtracker.miranda.ui.composables.AmountForm
 import com.cashflowtracker.miranda.ui.composables.CommentForm
+import com.cashflowtracker.miranda.ui.composables.CreateFirstOccurrenceForm
 import com.cashflowtracker.miranda.ui.composables.SegmentedButtonType
-import com.cashflowtracker.miranda.ui.composables.MapScreen
-import com.cashflowtracker.miranda.ui.composables.DatePicker
 import com.cashflowtracker.miranda.ui.composables.DateTimeForm
 import com.cashflowtracker.miranda.ui.composables.DestinationForm
 import com.cashflowtracker.miranda.ui.composables.LocationForm
+import com.cashflowtracker.miranda.ui.composables.NotificationsForm
+import com.cashflowtracker.miranda.ui.composables.RepeatForm
 import com.cashflowtracker.miranda.ui.composables.SourceForm
-import com.cashflowtracker.miranda.ui.composables.TimePicker
 import com.cashflowtracker.miranda.ui.composables.TimeZoneForm
-import com.cashflowtracker.miranda.ui.composables.TimeZonePicker
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 import com.cashflowtracker.miranda.ui.viewmodels.AccountsViewModel
 import com.cashflowtracker.miranda.ui.viewmodels.TransactionsViewModel
@@ -61,6 +49,8 @@ class AddRecurrence : ComponentActivity() {
             val selectedDate = remember { mutableStateOf("") }
             val selectedTime = remember { mutableStateOf("") }
             val selectedTimeZone = remember { mutableStateOf("") }
+            val selectedRepeat = remember { mutableStateOf("") }
+            val notifications = remember { mutableStateListOf<String>() }
             var source by remember { mutableStateOf("") }
             var sourceIcon by remember { mutableStateOf<Int?>(null) }
             var destination by remember { mutableStateOf("") }
@@ -146,56 +136,15 @@ class AddRecurrence : ComponentActivity() {
 
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                imageVector = ImageVector.vectorResource(R.drawable.ic_replay),
-                                contentDescription = "Repeat",
-                                modifier = Modifier
-                                    .scale(scaleX = -1f, scaleY = 1f)   // Flip horizontally
-                                    .rotate(-45f)
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            TextButton(onClick = { /* TODO: Handle repeat button click */ }) {
-                                Text("Every month") // TODO: Replace with DropdownMenu listing repeat options
-                            }
-                        }
+                        RepeatForm(selectedRepeat)
+
+                        Spacer(modifier = Modifier.height(0.dp))
+
+                        CreateFirstOccurrenceForm(isCreateFirstOccurrence)
 
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Spacer(modifier = Modifier.width(28.dp))
-                            Text("Create First Occurrence")
-                            Checkbox(
-                                checked = isCreateFirstOccurrence.value,
-                                onCheckedChange = {
-                                    isCreateFirstOccurrence.value = !isCreateFirstOccurrence.value
-                                })
-                        }
-
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                ImageVector.vectorResource(R.drawable.ic_notifications),
-                                contentDescription = "Notifications"
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text("1 day before")    // TODO: Replace with DropdownMenu listing notification options
-                            Spacer(modifier = Modifier.weight(1f))
-                            Icon(
-                                ImageVector.vectorResource(R.drawable.ic_close),
-                                contentDescription = "Delete Notification"
-                            )
-                        }
+                        NotificationsForm(notifications)
 
                         SourceForm(source, sourceIcon, transactionType, sourceLauncher)
                         Spacer(modifier = Modifier.height(8.dp))

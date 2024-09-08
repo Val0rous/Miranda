@@ -114,7 +114,7 @@ fun TimeZonePicker(selectedTimeZone: MutableState<String>) {
 
     // This TextButton triggers the time zone picker dialog
     TextButton(onClick = { isTimeZonePickerVisible = true }) {
-        Text(selectedTimeZone.value, color = MaterialTheme.colorScheme.onBackground)
+        Text(selectedTimeZone.value, color = MaterialTheme.colorScheme.onSurface)
     }
 
 //    if (isTimeZonePickerVisible) {
