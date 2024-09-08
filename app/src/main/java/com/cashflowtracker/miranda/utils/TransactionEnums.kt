@@ -2,6 +2,12 @@ package com.cashflowtracker.miranda.utils
 
 import com.cashflowtracker.miranda.R
 
+enum class TransactionType(val type: String) {
+    OUTPUT("Output"),
+    INPUT("Input"),
+    TRANSFER("Transfer")
+}
+
 enum class CategoryClass(val stars: Char, val label: String) {
     /** One Star */
     NECESSITY('1', "Necessity"),

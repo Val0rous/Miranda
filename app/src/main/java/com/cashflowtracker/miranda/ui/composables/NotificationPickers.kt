@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -29,22 +31,22 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.R
+import com.cashflowtracker.miranda.utils.Notifications
 
 @Composable
 fun NotificationPickerDialog(
     onDismiss: () -> Unit,
-    onNotificationSelected: (String) -> Unit,
-    selectedNotifications: SnapshotStateList<String>
+    onNotificationSelected: (Notifications) -> Unit,
+    selectedNotifications: SnapshotStateList<Notifications>
 ) {
-    val notificationOptions =
-        listOf("At time of transaction", "1 hour before", "1 day before", "1 week before")
+    val scrollState = rememberScrollState()
     AlertDialog(
         onDismissRequest = onDismiss,
         confirmButton = {},
         dismissButton = {},
         text = {
-            Column {
-                notificationOptions.forEach { option ->
+            Column(modifier = Modifier.verticalScroll(scrollState)) {
+                Notifications.entries.filterNot { it in selectedNotifications }.forEach { option ->
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -63,7 +65,7 @@ fun NotificationPickerDialog(
                             interactionSource = remember { MutableInteractionSource() }
                         )
                         Text(
-                            text = option,
+                            text = option.label,
                             modifier = Modifier.padding(start = 16.dp)
                         )
                     }
@@ -74,7 +76,7 @@ fun NotificationPickerDialog(
 }
 
 @Composable
-fun NotificationPicker(selectedNotifications: SnapshotStateList<String>) {
+fun NotificationPicker(selectedNotifications: SnapshotStateList<Notifications>) {
     var isNotificationPickerVisible by remember { mutableStateOf(false) }
     if (selectedNotifications.isNotEmpty()) {
         selectedNotifications.forEach { notification ->
@@ -85,7 +87,7 @@ fun NotificationPicker(selectedNotifications: SnapshotStateList<String>) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    notification,
+                    notification.label,
                     modifier = Modifier.padding(start = 12.dp),
                     style = MaterialTheme.typography.titleSmall
                 )    // TODO: Replace with DropdownMenu listing notification options
@@ -102,8 +104,10 @@ fun NotificationPicker(selectedNotifications: SnapshotStateList<String>) {
         }
     }
 
-    TextButton(onClick = { isNotificationPickerVisible = true }) {
-        Text("Add notification", color = MaterialTheme.colorScheme.outline)
+    if (selectedNotifications.size < 5) {
+        TextButton(onClick = { isNotificationPickerVisible = true }) {
+            Text("Add notification", color = MaterialTheme.colorScheme.outline)
+        }
     }
 
     if (isNotificationPickerVisible) {

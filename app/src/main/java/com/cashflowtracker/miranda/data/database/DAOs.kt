@@ -60,9 +60,6 @@ interface TransactionsDao {
 
     @Query("SELECT * FROM 'transaction' WHERE transactionId = :transactionId")
     fun getByTransactionIdFlow(transactionId: UUID): Flow<Transaction>
-
-    @Query("UPDATE 'transaction' SET source = CASE WHEN source = :oldTitle THEN :newTitle ELSE source END, destination = CASE WHEN destination = :oldTitle THEN :newTitle ELSE destination END WHERE source = :oldTitle OR destination = :oldTitle")
-    suspend fun updateAllByTitle(oldTitle: String, newTitle: String)
 }
 
 @Dao
@@ -73,11 +70,17 @@ interface RecurrencesDao {
     @Delete
     suspend fun delete(recurrence: Recurrence)
 
+    @Query("DELETE FROM recurrence WHERE recurrenceId = :recurrenceId")
+    suspend fun deleteByRecurrenceId(recurrenceId: UUID)
+
     @Query("SELECT * FROM recurrence WHERE userId = :userId ORDER BY reoccursOn ASC")
-    fun getByUserId(userId: UUID): Flow<List<Recurrence>>
+    fun getAllByUserIdFlow(userId: UUID): Flow<List<Recurrence>>
 
     @Query("SELECT * FROM recurrence WHERE recurrenceId = :recurrenceId")
     fun getByRecurrenceId(recurrenceId: UUID): Recurrence
+
+    @Query("SELECT * FROM recurrence WHERE recurrenceId = :recurrenceId")
+    fun getByRecurrenceIdFlow(recurrenceId: UUID): Flow<Recurrence>
 }
 
 @Dao

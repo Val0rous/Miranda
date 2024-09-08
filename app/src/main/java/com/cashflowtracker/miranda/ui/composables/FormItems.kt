@@ -53,7 +53,9 @@ import com.cashflowtracker.miranda.ui.screens.SelectDestination
 import com.cashflowtracker.miranda.ui.screens.SelectSource
 import com.cashflowtracker.miranda.utils.Coordinates
 import com.cashflowtracker.miranda.utils.LocationService
+import com.cashflowtracker.miranda.utils.Notifications
 import com.cashflowtracker.miranda.utils.PermissionStatus
+import com.cashflowtracker.miranda.utils.Repeats
 import com.cashflowtracker.miranda.utils.StartMonitoringResult
 import com.cashflowtracker.miranda.utils.rememberPermission
 
@@ -97,7 +99,7 @@ fun TimeZoneForm(selectedTimeZone: MutableState<String>) {
 }
 
 @Composable
-fun RepeatForm(selectedRepeat: MutableState<String>) {
+fun RepeatForm(selectedRepeat: MutableState<Repeats>) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
@@ -138,7 +140,7 @@ fun CreateFirstOccurrenceForm(isCreateFirstOccurrence: MutableState<Boolean>) {
 }
 
 @Composable
-fun NotificationsForm(notifications: SnapshotStateList<String>) {
+fun NotificationsForm(notifications: SnapshotStateList<Notifications>) {
     Row(
         modifier = Modifier
             .fillMaxWidth()

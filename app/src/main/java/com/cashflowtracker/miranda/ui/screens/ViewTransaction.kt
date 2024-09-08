@@ -57,6 +57,7 @@ import com.cashflowtracker.miranda.utils.Coordinates
 import com.cashflowtracker.miranda.utils.DefaultCategories
 import com.cashflowtracker.miranda.utils.SpecialType
 import com.cashflowtracker.miranda.utils.formatZonedDateTime
+import com.cashflowtracker.miranda.utils.revertTransaction
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -489,56 +490,7 @@ class ViewTransaction : ComponentActivity() {
                                 openAlertDialog.value = false
                                 isDeleting = true
                                 coroutineScope.launch(Dispatchers.IO) {
-                                    when (transaction!!.type) {
-                                        "Output" -> {
-                                            val sourceId = accountsVm.actions.getByTitleOrNull(
-                                                transaction!!.source,
-                                                userId
-                                            )?.accountId
-                                            if (sourceId != null) {
-                                                accountsVm.actions.updateBalance(
-                                                    sourceId,
-                                                    transaction!!.amount
-                                                )
-                                            }
-                                        }
-
-                                        "Input" -> {
-                                            val destinationId =
-                                                accountsVm.actions.getByTitleOrNull(
-                                                    transaction!!.destination,
-                                                    userId
-                                                )?.accountId
-                                            if (destinationId != null) {
-                                                accountsVm.actions.updateBalance(
-                                                    destinationId,
-                                                    -transaction!!.amount
-                                                )
-                                            }
-                                        }
-
-                                        else -> {
-                                            val sourceId = accountsVm.actions.getByTitleOrNull(
-                                                transaction!!.source,
-                                                userId
-                                            )?.accountId
-                                            val destinationId =
-                                                accountsVm.actions.getByTitleOrNull(
-                                                    transaction!!.destination,
-                                                    userId
-                                                )?.accountId
-                                            if (sourceId != null && destinationId != null) {
-                                                accountsVm.actions.updateBalance(
-                                                    sourceId,
-                                                    transaction!!.amount
-                                                )
-                                                accountsVm.actions.updateBalance(
-                                                    destinationId,
-                                                    -transaction!!.amount
-                                                )
-                                            }
-                                        }
-                                    }
+                                    revertTransaction(transaction!!, accountsVm, userId)
                                     vm.actions.removeTransaction(transactionId)
                                     finish()
                                 }

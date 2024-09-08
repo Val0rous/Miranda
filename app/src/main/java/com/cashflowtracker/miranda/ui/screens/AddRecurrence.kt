@@ -15,6 +15,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.cashflowtracker.miranda.data.database.Recurrence
+import com.cashflowtracker.miranda.data.database.Transaction
+import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserId
 import com.cashflowtracker.miranda.ui.composables.AddEditTopAppBar
 import com.cashflowtracker.miranda.ui.composables.AmountForm
 import com.cashflowtracker.miranda.ui.composables.CommentForm
@@ -29,9 +32,17 @@ import com.cashflowtracker.miranda.ui.composables.SourceForm
 import com.cashflowtracker.miranda.ui.composables.TimeZoneForm
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 import com.cashflowtracker.miranda.ui.viewmodels.AccountsViewModel
+import com.cashflowtracker.miranda.ui.viewmodels.RecurrencesViewModel
 import com.cashflowtracker.miranda.ui.viewmodels.TransactionsViewModel
 import com.cashflowtracker.miranda.utils.LocationService
+import com.cashflowtracker.miranda.utils.Notifications
+import com.cashflowtracker.miranda.utils.Repeats
+import com.cashflowtracker.miranda.utils.buildZonedDateTime
+import com.cashflowtracker.miranda.utils.calculateBalance
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
+import java.time.format.DateTimeFormatter
 
 class AddRecurrence : ComponentActivity() {
     private lateinit var locationService: LocationService
@@ -49,8 +60,8 @@ class AddRecurrence : ComponentActivity() {
             val selectedDate = remember { mutableStateOf("") }
             val selectedTime = remember { mutableStateOf("") }
             val selectedTimeZone = remember { mutableStateOf("") }
-            val selectedRepeat = remember { mutableStateOf("") }
-            val notifications = remember { mutableStateListOf<String>() }
+            val selectedRepeat = remember { mutableStateOf(Repeats.MONTHLY) }
+            val notifications = remember { mutableStateListOf<Notifications>() }
             var source by remember { mutableStateOf("") }
             var sourceIcon by remember { mutableStateOf<Int?>(null) }
             var destination by remember { mutableStateOf("") }
@@ -90,7 +101,8 @@ class AddRecurrence : ComponentActivity() {
                             && !isError.value
                 }
             }
-            val vm = koinViewModel<TransactionsViewModel>()
+            val recurrencesVm = koinViewModel<RecurrencesViewModel>()
+            val transactionsVm = koinViewModel<TransactionsViewModel>()
             val accountsVm = koinViewModel<AccountsViewModel>()
 
             val isTypeChanged = remember { mutableStateOf(false) }
@@ -110,7 +122,67 @@ class AddRecurrence : ComponentActivity() {
                             buttonText = "Create",
                             isButtonEnabled = isFormValid,
                             onIconButtonClick = { finish() },
-                            onButtonClick = { /* Logic to create the recurrence */ }
+                            onButtonClick = {
+                                coroutineScope.launch(Dispatchers.IO) {
+                                    val userId = context.getCurrentUserId()
+                                    val zonedDateTime = buildZonedDateTime(
+                                        selectedDate.value,
+                                        selectedTime.value,
+                                        selectedTimeZone.value
+                                    )
+                                    val formattedDateTime =
+                                        zonedDateTime?.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
+                                            ?: ""
+
+                                    if (isCreateFirstOccurrence.value) {
+                                        transactionsVm.actions.addTransaction(
+                                            Transaction(
+                                                type = transactionType.value,
+                                                dateTime = formattedDateTime,
+                                                source = source,
+                                                destination = destination,
+                                                amount = amount.doubleValue,
+                                                currency = "EUR",
+                                                comment = comment.value,
+                                                location = location.value,
+                                                userId = userId
+                                            )
+                                        )
+
+                                        calculateBalance(
+                                            amount.doubleValue,
+                                            transactionType.value,
+                                            source,
+                                            destination,
+                                            accountsVm,
+                                            userId
+                                        )
+                                    }
+
+                                    recurrencesVm.actions.addRecurrence(
+                                        Recurrence(
+                                            type = transactionType.value,
+                                            dateTime = formattedDateTime,
+                                            source = source,
+                                            destination = destination,
+                                            amount = amount.doubleValue,
+                                            currency = "EUR",
+                                            comment = comment.value,
+                                            location = location.value,
+                                            repeatIntervalMillis = 0L,  // TODO: change this
+                                            reoccursOn = "",
+                                            notifications1 = notifications[0].label,
+                                            notifications2 = notifications[1].label,
+                                            notifications3 = notifications[2].label,
+                                            notifications4 = notifications[3].label,
+                                            notifications5 = notifications[4].label,
+                                            userId = userId
+                                        )
+                                    )
+
+                                    finish()
+                                }
+                            }
                         )
                     }
                 ) { paddingValues ->

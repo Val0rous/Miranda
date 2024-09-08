@@ -18,7 +18,4 @@ class TransactionsRepository(private val transactionsDao: TransactionsDao) {
     fun getByTransactionId(transactionId: UUID) = transactionsDao.getByTransactionId(transactionId)
     fun getByTransactionIdFlow(transactionId: UUID) =
         transactionsDao.getByTransactionIdFlow(transactionId)
-
-    suspend fun updateAllByTitle(oldTitle: String, newTitle: String) =
-        transactionsDao.updateAllByTitle(oldTitle, newTitle)
 }

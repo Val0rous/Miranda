@@ -25,21 +25,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.cashflowtracker.miranda.utils.Notifications
+import com.cashflowtracker.miranda.utils.Repeats
 
 @Composable
 fun RepeatPickerDialog(
     onDismiss: () -> Unit,
-    onRepeatSelected: (String) -> Unit,
-    selectedRepeat: MutableState<String>
+    onRepeatSelected: (Repeats) -> Unit,
+    selectedRepeat: MutableState<Repeats>
 ) {
-    val repeatOptions = listOf("Every day", "Every week", "Every month", "Every year")
+    val scrollState = rememberScrollState()
     AlertDialog(
         onDismissRequest = onDismiss,
         confirmButton = {},
         dismissButton = {},
         text = {
-            Column {
-                repeatOptions.forEach { option ->
+            Column(modifier = Modifier.verticalScroll(scrollState)) {
+                Repeats.entries.forEach { option ->
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -58,7 +60,7 @@ fun RepeatPickerDialog(
                             interactionSource = remember { MutableInteractionSource() }
                         )
                         Text(
-                            text = option,
+                            text = option.label,
                             modifier = Modifier.padding(start = 16.dp),
                         )
                     }
@@ -69,14 +71,11 @@ fun RepeatPickerDialog(
 }
 
 @Composable
-fun RepeatPicker(selectedRepeat: MutableState<String>) {
+fun RepeatPicker(selectedRepeat: MutableState<Repeats>) {
     var isRepeatPickerVisible by remember { mutableStateOf(false) }
-    if (selectedRepeat.value.isEmpty()) {
-        selectedRepeat.value = "Every month"
-    }
 
     TextButton(onClick = { isRepeatPickerVisible = true }) {
-        Text(selectedRepeat.value, color = MaterialTheme.colorScheme.onSurface)
+        Text(selectedRepeat.value.label, color = MaterialTheme.colorScheme.onSurface)
     }
 
     if (isRepeatPickerVisible) {

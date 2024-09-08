@@ -10,7 +10,7 @@ import androidx.room.RoomDatabase
 abstract class MirandaDatabase : RoomDatabase() {
     abstract fun usersDao(): UsersDao
     abstract fun transactionsDao(): TransactionsDao
-    abstract fun recurrenceDao(): RecurrencesDao
+    abstract fun recurrencesDao(): RecurrencesDao
     abstract fun accountsDao(): AccountsDao
     abstract fun customCategoriesDao(): CustomCategoriesDao
     abstract fun achievementsDao(): AchievementsDao

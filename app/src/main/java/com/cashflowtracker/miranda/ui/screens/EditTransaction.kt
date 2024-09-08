@@ -71,7 +71,9 @@ import com.cashflowtracker.miranda.ui.viewmodels.TransactionsViewModel
 import com.cashflowtracker.miranda.utils.DefaultCategories
 import com.cashflowtracker.miranda.utils.LocationService
 import com.cashflowtracker.miranda.utils.buildZonedDateTime
+import com.cashflowtracker.miranda.utils.calculateBalance
 import com.cashflowtracker.miranda.utils.formatZonedDateTime
+import com.cashflowtracker.miranda.utils.revertTransaction
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -210,59 +212,14 @@ class EditTransaction : ComponentActivity() {
                                         zonedDateTime?.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
                                             ?: ""
 
-                                    // Revert old transaction
-                                    when (oldTransactionType.value) {
-                                        "Output" -> {
-                                            val sourceAccountId =
-                                                accountsVm.actions.getByTitleOrNull(
-                                                    oldSource.value,
-                                                    userId
-                                                )?.accountId
-                                            if (sourceAccountId != null) {
-                                                accountsVm.actions.updateBalance(
-                                                    sourceAccountId,
-                                                    +oldAmount.doubleValue
-                                                )
-                                            }
-                                        }
-
-                                        "Input" -> {
-                                            val destinationAccountId =
-                                                accountsVm.actions.getByTitleOrNull(
-                                                    oldDestination.value,
-                                                    userId
-                                                )?.accountId
-                                            if (destinationAccountId != null) {
-                                                accountsVm.actions.updateBalance(
-                                                    destinationAccountId,
-                                                    -oldAmount.doubleValue
-                                                )
-                                            }
-                                        }
-
-                                        "Transfer" -> {
-                                            val sourceAccountId =
-                                                accountsVm.actions.getByTitleOrNull(
-                                                    oldSource.value,
-                                                    userId
-                                                )?.accountId
-                                            val destinationAccountId =
-                                                accountsVm.actions.getByTitleOrNull(
-                                                    oldDestination.value,
-                                                    userId
-                                                )?.accountId
-                                            if (sourceAccountId != null && destinationAccountId != null) {
-                                                accountsVm.actions.updateBalance(
-                                                    sourceAccountId,
-                                                    oldAmount.doubleValue
-                                                )
-                                                accountsVm.actions.updateBalance(
-                                                    destinationAccountId,
-                                                    -oldAmount.doubleValue
-                                                )
-                                            }
-                                        }
-                                    }
+                                    revertTransaction(
+                                        oldAmount.doubleValue,
+                                        oldTransactionType.value,
+                                        oldSource.value,
+                                        oldDestination.value,
+                                        accountsVm,
+                                        userId
+                                    )
 
                                     vm.actions.updateTransaction(
                                         Transaction(
@@ -279,61 +236,15 @@ class EditTransaction : ComponentActivity() {
                                         )
                                     )
 //
+                                    calculateBalance(
+                                        amount.doubleValue,
+                                        transactionType.value,
+                                        source,
+                                        destination,
+                                        accountsVm,
+                                        userId
+                                    )
 
-                                    if (amount.doubleValue != 0.0) {
-                                        when (transactionType.value) {
-                                            "Output" -> {
-                                                val sourceAccountId =
-                                                    accountsVm.actions.getByTitleOrNull(
-                                                        source,
-                                                        userId
-                                                    )?.accountId
-                                                if (sourceAccountId != null) {
-                                                    accountsVm.actions.updateBalance(
-                                                        sourceAccountId,
-                                                        -amount.doubleValue
-                                                    )
-                                                }
-                                            }
-
-                                            "Input" -> {
-                                                val destinationAccountId =
-                                                    accountsVm.actions.getByTitleOrNull(
-                                                        destination,
-                                                        userId
-                                                    )?.accountId
-                                                if (destinationAccountId != null) {
-                                                    accountsVm.actions.updateBalance(
-                                                        destinationAccountId,
-                                                        amount.doubleValue
-                                                    )
-                                                }
-                                            }
-
-                                            "Transfer" -> {
-                                                val sourceAccountId =
-                                                    accountsVm.actions.getByTitleOrNull(
-                                                        source,
-                                                        userId
-                                                    )?.accountId
-                                                val destinationAccountId =
-                                                    accountsVm.actions.getByTitleOrNull(
-                                                        destination,
-                                                        userId
-                                                    )?.accountId
-                                                if (sourceAccountId != null && destinationAccountId != null) {
-                                                    accountsVm.actions.updateBalance(
-                                                        sourceAccountId,
-                                                        -amount.doubleValue
-                                                    )
-                                                    accountsVm.actions.updateBalance(
-                                                        destinationAccountId,
-                                                        amount.doubleValue
-                                                    )
-                                                }
-                                            }
-                                        }
-                                    }
                                     finish()
                                 }
                             }
