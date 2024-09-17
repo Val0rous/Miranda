@@ -9,6 +9,7 @@ enum class AccountType(val type: String, val icon: Int) {
     INVESTMENTS_STOCKS("Investments/Stocks", R.drawable.ic_monitoring),
     SAFE("Safe", R.drawable.ic_vpn_key),
     SAVINGS("Savings", R.drawable.ic_savings),
+    SIM_CARD("Sim Card", R.drawable.ic_sim_card),
     BITCOIN_WALLET("Bitcoin Wallet", R.drawable.ic_currency_bitcoin),
 
     /** These ones give an IBAN to users */
