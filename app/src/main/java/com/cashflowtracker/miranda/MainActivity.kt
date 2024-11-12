@@ -1,6 +1,8 @@
 package com.cashflowtracker.miranda
 
+import android.Manifest
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -42,7 +44,9 @@ import com.cashflowtracker.miranda.ui.screens.Stats
 import com.cashflowtracker.miranda.ui.screens.Transactions
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 import com.cashflowtracker.miranda.ui.viewmodels.UsersViewModel
+import com.cashflowtracker.miranda.utils.PermissionStatus
 import com.cashflowtracker.miranda.utils.Routes
+import com.cashflowtracker.miranda.utils.rememberPermission
 import org.koin.androidx.compose.koinViewModel
 
 class MainActivity : ComponentActivity() {
@@ -152,6 +156,19 @@ class MainActivity : ComponentActivity() {
                                 Stats()
                             }
                         }
+                    }
+                }
+
+                val notificationPermission = rememberPermission(
+                    permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        Manifest.permission.POST_NOTIFICATIONS
+                    } else {
+                        Manifest.permission.ACCESS_NOTIFICATION_POLICY
+                    }
+                )
+                LaunchedEffect(notificationPermission.status) {
+                    if (notificationPermission.status != PermissionStatus.Granted) {
+                        notificationPermission.launchPermissionRequest()
                     }
                 }
             }
