@@ -1,10 +1,11 @@
 package com.cashflowtracker.miranda.data.database
 
 import androidx.room.ColumnInfo
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import java.time.ZonedDateTime
+import androidx.room.Relation
 import java.util.UUID
 
 @Entity(indices = [Index(value = ["email"], unique = true)])
@@ -23,7 +24,7 @@ data class User(
 data class Transaction(
     @PrimaryKey val transactionId: UUID = UUID.randomUUID(),
     @ColumnInfo val type: String,
-    @ColumnInfo val dateTime: String,   // ZonedDateTime
+    @ColumnInfo val createdOn: String,   // ZonedDateTime
     @ColumnInfo val source: String,
     @ColumnInfo val destination: String,
     @ColumnInfo val amount: Double,
@@ -37,7 +38,7 @@ data class Transaction(
 data class Recurrence(
     @PrimaryKey val recurrenceId: UUID = UUID.randomUUID(),
     @ColumnInfo val type: String,
-    @ColumnInfo val dateTime: String,   // ZonedDateTime
+    @ColumnInfo val createdOn: String,   // ZonedDateTime
     @ColumnInfo val source: String,
     @ColumnInfo val destination: String,
     @ColumnInfo val amount: Double,
@@ -46,12 +47,25 @@ data class Recurrence(
     @ColumnInfo val location: String?,
     @ColumnInfo val repeatIntervalMillis: Long,
     @ColumnInfo val reoccursOn: String,   // ZonedDateTime
-    @ColumnInfo val notifications1: String?, // ZonedDateTime
-    @ColumnInfo val notifications2: String?, // ZonedDateTime
-    @ColumnInfo val notifications3: String?, // ZonedDateTime
-    @ColumnInfo val notifications4: String?, // ZonedDateTime
-    @ColumnInfo val notifications5: String?, // ZonedDateTime
     @ColumnInfo val userId: UUID,
+)
+
+@Entity
+data class Notification(
+    @PrimaryKey val notificationId: UUID = UUID.randomUUID(),
+    @ColumnInfo val dateTime: String,   // ZonedDateTime
+    @ColumnInfo val recurrenceId: UUID,
+    @ColumnInfo val userId: UUID,
+)
+
+@Entity
+data class RecurrenceWithNotification(
+    @Embedded val recurrence: Recurrence,
+    @Relation(
+        parentColumn = "recurrenceId",  // Column in Recurrence
+        entityColumn = "recurrenceId",  // Column in Notification
+    )
+    val notifications: List<Notification>
 )
 
 @Entity

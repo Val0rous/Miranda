@@ -54,7 +54,7 @@ fun Transactions() {
                         overlineContent = {
                             Text(
                                 text = ZonedDateTime.parse(
-                                    transaction.dateTime,
+                                    transaction.createdOn,
                                     DateTimeFormatter.ISO_ZONED_DATE_TIME
                                 ).format(DateTimeFormatter.ofPattern("yyyy-MM-dd  ·  HH:mm")),
                                 style = MaterialTheme.typography.labelMedium,

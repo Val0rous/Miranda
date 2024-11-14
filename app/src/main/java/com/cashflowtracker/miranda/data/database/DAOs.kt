@@ -49,10 +49,10 @@ interface TransactionsDao {
     @Query("DELETE FROM 'transaction' WHERE transactionId = :transactionId")
     suspend fun deleteByTransactionId(transactionId: UUID)
 
-    @Query("SELECT * FROM 'transaction' WHERE userId = :userId ORDER BY dateTime DESC")
+    @Query("SELECT * FROM 'transaction' WHERE userId = :userId ORDER BY createdOn DESC")
     fun getAllByUserIdFlow(userId: UUID): Flow<List<Transaction>>
 
-    @Query("SELECT * FROM 'transaction' WHERE userId = :userId AND location IS NOT NULL AND location <> '' ORDER BY dateTime DESC")
+    @Query("SELECT * FROM 'transaction' WHERE userId = :userId AND location IS NOT NULL AND location <> '' ORDER BY createdOn DESC")
     fun getAllWithLocationByUserIdFlow(userId: UUID): Flow<List<Transaction>>
 
     @Query("SELECT * FROM 'transaction' WHERE transactionId = :transactionId")
@@ -81,6 +81,30 @@ interface RecurrencesDao {
 
     @Query("SELECT * FROM recurrence WHERE recurrenceId = :recurrenceId")
     fun getByRecurrenceIdFlow(recurrenceId: UUID): Flow<Recurrence>
+}
+
+@Dao
+interface NotificationsDao {
+    @Upsert
+    suspend fun upsert(notification: Notification)
+
+    @Delete
+    suspend fun delete(notification: Notification)
+
+    @Query("SELECT * FROM notification WHERE userId = :userId ORDER BY dateTime ASC")
+    fun getAllByUserIdFlow(userId: UUID): Flow<List<Notification>>
+
+    @Query("SELECT * FROM notification WHERE recurrenceId = :recurrenceId")
+    fun getAllByRecurrenceId(recurrenceId: UUID): List<Notification>
+
+    @Query("SELECT * FROM notification WHERE recurrenceId = :recurrenceId")
+    fun getAllByRecurrenceIdFlow(recurrenceId: UUID): Flow<List<Notification>>
+}
+
+@Dao
+interface RecurrencesWithNotificationsDao {
+    @Query("SELECT * FROM recurrence WHERE userId = :userId")
+    fun getAllByUserId(userId: UUID): Flow<List<RecurrenceWithNotification>>
 }
 
 @Dao

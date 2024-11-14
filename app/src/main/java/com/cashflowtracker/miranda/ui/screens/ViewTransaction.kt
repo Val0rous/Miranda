@@ -433,9 +433,9 @@ class ViewTransaction : ComponentActivity() {
 
                                     HorizontalDivider(modifier = Modifier.padding(bottom = 24.dp))
 
-                                    if (transaction!!.dateTime.isNotEmpty()) {
+                                    if (transaction!!.createdOn.isNotEmpty()) {
                                         Text(
-                                            text = formatZonedDateTime(transaction!!.dateTime),
+                                            text = formatZonedDateTime(transaction!!.createdOn),
                                             style = MaterialTheme.typography.titleMedium,
                                             color = MaterialTheme.colorScheme.onSurface
                                         )

@@ -3,7 +3,9 @@ package com.cashflowtracker.miranda.ui.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cashflowtracker.miranda.data.database.Recurrence
+import com.cashflowtracker.miranda.data.database.RecurrenceWithNotification
 import com.cashflowtracker.miranda.data.repositories.RecurrencesRepository
+import com.cashflowtracker.miranda.data.repositories.RecurrencesWithNotificationsRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
@@ -17,9 +19,13 @@ interface RecurrencesActions {
     fun getAllByUserIdFlow(userId: UUID): Flow<List<Recurrence>>
     fun getByRecurrenceId(recurrenceId: UUID): Recurrence
     fun getByRecurrenceIdFlow(recurrenceId: UUID): Flow<Recurrence>
+    fun getRecurrencesWithNotifications(recurrenceId: UUID): Flow<List<RecurrenceWithNotification>>
 }
 
-class RecurrencesViewModel(private val repository: RecurrencesRepository) : ViewModel() {
+class RecurrencesViewModel(
+    private val repository: RecurrencesRepository,
+    private val repositoryWithNotifications: RecurrencesWithNotificationsRepository
+) : ViewModel() {
     val actions = object : RecurrencesActions {
         override fun addRecurrence(recurrence: Recurrence) = viewModelScope.launch {
             repository.upsert(recurrence)
@@ -46,6 +52,11 @@ class RecurrencesViewModel(private val repository: RecurrencesRepository) : View
         override fun getByRecurrenceIdFlow(recurrenceId: UUID): Flow<Recurrence> =
             viewModelScope.run {
                 repository.getByRecurrenceIdFlow(recurrenceId)
+            }
+
+        override fun getRecurrencesWithNotifications(recurrenceId: UUID): Flow<List<RecurrenceWithNotification>> =
+            viewModelScope.run {
+                repositoryWithNotifications.getAllByUserId(recurrenceId)
             }
     }
 }

@@ -104,6 +104,7 @@ fun NotificationPicker(selectedNotifications: SnapshotStateList<Notifications>) 
         }
     }
 
+    // Max 5 notifications for each recurrence
     if (selectedNotifications.size < 5) {
         TextButton(onClick = { isNotificationPickerVisible = true }) {
             Text("Add notification", color = MaterialTheme.colorScheme.outline)

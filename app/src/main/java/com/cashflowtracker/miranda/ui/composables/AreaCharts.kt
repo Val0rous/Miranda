@@ -54,7 +54,7 @@ fun AreaChart(
 //    val balanceList = mutableListOf<Double>()
     var currentBalance = initialBalance
     transactions.forEach { item ->
-        val date = ZonedDateTime.parse(item.dateTime, DateTimeFormatter.ISO_ZONED_DATE_TIME)
+        val date = ZonedDateTime.parse(item.createdOn, DateTimeFormatter.ISO_ZONED_DATE_TIME)
         val deltaAmount = when (item.type) {
             TransactionType.OUTPUT.type -> -item.amount
             TransactionType.INPUT.type -> item.amount
@@ -165,7 +165,7 @@ fun AreaChartThumbnail(
     val balanceList = mutableListOf<Double>()
     var currentBalance = initialBalance
     transactions.forEach { item ->
-        dateList.add(ZonedDateTime.parse(item.dateTime, DateTimeFormatter.ISO_ZONED_DATE_TIME))
+        dateList.add(ZonedDateTime.parse(item.createdOn, DateTimeFormatter.ISO_ZONED_DATE_TIME))
         val deltaAmount = when (item.type) {
             TransactionType.OUTPUT.type -> -item.amount
             TransactionType.INPUT.type -> item.amount

@@ -1,9 +1,7 @@
 package com.cashflowtracker.miranda.ui.composables
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -238,7 +236,7 @@ fun FullScreenMapView(transactions: List<Transaction>) {
                 overlineContent = {
                     Text(
                         text = ZonedDateTime.parse(
-                            openTransaction!!.dateTime,
+                            openTransaction!!.createdOn,
                             DateTimeFormatter.ISO_ZONED_DATE_TIME
                         ).format(DateTimeFormatter.ofPattern("yyyy-MM-dd  ·  HH:mm")),
                         style = MaterialTheme.typography.labelMedium,

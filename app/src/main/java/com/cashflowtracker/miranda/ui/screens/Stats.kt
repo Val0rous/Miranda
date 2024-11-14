@@ -75,7 +75,7 @@ fun Stats() {
                 )
 
                 val yearlyTransactions = transactions.filter { transaction ->
-                    transaction.dateTime.startsWith(currentYear)
+                    transaction.createdOn.startsWith(currentYear)
                 }
                 var yearlyInitialBalance = 0.0
                 val firstYearlyTransaction = yearlyTransactions.first()
@@ -112,7 +112,7 @@ fun Stats() {
                 val quarterlyTransactions = transactions.filter { transaction ->
                     val transactionDate =
                         LocalDate.parse(
-                            transaction.dateTime,
+                            transaction.createdOn,
                             DateTimeFormatter.ISO_ZONED_DATE_TIME
                         )
                     val transactionYear = transactionDate.year.toString()
@@ -164,7 +164,7 @@ fun Stats() {
                 )
 
                 val monthlyTransactions = transactions.filter { transaction ->
-                    transaction.dateTime.startsWith(currentMonth)
+                    transaction.createdOn.startsWith(currentMonth)
                 }
                 var monthlyInitialBalance = 0.0
                 val firstMonthlyTransaction = monthlyTransactions.first()

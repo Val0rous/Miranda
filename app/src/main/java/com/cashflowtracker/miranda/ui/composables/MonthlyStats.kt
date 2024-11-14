@@ -75,7 +75,7 @@ fun MonthlyChart(transactions: List<Transaction>) {
         derivedStateOf {
             val monthYear = "${year.intValue}-${String.format("%02d", month.intValue)}"
             transactions.filter { transaction ->
-                transaction.dateTime.startsWith(monthYear)
+                transaction.createdOn.startsWith(monthYear)
             }
         }
     }

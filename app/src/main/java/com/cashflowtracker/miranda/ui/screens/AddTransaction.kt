@@ -127,7 +127,7 @@ class AddTransaction : ComponentActivity() {
                                     vm.actions.addTransaction(
                                         Transaction(
                                             type = transactionType.value,
-                                            dateTime = formattedDateTime,
+                                            createdOn = formattedDateTime,
                                             source = source,
                                             destination = destination,
                                             amount = amount.doubleValue,

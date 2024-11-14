@@ -75,7 +75,7 @@ fun QuarterlyChart(transactions: List<Transaction>) {
         derivedStateOf {
             transactions.filter { transaction ->
                 val transactionDate =
-                    LocalDate.parse(transaction.dateTime, DateTimeFormatter.ISO_ZONED_DATE_TIME)
+                    LocalDate.parse(transaction.createdOn, DateTimeFormatter.ISO_ZONED_DATE_TIME)
                 val transactionYear = transactionDate.year.toString()
                 val transactionMonth = transactionDate.month
                 transactionYear == year.intValue.toString() && when (quarter.intValue) {
