@@ -29,10 +29,14 @@ import com.cashflowtracker.miranda.ui.composables.TimeZoneForm
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 import com.cashflowtracker.miranda.ui.viewmodels.AccountsViewModel
 import com.cashflowtracker.miranda.ui.viewmodels.TransactionsViewModel
+import com.cashflowtracker.miranda.utils.CurrencyEnum
 import com.cashflowtracker.miranda.utils.LocationService
+import com.cashflowtracker.miranda.utils.TransactionType
 import com.cashflowtracker.miranda.utils.buildZonedDateTime
 import com.cashflowtracker.miranda.utils.calculateBalance
+import com.cashflowtracker.miranda.utils.getSuggestions
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import java.time.format.DateTimeFormatter
@@ -49,6 +53,8 @@ class AddTransaction : ComponentActivity() {
             val scrollState = rememberScrollState()
             val coroutineScope = rememberCoroutineScope()
             val context = LocalContext.current
+            val vm = koinViewModel<TransactionsViewModel>()
+            val accountsVm = koinViewModel<AccountsViewModel>()
             val transactionType = remember { mutableStateOf("") }
             val selectedDate = remember { mutableStateOf("") }
             val selectedTime = remember { mutableStateOf("") }
@@ -58,7 +64,15 @@ class AddTransaction : ComponentActivity() {
             var destination by remember { mutableStateOf("") }
             var destinationIcon by remember { mutableStateOf<Int?>(null) }
             val amount = remember { mutableDoubleStateOf(0.0) }
+            val currency = remember { mutableStateOf(CurrencyEnum.EUR) }
             val comment = remember { mutableStateOf("") }
+            val allTransactionsFlow =
+                remember { vm.actions.getAllByUserIdFlow(context.getCurrentUserId()) }
+            val allTransactions by allTransactionsFlow.collectAsState(initial = emptyList())
+            val suggestions =
+                remember(allTransactions, transactionType.value, source, destination) {
+                    getSuggestions(allTransactions, transactionType, source, destination)
+                }
             val location = remember { mutableStateOf("") }
             val isError =
                 remember { mutableStateOf(false) }   // Check if manually entered coordinates are valid
@@ -91,8 +105,6 @@ class AddTransaction : ComponentActivity() {
                             && !isError.value
                 }
             }
-            val vm = koinViewModel<TransactionsViewModel>()
-            val accountsVm = koinViewModel<AccountsViewModel>()
 
             val isTypeChanged = remember { mutableStateOf(false) }
             LaunchedEffect(key1 = isTypeChanged.value) {
@@ -183,11 +195,9 @@ class AddTransaction : ComponentActivity() {
                         )
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        AmountForm(amount)
-                        Spacer(modifier = Modifier.height(16.dp))
+                        AmountForm(amount, currency)
 
-                        CommentForm(comment)
-                        Spacer(modifier = Modifier.height(16.dp))
+                        CommentForm(comment, suggestions)
 
                         LocationForm(location, locationService, isError)
                     }

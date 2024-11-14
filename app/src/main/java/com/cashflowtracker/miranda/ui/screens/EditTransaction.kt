@@ -17,9 +17,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableDoubleStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -41,11 +43,13 @@ import com.cashflowtracker.miranda.ui.composables.TimeZoneForm
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 import com.cashflowtracker.miranda.ui.viewmodels.AccountsViewModel
 import com.cashflowtracker.miranda.ui.viewmodels.TransactionsViewModel
+import com.cashflowtracker.miranda.utils.CurrencyEnum
 import com.cashflowtracker.miranda.utils.DefaultCategories
 import com.cashflowtracker.miranda.utils.LocationService
 import com.cashflowtracker.miranda.utils.buildZonedDateTime
 import com.cashflowtracker.miranda.utils.calculateBalance
 import com.cashflowtracker.miranda.utils.formatZonedDateTime
+import com.cashflowtracker.miranda.utils.getSuggestions
 import com.cashflowtracker.miranda.utils.revertTransaction
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -67,6 +71,9 @@ class EditTransaction : ComponentActivity() {
             val scrollState = rememberScrollState()
             val coroutineScope = rememberCoroutineScope()
             val context = LocalContext.current
+            val vm = koinViewModel<TransactionsViewModel>()
+            val accountsVm = koinViewModel<AccountsViewModel>()
+            var transaction by remember { mutableStateOf<Transaction?>(null) }
             val transactionId = remember {
                 mutableStateOf(
                     UUID.fromString(
@@ -87,7 +94,15 @@ class EditTransaction : ComponentActivity() {
             var destination by remember { mutableStateOf("") }
             var destinationIcon by remember { mutableStateOf<Int?>(null) }
             val amount = remember { mutableDoubleStateOf(0.0) }
+            val currency = remember { mutableStateOf(CurrencyEnum.EUR) }
             val comment = remember { mutableStateOf("") }
+            val allTransactionsFlow =
+                remember { vm.actions.getAllByUserIdFlow(context.getCurrentUserId()) }
+            val allTransactions by allTransactionsFlow.collectAsState(initial = emptyList())
+            val suggestions =
+                remember(allTransactions, transactionType.value, source, destination) {
+                    getSuggestions(allTransactions, transactionType, source, destination)
+                }
             val location = remember { mutableStateOf("") }
             val isError =
                 remember { mutableStateOf(false) } // Check if manually entered coordinates are valid
@@ -123,9 +138,6 @@ class EditTransaction : ComponentActivity() {
 
             var isLoaded by remember { mutableStateOf(false) }
             val isTypeChanged = remember { mutableStateOf(false) }
-            val vm = koinViewModel<TransactionsViewModel>()
-            val accountsVm = koinViewModel<AccountsViewModel>()
-            var transaction by remember { mutableStateOf<Transaction?>(null) }
 
             LaunchedEffect(key1 = isTypeChanged.value) {
                 // Clear dependent fields when transactionType changes
@@ -257,11 +269,9 @@ class EditTransaction : ComponentActivity() {
                             )
                             Spacer(modifier = Modifier.height(8.dp))
 
-                            AmountForm(amount)
-                            Spacer(modifier = Modifier.height(16.dp))
+                            AmountForm(amount, currency)
 
-                            CommentForm(comment)
-                            Spacer(modifier = Modifier.height(16.dp))
+                            CommentForm(comment, suggestions)
 
                             LocationForm(location, locationService, isError)
                         }

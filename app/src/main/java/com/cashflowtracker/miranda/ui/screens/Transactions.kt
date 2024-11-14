@@ -3,6 +3,7 @@ package com.cashflowtracker.miranda.ui.screens
 import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,6 +26,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserId
@@ -47,8 +49,8 @@ fun Transactions() {
         modifier = Modifier
             .fillMaxSize()
     ) {
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
-            if (transactions.isNotEmpty()) {
+        if (transactions.isNotEmpty()) {
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
                 items(transactions) { transaction ->
                     ListItem(
                         overlineContent = {
@@ -132,6 +134,13 @@ fun Transactions() {
                     )
                     HorizontalDivider()
                 }
+            }
+        } else {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier.fillMaxSize()
+            ) {
+                Text("Create an account to unlock transactions", textAlign = TextAlign.Center)
             }
         }
 

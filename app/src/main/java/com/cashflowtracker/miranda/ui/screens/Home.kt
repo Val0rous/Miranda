@@ -175,8 +175,8 @@ fun Home() {
                 }
             }
         }
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
-            if (filteredAccounts.isNotEmpty()) {
+        if (filteredAccounts.isNotEmpty()) {
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
                 items(filteredAccounts) { account ->
                     ListItem(
                         headlineContent = {
@@ -226,6 +226,13 @@ fun Home() {
                     )
                     HorizontalDivider()
                 }
+            }
+        } else {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier.fillMaxSize()
+            ) {
+                Text("No accounts yet. Tap on + to add one!")
             }
         }
     }

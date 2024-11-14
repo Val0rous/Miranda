@@ -36,18 +36,18 @@ import com.cashflowtracker.miranda.ui.viewmodels.AccountsViewModel
 import com.cashflowtracker.miranda.ui.viewmodels.NotificationsViewModel
 import com.cashflowtracker.miranda.ui.viewmodels.RecurrencesViewModel
 import com.cashflowtracker.miranda.ui.viewmodels.TransactionsViewModel
+import com.cashflowtracker.miranda.utils.CurrencyEnum
 import com.cashflowtracker.miranda.utils.LocationService
 import com.cashflowtracker.miranda.utils.Notifications
 import com.cashflowtracker.miranda.utils.Repeats
-import com.cashflowtracker.miranda.utils.addMillisToTime
 import com.cashflowtracker.miranda.utils.buildZonedDateTime
 import com.cashflowtracker.miranda.utils.calculateBalance
 import com.cashflowtracker.miranda.utils.getNotificationTime
 import com.cashflowtracker.miranda.utils.getRepeatTime
+import com.cashflowtracker.miranda.utils.getSuggestions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
-import java.time.Instant
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
@@ -63,6 +63,10 @@ class AddRecurrence : ComponentActivity() {
             val scrollState = rememberScrollState()
             val coroutineScope = rememberCoroutineScope()
             val context = LocalContext.current
+            val recurrencesVm = koinViewModel<RecurrencesViewModel>()
+            val notificationsVm = koinViewModel<NotificationsViewModel>()
+            val transactionsVm = koinViewModel<TransactionsViewModel>()
+            val accountsVm = koinViewModel<AccountsViewModel>()
             val transactionType = remember { mutableStateOf("") }
             val selectedDate = remember { mutableStateOf("") }
             val selectedTime = remember { mutableStateOf("") }
@@ -74,7 +78,14 @@ class AddRecurrence : ComponentActivity() {
             var destination by remember { mutableStateOf("") }
             var destinationIcon by remember { mutableStateOf<Int?>(null) }
             val amount = remember { mutableDoubleStateOf(0.0) }
+            val currency = remember { mutableStateOf(CurrencyEnum.EUR) }
             val comment = remember { mutableStateOf("") }
+            val allRecurrencesFlow =
+                remember { recurrencesVm.actions.getAllByUserIdFlow(context.getCurrentUserId()) }
+            val allRecurrences by allRecurrencesFlow.collectAsState(initial = emptyList())
+            val suggestions = remember(allRecurrences, transactionType.value, source, destination) {
+                getSuggestions(allRecurrences, transactionType, source, destination)
+            }
             val location = remember { mutableStateOf("") }
             val isError = remember { mutableStateOf(false) }
             val isCreateFirstOccurrence = remember { mutableStateOf(false) }
@@ -108,10 +119,6 @@ class AddRecurrence : ComponentActivity() {
                             && !isError.value
                 }
             }
-            val recurrencesVm = koinViewModel<RecurrencesViewModel>()
-            val notificationsVm = koinViewModel<NotificationsViewModel>()
-            val transactionsVm = koinViewModel<TransactionsViewModel>()
-            val accountsVm = koinViewModel<AccountsViewModel>()
 
             val isTypeChanged = remember { mutableStateOf(false) }
             LaunchedEffect(key1 = isTypeChanged.value) {
@@ -256,11 +263,9 @@ class AddRecurrence : ComponentActivity() {
                         )
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        AmountForm(amount)
-                        Spacer(modifier = Modifier.height(16.dp))
+                        AmountForm(amount, currency)
 
-                        CommentForm(comment)
-                        Spacer(modifier = Modifier.height(16.dp))
+                        CommentForm(comment, suggestions)
 
                         LocationForm(location, locationService, isError)
                     }

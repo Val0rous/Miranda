@@ -20,35 +20,43 @@ data class User(
     @ColumnInfo val country: String?,    // Maybe it's useless, too
 )
 
+sealed class BaseTransaction {
+    abstract val type: String
+    abstract val source: String
+    abstract val destination: String
+    abstract val comment: String?
+    abstract val location: String?
+}
+
 @Entity
 data class Transaction(
     @PrimaryKey val transactionId: UUID = UUID.randomUUID(),
-    @ColumnInfo val type: String,
+    @ColumnInfo override val type: String,
     @ColumnInfo val createdOn: String,   // ZonedDateTime
-    @ColumnInfo val source: String,
-    @ColumnInfo val destination: String,
+    @ColumnInfo override val source: String,
+    @ColumnInfo override val destination: String,
     @ColumnInfo val amount: Double,
     @ColumnInfo val currency: String,
-    @ColumnInfo val comment: String?,
-    @ColumnInfo val location: String?,
+    @ColumnInfo override val comment: String,
+    @ColumnInfo override val location: String?,
     @ColumnInfo val userId: UUID,
-)
+) : BaseTransaction()
 
 @Entity
 data class Recurrence(
     @PrimaryKey val recurrenceId: UUID = UUID.randomUUID(),
-    @ColumnInfo val type: String,
+    @ColumnInfo override val type: String,
     @ColumnInfo val createdOn: String,   // ZonedDateTime
-    @ColumnInfo val source: String,
-    @ColumnInfo val destination: String,
+    @ColumnInfo override val source: String,
+    @ColumnInfo override val destination: String,
     @ColumnInfo val amount: Double,
     @ColumnInfo val currency: String,
-    @ColumnInfo val comment: String?,
-    @ColumnInfo val location: String?,
+    @ColumnInfo override val comment: String,
+    @ColumnInfo override val location: String?,
     @ColumnInfo val repeatIntervalMillis: Long,
     @ColumnInfo val reoccursOn: String,   // ZonedDateTime
     @ColumnInfo val userId: UUID,
-)
+) : BaseTransaction()
 
 @Entity
 data class Notification(

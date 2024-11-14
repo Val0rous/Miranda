@@ -7,26 +7,37 @@ import android.provider.Settings
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.result.ActivityResult
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.InputChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
+import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -46,12 +57,14 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.ui.screens.SelectAccountType
 import com.cashflowtracker.miranda.ui.screens.SelectDestination
 import com.cashflowtracker.miranda.ui.screens.SelectSource
 import com.cashflowtracker.miranda.utils.Coordinates
+import com.cashflowtracker.miranda.utils.CurrencyEnum
 import com.cashflowtracker.miranda.utils.LocationService
 import com.cashflowtracker.miranda.utils.Notifications
 import com.cashflowtracker.miranda.utils.PermissionStatus
@@ -286,62 +299,143 @@ fun DestinationForm(
 }
 
 @Composable
-fun AmountForm(amount: MutableDoubleState) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .offset(y = (0).dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            imageVector = ImageVector.vectorResource(R.drawable.ic_payments),
-            contentDescription = "Amount"
-        )
-        Spacer(modifier = Modifier.width(16.dp))
-        // Amount Field
-        OutlinedTextField(
-            value = if (amount.doubleValue == 0.0) {
-                ""
-            } else {
-                "%.2f".format(amount.doubleValue)
-            },
-            onValueChange = { text ->
-                amount.doubleValue = text.toDoubleOrNull()?.let {
-                    if (it >= 0) {
-                        "%.2f".format(it).toDoubleOrNull()
-                    } else {
-                        0.0
-                    }
-                } ?: amount.doubleValue
-            },
-            label = { Text("Amount") },
-            placeholder = { Text("0.00 €") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            modifier = Modifier.fillMaxWidth()
-        )
+fun AmountForm(
+    amount: MutableDoubleState,
+    currency: MutableState<CurrencyEnum>
+) {
+    Column() {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .offset(y = (0).dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = ImageVector.vectorResource(R.drawable.ic_payments),
+                contentDescription = "Amount"
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            // Amount Field
+            OutlinedTextField(
+                value = if (amount.doubleValue == 0.0) {
+                    ""
+                } else {
+                    "%.2f".format(amount.doubleValue)
+                },
+                onValueChange = { text ->
+                    amount.doubleValue = text.toDoubleOrNull()?.let {
+                        if (it >= 0) {
+                            "%.2f".format(it).toDoubleOrNull()
+                        } else {
+                            0.0
+                        }
+                    } ?: amount.doubleValue
+                },
+                trailingIcon = {
+                    FilledTonalButton(
+                        onClick = {},
+                        content = { Text("EUR") },
+                        modifier = Modifier
+                            .padding(end = 12.dp)
+                            .height(36.dp),
+                        contentPadding = PaddingValues(horizontal = 0.dp, vertical = 0.dp)
+                    )
+                },
+                label = { Text("Amount") },
+                placeholder = { Text("0.00 €") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+        Spacer(modifier = Modifier.height(2.dp))
+        LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            item {
+                Spacer(modifier = Modifier.width(32.dp))
+            }
+            items(currency.value.presets) {
+                val selected = amount.doubleValue % 1.0 == 0.0 && it == amount.doubleValue.toInt()
+                InputChip(
+                    onClick = {
+                        if (!selected) {
+                            amount.doubleValue = it.toDouble()
+                        } else {
+                            amount.doubleValue = 0.0
+                        }
+                    },
+                    label = {
+                        Text(
+                            text = it.toString(),
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .wrapContentWidth(Alignment.CenterHorizontally)
+                                .padding(horizontal = 8.dp)
+                        )
+                    },
+                    selected = selected,
+                    modifier = Modifier.widthIn(min = 48.dp)
+                )
+            }
+        }
     }
 }
 
 @Composable
-fun CommentForm(comment: MutableState<String>) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .offset(y = (0).dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            imageVector = ImageVector.vectorResource(R.drawable.ic_chat),
-            contentDescription = "Comment"
-        )
-        Spacer(modifier = Modifier.width(16.dp))
-        // Comment Field
-        OutlinedTextField(
-            value = comment.value,
-            onValueChange = { text -> comment.value = text },
-            label = { Text("Comment") },
-            modifier = Modifier.fillMaxWidth()
-        )
+fun CommentForm(comment: MutableState<String>, suggestions: List<String>) {
+    Column() {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .offset(y = (0).dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = ImageVector.vectorResource(R.drawable.ic_chat),
+                contentDescription = "Comment"
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            // Comment Field
+            OutlinedTextField(
+                value = comment.value,
+                onValueChange = { text -> comment.value = text },
+                label = { Text("Comment") },
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+        if (suggestions.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(2.dp))
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                item {
+                    Spacer(modifier = Modifier.width(32.dp))
+                }
+                items(suggestions) {
+                    val selected = comment.value == it
+                    InputChip(
+                        onClick = {
+                            if (!selected) {
+                                comment.value = it
+                            } else {
+                                comment.value = ""
+                            }
+                        },
+                        label = {
+                            Text(
+                                text = it,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .wrapContentWidth(Alignment.CenterHorizontally)
+                                    .padding(horizontal = 8.dp)
+                            )
+                        },
+                        selected = selected,
+                        modifier = Modifier.widthIn(min = 48.dp)
+                    )
+                }
+            }
+        } else {
+            Spacer(modifier = Modifier.height(16.dp))
+        }
     }
 }
 
