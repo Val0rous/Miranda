@@ -186,7 +186,6 @@ class AddRecurrence : ComponentActivity() {
                                     )
 
                                     recurrencesVm.actions.addRecurrence(recurrence)
-                                    // TODO: Add notifications via DB
                                     notificationsVm.actions.removeAllByRecurrenceId(recurrence.recurrenceId)
                                     notifications.forEach {
                                         val dateTime = getNotificationTime(
