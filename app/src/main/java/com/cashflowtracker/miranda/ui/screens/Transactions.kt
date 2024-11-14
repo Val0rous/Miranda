@@ -58,7 +58,7 @@ fun Transactions() {
                                 text = ZonedDateTime.parse(
                                     transaction.createdOn,
                                     DateTimeFormatter.ISO_ZONED_DATE_TIME
-                                ).format(DateTimeFormatter.ofPattern("yyyy-MM-dd  ·  HH:mm")),
+                                ).format(DateTimeFormatter.ofPattern("MMM dd, yyyy  ·  HH:mm")),
                                 style = MaterialTheme.typography.labelMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
