@@ -1,6 +1,7 @@
 package com.cashflowtracker.miranda.ui.screens
 
 import android.app.Activity
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -105,6 +106,22 @@ class AddRecurrence : ComponentActivity() {
                 if (result.resultCode == Activity.RESULT_OK) {
                     destination = result.data?.getStringExtra("destinationTitle") ?: ""
                     destinationIcon = result.data?.getStringExtra("destinationIcon")?.toInt()
+                }
+            }
+
+            val currencyLauncher = rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.StartActivityForResult()
+            ) { result ->
+                if (result.resultCode == RESULT_OK) {
+                    val selectedCurrency =
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                            result.data?.getSerializableExtra("currency", CurrencyEnum::class.java)
+                        } else {
+                            @Suppress("DEPRECATION")
+                            result.data?.getSerializableExtra("currency") as? CurrencyEnum
+                        }
+
+                    currency.value = selectedCurrency ?: CurrencyEnum.EUR
                 }
             }
 
@@ -263,7 +280,7 @@ class AddRecurrence : ComponentActivity() {
                         )
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        AmountForm(amount, currency)
+                        AmountForm(amount, currency, currencyLauncher)
 
                         CommentForm(comment, suggestions)
 

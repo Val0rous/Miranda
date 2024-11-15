@@ -75,6 +75,7 @@
         <activity android:name=".ui.screens.SelectAccountType" />
         <activity android:name=".ui.screens.SelectSource" />
         <activity android:name=".ui.screens.SelectDestination" />
+        <activity android:name=".ui.screens.SelectCurrency" />
         <activity android:name=".ui.screens.ViewAccount" />
         <activity android:name=".ui.screens.ViewTransaction" />
         <activity android:name=".ui.screens.EditAccount" />

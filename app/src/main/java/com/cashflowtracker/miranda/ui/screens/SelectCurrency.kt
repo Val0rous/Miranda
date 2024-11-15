@@ -16,7 +16,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
@@ -29,25 +28,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
-import com.cashflowtracker.miranda.utils.AccountType
+import com.cashflowtracker.miranda.utils.CurrencyEnum
 
-class SelectAccountType : ComponentActivity() {
+class SelectCurrency : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        //val initialAccountType = intent.getStringExtra("accountType") ?: ""
         setContent {
-            //val accountType = remember { mutableStateOf(initialAccountType) }
             MirandaTheme {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     topBar = {
                         TopAppBar(
-                            title = { Text("Account Types") },
+                            title = { Text("Currency") },
                             navigationIcon = {
                                 IconButton(
                                     onClick = { finish() },
@@ -86,11 +85,11 @@ class SelectAccountType : ComponentActivity() {
                             .fillMaxSize()
                             .padding(paddingValues)
                     ) {
-                        items(AccountType.entries) {
+                        items(CurrencyEnum.entries) {
                             ListItem(
                                 headlineContent = {
                                     Text(
-                                        text = it.type,
+                                        text = it.label,
                                         style = MaterialTheme.typography.bodyLarge
                                     )
                                 },
@@ -99,27 +98,31 @@ class SelectAccountType : ComponentActivity() {
                                         modifier = Modifier
                                             .size(40.dp)
                                             .clip(CircleShape)
-                                            .background(MaterialTheme.colorScheme.surfaceTint)
+                                            .background(MaterialTheme.colorScheme.surfaceTint),
+                                        contentAlignment = Alignment.Center
                                     ) {
-                                        Icon(
-                                            imageVector = ImageVector.vectorResource(it.icon),
-                                            contentDescription = it.type,
-                                            tint = MaterialTheme.colorScheme.surface,
-                                            modifier = Modifier
-                                                .size(24.dp)
-                                                .align(Alignment.Center)
+                                        Text(
+                                            text = it.symbol,
+                                            style = MaterialTheme.typography.labelLarge.copy(
+                                                fontSize = 20.sp
+                                            ),
+                                            color = MaterialTheme.colorScheme.surface,
+//                                            textAlign = TextAlign.Center,
                                         )
                                     }
                                 },
+                                trailingContent = {
+                                    Text(
+                                        text = it.name,
+                                        style = MaterialTheme.typography.bodyLarge
+                                    )
+                                },
                                 modifier = Modifier.clickable {
-                                    val resultIntent =
-                                        Intent().putExtra("accountType", it.type)
-                                            .putExtra("accountIcon", it.icon.toString())
+                                    val resultIntent = Intent().putExtra("currency", it)
                                     setResult(Activity.RESULT_OK, resultIntent)
                                     finish()
                                 }
                             )
-                            HorizontalDivider()
                         }
                     }
                 }

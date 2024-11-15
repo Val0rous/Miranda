@@ -61,6 +61,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.ui.screens.SelectAccountType
+import com.cashflowtracker.miranda.ui.screens.SelectCurrency
 import com.cashflowtracker.miranda.ui.screens.SelectDestination
 import com.cashflowtracker.miranda.ui.screens.SelectSource
 import com.cashflowtracker.miranda.utils.Coordinates
@@ -301,8 +302,10 @@ fun DestinationForm(
 @Composable
 fun AmountForm(
     amount: MutableDoubleState,
-    currency: MutableState<CurrencyEnum>
+    currency: MutableState<CurrencyEnum>,
+    launcher: ManagedActivityResultLauncher<Intent, ActivityResult>
 ) {
+    val context = LocalContext.current
     Column() {
         Row(
             modifier = Modifier
@@ -333,8 +336,11 @@ fun AmountForm(
                 },
                 trailingIcon = {
                     FilledTonalButton(
-                        onClick = {},
-                        content = { Text("EUR") },
+                        onClick = {
+                            val intent = Intent(context, SelectCurrency::class.java)
+                            launcher.launch(intent)
+                        },
+                        content = { Text(currency.value.name) },
                         modifier = Modifier
                             .padding(end = 12.dp)
                             .height(36.dp),
@@ -342,7 +348,7 @@ fun AmountForm(
                     )
                 },
                 label = { Text("Amount") },
-                placeholder = { Text("0.00 €") },
+                placeholder = { Text("0.00 ${currency.value.symbol}") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.fillMaxWidth()
             )
