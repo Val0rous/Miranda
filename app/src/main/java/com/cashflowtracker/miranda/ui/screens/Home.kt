@@ -33,6 +33,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cashflowtracker.miranda.R
@@ -175,6 +176,11 @@ fun Home() {
                 }
             }
         }
+        HorizontalDivider(
+            modifier = Modifier.padding(top = 0.dp),
+            thickness = (0.5).dp,
+            color = MaterialTheme.colorScheme.outlineVariant
+        )
         if (filteredAccounts.isNotEmpty()) {
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 items(filteredAccounts) { account ->
@@ -183,7 +189,9 @@ fun Home() {
                             Text(
                                 text = account.title,
                                 style = MaterialTheme.typography.bodyLarge,
-                                color = MaterialTheme.colorScheme.onSurface
+                                color = MaterialTheme.colorScheme.onSurface,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
                             )
                         },
                         leadingContent = {
@@ -224,7 +232,7 @@ fun Home() {
                             context.startActivity(intent)
                         }
                     )
-                    HorizontalDivider()
+//                    HorizontalDivider()
                 }
             }
         } else {

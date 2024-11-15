@@ -73,6 +73,7 @@
         <activity android:name=".ui.screens.Login" />
         <activity android:name=".ui.screens.Signup" />
         <activity android:name=".ui.screens.SelectAccountType" />
+        <activity android:name=".ui.screens.SelectTimeZone" />
         <activity android:name=".ui.screens.SelectSource" />
         <activity android:name=".ui.screens.SelectDestination" />
         <activity android:name=".ui.screens.SelectCurrency" />

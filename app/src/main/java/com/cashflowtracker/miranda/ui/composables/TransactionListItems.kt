@@ -61,7 +61,7 @@ fun AccountListItem(account: Account, modifier: Modifier) {
         },
         modifier = modifier
     )
-    HorizontalDivider()
+//    HorizontalDivider()
 }
 
 @Composable
@@ -142,7 +142,7 @@ fun CategoryListItem(category: DefaultCategories, modifier: Modifier) {
         },
         modifier = modifier
     )
-    HorizontalDivider()
+//    HorizontalDivider()
 }
 
 @Composable
@@ -177,5 +177,5 @@ fun SpecialListItem(item: SpecialType, modifier: Modifier) {
         },
         modifier = modifier
     )
-    HorizontalDivider()
+//    HorizontalDivider()
 }

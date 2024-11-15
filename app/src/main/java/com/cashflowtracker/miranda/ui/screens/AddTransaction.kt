@@ -1,6 +1,5 @@
 package com.cashflowtracker.miranda.ui.screens
 
-import android.app.Activity
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -32,12 +31,11 @@ import com.cashflowtracker.miranda.ui.viewmodels.AccountsViewModel
 import com.cashflowtracker.miranda.ui.viewmodels.TransactionsViewModel
 import com.cashflowtracker.miranda.utils.CurrencyEnum
 import com.cashflowtracker.miranda.utils.LocationService
-import com.cashflowtracker.miranda.utils.TransactionType
+import com.cashflowtracker.miranda.utils.TimeZoneEntry
 import com.cashflowtracker.miranda.utils.buildZonedDateTime
 import com.cashflowtracker.miranda.utils.calculateBalance
 import com.cashflowtracker.miranda.utils.getSuggestions
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import java.time.format.DateTimeFormatter
@@ -59,7 +57,7 @@ class AddTransaction : ComponentActivity() {
             val transactionType = remember { mutableStateOf("") }
             val selectedDate = remember { mutableStateOf("") }
             val selectedTime = remember { mutableStateOf("") }
-            val selectedTimeZone = remember { mutableStateOf("") }
+            val selectedTimeZone = remember { mutableStateOf<TimeZoneEntry?>(null) }
             var source by remember { mutableStateOf("") }
             var sourceIcon by remember { mutableStateOf<Int?>(null) }
             var destination by remember { mutableStateOf("") }
@@ -112,12 +110,32 @@ class AddTransaction : ComponentActivity() {
                 }
             }
 
+            val timezoneLauncher = rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.StartActivityForResult()
+            ) { result ->
+                if (result.resultCode == RESULT_OK) {
+                    val timezone =
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                            result.data?.getSerializableExtra("timezone", TimeZoneEntry::class.java)
+                        } else {
+                            @Suppress("DEPRECATION")
+                            result.data?.getSerializableExtra("timezone") as? TimeZoneEntry
+                        }
+
+                    selectedTimeZone.value = timezone ?: TimeZoneEntry(
+                        displayName = "Universal Coordinated Time",
+                        gmtFormat = "UTC",
+                        country = "Earth"
+                    )
+                }
+            }
+
             val isFormValid by remember {
                 derivedStateOf {
                     transactionType.value.isNotEmpty()
                             && selectedDate.value.isNotEmpty()
                             && selectedTime.value.isNotEmpty()
-                            && selectedTimeZone.value.isNotEmpty()
+                            && selectedTimeZone.value != null
                             && source.isNotEmpty()
                             && destination.isNotEmpty()
                             && !isError.value
@@ -148,7 +166,7 @@ class AddTransaction : ComponentActivity() {
                                     val zonedDateTime = buildZonedDateTime(
                                         selectedDate.value,
                                         selectedTime.value,
-                                        selectedTimeZone.value
+                                        selectedTimeZone.value!!.gmtFormat
                                     )
                                     val formattedDateTime =
                                         zonedDateTime?.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
@@ -200,7 +218,12 @@ class AddTransaction : ComponentActivity() {
                         DateTimeForm(selectedDate, selectedTime)
                         //Spacer(modifier = Modifier.height(8.dp))
 
-                        TimeZoneForm(selectedTimeZone)
+                        TimeZoneForm(
+                            selectedTimeZone,
+                            timezoneLauncher,
+                            selectedDate.value,
+                            selectedTime.value
+                        )
 
                         SourceForm(source, sourceIcon, transactionType, sourceLauncher)
                         Spacer(modifier = Modifier.height(8.dp))

@@ -1,5 +1,8 @@
 package com.cashflowtracker.miranda.ui.composables
 
+import android.content.Intent
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.result.ActivityResult
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,8 +20,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.cashflowtracker.miranda.ui.screens.SelectTimeZone
+import com.cashflowtracker.miranda.utils.TimeZoneEntry
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Locale
 import java.util.TimeZone
 import kotlin.math.absoluteValue
 
@@ -52,7 +60,7 @@ fun TimeZonePickerDialog(
                 TimeZone.LONG
             )
         }
-        .distinctBy { it.first }    // Ensure unique GMT offsets
+//        .distinctBy { it.second }    // Ensure unique GMT offsets
         .sortedBy { it.first }      // Sort by GMT offset
 
     AlertDialog(
@@ -95,26 +103,50 @@ fun TimeZonePickerDialog(
 }
 
 @Composable
-fun TimeZonePicker(selectedTimeZone: MutableState<String>) {
-    var isTimeZonePickerVisible by remember { mutableStateOf(false) }
+fun TimeZonePicker(
+    selectedTimeZone: MutableState<TimeZoneEntry?>,
+    launcher: ManagedActivityResultLauncher<Intent, ActivityResult>,
+    date: String,
+    time: String,
+) {
+//    var isTimeZonePickerVisible by remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
     // Initialize the selectedTimeZone with the current system time zone
     val currentTimeZone = remember {
         val currentTimeZoneId = TimeZone.getDefault().id
-        "${getTimeZoneInGMTFormat(currentTimeZoneId)} - ${getCurrentTimeZone()}"
+        TimeZoneEntry(
+            displayName = getTimeZoneInGMTFormat(currentTimeZoneId),
+            gmtFormat = getCurrentTimeZone(),
+            country = "Earth",
+        )
     }
 
     // Initialize the selectedTimeZone with the current system time zone in GMT format
 //    val currentTimeZoneId = TimeZone.getDefault().id
 //    val currentTimeZone = remember { getTimeZoneInGMTFormat(currentTimeZoneId) }
 
-    if (selectedTimeZone.value.isEmpty()) {
+    if (selectedTimeZone.value == null) {
         selectedTimeZone.value = currentTimeZone
     }
 
     // This TextButton triggers the time zone picker dialog
-    TextButton(onClick = { isTimeZonePickerVisible = true }) {
-        Text(selectedTimeZone.value, color = MaterialTheme.colorScheme.onSurface)
+    TextButton(onClick = {
+//        isTimeZonePickerVisible = true
+        val intent = Intent(context, SelectTimeZone::class.java)
+        println(date)
+        println(time)
+        val dateTime = SimpleDateFormat(
+            "yyyy-MM-dd HH:mm",
+            Locale.getDefault()
+        ).parse("$date $time")
+        intent.putExtra("dateTime", dateTime)
+        launcher.launch(intent)
+    }) {
+        Text(
+            text = "${selectedTimeZone.value!!.gmtFormat} - ${selectedTimeZone.value!!.displayName}",
+            color = MaterialTheme.colorScheme.onSurface
+        )
     }
 
 //    if (isTimeZonePickerVisible) {
@@ -125,12 +157,12 @@ fun TimeZonePicker(selectedTimeZone: MutableState<String>) {
 //            }
 //        )
 //    }
-    if (isTimeZonePickerVisible) {
-        TimeZonePickerDialog(
-            onDismiss = { isTimeZonePickerVisible = false },
-            onTimeZoneSelected = { timeZoneDisplayName ->
-                selectedTimeZone.value = timeZoneDisplayName
-            }
-        )
-    }
+//    if (isTimeZonePickerVisible) {
+//        TimeZonePickerDialog(
+//            onDismiss = { isTimeZonePickerVisible = false },
+//            onTimeZoneSelected = { timeZoneDisplayName ->
+//                selectedTimeZone.value = timeZoneDisplayName
+//            }
+//        )
+//    }
 }

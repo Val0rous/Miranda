@@ -71,6 +71,7 @@ import com.cashflowtracker.miranda.utils.Notifications
 import com.cashflowtracker.miranda.utils.PermissionStatus
 import com.cashflowtracker.miranda.utils.Repeats
 import com.cashflowtracker.miranda.utils.StartMonitoringResult
+import com.cashflowtracker.miranda.utils.TimeZoneEntry
 import com.cashflowtracker.miranda.utils.rememberPermission
 
 @Composable
@@ -96,7 +97,12 @@ fun DateTimeForm(
 }
 
 @Composable
-fun TimeZoneForm(selectedTimeZone: MutableState<String>) {
+fun TimeZoneForm(
+    selectedTimeZone: MutableState<TimeZoneEntry?>,
+    timezoneLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>,
+    date: String,
+    time: String,
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -108,7 +114,7 @@ fun TimeZoneForm(selectedTimeZone: MutableState<String>) {
             contentDescription = "Time Zone"
         )
         Spacer(modifier = Modifier.width(4.dp))
-        TimeZonePicker(selectedTimeZone = selectedTimeZone)
+        TimeZonePicker(selectedTimeZone, timezoneLauncher, date, time)
     }
 }
 

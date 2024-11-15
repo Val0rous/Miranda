@@ -32,6 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.data.database.Transaction
 import com.cashflowtracker.miranda.ui.screens.ViewTransaction
@@ -248,6 +249,8 @@ fun FullScreenMapView(transactions: List<Transaction>) {
                         text = openTransaction!!.comment ?: "",
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurface,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.padding(top = 4.dp)
                     )
                 },

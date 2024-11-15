@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserId
@@ -107,6 +108,8 @@ fun Transactions() {
                                 text = transaction.comment ?: "",
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = MaterialTheme.colorScheme.onSurface,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
                                 modifier = Modifier.padding(top = 4.dp)
                             )
                         },
@@ -132,7 +135,7 @@ fun Transactions() {
                             context.startActivity(intent)
                         }
                     )
-                    HorizontalDivider()
+//                    HorizontalDivider()
                 }
             }
         } else {

@@ -41,6 +41,7 @@ import com.cashflowtracker.miranda.utils.CurrencyEnum
 import com.cashflowtracker.miranda.utils.LocationService
 import com.cashflowtracker.miranda.utils.Notifications
 import com.cashflowtracker.miranda.utils.Repeats
+import com.cashflowtracker.miranda.utils.TimeZoneEntry
 import com.cashflowtracker.miranda.utils.buildZonedDateTime
 import com.cashflowtracker.miranda.utils.calculateBalance
 import com.cashflowtracker.miranda.utils.getNotificationTime
@@ -71,7 +72,7 @@ class AddRecurrence : ComponentActivity() {
             val transactionType = remember { mutableStateOf("") }
             val selectedDate = remember { mutableStateOf("") }
             val selectedTime = remember { mutableStateOf("") }
-            val selectedTimeZone = remember { mutableStateOf("") }
+            val selectedTimeZone = remember { mutableStateOf<TimeZoneEntry?>(null) }
             val selectedRepeat = remember { mutableStateOf(Repeats.MONTHLY) }
             val notifications = remember { mutableStateListOf<Notifications>() }
             var source by remember { mutableStateOf("") }
@@ -125,12 +126,32 @@ class AddRecurrence : ComponentActivity() {
                 }
             }
 
+            val timezoneLauncher = rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.StartActivityForResult()
+            ) { result ->
+                if (result.resultCode == RESULT_OK) {
+                    val timezone =
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                            result.data?.getSerializableExtra("timezone", TimeZoneEntry::class.java)
+                        } else {
+                            @Suppress("DEPRECATION")
+                            result.data?.getSerializableExtra("timezone") as? TimeZoneEntry
+                        }
+
+                    selectedTimeZone.value = timezone ?: TimeZoneEntry(
+                        displayName = "Universal Coordinated Time",
+                        gmtFormat = "UTC",
+                        country = "Earth"
+                    )
+                }
+            }
+
             val isFormValid by remember {
                 derivedStateOf {
                     transactionType.value.isNotEmpty()
                             && selectedDate.value.isNotEmpty()
                             && selectedTime.value.isNotEmpty()
-                            && selectedTimeZone.value.isNotEmpty()
+                            && selectedTimeZone.value != null
                             && source.isNotEmpty()
                             && destination.isNotEmpty()
                             && !isError.value
@@ -160,7 +181,7 @@ class AddRecurrence : ComponentActivity() {
                                     val zonedDateTime = buildZonedDateTime(
                                         selectedDate.value,
                                         selectedTime.value,
-                                        selectedTimeZone.value
+                                        selectedTimeZone.value!!.gmtFormat
                                     )
                                     val createdOn =
                                         zonedDateTime?.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
@@ -255,7 +276,12 @@ class AddRecurrence : ComponentActivity() {
                         DateTimeForm(selectedDate, selectedTime)
                         //Spacer(modifier = Modifier.height(8.dp))
 
-                        TimeZoneForm(selectedTimeZone)
+                        TimeZoneForm(
+                            selectedTimeZone,
+                            timezoneLauncher,
+                            selectedDate.value,
+                            selectedTime.value
+                        )
 
                         Spacer(modifier = Modifier.height(8.dp))
 

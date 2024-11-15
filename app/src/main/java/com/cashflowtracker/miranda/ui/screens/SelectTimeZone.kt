@@ -1,6 +1,5 @@
 package com.cashflowtracker.miranda.ui.screens
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -16,7 +15,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
@@ -31,24 +29,28 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.R
-import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
+import com.cashflowtracker.miranda.ui.composables.getTimeZoneInGMTFormat
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
-import com.cashflowtracker.miranda.utils.AccountType
+import com.cashflowtracker.miranda.utils.TimeZoneEntry
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 
-class SelectAccountType : ComponentActivity() {
+class SelectTimeZone : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        //val initialAccountType = intent.getStringExtra("accountType") ?: ""
+        val dateTime = intent.getStringExtra("dateTime") as? Date ?: Calendar.getInstance().time
         setContent {
-            //val accountType = remember { mutableStateOf(initialAccountType) }
             MirandaTheme {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     topBar = {
                         TopAppBar(
-                            title = { Text("Account Types") },
+                            title = { Text("Time Zones") },
                             navigationIcon = {
                                 IconButton(
                                     onClick = { finish() },
@@ -87,12 +89,43 @@ class SelectAccountType : ComponentActivity() {
                             .fillMaxSize()
                             .padding(paddingValues)
                     ) {
-                        items(AccountType.entries) {
+                        val timeZones = TimeZone.getAvailableIDs()
+                            .map {
+                                val gmtFormat = getTimeZoneInGMTFormat(it)
+                                val timezone = TimeZone.getTimeZone(it)
+                                val displayName = timezone.getDisplayName(
+                                    timezone.inDaylightTime(dateTime),
+                                    TimeZone.LONG
+                                )
+                                val country =
+                                    it.split("/").lastOrNull()?.replace("_", " ") ?: "Unknown"
+                                TimeZoneEntry(
+                                    displayName = displayName,
+                                    gmtFormat = gmtFormat,
+                                    country = country,
+                                )
+                            }
+                            .distinctBy { it.gmtFormat + it.country }
+                            .sortedBy { it.gmtFormat }
+
+                        items(timeZones) {
                             ListItem(
+                                overlineContent = {
+                                    Text(
+                                        text = it.displayName,
+                                        style = MaterialTheme.typography.bodyLarge
+                                    )
+                                },
                                 headlineContent = {
                                     Text(
-                                        text = it.type,
+                                        text = it.gmtFormat,
                                         style = MaterialTheme.typography.bodyLarge
+                                    )
+                                },
+                                supportingContent = {
+                                    Text(
+                                        text = it.country,
+                                        style = MaterialTheme.typography.bodyMedium
                                     )
                                 },
                                 leadingContent = {
@@ -100,12 +133,12 @@ class SelectAccountType : ComponentActivity() {
                                         modifier = Modifier
                                             .size(40.dp)
                                             .clip(CircleShape)
-                                            .background(LocalCustomColors.current.surfaceTintBlue)
+                                            .background(MaterialTheme.colorScheme.surfaceTint)
                                     ) {
                                         Icon(
-                                            imageVector = ImageVector.vectorResource(it.icon),
-                                            contentDescription = it.type,
-                                            tint = LocalCustomColors.current.icon,
+                                            imageVector = ImageVector.vectorResource(R.drawable.ic_public),
+                                            contentDescription = "",
+                                            tint = MaterialTheme.colorScheme.surface,
                                             modifier = Modifier
                                                 .size(24.dp)
                                                 .align(Alignment.Center)
@@ -113,14 +146,11 @@ class SelectAccountType : ComponentActivity() {
                                     }
                                 },
                                 modifier = Modifier.clickable {
-                                    val resultIntent =
-                                        Intent().putExtra("accountType", it.type)
-                                            .putExtra("accountIcon", it.icon.toString())
-                                    setResult(Activity.RESULT_OK, resultIntent)
+                                    val resultIntent = Intent().putExtra("timezone", it)
+                                    setResult(RESULT_OK, resultIntent)
                                     finish()
                                 }
                             )
-//                            HorizontalDivider()
                         }
                     }
                 }
