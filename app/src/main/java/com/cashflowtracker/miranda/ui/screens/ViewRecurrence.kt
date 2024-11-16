@@ -54,8 +54,10 @@ import com.cashflowtracker.miranda.ui.viewmodels.RecurrencesViewModel
 import com.cashflowtracker.miranda.utils.AccountType
 import com.cashflowtracker.miranda.utils.CategoryClass
 import com.cashflowtracker.miranda.utils.Coordinates
+import com.cashflowtracker.miranda.utils.Currencies
 import com.cashflowtracker.miranda.utils.DefaultCategories
 import com.cashflowtracker.miranda.utils.SpecialType
+import com.cashflowtracker.miranda.utils.formatAmount
 import com.cashflowtracker.miranda.utils.formatZonedDateTime
 import com.cashflowtracker.miranda.utils.revertTransaction
 import kotlinx.coroutines.Dispatchers
@@ -432,11 +434,11 @@ class ViewRecurrence : ComponentActivity() {
                                     }
 
                                     Text(
-                                        text = when (recurrence!!.type) {
-                                            "Output" -> if (recurrence!!.amount != 0.0) "-%.2f €" else "%.2f €"
-                                            "Input" -> if (recurrence!!.amount != 0.0) "+%.2f €" else "%.2f €"
-                                            else -> "%.2f €"
-                                        }.format(recurrence!!.amount),
+                                        text = formatAmount(
+                                            recurrence!!.amount,
+                                            Currencies.get(recurrence!!.currency),
+                                            recurrence!!.type
+                                        ),
                                         style = MaterialTheme.typography.headlineMedium,
                                         color = when (recurrence!!.type) {
                                             "Output" -> LocalCustomColors.current.surfaceTintRed

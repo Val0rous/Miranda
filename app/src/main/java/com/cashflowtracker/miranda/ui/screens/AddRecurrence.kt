@@ -238,7 +238,7 @@ class AddRecurrence : ComponentActivity() {
                                         source = source,
                                         destination = destination,
                                         amount = amount.doubleValue,
-                                        currency = "EUR",
+                                        currency = currency.value.name,
                                         comment = comment.value,
                                         location = location.value,
                                         repeatIntervalMillis = selectedRepeat.value.time,
