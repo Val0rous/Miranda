@@ -13,7 +13,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import java.text.SimpleDateFormat
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Locale
 
@@ -42,15 +45,24 @@ fun TimePickerDialog(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DialWithDialog(
+    selectedTime: MutableState<String>,
     onConfirm: (TimePickerState) -> Unit,
     onDismiss: () -> Unit,
 ) {
-    val currentTime = Calendar.getInstance()
+    val formatter = DateTimeFormatter.ofPattern("HH:mm")
+    val initialTime = try {
+        LocalTime.parse(selectedTime.value, formatter)
+    } catch (e: Exception) {
+        val calendar = Calendar.getInstance()
+        LocalTime.of(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE))
+    }
+
+    val is24HourClock = android.text.format.DateFormat.is24HourFormat(LocalContext.current)
 
     val timePickerState = rememberTimePickerState(
-        initialHour = currentTime.get(Calendar.HOUR_OF_DAY),
-        initialMinute = currentTime.get(Calendar.MINUTE),
-        is24Hour = true,
+        initialHour = initialTime.hour,
+        initialMinute = initialTime.minute,
+        is24Hour = is24HourClock,
     )
 
     TimePickerDialog(
@@ -69,9 +81,11 @@ fun TimePicker(selectedTime: MutableState<String>) {
     var isTimePickerVisible by remember { mutableStateOf(false) }
 
     // Initialize the selectedTime with the current time in 24-hour format
+    val formatter = DateTimeFormatter.ofPattern("HH:mm")
     val currentTime = remember {
         val calendar = Calendar.getInstance()
-        SimpleDateFormat("HH:mm", Locale.getDefault()).format(calendar.time)
+        LocalTime.of(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE))
+            .format(formatter)
     }
 
     if (selectedTime.value.isEmpty()) {
@@ -80,18 +94,18 @@ fun TimePicker(selectedTime: MutableState<String>) {
 
     // This TextButton triggers the time picker dialog
     TextButton(onClick = { isTimePickerVisible = true }) {
-        Text(selectedTime.value, color = MaterialTheme.colorScheme.onBackground)
+        Text(text = selectedTime.value, color = MaterialTheme.colorScheme.onBackground)
     }
 
     if (isTimePickerVisible) {
         DialWithDialog(
+            selectedTime = selectedTime,
             onConfirm = { timePickerState ->
-                val calendar = Calendar.getInstance().apply {
-                    set(Calendar.HOUR_OF_DAY, timePickerState.hour)
-                    set(Calendar.MINUTE, timePickerState.minute)
-                }
-                selectedTime.value =
-                    SimpleDateFormat("HH:mm", Locale.getDefault()).format(calendar.time)
+                val selectedLocalTime = LocalTime.of(
+                    timePickerState.hour,
+                    timePickerState.minute
+                )
+                selectedTime.value = selectedLocalTime.format(formatter)
                 isTimePickerVisible = false
             },
             onDismiss = { isTimePickerVisible = false }
