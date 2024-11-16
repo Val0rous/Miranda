@@ -13,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.cashflowtracker.miranda.utils.formatDateWithWeekday
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -78,19 +79,7 @@ fun DatePicker(selectedDate: MutableState<String>) {
         selectedDate.value = LocalDate.now().format(isoFormatter)
     }
 
-    val displayDate = try {
-        val parsedDate = isoFormatter.parse(selectedDate.value, LocalDate::from)
-        val dateFormatter = Date.from(
-            parsedDate.atStartOfDay(java.time.ZoneId.systemDefault()).toInstant()
-        )
-        val fullDate = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault())
-            .format(dateFormatter)
-        val dayOfWeek = SimpleDateFormat("EEE", Locale.getDefault())
-            .format(dateFormatter)
-        "$dayOfWeek, $fullDate"
-    } catch (e: Exception) {
-        "Invalid Date"
-    }
+    val displayDate = formatDateWithWeekday(selectedDate.value)
 
     // This TextButton triggers the date picker dialog
     TextButton(onClick = { isDatePickerVisible = true }) {

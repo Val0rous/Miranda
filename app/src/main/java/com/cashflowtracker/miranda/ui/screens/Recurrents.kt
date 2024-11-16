@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserId
 import com.cashflowtracker.miranda.ui.composables.TransactionListItem
 import com.cashflowtracker.miranda.ui.viewmodels.RecurrencesViewModel
+import com.cashflowtracker.miranda.utils.Currencies
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -41,6 +42,7 @@ fun Recurrents() {
                         source = it.source,
                         destination = it.destination,
                         amount = it.amount,
+                        currency = Currencies.get(it.currency),
                         comment = it.comment,
                         onClick = {
                             val intent = Intent(context, ViewRecurrence::class.java)
