@@ -49,8 +49,8 @@ fun SegmentedButtonType(
             selected = selectedIndex == 0,
             onClick = {
                 selectedIndex = 0
+                isTypeChanged.value = transactionType.value != TransactionType.OUTPUT.type
                 transactionType.value = TransactionType.OUTPUT.type
-                isTypeChanged.value = true
             },
             shape = SegmentedButtonDefaults.itemShape(
                 index = 0,
@@ -72,8 +72,8 @@ fun SegmentedButtonType(
             selected = selectedIndex == 1,
             onClick = {
                 selectedIndex = 1
+                isTypeChanged.value = transactionType.value != TransactionType.INPUT.type
                 transactionType.value = TransactionType.INPUT.type
-                isTypeChanged.value = true
             },
             shape = SegmentedButtonDefaults.itemShape(
                 index = 1,
@@ -95,8 +95,8 @@ fun SegmentedButtonType(
             selected = selectedIndex == 2,
             onClick = {
                 selectedIndex = 2
+                isTypeChanged.value = transactionType.value != TransactionType.TRANSFER.type
                 transactionType.value = TransactionType.TRANSFER.type
-                isTypeChanged.value = true
             },
             shape = SegmentedButtonDefaults.itemShape(
                 index = 2,
