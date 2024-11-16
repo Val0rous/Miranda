@@ -197,7 +197,7 @@ class AddRecurrence : ComponentActivity() {
                                     val zonedDateTime = buildZonedDateTime(
                                         selectedDate.value,
                                         selectedTime.value,
-                                        selectedTimeZone.value!!.gmtFormat
+                                        selectedTimeZone.value.id
                                     )
                                     val createdOn =
                                         zonedDateTime?.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
@@ -205,7 +205,6 @@ class AddRecurrence : ComponentActivity() {
 
                                     val repeatsOn =
                                         getRepeatTime(zonedDateTime!!, selectedRepeat.value)
-//                                        addMillisToTime(zonedDateTime!!, selectedRepeat.value.time)
 
                                     if (isCreateFirstOccurrence.value) {
                                         transactionsVm.actions.addTransaction(

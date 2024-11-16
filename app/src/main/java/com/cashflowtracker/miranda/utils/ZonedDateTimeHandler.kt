@@ -20,21 +20,15 @@ fun buildZonedDateTime(
         val localDate = LocalDate.parse(dateString, dateFormatter)
         val localTime = LocalTime.parse(timeString, timeFormatter)
         val localDateTime = LocalDateTime.of(localDate, localTime)
-        val gmtOffsetString = timeZoneString.substringBefore(" -").trim()
-        val zoneId = ZoneId.of(gmtOffsetString)
-        val zonedDateTime = ZonedDateTime.of(localDateTime, zoneId)
-        zonedDateTime
 
-//        val timeZone = try {
-//            TimeZone.getTimeZone(gmtOffsetString)
-//        } catch (e: Exception) {
-//            println("Invalid time zone: ${e.message}")
-//            null
-//        }
-//        timeZone?.let {
-//            val instant = localDateTime.atZone(ZoneId.systemDefault()).toInstant()
-//            ZonedDateTime.ofInstant(instant, it.toZoneId())
-//        }
+//        val gmtOffsetString = timeZoneString.substringBefore(" -").trim()
+        val zoneId = try {
+            ZoneId.of(timeZoneString)
+        } catch (e: Exception) {
+            println("Invalid ZoneId: ${e.message}. Falling back to default time zone.")
+            ZoneId.systemDefault()
+        }
+        ZonedDateTime.of(localDateTime, zoneId)
     } catch (e: Exception) {
         println("Error building ZonedDateTime: ${e.message}")
         null

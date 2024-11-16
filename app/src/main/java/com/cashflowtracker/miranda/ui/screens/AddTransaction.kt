@@ -47,7 +47,6 @@ import java.util.TimeZone
 class AddTransaction : ComponentActivity() {
     private lateinit var locationService: LocationService
 
-    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -182,7 +181,7 @@ class AddTransaction : ComponentActivity() {
                                     val zonedDateTime = buildZonedDateTime(
                                         selectedDate.value,
                                         selectedTime.value,
-                                        selectedTimeZone.value!!.gmtFormat
+                                        selectedTimeZone.value.id
                                     )
                                     val formattedDateTime =
                                         zonedDateTime?.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
@@ -195,7 +194,7 @@ class AddTransaction : ComponentActivity() {
                                             source = source,
                                             destination = destination,
                                             amount = amount.doubleValue,
-                                            currency = "EUR",
+                                            currency = currency.value.name,
                                             comment = comment.value,
                                             location = location.value,
                                             userId = userId

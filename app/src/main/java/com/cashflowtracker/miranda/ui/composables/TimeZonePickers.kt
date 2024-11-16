@@ -70,12 +70,12 @@ fun TimeZonePicker(
     val timeFormatter = if (is24HourClock) "HH:mm" else "h:mm a"
 
     // Initialize the selectedTimeZone with the current system time zone
-    val timeZoneId = selectedTimeZone.value?.id ?: TimeZone.getDefault().id
+    val timeZoneId = selectedTimeZone.value.id ?: TimeZone.getDefault().id
     val timeZone = TimeZone.getTimeZone(timeZoneId)
     val inDaylightTime = timeZone.inDaylightTime(dateTime)
     val displayName = timeZone.getDisplayName(inDaylightTime, TimeZone.LONG, Locale.getDefault())
     val gmtFormat = getTimeZoneInGMTFormat(timeZoneId, dateTime)
-    val displayText = "$gmtFormat - $displayName"
+    val displayText = displayName   //"$gmtFormat - $displayName"
 
     // Initialize the selectedTimeZone with the current system time zone in GMT format
 //    val currentTimeZoneId = TimeZone.getDefault().id

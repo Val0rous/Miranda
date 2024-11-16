@@ -19,6 +19,7 @@ fun <T : BaseTransaction> getSuggestions(
         }
     }
         .mapNotNull { it.comment }
+        .filter { it.isNotBlank() }
         .groupingBy { it }
         .eachCount()
         .entries

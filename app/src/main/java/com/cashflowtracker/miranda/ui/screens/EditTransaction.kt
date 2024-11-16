@@ -67,7 +67,6 @@ import java.util.UUID
 class EditTransaction : ComponentActivity() {
     private lateinit var locationService: LocationService
 
-    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -295,7 +294,7 @@ class EditTransaction : ComponentActivity() {
                                     val zonedDateTime = buildZonedDateTime(
                                         selectedDate.value,
                                         selectedTime.value,
-                                        selectedTimeZone.value!!.gmtFormat
+                                        selectedTimeZone.value.id
                                     )
                                     val formattedDateTime =
                                         zonedDateTime?.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
