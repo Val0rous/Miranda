@@ -203,6 +203,7 @@ class AddTransaction : ComponentActivity() {
 
                                     calculateBalance(
                                         amount.doubleValue,
+                                        currency.value,
                                         transactionType.value,
                                         source,
                                         destination,

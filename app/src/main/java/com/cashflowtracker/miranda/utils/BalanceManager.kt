@@ -8,6 +8,7 @@ import java.util.UUID
 
 fun calculateBalance(
     amount: Double,
+    currency: Currencies,
     transactionType: String,
     source: String,
     destination: String,
@@ -73,6 +74,7 @@ fun calculateBalance(
 fun revertTransaction(transaction: Transaction, accountsVm: AccountsViewModel, userId: UUID) {
     revertTransaction(
         transaction.amount,
+        Currencies.get(transaction.currency),
         transaction.type,
         transaction.source,
         transaction.destination,
@@ -83,6 +85,7 @@ fun revertTransaction(transaction: Transaction, accountsVm: AccountsViewModel, u
 
 fun revertTransaction(
     amount: Double,
+    currency: Currencies,
     transactionType: String,
     source: String,
     destination: String,

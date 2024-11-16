@@ -86,6 +86,7 @@ class EditTransaction : ComponentActivity() {
             val oldSource = remember { mutableStateOf("") }
             val oldDestination = remember { mutableStateOf("") }
             val oldAmount = remember { mutableDoubleStateOf(0.0) }
+            val oldCurrency = remember { mutableStateOf(Currencies.EUR) }
             val transactionType = remember { mutableStateOf("") }
             val selectedDate = remember { mutableStateOf("") }
             val selectedTime = remember { mutableStateOf("") }
@@ -270,7 +271,9 @@ class EditTransaction : ComponentActivity() {
                         destination = it.destination
                         destinationIcon = DefaultCategories.getIcon(it.destination)
                         oldAmount.doubleValue = it.amount
+                        oldCurrency.value = Currencies.get(it.currency)
                         amount.doubleValue = it.amount
+                        currency.value = Currencies.get(it.currency)
                         comment.value = it.comment
                         location.value = it.location ?: ""
                         isLoaded = true
@@ -299,6 +302,7 @@ class EditTransaction : ComponentActivity() {
 
                                     revertTransaction(
                                         oldAmount.doubleValue,
+                                        oldCurrency.value,
                                         oldTransactionType.value,
                                         oldSource.value,
                                         oldDestination.value,
@@ -314,7 +318,7 @@ class EditTransaction : ComponentActivity() {
                                             source = source,
                                             destination = destination,
                                             amount = amount.doubleValue,
-                                            currency = "EUR",
+                                            currency = currency.value.name,
                                             comment = comment.value,
                                             location = location.value,
                                             userId = transaction!!.userId
@@ -323,6 +327,7 @@ class EditTransaction : ComponentActivity() {
 //
                                     calculateBalance(
                                         amount.doubleValue,
+                                        currency.value,
                                         transactionType.value,
                                         source,
                                         destination,

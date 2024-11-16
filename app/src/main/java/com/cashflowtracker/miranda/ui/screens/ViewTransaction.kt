@@ -54,6 +54,7 @@ import com.cashflowtracker.miranda.ui.viewmodels.TransactionsViewModel
 import com.cashflowtracker.miranda.utils.AccountType
 import com.cashflowtracker.miranda.utils.CategoryClass
 import com.cashflowtracker.miranda.utils.Coordinates
+import com.cashflowtracker.miranda.utils.Currencies
 import com.cashflowtracker.miranda.utils.DefaultCategories
 import com.cashflowtracker.miranda.utils.SpecialType
 import com.cashflowtracker.miranda.utils.formatZonedDateTime
@@ -433,10 +434,12 @@ class ViewTransaction : ComponentActivity() {
 
                                     Text(
                                         text = when (transaction!!.type) {
-                                            "Output" -> if (transaction!!.amount != 0.0) "-%.2f €" else "%.2f €"
-                                            "Input" -> if (transaction!!.amount != 0.0) "+%.2f €" else "%.2f €"
-                                            else -> "%.2f €"
-                                        }.format(transaction!!.amount),
+                                            "Output" -> if (transaction!!.amount != 0.0) "-" else ""
+                                            "Input" -> if (transaction!!.amount != 0.0) "+" else ""
+                                            else -> ""
+                                        } + "%.2f" + Currencies.get(transaction!!.currency).symbol.format(
+                                            transaction!!.amount
+                                        ),
                                         style = MaterialTheme.typography.headlineMedium,
                                         color = when (transaction!!.type) {
                                             "Output" -> LocalCustomColors.current.surfaceTintRed

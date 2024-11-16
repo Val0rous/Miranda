@@ -45,5 +45,11 @@ enum class Currencies(val label: String, val symbol: String, val presets: List<I
     EGP("Egyptian Pound", "£", listOf(5, 10, 20, 50, 100, 200)),
     NGN("Nigerian Naira", "₦", listOf(50, 100, 200, 500, 1000)),
     KES("Kenyan Shilling", "KSh", listOf(50, 100, 200, 500, 1000)),
-    BTC("Bitcoin", "₿")
+    BTC("Bitcoin", "₿");
+
+    companion object {
+        fun get(name: String): Currencies {
+            return entries.find { it.name == name } ?: USD   // Default to USD
+        }
+    }
 }

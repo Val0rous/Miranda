@@ -214,7 +214,7 @@ class AddRecurrence : ComponentActivity() {
                                                 source = source,
                                                 destination = destination,
                                                 amount = amount.doubleValue,
-                                                currency = "EUR",
+                                                currency = currency.value.name,
                                                 comment = comment.value,
                                                 location = location.value,
                                                 userId = userId
@@ -223,6 +223,7 @@ class AddRecurrence : ComponentActivity() {
 
                                         calculateBalance(
                                             amount.doubleValue,
+                                            currency.value,
                                             transactionType.value,
                                             source,
                                             destination,
