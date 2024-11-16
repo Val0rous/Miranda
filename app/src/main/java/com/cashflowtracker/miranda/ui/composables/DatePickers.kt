@@ -13,25 +13,47 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import java.text.DateFormat
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DatePickerModal(
-    onDateSelected: (Long?) -> Unit,
+    selectedDate: MutableState<String>,
+    onDateSelected: (String) -> Unit,
     onDismiss: () -> Unit
 ) {
-    val datePickerState = rememberDatePickerState()
+    val isoFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+
+    val datePickerState = rememberDatePickerState(
+        initialSelectedDateMillis = try {
+            LocalDate.parse(selectedDate.value, isoFormatter).toEpochDay() * 24 * 60 * 60 * 1000
+        } catch (e: Exception) {
+            LocalDate.now().toEpochDay() * 24 * 60 * 60 * 1000
+        }
+    )
 
     DatePickerDialog(
         onDismissRequest = onDismiss,
         confirmButton = {
-            TextButton(onClick = {
-                onDateSelected(datePickerState.selectedDateMillis)
-                onDismiss()
-            }) {
+            TextButton(
+                onClick = {
+                    val selectedMillis = datePickerState.selectedDateMillis
+                    if (selectedMillis != null) {
+                        val selectedLocalDate =
+                            LocalDate.ofEpochDay(selectedMillis / (24 * 60 * 60 * 1000))
+                        val formattedDate = selectedLocalDate.format(isoFormatter)
+                        selectedDate.value = formattedDate
+                        onDateSelected(formattedDate)
+                    }
+                    onDismiss()
+                }
+            ) {
                 Text("OK")
             }
         },
@@ -51,38 +73,35 @@ fun DatePicker(selectedDate: MutableState<String>) {
 //    val context = LocalContext.current
     var isDatePickerVisible by remember { mutableStateOf(false) }
 
-    // Initialize the selectedDate with today's date in the desired format
-    val initialDate = remember {
-        val calendar = Calendar.getInstance()
-        SimpleDateFormat("EEE, MMM d, yyyy", Locale.getDefault()).format(calendar.time)
+    val isoFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    if (selectedDate.value.isEmpty()) {
+        selectedDate.value = LocalDate.now().format(isoFormatter)
     }
 
-    if (selectedDate.value.isEmpty()) {
-        print("Selected date is empty")
-        selectedDate.value = initialDate
+    val displayDate = try {
+        val parsedDate = isoFormatter.parse(selectedDate.value, LocalDate::from)
+        val dateFormatter = Date.from(
+            parsedDate.atStartOfDay(java.time.ZoneId.systemDefault()).toInstant()
+        )
+        val fullDate = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault())
+            .format(dateFormatter)
+        val dayOfWeek = SimpleDateFormat("EEE", Locale.getDefault())
+            .format(dateFormatter)
+        "$dayOfWeek, $fullDate"
+    } catch (e: Exception) {
+        "Invalid Date"
     }
 
     // This TextButton triggers the date picker dialog
     TextButton(onClick = { isDatePickerVisible = true }) {
-        Text(selectedDate.value, color = MaterialTheme.colorScheme.onBackground)
+        Text(displayDate, color = MaterialTheme.colorScheme.onBackground)
     }
 
     if (isDatePickerVisible) {
         DatePickerModal(
-            onDateSelected = { selectedDateMillis ->
-                selectedDateMillis?.let {
-                    val calendar = Calendar.getInstance().apply {
-                        timeInMillis = it
-                    }
-//                    val month = calendar.get(Calendar.MONTH) + 1
-//                    val day = calendar.get(Calendar.DAY_OF_MONTH)
-//                    val year = calendar.get(Calendar.YEAR)
-//                    selectedDate.value = "$month/$day/$year"
-                    selectedDate.value = SimpleDateFormat(
-                        "EEE, MMM d, yyyy",
-                        Locale.getDefault()
-                    ).format(calendar.time)
-                }
+            selectedDate = selectedDate,
+            onDateSelected = { formattedDate ->
+                selectedDate.value = formattedDate
                 isDatePickerVisible = false
             },
             onDismiss = { isDatePickerVisible = false }
