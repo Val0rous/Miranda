@@ -33,6 +33,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.ui.composables.getTimeZoneInGMTFormat
+import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 import com.cashflowtracker.miranda.utils.TimeZoneEntry
 import java.text.SimpleDateFormat
@@ -132,19 +133,23 @@ class SelectTimeZone : ComponentActivity() {
                                 overlineContent = {
                                     Text(
                                         text = it.displayName,
-                                        style = MaterialTheme.typography.bodyLarge
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        color = MaterialTheme.colorScheme.onSurface
                                     )
                                 },
                                 headlineContent = {
                                     Text(
                                         text = headlineText,
-                                        style = MaterialTheme.typography.bodyLarge
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        modifier = Modifier.padding(vertical = 4.dp)
                                     )
                                 },
                                 supportingContent = {
                                     Text(
                                         text = it.country,
-                                        style = MaterialTheme.typography.bodyMedium
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
                                 },
                                 leadingContent = {
@@ -152,12 +157,12 @@ class SelectTimeZone : ComponentActivity() {
                                         modifier = Modifier
                                             .size(40.dp)
                                             .clip(CircleShape)
-                                            .background(MaterialTheme.colorScheme.surfaceTint)
+                                            .background(LocalCustomColors.current.surfaceTintBlue)
                                     ) {
                                         Icon(
                                             imageVector = ImageVector.vectorResource(R.drawable.ic_public),
                                             contentDescription = "",
-                                            tint = MaterialTheme.colorScheme.surface,
+                                            tint = LocalCustomColors.current.icon,
                                             modifier = Modifier
                                                 .size(24.dp)
                                                 .align(Alignment.Center)

@@ -32,6 +32,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cashflowtracker.miranda.R
+import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 import com.cashflowtracker.miranda.utils.CurrencyEnum
 
@@ -98,7 +99,7 @@ class SelectCurrency : ComponentActivity() {
                                         modifier = Modifier
                                             .size(40.dp)
                                             .clip(CircleShape)
-                                            .background(MaterialTheme.colorScheme.surfaceTint),
+                                            .background(LocalCustomColors.current.surfaceTintBlue),
                                         contentAlignment = Alignment.Center
                                     ) {
                                         Text(
@@ -106,7 +107,7 @@ class SelectCurrency : ComponentActivity() {
                                             style = MaterialTheme.typography.labelLarge.copy(
                                                 fontSize = 20.sp
                                             ),
-                                            color = MaterialTheme.colorScheme.surface,
+                                            color = LocalCustomColors.current.icon,
 //                                            textAlign = TextAlign.Center,
                                         )
                                     }

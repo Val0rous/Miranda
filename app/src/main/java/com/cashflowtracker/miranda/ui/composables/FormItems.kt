@@ -442,7 +442,7 @@ fun CommentForm(comment: MutableState<String>, suggestions: List<String>) {
                 }
             }
         } else {
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
         }
     }
 }
