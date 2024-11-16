@@ -26,143 +26,80 @@ import com.cashflowtracker.miranda.ui.screens.SelectTimeZone
 import com.cashflowtracker.miranda.utils.TimeZoneEntry
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 import kotlin.math.absoluteValue
 
-fun getCurrentTimeZone(): String {
+fun getCurrentTimeZoneDisplayName(dateTime: Date): String {
     val calendar = Calendar.getInstance()
     val timeZone = calendar.timeZone
-    return timeZone.getDisplayName(timeZone.inDaylightTime(calendar.time), TimeZone.LONG)
+    return timeZone.getDisplayName(timeZone.inDaylightTime(dateTime), TimeZone.LONG)
 }
 
-fun getTimeZoneInGMTFormat(timeZoneId: String): String {
+fun getTimeZoneInGMTFormat(timeZoneId: String, date: Date): String {
     val timeZone = TimeZone.getTimeZone(timeZoneId)
-    val calendar = Calendar.getInstance()
-    val offset =
-        timeZone.getOffset(calendar.timeInMillis) / 3600000 // Convert milliseconds to hours
-    val sign = if (offset >= 0) "+" else "-"
-    return "GMT$sign${offset.absoluteValue}"
+    val offsetMillis = timeZone.getOffset(date.time)
+    val totalMinutes = offsetMillis / 60000
+    val sign = if (totalMinutes >= 0) "+" else "-"
+    val hours = (totalMinutes.absoluteValue / 60)
+    val minutes = (totalMinutes.absoluteValue % 60)
+    val hoursString = hours.toString().padStart(2, '0')
+    val minutesString = minutes.toString().padStart(2, '0')
+    return "GMT$sign$hoursString:$minutesString"
 }
 
-@Composable
-fun TimeZonePickerDialog(
-    onDismiss: () -> Unit,
-    onTimeZoneSelected: (String) -> Unit
-) {
-    val scrollState = rememberScrollState()
-    val timeZones = TimeZone.getAvailableIDs()
-//    val displayNames = timeZones.map { TimeZone.getTimeZone(it).displayName }
-    val uniqueTimeZonesInGMT = timeZones
-        .map {
-            getTimeZoneInGMTFormat(it) to TimeZone.getTimeZone(it).getDisplayName(
-                TimeZone.getTimeZone(it).inDaylightTime(Calendar.getInstance().time),
-                TimeZone.LONG
-            )
-        }
-//        .distinctBy { it.second }    // Ensure unique GMT offsets
-        .sortedBy { it.first }      // Sort by GMT offset
 
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        confirmButton = {},
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text("Cancel")
-            }
-        },
-        text = {
-            Column(modifier = Modifier.verticalScroll(scrollState)) {
-                uniqueTimeZonesInGMT.forEach { (gmtFormat, displayName) ->
-                    Text(
-                        text = "$gmtFormat - $displayName",
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                onTimeZoneSelected("$gmtFormat - $displayName")
-                                onDismiss()
-                            }
-                            .padding(8.dp)
-                    )
-                }
-//                displayNames.forEach { timeZoneName ->
-//                    Text(
-//                        text = timeZoneName,
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                            .clickable {
-//                                onTimeZoneSelected(timeZoneName)
-//                                onDismiss()
-//                            }
-//                            .padding(8.dp)
-//                    )
-//                }
-            }
-        }
-    )
+fun combineDateAndTime(dateString: String, timeString: String): Date {
+    val format = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+    return format.parse("$dateString $timeString")!!
 }
 
 @Composable
 fun TimeZonePicker(
-    selectedTimeZone: MutableState<TimeZoneEntry?>,
+    selectedTimeZone: MutableState<TimeZoneEntry>,
     launcher: ManagedActivityResultLauncher<Intent, ActivityResult>,
     date: String,
     time: String,
 ) {
 //    var isTimeZonePickerVisible by remember { mutableStateOf(false) }
     val context = LocalContext.current
+    val dateTime = combineDateAndTime(date, time)
+
+    val is24HourClock = android.text.format.DateFormat.is24HourFormat(context)
+    val timeFormatter = if (is24HourClock) "HH:mm" else "h:mm a"
 
     // Initialize the selectedTimeZone with the current system time zone
-    val currentTimeZone = remember {
-        val currentTimeZoneId = TimeZone.getDefault().id
-        TimeZoneEntry(
-            displayName = getTimeZoneInGMTFormat(currentTimeZoneId),
-            gmtFormat = getCurrentTimeZone(),
-            country = "Earth",
-        )
-    }
+    val timeZoneId = selectedTimeZone.value?.id ?: TimeZone.getDefault().id
+    val timeZone = TimeZone.getTimeZone(timeZoneId)
+    val inDaylightTime = timeZone.inDaylightTime(dateTime)
+    val displayName = timeZone.getDisplayName(inDaylightTime, TimeZone.LONG, Locale.getDefault())
+    val gmtFormat = getTimeZoneInGMTFormat(timeZoneId, dateTime)
+    val displayText = "$gmtFormat - $displayName"
 
     // Initialize the selectedTimeZone with the current system time zone in GMT format
 //    val currentTimeZoneId = TimeZone.getDefault().id
 //    val currentTimeZone = remember { getTimeZoneInGMTFormat(currentTimeZoneId) }
 
-    if (selectedTimeZone.value == null) {
-        selectedTimeZone.value = currentTimeZone
-    }
+//    if (selectedTimeZone.value == null) {
+//        val id = TimeZone.getDefault().id
+//        selectedTimeZone.value = TimeZoneEntry(
+//            id = id,
+//            displayName = getTimeZoneInGMTFormat(id, dateTime),
+//            gmtFormat = getCurrentTimeZone(),
+//            country = "Earth",
+//        )
+//    }
 
     // This TextButton triggers the time zone picker dialog
     TextButton(onClick = {
-//        isTimeZonePickerVisible = true
         val intent = Intent(context, SelectTimeZone::class.java)
-        println(date)
-        println(time)
-        val dateTime = SimpleDateFormat(
-            "yyyy-MM-dd HH:mm",
-            Locale.getDefault()
-        ).parse("$date $time")
-        intent.putExtra("dateTime", dateTime)
+        intent.putExtra("dateTimeMillis", dateTime.time)
         launcher.launch(intent)
     }) {
         Text(
-            text = "${selectedTimeZone.value!!.gmtFormat} - ${selectedTimeZone.value!!.displayName}",
+            text = displayText,
             color = MaterialTheme.colorScheme.onSurface
         )
     }
-
-//    if (isTimeZonePickerVisible) {
-//        TimeZonePickerDialog(
-//            onDismiss = { isTimeZonePickerVisible = false },
-//            onTimeZoneSelected = { timeZoneName ->
-//                selectedTimeZone.value = timeZoneName
-//            }
-//        )
-//    }
-//    if (isTimeZonePickerVisible) {
-//        TimeZonePickerDialog(
-//            onDismiss = { isTimeZonePickerVisible = false },
-//            onTimeZoneSelected = { timeZoneDisplayName ->
-//                selectedTimeZone.value = timeZoneDisplayName
-//            }
-//        )
-//    }
 }

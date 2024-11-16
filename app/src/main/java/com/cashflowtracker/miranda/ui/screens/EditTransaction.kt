@@ -22,7 +22,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableDoubleStateOf
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -41,6 +40,7 @@ import com.cashflowtracker.miranda.ui.composables.LocationForm
 import com.cashflowtracker.miranda.ui.composables.SegmentedButtonType
 import com.cashflowtracker.miranda.ui.composables.SourceForm
 import com.cashflowtracker.miranda.ui.composables.TimeZoneForm
+import com.cashflowtracker.miranda.ui.composables.getTimeZoneInGMTFormat
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 import com.cashflowtracker.miranda.ui.viewmodels.AccountsViewModel
 import com.cashflowtracker.miranda.ui.viewmodels.TransactionsViewModel
@@ -57,8 +57,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import java.text.SimpleDateFormat
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 import java.util.UUID
 
 class EditTransaction : ComponentActivity() {
@@ -90,7 +93,22 @@ class EditTransaction : ComponentActivity() {
             val transactionType = remember { mutableStateOf("") }
             val selectedDate = remember { mutableStateOf("") }
             val selectedTime = remember { mutableStateOf("") }
-            val selectedTimeZone = remember { mutableStateOf<TimeZoneEntry?>(null) }
+            val selectedTimeZone = remember {
+                val currentTimeZoneId = TimeZone.getDefault().id
+                val currentDateTime = Date()
+                val inDaylightTime = TimeZone.getDefault().inDaylightTime(currentDateTime)
+                val displayName = TimeZone.getDefault()
+                    .getDisplayName(inDaylightTime, TimeZone.LONG, Locale.getDefault())
+                val gmtFormat = getTimeZoneInGMTFormat(currentTimeZoneId, currentDateTime)
+                mutableStateOf(
+                    TimeZoneEntry(
+                        id = currentTimeZoneId,
+                        displayName = displayName,
+                        gmtFormat = gmtFormat,
+                        country = "Earth"
+                    )
+                )
+            }
             var source by remember { mutableStateOf("") }
             var sourceIcon by remember { mutableStateOf<Int?>(null) }
             var destination by remember { mutableStateOf("") }
@@ -155,11 +173,9 @@ class EditTransaction : ComponentActivity() {
                             result.data?.getSerializableExtra("timezone") as? TimeZoneEntry
                         }
 
-                    selectedTimeZone.value = timezone ?: TimeZoneEntry(
-                        displayName = "Universal Coordinated Time",
-                        gmtFormat = "UTC",
-                        country = "Earth"
-                    )
+                    if (timezone != null) {
+                        selectedTimeZone.value = timezone
+                    }
                 }
             }
 
@@ -168,7 +184,6 @@ class EditTransaction : ComponentActivity() {
                     transactionType.value.isNotEmpty()
                             && selectedDate.value.isNotEmpty()
                             && selectedTime.value.isNotEmpty()
-                            && selectedTimeZone.value != null
                             && source.isNotEmpty()
                             && destination.isNotEmpty()
                 }
@@ -191,20 +206,67 @@ class EditTransaction : ComponentActivity() {
                     transaction = vm.actions.getByTransactionId(transactionId.value).also {
                         oldTransactionType.value = it.type
                         transactionType.value = it.type
-                        val dateTimeParts =
-                            formatZonedDateTime(it.createdOn).split("\\s+".toRegex())
-                                .filter { item -> item.isNotBlank() }
-                        selectedDate.value = SimpleDateFormat(
-                            "yyyy-MM-dd",
-                            Locale.getDefault()
-                        ).parse(dateTimeParts[0])?.let { item ->
-                            SimpleDateFormat("EEE, MMM d, yyyy", Locale.getDefault()).format(item)
-                        } ?: ""
-                        selectedTime.value = dateTimeParts[1]
-                        selectedTimeZone.value = TimeZoneEntry(
-                            displayName = "",
-                            gmtFormat = dateTimeParts[2], country = ""
-                        )
+
+                        try {
+                            val zonedDateTime = ZonedDateTime.parse(
+                                it.createdOn,
+                                DateTimeFormatter.ISO_ZONED_DATE_TIME
+                            )
+
+                            // Format date
+                            selectedDate.value = zonedDateTime.toLocalDate()
+                                .format(
+                                    DateTimeFormatter.ofPattern(
+                                        "yyyy-MM-dd",
+                                        Locale.getDefault()
+                                    )
+                                )
+
+
+                            // Format time
+                            selectedTime.value = zonedDateTime.toLocalTime()
+                                .format(DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault()))
+
+                            // Set time zone
+                            val zoneId = zonedDateTime.zone
+                            val offset = zonedDateTime.offset
+                            val gmtOffset = "GMT${offset.id}" // e.g., "GMT+01:00"
+
+                            selectedTimeZone.value = TimeZoneEntry(
+                                id = zoneId.id,
+                                displayName = zoneId.id,
+                                gmtFormat = gmtOffset,
+                                country = "" // You can set this if needed
+                            )
+                        } catch (e: Exception) {
+                            println("Error parsing ZonedDateTime: ${e.message}")
+                            // Handle the error by setting default values or showing an error message
+                            selectedDate.value = ""
+                            selectedTime.value = ""
+                            selectedTimeZone.value = TimeZoneEntry(
+                                id = "",
+                                displayName = "",
+                                gmtFormat = "",
+                                country = ""
+                            )
+                        }
+
+//                        val dateTimeParts =
+//                            formatZonedDateTime(it.createdOn).split("\\s+".toRegex())
+//                                .filter { item -> item.isNotBlank() }
+//                        selectedDate.value = SimpleDateFormat(
+//                            "yyyy-MM-dd",
+//                            Locale.getDefault()
+//                        ).parse(dateTimeParts[0])?.let { item ->
+//                            SimpleDateFormat("EEE, MMM d, yyyy", Locale.getDefault()).format(item)
+//                        } ?: ""
+//                        selectedTime.value = dateTimeParts[1]
+//                        selectedTimeZone.value = TimeZoneEntry(
+//                            id = "",
+//                            displayName = "",
+//                            gmtFormat = dateTimeParts[2],
+//                            country = ""
+//                        )
                         oldSource.value = it.source
                         source = it.source
                         sourceIcon = DefaultCategories.getIcon(it.source)
@@ -213,7 +275,7 @@ class EditTransaction : ComponentActivity() {
                         destinationIcon = DefaultCategories.getIcon(it.destination)
                         oldAmount.doubleValue = it.amount
                         amount.doubleValue = it.amount
-                        comment.value = it.comment ?: ""
+                        comment.value = it.comment
                         location.value = it.location ?: ""
                         isLoaded = true
                     }

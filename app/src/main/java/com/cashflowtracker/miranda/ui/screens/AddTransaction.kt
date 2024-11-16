@@ -26,6 +26,7 @@ import com.cashflowtracker.miranda.ui.composables.DestinationForm
 import com.cashflowtracker.miranda.ui.composables.LocationForm
 import com.cashflowtracker.miranda.ui.composables.SourceForm
 import com.cashflowtracker.miranda.ui.composables.TimeZoneForm
+import com.cashflowtracker.miranda.ui.composables.getTimeZoneInGMTFormat
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 import com.cashflowtracker.miranda.ui.viewmodels.AccountsViewModel
 import com.cashflowtracker.miranda.ui.viewmodels.TransactionsViewModel
@@ -39,6 +40,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import java.time.format.DateTimeFormatter
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 
 class AddTransaction : ComponentActivity() {
     private lateinit var locationService: LocationService
@@ -57,7 +61,22 @@ class AddTransaction : ComponentActivity() {
             val transactionType = remember { mutableStateOf("") }
             val selectedDate = remember { mutableStateOf("") }
             val selectedTime = remember { mutableStateOf("") }
-            val selectedTimeZone = remember { mutableStateOf<TimeZoneEntry?>(null) }
+            val selectedTimeZone = remember {
+                val currentTimeZoneId = TimeZone.getDefault().id
+                val currentDateTime = Date()
+                val inDaylightTime = TimeZone.getDefault().inDaylightTime(currentDateTime)
+                val displayName = TimeZone.getDefault()
+                    .getDisplayName(inDaylightTime, TimeZone.LONG, Locale.getDefault())
+                val gmtFormat = getTimeZoneInGMTFormat(currentTimeZoneId, currentDateTime)
+                mutableStateOf(
+                    TimeZoneEntry(
+                        id = currentTimeZoneId,
+                        displayName = displayName,
+                        gmtFormat = gmtFormat,
+                        country = "Earth"
+                    )
+                )
+            }
             var source by remember { mutableStateOf("") }
             var sourceIcon by remember { mutableStateOf<Int?>(null) }
             var destination by remember { mutableStateOf("") }
@@ -122,11 +141,9 @@ class AddTransaction : ComponentActivity() {
                             result.data?.getSerializableExtra("timezone") as? TimeZoneEntry
                         }
 
-                    selectedTimeZone.value = timezone ?: TimeZoneEntry(
-                        displayName = "Universal Coordinated Time",
-                        gmtFormat = "UTC",
-                        country = "Earth"
-                    )
+                    if (timezone != null) {
+                        selectedTimeZone.value = timezone
+                    }
                 }
             }
 
@@ -135,7 +152,6 @@ class AddTransaction : ComponentActivity() {
                     transactionType.value.isNotEmpty()
                             && selectedDate.value.isNotEmpty()
                             && selectedTime.value.isNotEmpty()
-                            && selectedTimeZone.value != null
                             && source.isNotEmpty()
                             && destination.isNotEmpty()
                             && !isError.value

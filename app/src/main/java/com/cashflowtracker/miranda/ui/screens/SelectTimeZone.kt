@@ -1,6 +1,8 @@
 package com.cashflowtracker.miranda.ui.screens
 
 import android.content.Intent
+import android.os.Build
+import android.icu.util.TimeZone as IcuTimeZone
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -26,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.R
@@ -38,12 +41,15 @@ import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 
+
 class SelectTimeZone : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        val dateTime = intent.getStringExtra("dateTime") as? Date ?: Calendar.getInstance().time
+        val dateTimeMillis =
+            intent.getLongExtra("dateTimeMillis", -1L)
+        val dateTime = if (dateTimeMillis != -1L) Date(dateTimeMillis) else Date()
         setContent {
             MirandaTheme {
                 Scaffold(
@@ -84,31 +90,44 @@ class SelectTimeZone : ComponentActivity() {
                         )
                     }
                 ) { paddingValues ->
+                    val context = LocalContext.current
+                    val is24HourFormat =
+                        android.text.format.DateFormat.is24HourFormat(context)
+                    val timePattern = if (is24HourFormat) "HH:mm" else "h:mm a"
+
+                    val timeZones = TimeZone.getAvailableIDs()
+                        .map {
+                            val timezone = TimeZone.getTimeZone(it)
+                            val inDaylightTime = timezone.inDaylightTime(dateTime)
+                            val displayName = timezone.getDisplayName(
+                                inDaylightTime,
+                                TimeZone.LONG,
+                                Locale.getDefault()
+                            )
+                            val gmtFormat = getTimeZoneInGMTFormat(it, dateTime)
+                            val region = it.substringAfterLast('/').replace('_', ' ')
+                            TimeZoneEntry(
+                                id = it,
+                                displayName = displayName,
+                                gmtFormat = gmtFormat,
+                                country = region,
+                            )
+                        }
+                        .distinctBy { it.gmtFormat + it.country }
+                        .sortedBy { it.gmtFormat }
+
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(paddingValues)
                     ) {
-                        val timeZones = TimeZone.getAvailableIDs()
-                            .map {
-                                val gmtFormat = getTimeZoneInGMTFormat(it)
-                                val timezone = TimeZone.getTimeZone(it)
-                                val displayName = timezone.getDisplayName(
-                                    timezone.inDaylightTime(dateTime),
-                                    TimeZone.LONG
-                                )
-                                val country =
-                                    it.split("/").lastOrNull()?.replace("_", " ") ?: "Unknown"
-                                TimeZoneEntry(
-                                    displayName = displayName,
-                                    gmtFormat = gmtFormat,
-                                    country = country,
-                                )
-                            }
-                            .distinctBy { it.gmtFormat + it.country }
-                            .sortedBy { it.gmtFormat }
-
                         items(timeZones) {
+                            val timeZone = TimeZone.getTimeZone(it.id)
+                            val sdf = SimpleDateFormat(timePattern, Locale.getDefault()).apply {
+                                this.timeZone = timeZone
+                            }
+                            val currentTimeInTimeZone = sdf.format(dateTime)
+                            val headlineText = "$currentTimeInTimeZone ${it.gmtFormat}"
                             ListItem(
                                 overlineContent = {
                                     Text(
@@ -118,7 +137,7 @@ class SelectTimeZone : ComponentActivity() {
                                 },
                                 headlineContent = {
                                     Text(
-                                        text = it.gmtFormat,
+                                        text = headlineText,
                                         style = MaterialTheme.typography.bodyLarge
                                     )
                                 },

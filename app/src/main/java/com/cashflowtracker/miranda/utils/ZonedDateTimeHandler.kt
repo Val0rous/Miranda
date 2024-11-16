@@ -15,22 +15,26 @@ fun buildZonedDateTime(
     timeZoneString: String
 ): ZonedDateTime? {
     return try {
-        val dateFormatter = DateTimeFormatter.ofPattern("EEE, MMM d, yyyy", Locale.getDefault())
+        val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
         val localDate = LocalDate.parse(dateString, dateFormatter)
         val localTime = LocalTime.parse(timeString, timeFormatter)
         val localDateTime = LocalDateTime.of(localDate, localTime)
         val gmtOffsetString = timeZoneString.substringBefore(" -").trim()
-        val timeZone = try {
-            TimeZone.getTimeZone(gmtOffsetString)
-        } catch (e: Exception) {
-            println("Invalid time zone: ${e.message}")
-            null
-        }
-        timeZone?.let {
-            val instant = localDateTime.atZone(ZoneId.systemDefault()).toInstant()
-            ZonedDateTime.ofInstant(instant, it.toZoneId())
-        }
+        val zoneId = ZoneId.of(gmtOffsetString)
+        val zonedDateTime = ZonedDateTime.of(localDateTime, zoneId)
+        zonedDateTime
+
+//        val timeZone = try {
+//            TimeZone.getTimeZone(gmtOffsetString)
+//        } catch (e: Exception) {
+//            println("Invalid time zone: ${e.message}")
+//            null
+//        }
+//        timeZone?.let {
+//            val instant = localDateTime.atZone(ZoneId.systemDefault()).toInstant()
+//            ZonedDateTime.ofInstant(instant, it.toZoneId())
+//        }
     } catch (e: Exception) {
         println("Error building ZonedDateTime: ${e.message}")
         null

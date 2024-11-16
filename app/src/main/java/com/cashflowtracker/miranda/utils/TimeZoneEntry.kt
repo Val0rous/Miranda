@@ -5,6 +5,7 @@ import android.os.Parcelable
 import java.io.Serializable
 
 data class TimeZoneEntry(
+    val id: String,
     val displayName: String,
     val gmtFormat: String,
     val country: String,
