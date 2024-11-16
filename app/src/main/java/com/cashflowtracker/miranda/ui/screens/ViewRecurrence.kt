@@ -40,17 +40,17 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.R
-import com.cashflowtracker.miranda.data.database.Transaction
+import com.cashflowtracker.miranda.data.database.Recurrence
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserId
 import com.cashflowtracker.miranda.ui.composables.AlertDialogIconTitle
 import com.cashflowtracker.miranda.ui.composables.MapScreen
-import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
 import com.cashflowtracker.miranda.ui.theme.Green400
+import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 import com.cashflowtracker.miranda.ui.theme.Red400
 import com.cashflowtracker.miranda.ui.theme.Yellow400
 import com.cashflowtracker.miranda.ui.viewmodels.AccountsViewModel
-import com.cashflowtracker.miranda.ui.viewmodels.TransactionsViewModel
+import com.cashflowtracker.miranda.ui.viewmodels.RecurrencesViewModel
 import com.cashflowtracker.miranda.utils.AccountType
 import com.cashflowtracker.miranda.utils.CategoryClass
 import com.cashflowtracker.miranda.utils.Coordinates
@@ -64,19 +64,19 @@ import kotlinx.coroutines.withContext
 import org.koin.androidx.compose.koinViewModel
 import java.util.UUID
 
-class ViewTransaction : ComponentActivity() {
+class ViewRecurrence : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        val initialTransactionId = UUID.fromString(intent.getStringExtra("transactionId") ?: "")
+        val initialRecurrenceId = UUID.fromString(intent.getStringExtra("recurrenceId") ?: "")
         setContent {
             val userId = LocalContext.current.getCurrentUserId()
-            val transactionId by remember { mutableStateOf(initialTransactionId) }
+            val recurrenceId by remember { mutableStateOf(initialRecurrenceId) }
             val coroutineScope = rememberCoroutineScope()
-            val vm = koinViewModel<TransactionsViewModel>()
+            val vm = koinViewModel<RecurrencesViewModel>()
             var isLoaded by remember { mutableStateOf(false) }
-            var transaction by remember { mutableStateOf<Transaction?>(null) }
+            var recurrence by remember { mutableStateOf<Recurrence?>(null) }
             var isDeleting by remember { mutableStateOf(false) }
             val openAlertDialog = remember { mutableStateOf(false) }
             var sourceType by remember { mutableStateOf("") }
@@ -85,13 +85,13 @@ class ViewTransaction : ComponentActivity() {
             val isLocationLoaded = remember { mutableStateOf(false) }
             val coordinates = remember { mutableStateOf<Coordinates?>(null) }
 
-            LaunchedEffect(key1 = transactionId, key2 = isDeleting) {
+            LaunchedEffect(key1 = recurrenceId, key2 = isDeleting) {
                 if (!isDeleting) {
                     coroutineScope.launch(Dispatchers.IO) {
-                        vm.actions.getByTransactionIdFlow(transactionId)
+                        vm.actions.getByRecurrenceIdFlow(recurrenceId)
                             .collect {
                                 withContext(Dispatchers.Main) {
-                                    transaction = it.also {
+                                    recurrence = it.also {
                                         if (!isDeleting) {
                                             isLocationLoaded.value = !it.location.isNullOrEmpty()
 
@@ -153,7 +153,7 @@ class ViewTransaction : ComponentActivity() {
                             title = {
                                 if (isLoaded) {
                                     if (!isDeleting) {
-                                        Text(transaction!!.type)
+                                        Text(recurrence!!.type)
                                     }
                                 }
                             },
@@ -188,13 +188,13 @@ class ViewTransaction : ComponentActivity() {
                                     )
                                 },
                                 onClick = {
-                                    val intent =
-                                        Intent(
-                                            this@ViewTransaction,
-                                            EditTransaction::class.java
-                                        )
-                                    intent.putExtra("transactionId", transactionId.toString())
-                                    startActivity(intent)
+//                                    val intent =
+//                                        Intent(
+//                                            this@ViewRecurrence,
+//                                            EditRecurrence::class.java
+//                                        )
+//                                    intent.putExtra("recurrenceId", recurrenceId.toString())
+//                                    startActivity(intent)
                                 }
                             )
                             NavigationBarItem(
@@ -237,7 +237,7 @@ class ViewTransaction : ComponentActivity() {
                                                     .size(56.dp)
                                                     .clip(CircleShape)
                                                     .background(
-                                                        when (transaction!!.type) {
+                                                        when (recurrence!!.type) {
                                                             "Output" -> LocalCustomColors.current.surfaceTintRed
                                                             "Input" -> LocalCustomColors.current.surfaceTintGreen
                                                             else -> LocalCustomColors.current.surfaceTintBlue
@@ -246,19 +246,19 @@ class ViewTransaction : ComponentActivity() {
                                             ) {
                                                 Icon(
                                                     imageVector = ImageVector.vectorResource(
-                                                        when (transaction!!.type) {
+                                                        when (recurrence!!.type) {
                                                             "Output" -> AccountType.getIcon(
                                                                 sourceType
                                                             )
 
                                                             "Input" -> {
-                                                                when (transaction!!.source) {
+                                                                when (recurrence!!.source) {
                                                                     SpecialType.POCKET.category, SpecialType.EXTRA.category -> SpecialType.getIcon(
-                                                                        transaction!!.source
+                                                                        recurrence!!.source
                                                                     )
 
                                                                     else -> DefaultCategories.getIcon(
-                                                                        transaction!!.source
+                                                                        recurrence!!.source
                                                                     )
                                                                 }
                                                             }
@@ -266,7 +266,7 @@ class ViewTransaction : ComponentActivity() {
                                                             else -> AccountType.getIcon(sourceType)
                                                         }
                                                     ),
-                                                    contentDescription = transaction!!.source,
+                                                    contentDescription = recurrence!!.source,
                                                     tint = LocalCustomColors.current.icon,
                                                     modifier = Modifier
                                                         .size(40.dp)
@@ -274,14 +274,14 @@ class ViewTransaction : ComponentActivity() {
                                                 )
                                             }
                                             Text(
-                                                text = transaction!!.source,
+                                                text = recurrence!!.source,
                                                 style = MaterialTheme.typography.titleMedium,
                                                 color = MaterialTheme.colorScheme.onSurface,
                                                 modifier = Modifier.padding(top = 8.dp)
                                             )
-                                            if (transaction!!.type == "Input") {
+                                            if (recurrence!!.type == "Input") {
                                                 Row(modifier = Modifier.padding(top = 4.dp)) {
-                                                    when (DefaultCategories.getType(transaction!!.source)) {
+                                                    when (DefaultCategories.getType(recurrence!!.source)) {
                                                         CategoryClass.NECESSITY -> repeat(1) {
                                                             Icon(
                                                                 imageVector = ImageVector.vectorResource(
@@ -341,7 +341,7 @@ class ViewTransaction : ComponentActivity() {
                                                     .size(56.dp)
                                                     .clip(CircleShape)
                                                     .background(
-                                                        when (transaction!!.type) {
+                                                        when (recurrence!!.type) {
                                                             "Output" -> LocalCustomColors.current.surfaceTintRed
                                                             "Input" -> LocalCustomColors.current.surfaceTintGreen
                                                             else -> LocalCustomColors.current.surfaceTintBlue
@@ -350,9 +350,9 @@ class ViewTransaction : ComponentActivity() {
                                             ) {
                                                 Icon(
                                                     imageVector = ImageVector.vectorResource(
-                                                        when (transaction!!.type) {
+                                                        when (recurrence!!.type) {
                                                             "Output" -> DefaultCategories.getIcon(
-                                                                transaction!!.destination
+                                                                recurrence!!.destination
                                                             )
 
                                                             "Input" -> AccountType.getIcon(
@@ -364,7 +364,7 @@ class ViewTransaction : ComponentActivity() {
                                                             )
                                                         }
                                                     ),
-                                                    contentDescription = transaction!!.destination,
+                                                    contentDescription = recurrence!!.destination,
                                                     tint = LocalCustomColors.current.icon,
                                                     modifier = Modifier
                                                         .size(40.dp)
@@ -372,14 +372,14 @@ class ViewTransaction : ComponentActivity() {
                                                 )
                                             }
                                             Text(
-                                                text = transaction!!.destination,
+                                                text = recurrence!!.destination,
                                                 style = MaterialTheme.typography.titleMedium,
                                                 color = MaterialTheme.colorScheme.onSurface,
                                                 modifier = Modifier.padding(top = 8.dp)
                                             )
-                                            if (transaction!!.type == "Output") {
+                                            if (recurrence!!.type == "Output") {
                                                 Row(modifier = Modifier.padding(top = 4.dp)) {
-                                                    when (DefaultCategories.getType(transaction!!.destination)) {
+                                                    when (DefaultCategories.getType(recurrence!!.destination)) {
                                                         CategoryClass.NECESSITY -> repeat(1) {
                                                             Icon(
                                                                 imageVector = ImageVector.vectorResource(
@@ -423,22 +423,22 @@ class ViewTransaction : ComponentActivity() {
 
                                     HorizontalDivider(modifier = Modifier.padding(bottom = 24.dp))
 
-                                    if (transaction!!.createdOn.isNotEmpty()) {
+                                    if (recurrence!!.createdOn.isNotEmpty()) {
                                         Text(
-                                            text = formatZonedDateTime(transaction!!.createdOn),
+                                            text = formatZonedDateTime(recurrence!!.createdOn),
                                             style = MaterialTheme.typography.titleMedium,
                                             color = MaterialTheme.colorScheme.onSurface
                                         )
                                     }
 
                                     Text(
-                                        text = when (transaction!!.type) {
-                                            "Output" -> if (transaction!!.amount != 0.0) "-%.2f €" else "%.2f €"
-                                            "Input" -> if (transaction!!.amount != 0.0) "+%.2f €" else "%.2f €"
+                                        text = when (recurrence!!.type) {
+                                            "Output" -> if (recurrence!!.amount != 0.0) "-%.2f €" else "%.2f €"
+                                            "Input" -> if (recurrence!!.amount != 0.0) "+%.2f €" else "%.2f €"
                                             else -> "%.2f €"
-                                        }.format(transaction!!.amount),
+                                        }.format(recurrence!!.amount),
                                         style = MaterialTheme.typography.headlineMedium,
-                                        color = when (transaction!!.type) {
+                                        color = when (recurrence!!.type) {
                                             "Output" -> LocalCustomColors.current.surfaceTintRed
                                             "Input" -> LocalCustomColors.current.surfaceTintGreen
                                             else -> LocalCustomColors.current.surfaceTintBlue
@@ -446,9 +446,9 @@ class ViewTransaction : ComponentActivity() {
                                         modifier = Modifier.padding(top = 24.dp)
                                     )
 
-                                    if (transaction!!.comment.isNotEmpty()) {
+                                    if (recurrence!!.comment.isNotEmpty()) {
                                         Text(
-                                            text = transaction!!.comment,
+                                            text = recurrence!!.comment,
                                             style = MaterialTheme.typography.headlineMedium,
                                             color = MaterialTheme.colorScheme.onSurface,
                                             modifier = Modifier.padding(top = 24.dp)
@@ -480,13 +480,12 @@ class ViewTransaction : ComponentActivity() {
                                 openAlertDialog.value = false
                                 isDeleting = true
                                 coroutineScope.launch(Dispatchers.IO) {
-                                    revertTransaction(transaction!!, accountsVm, userId)
-                                    vm.actions.removeTransaction(transactionId)
+                                    vm.actions.removeRecurrence(recurrenceId)
                                     finish()
                                 }
                             },
-                            dialogTitle = "Delete transaction",
-                            dialogText = "This operation is irreversible. This transaction will be reverted upon deletion",
+                            dialogTitle = "Delete recurrence",
+                            dialogText = "This operation is irreversible. No future transactions will be made, but existing associated ones will not be affected",
                             actionText = "Delete"
                         )
                     }

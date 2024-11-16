@@ -65,26 +65,27 @@
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
         </activity>
-        <activity android:name=".ui.screens.AddTransaction" />
-        <activity android:name=".ui.screens.AddRecurrence" />
         <activity android:name=".ui.screens.AddAccount" />
-        <activity android:name=".ui.screens.Settings" />
-        <activity android:name=".ui.screens.Profile" />
-        <activity android:name=".ui.screens.Login" />
-        <activity android:name=".ui.screens.Signup" />
-        <activity android:name=".ui.screens.SelectAccountType" />
-        <activity android:name=".ui.screens.SelectTimeZone" />
-        <activity android:name=".ui.screens.SelectSource" />
-        <activity android:name=".ui.screens.SelectDestination" />
-        <activity android:name=".ui.screens.SelectCurrency" />
-        <activity android:name=".ui.screens.ViewAccount" />
-        <activity android:name=".ui.screens.ViewTransaction" />
+        <activity android:name=".ui.screens.AddRecurrence" />
+        <activity android:name=".ui.screens.AddTransaction" />
         <activity android:name=".ui.screens.EditAccount" />
-        <activity android:name=".ui.screens.EditTransaction" />
         <activity android:name=".ui.screens.EditProfile" />
+        <activity android:name=".ui.screens.EditTransaction" />
+        <activity android:name=".ui.screens.Login" />
         <activity android:name=".ui.screens.MapView" />
-        <activity android:name=".ui.screens.ViewChartStats" />
+        <activity android:name=".ui.screens.Profile" />
+        <activity android:name=".ui.screens.SelectAccountType" />
+        <activity android:name=".ui.screens.SelectCurrency" />
+        <activity android:name=".ui.screens.SelectDestination" />
+        <activity android:name=".ui.screens.SelectSource" />
+        <activity android:name=".ui.screens.SelectTimeZone" />
+        <activity android:name=".ui.screens.Settings" />
+        <activity android:name=".ui.screens.Signup" />
+        <activity android:name=".ui.screens.ViewAccount" />
         <activity android:name=".ui.screens.ViewCategoryStats" />
+        <activity android:name=".ui.screens.ViewChartStats" />
+        <activity android:name=".ui.screens.ViewRecurrence" />
+        <activity android:name=".ui.screens.ViewTransaction" />
 
 
         <meta-data
