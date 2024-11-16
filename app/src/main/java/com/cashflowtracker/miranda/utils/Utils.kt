@@ -11,13 +11,14 @@ fun <T : BaseTransaction> getSuggestions(
     source: String,
     destination: String
 ): List<String> {
-    return list.filter {
-        when (transactionType.value) {
-            TransactionType.OUTPUT.type -> it.type == TransactionType.OUTPUT.type && it.destination == destination
-            TransactionType.INPUT.type -> it.type == TransactionType.INPUT.type && it.source == source
-            else -> false
+    return list
+        .filter {
+            when (transactionType.value) {
+                TransactionType.OUTPUT.type -> it.type == TransactionType.OUTPUT.type && it.destination == destination
+                TransactionType.INPUT.type -> it.type == TransactionType.INPUT.type && it.source == source
+                else -> false
+            }
         }
-    }
         .mapNotNull { it.comment }
         .filter { it.isNotBlank() }
         .groupingBy { it }

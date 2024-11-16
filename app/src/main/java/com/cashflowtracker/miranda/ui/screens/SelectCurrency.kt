@@ -28,13 +28,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
-import com.cashflowtracker.miranda.utils.CurrencyEnum
+import com.cashflowtracker.miranda.utils.Currencies
 
 class SelectCurrency : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -86,7 +85,7 @@ class SelectCurrency : ComponentActivity() {
                             .fillMaxSize()
                             .padding(paddingValues)
                     ) {
-                        items(CurrencyEnum.entries) {
+                        items(Currencies.entries) {
                             ListItem(
                                 headlineContent = {
                                     Text(

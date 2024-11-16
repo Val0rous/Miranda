@@ -30,7 +30,7 @@ import com.cashflowtracker.miranda.ui.composables.getTimeZoneInGMTFormat
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 import com.cashflowtracker.miranda.ui.viewmodels.AccountsViewModel
 import com.cashflowtracker.miranda.ui.viewmodels.TransactionsViewModel
-import com.cashflowtracker.miranda.utils.CurrencyEnum
+import com.cashflowtracker.miranda.utils.Currencies
 import com.cashflowtracker.miranda.utils.LocationService
 import com.cashflowtracker.miranda.utils.TimeZoneEntry
 import com.cashflowtracker.miranda.utils.buildZonedDateTime
@@ -81,7 +81,7 @@ class AddTransaction : ComponentActivity() {
             var destination by remember { mutableStateOf("") }
             var destinationIcon by remember { mutableStateOf<Int?>(null) }
             val amount = remember { mutableDoubleStateOf(0.0) }
-            val currency = remember { mutableStateOf(CurrencyEnum.EUR) }
+            val currency = remember { mutableStateOf(Currencies.EUR) }
             val comment = remember { mutableStateOf("") }
             val allTransactionsFlow =
                 remember { vm.actions.getAllByUserIdFlow(context.getCurrentUserId()) }
@@ -118,13 +118,13 @@ class AddTransaction : ComponentActivity() {
                 if (result.resultCode == RESULT_OK) {
                     val selectedCurrency =
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                            result.data?.getSerializableExtra("currency", CurrencyEnum::class.java)
+                            result.data?.getSerializableExtra("currency", Currencies::class.java)
                         } else {
                             @Suppress("DEPRECATION")
-                            result.data?.getSerializableExtra("currency") as? CurrencyEnum
+                            result.data?.getSerializableExtra("currency") as? Currencies
                         }
 
-                    currency.value = selectedCurrency ?: CurrencyEnum.EUR
+                    currency.value = selectedCurrency ?: Currencies.EUR
                 }
             }
 

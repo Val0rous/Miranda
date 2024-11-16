@@ -38,7 +38,7 @@ import com.cashflowtracker.miranda.ui.viewmodels.AccountsViewModel
 import com.cashflowtracker.miranda.ui.viewmodels.NotificationsViewModel
 import com.cashflowtracker.miranda.ui.viewmodels.RecurrencesViewModel
 import com.cashflowtracker.miranda.ui.viewmodels.TransactionsViewModel
-import com.cashflowtracker.miranda.utils.CurrencyEnum
+import com.cashflowtracker.miranda.utils.Currencies
 import com.cashflowtracker.miranda.utils.LocationService
 import com.cashflowtracker.miranda.utils.Notifications
 import com.cashflowtracker.miranda.utils.Repeats
@@ -99,7 +99,7 @@ class AddRecurrence : ComponentActivity() {
             var destination by remember { mutableStateOf("") }
             var destinationIcon by remember { mutableStateOf<Int?>(null) }
             val amount = remember { mutableDoubleStateOf(0.0) }
-            val currency = remember { mutableStateOf(CurrencyEnum.EUR) }
+            val currency = remember { mutableStateOf(Currencies.EUR) }
             val comment = remember { mutableStateOf("") }
             val allRecurrencesFlow =
                 remember { recurrencesVm.actions.getAllByUserIdFlow(context.getCurrentUserId()) }
@@ -135,13 +135,13 @@ class AddRecurrence : ComponentActivity() {
                 if (result.resultCode == RESULT_OK) {
                     val selectedCurrency =
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                            result.data?.getSerializableExtra("currency", CurrencyEnum::class.java)
+                            result.data?.getSerializableExtra("currency", Currencies::class.java)
                         } else {
                             @Suppress("DEPRECATION")
-                            result.data?.getSerializableExtra("currency") as? CurrencyEnum
+                            result.data?.getSerializableExtra("currency") as? Currencies
                         }
 
-                    currency.value = selectedCurrency ?: CurrencyEnum.EUR
+                    currency.value = selectedCurrency ?: Currencies.EUR
                 }
             }
 

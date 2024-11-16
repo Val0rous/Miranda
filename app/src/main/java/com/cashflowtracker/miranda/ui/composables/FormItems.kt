@@ -61,7 +61,7 @@ import com.cashflowtracker.miranda.ui.screens.SelectCurrency
 import com.cashflowtracker.miranda.ui.screens.SelectDestination
 import com.cashflowtracker.miranda.ui.screens.SelectSource
 import com.cashflowtracker.miranda.utils.Coordinates
-import com.cashflowtracker.miranda.utils.CurrencyEnum
+import com.cashflowtracker.miranda.utils.Currencies
 import com.cashflowtracker.miranda.utils.LocationService
 import com.cashflowtracker.miranda.utils.Notifications
 import com.cashflowtracker.miranda.utils.PermissionStatus
@@ -304,7 +304,7 @@ fun DestinationForm(
 @Composable
 fun AmountForm(
     amount: MutableDoubleState,
-    currency: MutableState<CurrencyEnum>,
+    currency: MutableState<Currencies>,
     launcher: ManagedActivityResultLauncher<Intent, ActivityResult>
 ) {
     val context = LocalContext.current
@@ -355,35 +355,40 @@ fun AmountForm(
                 modifier = Modifier.fillMaxWidth()
             )
         }
-        Spacer(modifier = Modifier.height(2.dp))
-        LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            item {
-                Spacer(modifier = Modifier.width(32.dp))
+        if (currency.value.presets.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(2.dp))
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                item {
+                    Spacer(modifier = Modifier.width(32.dp))
+                }
+                items(currency.value.presets) {
+                    val selected =
+                        amount.doubleValue % 1.0 == 0.0 && it == amount.doubleValue.toInt()
+                    InputChip(
+                        onClick = {
+                            if (!selected) {
+                                amount.doubleValue = it.toDouble()
+                            } else {
+                                amount.doubleValue = 0.0
+                            }
+                        },
+                        label = {
+                            Text(
+                                text = it.toString(),
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .wrapContentWidth(Alignment.CenterHorizontally)
+                                    .padding(horizontal = 8.dp)
+                            )
+                        },
+                        selected = selected,
+                        modifier = Modifier.widthIn(min = 48.dp)
+                    )
+                }
             }
-            items(currency.value.presets) {
-                val selected = amount.doubleValue % 1.0 == 0.0 && it == amount.doubleValue.toInt()
-                InputChip(
-                    onClick = {
-                        if (!selected) {
-                            amount.doubleValue = it.toDouble()
-                        } else {
-                            amount.doubleValue = 0.0
-                        }
-                    },
-                    label = {
-                        Text(
-                            text = it.toString(),
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .wrapContentWidth(Alignment.CenterHorizontally)
-                                .padding(horizontal = 8.dp)
-                        )
-                    },
-                    selected = selected,
-                    modifier = Modifier.widthIn(min = 48.dp)
-                )
-            }
+        } else {
+            Spacer(modifier = Modifier.height(8.dp))
         }
     }
 }
