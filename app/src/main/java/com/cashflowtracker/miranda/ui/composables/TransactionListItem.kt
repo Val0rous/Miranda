@@ -26,6 +26,7 @@ import com.cashflowtracker.miranda.utils.Currencies
 import com.cashflowtracker.miranda.utils.DefaultCategories
 import com.cashflowtracker.miranda.utils.SpecialType
 import com.cashflowtracker.miranda.utils.TransactionType
+import com.cashflowtracker.miranda.utils.formatAmount
 import com.cashflowtracker.miranda.utils.formatDate
 import com.cashflowtracker.miranda.utils.formatTime
 import java.time.ZonedDateTime
@@ -107,11 +108,7 @@ fun TransactionListItem(
         },
         trailingContent = {
             Text(
-                text = (when (type) {
-                    TransactionType.OUTPUT.type -> if (amount != 0.0) "-" else ""
-                    TransactionType.INPUT.type -> if (amount != 0.0) "+" else ""
-                    else -> ""
-                } + "%.2f " + currency.symbol).format(amount),
+                text = formatAmount(amount, currency, type),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurface
 //                                when (transaction.type) {

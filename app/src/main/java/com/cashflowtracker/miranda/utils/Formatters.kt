@@ -2,12 +2,15 @@ package com.cashflowtracker.miranda.utils
 
 import android.content.Context
 import android.text.format.DateFormat
+import com.cashflowtracker.miranda.data.database.Transaction
 import java.text.DecimalFormat
+import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
+import java.util.Currency
 import java.util.Date
 import java.util.Locale
 
@@ -22,6 +25,22 @@ fun Float.toMoneyFormat(
         else DecimalFormat(MONEY_FORMAT)
 
     return format.format(this)
+}
+
+fun formatAmount(amount: Double, currency: Currencies, transactionType: String): String {
+    val numberFormat = NumberFormat.getNumberInstance(Locale.getDefault())
+    numberFormat.minimumFractionDigits = if (currency.showDecimals) 2 else 0
+    numberFormat.maximumFractionDigits = if (currency.showDecimals) 2 else 0
+
+    val formattedNumber = numberFormat.format(amount)
+    val currencySymbol = Currency.getInstance(currency.name).symbol
+
+    val sign = when (transactionType) {
+        TransactionType.OUTPUT.type -> if (amount != 0.0) "-" else ""
+        TransactionType.INPUT.type -> if (amount != 0.0) "+" else ""
+        else -> ""
+    }
+    return "$sign$formattedNumber $currencySymbol"
 }
 
 fun formatTime(context: Context, time: String): String {
