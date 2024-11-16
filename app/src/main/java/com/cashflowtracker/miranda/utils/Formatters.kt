@@ -1,5 +1,6 @@
 package com.cashflowtracker.miranda.utils
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.text.format.DateFormat
 import com.cashflowtracker.miranda.data.database.Transaction
@@ -8,6 +9,7 @@ import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.LocalTime
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Currency
@@ -27,7 +29,7 @@ fun Float.toMoneyFormat(
     return format.format(this)
 }
 
-fun formatAmount(amount: Double, currency: Currencies, transactionType: String): String {
+fun formatAmount(amount: Double, currency: Currencies, transactionType: String = ""): String {
     val numberFormat = NumberFormat.getNumberInstance(Locale.getDefault())
     numberFormat.minimumFractionDigits = if (currency.showDecimals) 2 else 0
     numberFormat.maximumFractionDigits = if (currency.showDecimals) 2 else 0
@@ -98,5 +100,29 @@ fun formatDate(date: String): String {
         fullDate
     } catch (e: Exception) {
         "Invalid Date"
+    }
+}
+
+@SuppressLint("DefaultLocale")
+fun formatTimezone(zonedDateTime: ZonedDateTime): String {
+    val zoneId = zonedDateTime.zone.id // Get the Zone ID (e.g., Europe/Rome, UTC, Zulu, Universal)
+    val zoneOffset = zonedDateTime.offset // Get the ZoneOffset (e.g., +01:00, +00:00)
+
+    // List of aliases for UTC
+    val utcAliases = setOf("Etc/UTC", "Etc/UCT", "Etc/Zulu", "Etc/Universal")
+
+    return when {
+        zoneId in utcAliases -> "UTC" // Check if zoneId matches any UTC alias
+        zoneOffset.totalSeconds == 0 -> "GMT" // Zero offset but not explicitly a UTC alias
+        else -> {
+            val totalSeconds = zoneOffset.totalSeconds
+            val hours = totalSeconds / 3600
+            val minutes = (totalSeconds % 3600) / 60
+            if (minutes == 0) {
+                String.format("GMT%+d", hours) // GMT+H
+            } else {
+                String.format("GMT%+d:%02d", hours, minutes) // GMT+H:MM
+            }
+        }
     }
 }

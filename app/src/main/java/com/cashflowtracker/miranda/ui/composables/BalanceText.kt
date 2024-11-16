@@ -9,6 +9,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import com.cashflowtracker.miranda.utils.Currencies
+import com.cashflowtracker.miranda.utils.formatAmount
 
 @Composable
 fun BalanceText(
@@ -16,7 +18,8 @@ fun BalanceText(
     isVisible: Boolean,
     style: TextStyle,
     color: Color,
-    textAlign: TextAlign? = null
+    textAlign: TextAlign? = null,
+    currency: Currencies = Currencies.EUR
 ) {
     val effectiveColor = if (balance >= 0) {
         color
@@ -25,7 +28,7 @@ fun BalanceText(
     }
     if (isVisible) {
         Text(
-            text = String.format("%.2f €", balance),
+            text = formatAmount(balance, currency),
             style = style,
             color = effectiveColor,
             textAlign = textAlign

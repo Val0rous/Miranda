@@ -1,13 +1,12 @@
 package com.cashflowtracker.miranda.utils
 
+import android.content.Context
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-import java.util.Locale
-import java.util.TimeZone
 
 fun buildZonedDateTime(
     dateString: String,
@@ -35,9 +34,15 @@ fun buildZonedDateTime(
     }
 }
 
-fun formatZonedDateTime(storedDateTimeString: String): String {
-    val retrievedZonedDateTime =
-        ZonedDateTime.parse(storedDateTimeString, DateTimeFormatter.ISO_ZONED_DATE_TIME)
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd    HH:mm    z")
-    return retrievedZonedDateTime.format(formatter)
+fun formatZonedDateTime(context: Context, storedDateTimeString: String): String {
+    val zdt = ZonedDateTime.parse(storedDateTimeString, DateTimeFormatter.ISO_ZONED_DATE_TIME)
+    val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    val date = formatDate(zdt.format(dateFormatter))
+    val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+    val time = formatTime(context, zdt.format(timeFormatter))
+//    val timezone = retrievedZonedDateTime.zone.toString()
+//    val timezone = retrievedZonedDateTime.format(DateTimeFormatter.ofPattern("z"))
+    val timezone = formatTimezone(zdt)
+    return "$date  ·  $time  ·  $timezone"
+//    return retrievedZonedDateTime.format(formatter)
 }

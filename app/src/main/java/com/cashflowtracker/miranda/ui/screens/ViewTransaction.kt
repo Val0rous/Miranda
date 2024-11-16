@@ -427,7 +427,10 @@ class ViewTransaction : ComponentActivity() {
 
                                     if (transaction!!.createdOn.isNotEmpty()) {
                                         Text(
-                                            text = formatZonedDateTime(transaction!!.createdOn),
+                                            text = formatZonedDateTime(
+                                                this@ViewTransaction,
+                                                transaction!!.createdOn
+                                            ),
                                             style = MaterialTheme.typography.titleMedium,
                                             color = MaterialTheme.colorScheme.onSurface
                                         )

@@ -427,7 +427,10 @@ class ViewRecurrence : ComponentActivity() {
 
                                     if (recurrence!!.createdOn.isNotEmpty()) {
                                         Text(
-                                            text = formatZonedDateTime(recurrence!!.createdOn),
+                                            text = formatZonedDateTime(
+                                                this@ViewRecurrence,
+                                                recurrence!!.createdOn
+                                            ),
                                             style = MaterialTheme.typography.titleMedium,
                                             color = MaterialTheme.colorScheme.onSurface
                                         )
