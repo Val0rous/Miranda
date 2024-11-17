@@ -36,7 +36,7 @@ fun Transactions() {
                 items(transactions) {
                     TransactionListItem(
                         type = it.type,
-                        createdOn = it.createdOn,
+                        dateTime = it.createdOn,
                         source = it.source,
                         destination = it.destination,
                         amount = it.amount,

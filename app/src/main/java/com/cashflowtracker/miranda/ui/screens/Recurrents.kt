@@ -4,7 +4,6 @@ import android.content.Intent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
@@ -15,7 +14,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserId
 import com.cashflowtracker.miranda.ui.composables.TransactionListItem
 import com.cashflowtracker.miranda.ui.viewmodels.RecurrencesViewModel
@@ -38,7 +36,7 @@ fun Recurrents() {
                 items(recurrences) {
                     TransactionListItem(
                         type = it.type,
-                        createdOn = it.createdOn,
+                        dateTime = it.reoccursOn,
                         source = it.source,
                         destination = it.destination,
                         amount = it.amount,

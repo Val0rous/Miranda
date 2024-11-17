@@ -20,7 +20,6 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.R
-import com.cashflowtracker.miranda.data.database.Transaction
 import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
 import com.cashflowtracker.miranda.utils.Currencies
 import com.cashflowtracker.miranda.utils.DefaultCategories
@@ -35,7 +34,7 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun TransactionListItem(
     type: String,
-    createdOn: String,
+    dateTime: String,
     source: String,
     destination: String,
     amount: Double,
@@ -44,7 +43,7 @@ fun TransactionListItem(
     onClick: () -> Unit
 ) {
     val zdt = ZonedDateTime.parse(
-        createdOn,
+        dateTime,
         DateTimeFormatter.ISO_ZONED_DATE_TIME
     )
     val date = zdt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))

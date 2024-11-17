@@ -46,3 +46,9 @@ fun formatZonedDateTime(context: Context, storedDateTimeString: String): String 
     return "$date  ·  $time  ·  $timezone"
 //    return retrievedZonedDateTime.format(formatter)
 }
+
+fun getDate(storedDateTimeString: String): String {
+    val zdt = ZonedDateTime.parse(storedDateTimeString, DateTimeFormatter.ISO_ZONED_DATE_TIME)
+    val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    return formatDate(zdt.format(dateFormatter))
+}
