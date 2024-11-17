@@ -42,6 +42,7 @@ import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 import com.cashflowtracker.miranda.ui.viewmodels.AccountsViewModel
 import com.cashflowtracker.miranda.utils.AccountType
+import com.cashflowtracker.miranda.utils.formatDate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -232,7 +233,7 @@ class ViewAccount : ComponentActivity() {
                                         Text(text = "Created on")
                                         Spacer(modifier = Modifier.weight(1f))
                                         Text(
-                                            text = account!!.creationDate,
+                                            text = formatDate(account!!.creationDate),
                                             style = MaterialTheme.typography.titleMedium,
                                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                                             textAlign = TextAlign.End

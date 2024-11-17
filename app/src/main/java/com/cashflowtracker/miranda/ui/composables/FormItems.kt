@@ -308,6 +308,8 @@ fun AmountForm(
     launcher: ManagedActivityResultLauncher<Intent, ActivityResult>
 ) {
     val context = LocalContext.current
+    var rawInput by remember { mutableStateOf("") }
+
     Column() {
         Row(
             modifier = Modifier
@@ -322,18 +324,18 @@ fun AmountForm(
             Spacer(modifier = Modifier.width(16.dp))
             // Amount Field
             OutlinedTextField(
-                value = if (amount.doubleValue == 0.0) {
-                    ""
-                } else {
-                    "%.2f".format(amount.doubleValue)
-                },
+                value = rawInput,
                 onValueChange = { text ->
-                    amount.doubleValue = text.toDoubleOrNull()?.let {
-                        if (it >= 0) {
-                            "%.2f".format(it).toDoubleOrNull()
-                        } else {
-                            0.0
-                        }
+                    val showDecimals = currency.value.showDecimals
+                    val sanitizedText = if (showDecimals) {
+                        text.replace(",", ".").takeWhile { it.isDigit() || it == '.' }
+                    } else {
+                        text.filter { it.isDigit() }
+                    }
+                    rawInput = sanitizedText
+
+                    amount.doubleValue = sanitizedText.toDoubleOrNull()?.let {
+                        if (it >= 0) it else amount.doubleValue
                     } ?: amount.doubleValue
                 },
                 trailingIcon = {
@@ -368,8 +370,10 @@ fun AmountForm(
                         onClick = {
                             if (!selected) {
                                 amount.doubleValue = it.toDouble()
+                                rawInput = it.toString()
                             } else {
                                 amount.doubleValue = 0.0
+                                rawInput = ""
                             }
                         },
                         label = {
