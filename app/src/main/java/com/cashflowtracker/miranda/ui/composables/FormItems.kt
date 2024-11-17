@@ -68,7 +68,11 @@ import com.cashflowtracker.miranda.utils.PermissionStatus
 import com.cashflowtracker.miranda.utils.Repeats
 import com.cashflowtracker.miranda.utils.StartMonitoringResult
 import com.cashflowtracker.miranda.utils.TimeZoneEntry
+import com.cashflowtracker.miranda.utils.formatAmount
 import com.cashflowtracker.miranda.utils.rememberPermission
+import java.text.DecimalFormat
+import java.text.NumberFormat
+import java.util.Locale
 
 @Composable
 fun DateTimeForm(
@@ -308,7 +312,22 @@ fun AmountForm(
     launcher: ManagedActivityResultLauncher<Intent, ActivityResult>
 ) {
     val context = LocalContext.current
-    var rawInput by remember { mutableStateOf("") }
+    val locale = Locale.getDefault()
+    val numberFormat = NumberFormat.getNumberInstance(locale) as DecimalFormat
+
+    numberFormat.isGroupingUsed = true // Use thousand separators
+    numberFormat.minimumFractionDigits = if (currency.value.showDecimals) 2 else 0
+    numberFormat.maximumFractionDigits = if (currency.value.showDecimals) 2 else 0
+
+    var rawInput by remember {
+        mutableStateOf(
+            if (amount.doubleValue != 0.0) {
+                numberFormat.format(amount.doubleValue)
+            } else {
+                ""
+            }
+        )
+    }
 
     Column() {
         Row(
@@ -324,19 +343,44 @@ fun AmountForm(
             Spacer(modifier = Modifier.width(16.dp))
             // Amount Field
             OutlinedTextField(
-                value = rawInput,
+                value = if (rawInput.isEmpty() && amount.doubleValue == 0.0) {
+                    "" // Show placeholder when input is empty and value is zero
+                } else {
+                    rawInput + " ${currency.value.symbol}"
+                },
                 onValueChange = { text ->
                     val showDecimals = currency.value.showDecimals
-                    val sanitizedText = if (showDecimals) {
-                        text.replace(",", ".").takeWhile { it.isDigit() || it == '.' }
-                    } else {
-                        text.filter { it.isDigit() }
+                    val sanitizedText = text
+                        .replace(currency.value.symbol, "")
+                        .trim()
+                    val currentSeparator = numberFormat.decimalFormatSymbols.decimalSeparator
+                    val previousRawInput = rawInput
+                    if (previousRawInput.contains(currentSeparator)
+                        && !sanitizedText.contains(currentSeparator)
+                    ) {
+                        rawInput = previousRawInput
+                        return@OutlinedTextField
                     }
-                    rawInput = sanitizedText
-
-                    amount.doubleValue = sanitizedText.toDoubleOrNull()?.let {
-                        if (it >= 0) it else amount.doubleValue
-                    } ?: amount.doubleValue
+                    val parsedValue = try {
+                        numberFormat.parse(sanitizedText)?.toDouble()
+                    } catch (e: Exception) {
+                        null
+                    }
+                    if (parsedValue == null) {
+                        // Reset input and value if parsing fails
+                        rawInput = ""
+                        amount.doubleValue = 0.0
+                        return@OutlinedTextField
+                    }
+                    rawInput =
+                        if (parsedValue == 0.0) {
+                            ""
+                        } else if (showDecimals && (amount.doubleValue != 0.0 || rawInput.isNotEmpty())) {
+                            numberFormat.format(parsedValue)
+                        } else {
+                            numberFormat.format(parsedValue.toInt())
+                        }
+                    amount.doubleValue = parsedValue
                 },
                 trailingIcon = {
                     FilledTonalButton(
@@ -352,7 +396,13 @@ fun AmountForm(
                     )
                 },
                 label = { Text("Amount") },
-                placeholder = { Text("0.00 ${currency.value.symbol}") },
+                placeholder = {
+                    if (currency.value.showDecimals) {
+                        Text(numberFormat.format(0.0) + " ${currency.value.symbol}")
+                    } else {
+                        Text("0 ${currency.value.symbol}")
+                    }
+                },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.fillMaxWidth()
             )
@@ -370,7 +420,7 @@ fun AmountForm(
                         onClick = {
                             if (!selected) {
                                 amount.doubleValue = it.toDouble()
-                                rawInput = it.toString()
+                                rawInput = numberFormat.format(it.toDouble())
                             } else {
                                 amount.doubleValue = 0.0
                                 rawInput = ""

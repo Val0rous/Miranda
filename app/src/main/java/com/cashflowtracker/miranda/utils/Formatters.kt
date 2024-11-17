@@ -30,7 +30,7 @@ fun Float.toMoneyFormat(
 }
 
 fun formatAmount(amount: Double, currency: Currencies, transactionType: String = ""): String {
-    val numberFormat = NumberFormat.getNumberInstance(Locale.getDefault())
+    val numberFormat = NumberFormat.getNumberInstance(Locale.getDefault()) //as DecimalFormat
     numberFormat.minimumFractionDigits = if (currency.showDecimals) 2 else 0
     numberFormat.maximumFractionDigits = if (currency.showDecimals) 2 else 0
 
