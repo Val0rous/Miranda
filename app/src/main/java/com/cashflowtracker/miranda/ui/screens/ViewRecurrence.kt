@@ -66,6 +66,7 @@ import com.cashflowtracker.miranda.utils.CategoryClass
 import com.cashflowtracker.miranda.utils.Coordinates
 import com.cashflowtracker.miranda.utils.Currencies
 import com.cashflowtracker.miranda.utils.DefaultCategories
+import com.cashflowtracker.miranda.utils.Notifications
 import com.cashflowtracker.miranda.utils.Repeats
 import com.cashflowtracker.miranda.utils.SpecialType
 import com.cashflowtracker.miranda.utils.formatAmount
@@ -493,7 +494,11 @@ class ViewRecurrence : ComponentActivity() {
                                     }
 
                                     if (notifications.isNotEmpty()) {
-                                        NotificationsPillCard(notifications)
+                                        NotificationsPillCard(notifications.sortedBy {
+                                            Notifications.valueOf(
+                                                it.notificationType
+                                            ).ordinal
+                                        })
                                     }
 
                                     if (createdOn.value.isNotEmpty()) {
