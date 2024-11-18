@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -264,35 +265,56 @@ fun TransactionViewer(
     comment: String,
     context: Context
 ) {
-    if (dateTime.isNotEmpty()) {
-        Text(
-            text = formatZonedDateTime(context, dateTime),
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onSurface
-        )
-    }
-
-    Text(
-        text = formatAmount(
-            amount, Currencies.get(currency), type
+    Spacer(modifier = Modifier.height(8.dp))
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
         ),
-        style = MaterialTheme.typography.headlineMedium,
-        color = when (type) {
-            "Output" -> LocalCustomColors.current.surfaceTintRed
-            "Input" -> LocalCustomColors.current.surfaceTintGreen
-            else -> LocalCustomColors.current.surfaceTintBlue
-        },
-        modifier = Modifier.padding(top = 24.dp)
-    )
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+            .clip(RoundedCornerShape(24.dp))
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(vertical = 16.dp)
+        ) {
+            if (dateTime.isNotEmpty()) {
+                Text(
+                    text = formatZonedDateTime(context, dateTime),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
 
-    if (comment.isNotEmpty()) {
-        Text(
-            text = comment,
-            style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.padding(top = 24.dp)
-        )
+            Text(
+                text = formatAmount(
+                    amount, Currencies.get(currency), type
+                ),
+                style = MaterialTheme.typography.headlineMedium,
+                color = when (type) {
+                    "Output" -> LocalCustomColors.current.surfaceTintRed
+                    "Input" -> LocalCustomColors.current.surfaceTintGreen
+                    else -> LocalCustomColors.current.surfaceTintBlue
+                },
+                modifier = Modifier.padding(top = 24.dp)
+            )
+
+            if (comment.isNotEmpty()) {
+                Text(
+                    text = comment,
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier
+                        .padding(top = 24.dp)
+                        .padding(horizontal = 24.dp)
+                )
+            }
+        }
     }
+    Spacer(modifier = Modifier.height(16.dp))
 }
 
 @Composable

@@ -222,7 +222,7 @@ class ViewTransaction : ComponentActivity() {
                                         destinationType
                                     )
 
-                                    HorizontalDivider(modifier = Modifier.padding(bottom = 24.dp))
+//                                    HorizontalDivider(modifier = Modifier.padding(bottom = 24.dp))
 
                                     TransactionViewer(
                                         type = transaction!!.type,
@@ -233,7 +233,8 @@ class ViewTransaction : ComponentActivity() {
                                         context = this@ViewTransaction
                                     )
 
-                                    HorizontalDivider(modifier = Modifier.padding(vertical = 24.dp))
+//                                    HorizontalDivider(modifier = Modifier.padding(vertical = 24.dp))
+
 
                                     if (isCreatedByRecurrence.value) {
                                         IsRecurrencePillCard()

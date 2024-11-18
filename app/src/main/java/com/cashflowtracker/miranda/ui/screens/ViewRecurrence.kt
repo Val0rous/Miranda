@@ -257,7 +257,7 @@ class ViewRecurrence : ComponentActivity() {
                                         destinationType
                                     )
 
-                                    HorizontalDivider(modifier = Modifier.padding(bottom = 24.dp))
+//                                    HorizontalDivider(modifier = Modifier.padding(bottom = 24.dp))
 
                                     TransactionViewer(
                                         type = recurrence!!.type,
@@ -268,12 +268,12 @@ class ViewRecurrence : ComponentActivity() {
                                         context = this@ViewRecurrence
                                     )
 
-                                    HorizontalDivider(
-                                        modifier = Modifier.padding(
-                                            top = 24.dp,
-                                            bottom = 18.dp
-                                        )
-                                    )
+//                                    HorizontalDivider(
+//                                        modifier = Modifier.padding(
+//                                            top = 24.dp,
+//                                            bottom = 18.dp
+//                                        )
+//                                    )
 
                                     if (repeatInterval.value != null) {
                                         RepeatsPillCard(repeatInterval.value!!)
