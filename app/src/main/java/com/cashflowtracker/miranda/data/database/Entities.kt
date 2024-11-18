@@ -63,6 +63,7 @@ data class Recurrence(
 data class Notification(
     @PrimaryKey val notificationId: UUID = UUID.randomUUID(),
     @ColumnInfo val dateTime: String,   // ZonedDateTime
+    @ColumnInfo val notificationType: String, // Notifications.name
     @ColumnInfo val recurrenceId: UUID,
     @ColumnInfo val userId: UUID,
 )

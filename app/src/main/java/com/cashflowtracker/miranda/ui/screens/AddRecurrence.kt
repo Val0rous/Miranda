@@ -257,9 +257,10 @@ class AddRecurrence : ComponentActivity() {
 //                                            addMillisToTime(ZonedDateTime.parse(recurrence.reoccursOn), -it.time)
                                         notificationsVm.actions.addNotification(
                                             Notification(
-                                                recurrenceId = recurrence.recurrenceId,
                                                 dateTime = dateTime,
-                                                userId = userId
+                                                notificationType = it.name,
+                                                recurrenceId = recurrence.recurrenceId,
+                                                userId = userId,
                                             )
                                         )
                                     }

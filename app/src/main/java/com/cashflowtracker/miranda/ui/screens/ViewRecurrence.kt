@@ -32,6 +32,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,6 +51,7 @@ import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentU
 import com.cashflowtracker.miranda.ui.composables.AlertDialogIconTitle
 import com.cashflowtracker.miranda.ui.composables.CreationPillCard
 import com.cashflowtracker.miranda.ui.composables.MapScreen
+import com.cashflowtracker.miranda.ui.composables.NotificationsPillCard
 import com.cashflowtracker.miranda.ui.composables.RepeatsPillCard
 import com.cashflowtracker.miranda.ui.theme.Green400
 import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
@@ -57,6 +59,7 @@ import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 import com.cashflowtracker.miranda.ui.theme.Red400
 import com.cashflowtracker.miranda.ui.theme.Yellow400
 import com.cashflowtracker.miranda.ui.viewmodels.AccountsViewModel
+import com.cashflowtracker.miranda.ui.viewmodels.NotificationsViewModel
 import com.cashflowtracker.miranda.ui.viewmodels.RecurrencesViewModel
 import com.cashflowtracker.miranda.utils.AccountType
 import com.cashflowtracker.miranda.utils.CategoryClass
@@ -92,6 +95,9 @@ class ViewRecurrence : ComponentActivity() {
             var sourceType by remember { mutableStateOf("") }
             var destinationType by remember { mutableStateOf("") }
             val accountsVm = koinViewModel<AccountsViewModel>()
+            val notificationsVm = koinViewModel<NotificationsViewModel>()
+            val notifications by notificationsVm.actions.getAllByRecurrenceIdFlow(recurrenceId)
+                .collectAsState(emptyList())
             val isLocationLoaded = remember { mutableStateOf(false) }
             val coordinates = remember { mutableStateOf<Coordinates?>(null) }
             val createdOn = remember { mutableStateOf("") }
@@ -483,11 +489,15 @@ class ViewRecurrence : ComponentActivity() {
                                     )
 
                                     if (repeatInterval.value != null) {
-                                        RepeatsPillCard(repeat = repeatInterval.value!!)
+                                        RepeatsPillCard(repeatInterval.value!!)
+                                    }
+
+                                    if (notifications.isNotEmpty()) {
+                                        NotificationsPillCard(notifications)
                                     }
 
                                     if (createdOn.value.isNotEmpty()) {
-                                        CreationPillCard(creationDate = createdOn.value)
+                                        CreationPillCard(createdOn.value)
                                     }
 
                                     if (coordinates.value != null) {
