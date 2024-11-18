@@ -39,6 +39,7 @@ import com.cashflowtracker.miranda.ui.screens.ViewTransaction
 import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
 import com.cashflowtracker.miranda.ui.viewmodels.ThemeViewModel
 import com.cashflowtracker.miranda.utils.Coordinates
+import com.cashflowtracker.miranda.utils.Currencies
 import com.cashflowtracker.miranda.utils.createRoundedMarkerIcon
 import com.cashflowtracker.miranda.utils.iconFactory
 import com.google.android.gms.maps.GoogleMapOptions
@@ -216,59 +217,18 @@ fun FullScreenMapView(transactions: List<Transaction>) {
                 openTransaction = null
             }
         ) {
-            ListItem(
-                leadingContent = {
-                    IconWithBackground(
-                        icon = iconFactory(
-                            openTransaction!!.type,
-                            openTransaction!!.source,
-                            openTransaction!!.destination
-                        ),
-                        iconSize = 24.dp,
-                        iconColor = LocalCustomColors.current.icon,
-                        backgroundSize = 40.dp,
-                        backgroundColor = when (openTransaction!!.type) {
-                            "Output" -> LocalCustomColors.current.surfaceTintRed
-                            "Input" -> LocalCustomColors.current.surfaceTintGreen
-                            else -> LocalCustomColors.current.surfaceTintBlue
-                        }
-                    )
-                },
-                overlineContent = {
-                    Text(
-                        text = ZonedDateTime.parse(
-                            openTransaction!!.createdOn,
-                            DateTimeFormatter.ISO_ZONED_DATE_TIME
-                        ).format(DateTimeFormatter.ofPattern("yyyy-MM-dd  ·  HH:mm")),
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                },
-                headlineContent = {
-                    Text(
-                        text = openTransaction!!.comment ?: "",
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.padding(top = 4.dp)
-                    )
-                },
-                trailingContent = {
-                    Text(
-                        text = when (openTransaction!!.type) {
-                            "Output" -> if (openTransaction!!.amount != 0.0) "-%.2f €" else "%.2f €"
-                            "Input" -> if (openTransaction!!.amount != 0.0) "+%.2f €" else "%.2f €"
-                            else -> "%.2f €"
-                        }.format(openTransaction!!.amount),
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onSurface
-//                                when (transaction.type) {
-//                                    "Output" -> CustomColors.current.surfaceTintRed
-//                                    "Input" -> CustomColors.current.surfaceTintGreen
-//                                    else -> CustomColors.current.surfaceTintBlue
-//                                }
-                    )
+            TransactionListItem(
+                type = openTransaction!!.type,
+                dateTime = openTransaction!!.createdOn,
+                source = openTransaction!!.source,
+                destination = openTransaction!!.destination,
+                amount = openTransaction!!.amount,
+                currency = Currencies.valueOf(openTransaction!!.currency),
+                comment = openTransaction!!.comment,
+                onClick = {
+                    val intent = Intent(context, ViewTransaction::class.java)
+                    intent.putExtra("transactionId", openTransaction!!.transactionId.toString())
+                    context.startActivity(intent)
                 },
                 modifier = Modifier
                     .padding(top = 0.dp, bottom = 24.dp, start = 24.dp, end = 24.dp)
@@ -277,11 +237,6 @@ fun FullScreenMapView(transactions: List<Transaction>) {
                         MaterialTheme.colorScheme.outlineVariant,
                         RoundedCornerShape(7.dp)
                     )
-                    .clickable {
-                        val intent = Intent(context, ViewTransaction::class.java)
-                        intent.putExtra("transactionId", openTransaction!!.transactionId.toString())
-                        context.startActivity(intent)
-                    }
             )
 
             val color = MaterialTheme.colorScheme.surfaceContainerLow

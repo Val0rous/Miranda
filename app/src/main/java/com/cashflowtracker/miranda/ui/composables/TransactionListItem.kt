@@ -28,6 +28,7 @@ import com.cashflowtracker.miranda.utils.TransactionType
 import com.cashflowtracker.miranda.utils.formatAmount
 import com.cashflowtracker.miranda.utils.formatDate
 import com.cashflowtracker.miranda.utils.formatTime
+import com.cashflowtracker.miranda.utils.iconFactory
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
@@ -40,7 +41,8 @@ fun TransactionListItem(
     amount: Double,
     currency: Currencies,
     comment: String,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val zdt = ZonedDateTime.parse(
         dateTime,
@@ -57,43 +59,17 @@ fun TransactionListItem(
             )
         },
         leadingContent = {
-            Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .clip(CircleShape)
-                    .background(
-                        when (type) {
-                            TransactionType.OUTPUT.type -> LocalCustomColors.current.surfaceTintRed
-                            TransactionType.INPUT.type -> LocalCustomColors.current.surfaceTintGreen
-                            else -> LocalCustomColors.current.surfaceTintBlue
-                        }
-                    )
-            ) {
-                Icon(
-                    imageVector = ImageVector.vectorResource(
-                        when (type) {
-                            TransactionType.OUTPUT.type -> DefaultCategories.getIcon(destination)
-
-                            TransactionType.INPUT.type -> {
-                                when (source) {
-                                    SpecialType.POCKET.category, SpecialType.EXTRA.category -> SpecialType.getIcon(
-                                        source
-                                    )
-
-                                    else -> DefaultCategories.getIcon(source)
-                                }
-                            }
-
-                            else -> R.drawable.ic_sync
-                        }
-                    ),
-                    contentDescription = type,
-                    tint = LocalCustomColors.current.icon,
-                    modifier = Modifier
-                        .size(24.dp)
-                        .align(Alignment.Center)
-                )
-            }
+            IconWithBackground(
+                icon = iconFactory(type, source, destination),
+                iconSize = 24.dp,
+                iconColor = LocalCustomColors.current.icon,
+                backgroundSize = 40.dp,
+                backgroundColor = when (type) {
+                    "Output" -> LocalCustomColors.current.surfaceTintRed
+                    "Input" -> LocalCustomColors.current.surfaceTintGreen
+                    else -> LocalCustomColors.current.surfaceTintBlue
+                }
+            )
         },
         headlineContent = {
             Text(
@@ -117,6 +93,6 @@ fun TransactionListItem(
 //                                }
             )
         },
-        modifier = Modifier.clickable { onClick() }
+        modifier = modifier.clickable { onClick() }
     )
 }

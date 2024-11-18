@@ -51,8 +51,10 @@ import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentU
 import com.cashflowtracker.miranda.ui.composables.AlertDialogIconTitle
 import com.cashflowtracker.miranda.ui.composables.CreationPillCard
 import com.cashflowtracker.miranda.ui.composables.MapScreen
+import com.cashflowtracker.miranda.ui.composables.MapViewer
 import com.cashflowtracker.miranda.ui.composables.NotificationsPillCard
 import com.cashflowtracker.miranda.ui.composables.RepeatsPillCard
+import com.cashflowtracker.miranda.ui.composables.TransactionBubblesToFrom
 import com.cashflowtracker.miranda.ui.theme.Green400
 import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
@@ -248,202 +250,11 @@ class ViewRecurrence : ComponentActivity() {
                         item {
                             if (isLoaded) {
                                 if (!isDeleting) {
-                                    Row(
-                                        verticalAlignment = Alignment.Top,
-                                        modifier = Modifier.padding(bottom = 24.dp)
-                                    ) {
-                                        Column(
-                                            horizontalAlignment = Alignment.CenterHorizontally,
-                                            modifier = Modifier.width(128.dp)
-                                        ) {
-                                            Box(
-                                                modifier = Modifier
-                                                    .size(56.dp)
-                                                    .clip(CircleShape)
-                                                    .background(
-                                                        when (recurrence!!.type) {
-                                                            "Output" -> LocalCustomColors.current.surfaceTintRed
-                                                            "Input" -> LocalCustomColors.current.surfaceTintGreen
-                                                            else -> LocalCustomColors.current.surfaceTintBlue
-                                                        }
-                                                    )
-                                            ) {
-                                                Icon(
-                                                    imageVector = ImageVector.vectorResource(
-                                                        when (recurrence!!.type) {
-                                                            "Output" -> AccountType.getIcon(
-                                                                sourceType
-                                                            )
-
-                                                            "Input" -> {
-                                                                when (recurrence!!.source) {
-                                                                    SpecialType.POCKET.category, SpecialType.EXTRA.category -> SpecialType.getIcon(
-                                                                        recurrence!!.source
-                                                                    )
-
-                                                                    else -> DefaultCategories.getIcon(
-                                                                        recurrence!!.source
-                                                                    )
-                                                                }
-                                                            }
-
-                                                            else -> AccountType.getIcon(sourceType)
-                                                        }
-                                                    ),
-                                                    contentDescription = recurrence!!.source,
-                                                    tint = LocalCustomColors.current.icon,
-                                                    modifier = Modifier
-                                                        .size(40.dp)
-                                                        .align(Alignment.Center)
-                                                )
-                                            }
-                                            Text(
-                                                text = recurrence!!.source,
-                                                style = MaterialTheme.typography.titleMedium,
-                                                color = MaterialTheme.colorScheme.onSurface,
-                                                modifier = Modifier.padding(top = 8.dp)
-                                            )
-                                            if (recurrence!!.type == "Input") {
-                                                Row(modifier = Modifier.padding(top = 4.dp)) {
-                                                    when (DefaultCategories.getType(recurrence!!.source)) {
-                                                        CategoryClass.NECESSITY -> repeat(1) {
-                                                            Icon(
-                                                                imageVector = ImageVector.vectorResource(
-                                                                    R.drawable.ic_star_filled
-                                                                ),
-                                                                contentDescription = "",
-                                                                tint = Red400,
-                                                                modifier = Modifier
-                                                                    .size(24.dp)
-                                                            )
-                                                        }
-
-                                                        CategoryClass.CONVENIENCE -> repeat(2) {
-                                                            Icon(
-                                                                imageVector = ImageVector.vectorResource(
-                                                                    R.drawable.ic_star_filled
-                                                                ),
-                                                                contentDescription = "",
-                                                                tint = Yellow400,
-                                                                modifier = Modifier
-                                                                    .size(24.dp)
-                                                            )
-                                                        }
-
-                                                        CategoryClass.LUXURY -> repeat(3) {
-                                                            Icon(
-                                                                imageVector = ImageVector.vectorResource(
-                                                                    R.drawable.ic_star_filled
-                                                                ),
-                                                                contentDescription = "",
-                                                                tint = Green400,
-                                                                modifier = Modifier
-                                                                    .size(24.dp)
-                                                            )
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-
-                                        Icon(
-                                            imageVector = ImageVector.vectorResource(R.drawable.ic_east),
-                                            contentDescription = "To",
-                                            tint = MaterialTheme.colorScheme.onSurface,
-                                            modifier = Modifier
-                                                .size(24.dp)
-                                                .offset(y = 16.dp)
-                                        )
-
-                                        Column(
-                                            horizontalAlignment = Alignment.CenterHorizontally,
-                                            modifier = Modifier
-                                                .width(128.dp)
-                                        ) {
-                                            Box(
-                                                modifier = Modifier
-                                                    .size(56.dp)
-                                                    .clip(CircleShape)
-                                                    .background(
-                                                        when (recurrence!!.type) {
-                                                            "Output" -> LocalCustomColors.current.surfaceTintRed
-                                                            "Input" -> LocalCustomColors.current.surfaceTintGreen
-                                                            else -> LocalCustomColors.current.surfaceTintBlue
-                                                        }
-                                                    )
-                                            ) {
-                                                Icon(
-                                                    imageVector = ImageVector.vectorResource(
-                                                        when (recurrence!!.type) {
-                                                            "Output" -> DefaultCategories.getIcon(
-                                                                recurrence!!.destination
-                                                            )
-
-                                                            "Input" -> AccountType.getIcon(
-                                                                destinationType
-                                                            )
-
-                                                            else -> AccountType.getIcon(
-                                                                destinationType
-                                                            )
-                                                        }
-                                                    ),
-                                                    contentDescription = recurrence!!.destination,
-                                                    tint = LocalCustomColors.current.icon,
-                                                    modifier = Modifier
-                                                        .size(40.dp)
-                                                        .align(Alignment.Center)
-                                                )
-                                            }
-                                            Text(
-                                                text = recurrence!!.destination,
-                                                style = MaterialTheme.typography.titleMedium,
-                                                color = MaterialTheme.colorScheme.onSurface,
-                                                modifier = Modifier.padding(top = 8.dp)
-                                            )
-                                            if (recurrence!!.type == "Output") {
-                                                Row(modifier = Modifier.padding(top = 4.dp)) {
-                                                    when (DefaultCategories.getType(recurrence!!.destination)) {
-                                                        CategoryClass.NECESSITY -> repeat(1) {
-                                                            Icon(
-                                                                imageVector = ImageVector.vectorResource(
-                                                                    R.drawable.ic_star_filled
-                                                                ),
-                                                                contentDescription = "",
-                                                                tint = Red400,
-                                                                modifier = Modifier
-                                                                    .size(24.dp)
-                                                            )
-                                                        }
-
-                                                        CategoryClass.CONVENIENCE -> repeat(2) {
-                                                            Icon(
-                                                                imageVector = ImageVector.vectorResource(
-                                                                    R.drawable.ic_star_filled
-                                                                ),
-                                                                contentDescription = "",
-                                                                tint = Yellow400,
-                                                                modifier = Modifier
-                                                                    .size(24.dp)
-                                                            )
-                                                        }
-
-                                                        CategoryClass.LUXURY -> repeat(3) {
-                                                            Icon(
-                                                                imageVector = ImageVector.vectorResource(
-                                                                    R.drawable.ic_star_filled
-                                                                ),
-                                                                contentDescription = "",
-                                                                tint = Green400,
-                                                                modifier = Modifier
-                                                                    .size(24.dp)
-                                                            )
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
+                                    TransactionBubblesToFrom(
+                                        recurrence!!,
+                                        sourceType,
+                                        destinationType
+                                    )
 
                                     HorizontalDivider(modifier = Modifier.padding(bottom = 24.dp))
 
@@ -506,12 +317,7 @@ class ViewRecurrence : ComponentActivity() {
                                     }
 
                                     if (coordinates.value != null) {
-                                        MapScreen(
-                                            latitude = coordinates.value?.latitude ?: 0.0,
-                                            longitude = coordinates.value?.longitude ?: 0.0,
-                                            isLocationLoaded = isLocationLoaded,
-                                            modifier = Modifier.padding(horizontal = 16.dp)
-                                        )
+                                        MapViewer(coordinates.value!!, isLocationLoaded)
                                     }
                                 }
                             }
