@@ -79,7 +79,7 @@ fun MapScreen(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(28.dp))
+            .clip(RoundedCornerShape(24.dp))    // Was 28.dp
             .height(218.dp),
         contentAlignment = Alignment.Center,
     ) {
