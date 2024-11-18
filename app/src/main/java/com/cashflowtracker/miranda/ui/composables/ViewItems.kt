@@ -306,7 +306,7 @@ fun TransactionViewer(
             if (comment.isNotEmpty()) {
                 Text(
                     text = comment,
-                    style = MaterialTheme.typography.headlineMedium,
+                    style = MaterialTheme.typography.headlineSmall,
                     color = MaterialTheme.colorScheme.onSurface,
                     textAlign = TextAlign.Center,
                     modifier = Modifier
