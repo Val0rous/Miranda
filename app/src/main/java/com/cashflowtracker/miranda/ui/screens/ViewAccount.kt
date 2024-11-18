@@ -233,7 +233,7 @@ class ViewAccount : ComponentActivity() {
                                         Text(text = "Created on")
                                         Spacer(modifier = Modifier.weight(1f))
                                         Text(
-                                            text = formatDate(account!!.creationDate),
+                                            text = formatDate(account!!.createdOn),
                                             style = MaterialTheme.typography.titleMedium,
                                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                                             textAlign = TextAlign.End

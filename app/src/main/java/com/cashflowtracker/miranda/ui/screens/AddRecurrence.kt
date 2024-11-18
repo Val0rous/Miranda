@@ -217,7 +217,8 @@ class AddRecurrence : ComponentActivity() {
                                                 currency = currency.value.name,
                                                 comment = comment.value,
                                                 location = location.value,
-                                                userId = userId
+                                                userId = userId,
+                                                isCreatedByRecurrence = true
                                             )
                                         )
 
@@ -241,7 +242,7 @@ class AddRecurrence : ComponentActivity() {
                                         currency = currency.value.name,
                                         comment = comment.value,
                                         location = location.value,
-                                        repeatIntervalMillis = selectedRepeat.value.time,
+                                        repeatInterval = selectedRepeat.value.name,
                                         reoccursOn = repeatsOn,
                                         userId = userId
                                     )

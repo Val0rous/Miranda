@@ -43,6 +43,7 @@ import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.data.database.Transaction
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserId
 import com.cashflowtracker.miranda.ui.composables.AlertDialogIconTitle
+import com.cashflowtracker.miranda.ui.composables.IsRecurrencePillCard
 import com.cashflowtracker.miranda.ui.composables.MapScreen
 import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
 import com.cashflowtracker.miranda.ui.theme.Green400
@@ -86,6 +87,7 @@ class ViewTransaction : ComponentActivity() {
             val accountsVm = koinViewModel<AccountsViewModel>()
             val isLocationLoaded = remember { mutableStateOf(false) }
             val coordinates = remember { mutableStateOf<Coordinates?>(null) }
+            val isCreatedByRecurrence = remember { mutableStateOf(false) }
 
             LaunchedEffect(key1 = transactionId, key2 = isDeleting) {
                 if (!isDeleting) {
@@ -95,7 +97,8 @@ class ViewTransaction : ComponentActivity() {
                                 withContext(Dispatchers.Main) {
                                     transaction = it.also {
                                         if (!isDeleting) {
-                                            isLocationLoaded.value = !it.location.isNullOrEmpty()
+                                            isLocationLoaded.value = it.location.isNotEmpty()
+                                            isCreatedByRecurrence.value = it.isCreatedByRecurrence
 
                                             coroutineScope.launch(Dispatchers.IO) {
                                                 if (!isDeleting) {
@@ -461,6 +464,10 @@ class ViewTransaction : ComponentActivity() {
                                     }
 
                                     HorizontalDivider(modifier = Modifier.padding(vertical = 24.dp))
+
+                                    if (isCreatedByRecurrence.value) {
+                                        IsRecurrencePillCard()
+                                    }
 
                                     if (coordinates.value != null) {
                                         MapScreen(

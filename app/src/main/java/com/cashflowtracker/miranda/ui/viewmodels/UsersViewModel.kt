@@ -70,9 +70,6 @@ class UsersViewModel(private val repository: UsersRepository) : ViewModel() {
                             email = email,
                             password = hashPassword(password, salt),
                             salt = salt,
-                            encryptionKey = null,
-                            currency = null,
-                            country = null
                         )
                     )
                     return@run true

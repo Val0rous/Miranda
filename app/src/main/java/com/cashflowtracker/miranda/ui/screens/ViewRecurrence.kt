@@ -40,8 +40,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
@@ -50,7 +48,9 @@ import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.data.database.Recurrence
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserId
 import com.cashflowtracker.miranda.ui.composables.AlertDialogIconTitle
+import com.cashflowtracker.miranda.ui.composables.CreationPillCard
 import com.cashflowtracker.miranda.ui.composables.MapScreen
+import com.cashflowtracker.miranda.ui.composables.RepeatsPillCard
 import com.cashflowtracker.miranda.ui.theme.Green400
 import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
@@ -63,9 +63,9 @@ import com.cashflowtracker.miranda.utils.CategoryClass
 import com.cashflowtracker.miranda.utils.Coordinates
 import com.cashflowtracker.miranda.utils.Currencies
 import com.cashflowtracker.miranda.utils.DefaultCategories
+import com.cashflowtracker.miranda.utils.Repeats
 import com.cashflowtracker.miranda.utils.SpecialType
 import com.cashflowtracker.miranda.utils.formatAmount
-import com.cashflowtracker.miranda.utils.formatDate
 import com.cashflowtracker.miranda.utils.formatZonedDateTime
 import com.cashflowtracker.miranda.utils.getDate
 import kotlinx.coroutines.Dispatchers
@@ -95,6 +95,7 @@ class ViewRecurrence : ComponentActivity() {
             val isLocationLoaded = remember { mutableStateOf(false) }
             val coordinates = remember { mutableStateOf<Coordinates?>(null) }
             val createdOn = remember { mutableStateOf("") }
+            val repeatInterval = remember { mutableStateOf<Repeats?>(null) }
             val reoccursOn = remember { mutableStateOf("") }
 
             LaunchedEffect(key1 = recurrenceId, key2 = isDeleting) {
@@ -105,9 +106,11 @@ class ViewRecurrence : ComponentActivity() {
                                 withContext(Dispatchers.Main) {
                                     recurrence = it.also {
                                         if (!isDeleting) {
-                                            isLocationLoaded.value = !it.location.isNullOrEmpty()
+                                            isLocationLoaded.value = it.location.isNotEmpty()
                                             createdOn.value = getDate(it.createdOn)
                                             reoccursOn.value = it.reoccursOn
+                                            repeatInterval.value =
+                                                Repeats.valueOf(it.repeatInterval)
 
                                             coroutineScope.launch(Dispatchers.IO) {
                                                 if (!isDeleting) {
@@ -479,66 +482,12 @@ class ViewRecurrence : ComponentActivity() {
                                         )
                                     )
 
+                                    if (repeatInterval.value != null) {
+                                        RepeatsPillCard(repeat = repeatInterval.value!!)
+                                    }
+
                                     if (createdOn.value.isNotEmpty()) {
-                                        Card(
-                                            colors = CardDefaults.cardColors(
-                                                containerColor = MaterialTheme.colorScheme.surfaceContainerLow
-                                            ),
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .height(48.dp)
-                                                .padding(horizontal = 16.dp)
-                                                .clip(RoundedCornerShape(40.dp))
-                                        ) {
-                                            Row(
-                                                modifier = Modifier
-                                                    .fillMaxWidth()
-                                                    .padding(horizontal = 16.dp, vertical = 12.dp),
-                                                verticalAlignment = Alignment.CenterVertically
-                                            ) {
-                                                Icon(
-                                                    imageVector = ImageVector.vectorResource(R.drawable.ic_replay),
-                                                    contentDescription = "Repeat",
-                                                    modifier = Modifier
-                                                        .padding(end = 8.dp)
-                                                        .scale(
-                                                            scaleX = -1f,
-                                                            scaleY = 1f
-                                                        )   // Flip horizontally
-                                                        .rotate(-45f)
-                                                )
-                                                Spacer(modifier = Modifier.width(4.dp))
-                                                Text("Every monthsss")
-                                            }
-                                        }
-
-                                        Spacer(modifier = Modifier.height(18.dp))
-
-                                        Card(
-                                            colors = CardDefaults.cardColors(
-                                                containerColor = MaterialTheme.colorScheme.surfaceContainerLow
-                                            ),
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .height(48.dp)
-                                                .padding(horizontal = 16.dp)
-                                                .clip(RoundedCornerShape(28.dp))
-                                        ) {
-                                            Row(
-                                                modifier = Modifier
-                                                    .fillMaxWidth()
-                                                    .padding(horizontal = 16.dp, vertical = 12.dp),
-                                                verticalAlignment = Alignment.CenterVertically
-                                            ) {
-                                                Icon(
-                                                    imageVector = ImageVector.vectorResource(R.drawable.ic_history),
-                                                    contentDescription = "Creation date",
-                                                    modifier = Modifier.padding(end = 8.dp)
-                                                )
-                                                Spacer(modifier = Modifier.width(4.dp))
-                                                Text("Since " + createdOn.value)
-                                            }
-                                        }
+                                        CreationPillCard(creationDate = createdOn.value)
                                     }
 
                                     if (coordinates.value != null) {

@@ -15,9 +15,9 @@ data class User(
     @ColumnInfo val email: String,
     @ColumnInfo val password: String,
     @ColumnInfo val salt: String,
-    @ColumnInfo val encryptionKey: String?,  // Could be useful to encrypt data and password
-    @ColumnInfo val currency: String?,   // Maybe it's useless (SharedPreferences)
-    @ColumnInfo val country: String?,    // Maybe it's useless, too
+    @ColumnInfo val encryptionKey: String = "",  // Could be useful to encrypt data and password
+    @ColumnInfo val currency: String = "USD",
+    @ColumnInfo val country: String = "UNITED_STATES",
 )
 
 sealed class BaseTransaction {
@@ -38,8 +38,9 @@ data class Transaction(
     @ColumnInfo val amount: Double,
     @ColumnInfo val currency: String,
     @ColumnInfo override val comment: String,
-    @ColumnInfo override val location: String?,
+    @ColumnInfo override val location: String,
     @ColumnInfo val userId: UUID,
+    @ColumnInfo val isCreatedByRecurrence: Boolean = false,
 ) : BaseTransaction()
 
 @Entity
@@ -52,8 +53,8 @@ data class Recurrence(
     @ColumnInfo val amount: Double,
     @ColumnInfo val currency: String,
     @ColumnInfo override val comment: String,
-    @ColumnInfo override val location: String?,
-    @ColumnInfo val repeatIntervalMillis: Long,
+    @ColumnInfo override val location: String,
+    @ColumnInfo val repeatInterval: String, // Repeats.name
     @ColumnInfo val reoccursOn: String,   // ZonedDateTime
     @ColumnInfo val userId: UUID,
 ) : BaseTransaction()
@@ -73,7 +74,7 @@ data class RecurrenceWithNotification(
         parentColumn = "recurrenceId",  // Column in Recurrence
         entityColumn = "recurrenceId",  // Column in Notification
     )
-    val notifications: List<Notification>
+    val notifications: List<Notification>,
 )
 
 @Entity
@@ -82,7 +83,7 @@ data class Account(
     @ColumnInfo val title: String,
     @ColumnInfo val type: String,
     @ColumnInfo val balance: Double,
-    @ColumnInfo val creationDate: String,   // ZonedDateTime
+    @ColumnInfo val createdOn: String,   // ZonedDateTime
     @ColumnInfo val userId: UUID,
     @ColumnInfo val isFavorite: Boolean,
 )

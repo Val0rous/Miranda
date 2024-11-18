@@ -65,9 +65,6 @@ class EditProfile : ComponentActivity() {
                         "",
                         "",
                         "",
-                        null,
-                        null,
-                        null,
                     )
                 )
             }
