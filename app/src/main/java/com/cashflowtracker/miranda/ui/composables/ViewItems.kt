@@ -1,5 +1,6 @@
 package com.cashflowtracker.miranda.ui.composables
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,10 +43,13 @@ import com.cashflowtracker.miranda.ui.theme.Yellow400
 import com.cashflowtracker.miranda.utils.AccountType
 import com.cashflowtracker.miranda.utils.CategoryClass
 import com.cashflowtracker.miranda.utils.Coordinates
+import com.cashflowtracker.miranda.utils.Currencies
 import com.cashflowtracker.miranda.utils.DefaultCategories
 import com.cashflowtracker.miranda.utils.Notifications
 import com.cashflowtracker.miranda.utils.Repeats
 import com.cashflowtracker.miranda.utils.SpecialType
+import com.cashflowtracker.miranda.utils.formatAmount
+import com.cashflowtracker.miranda.utils.formatZonedDateTime
 
 @Composable
 fun TransactionBubblesToFrom(
@@ -248,6 +252,46 @@ fun TransactionBubblesToFrom(
                 }
             }
         }
+    }
+}
+
+@Composable
+fun TransactionViewer(
+    type: String,
+    dateTime: String,
+    amount: Double,
+    currency: String,
+    comment: String,
+    context: Context
+) {
+    if (dateTime.isNotEmpty()) {
+        Text(
+            text = formatZonedDateTime(context, dateTime),
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+    }
+
+    Text(
+        text = formatAmount(
+            amount, Currencies.get(currency), type
+        ),
+        style = MaterialTheme.typography.headlineMedium,
+        color = when (type) {
+            "Output" -> LocalCustomColors.current.surfaceTintRed
+            "Input" -> LocalCustomColors.current.surfaceTintGreen
+            else -> LocalCustomColors.current.surfaceTintBlue
+        },
+        modifier = Modifier.padding(top = 24.dp)
+    )
+
+    if (comment.isNotEmpty()) {
+        Text(
+            text = comment,
+            style = MaterialTheme.typography.headlineMedium,
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.padding(top = 24.dp)
+        )
     }
 }
 

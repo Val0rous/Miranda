@@ -55,6 +55,7 @@ import com.cashflowtracker.miranda.ui.composables.MapViewer
 import com.cashflowtracker.miranda.ui.composables.NotificationsPillCard
 import com.cashflowtracker.miranda.ui.composables.RepeatsPillCard
 import com.cashflowtracker.miranda.ui.composables.TransactionBubblesToFrom
+import com.cashflowtracker.miranda.ui.composables.TransactionViewer
 import com.cashflowtracker.miranda.ui.theme.Green400
 import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
@@ -258,40 +259,14 @@ class ViewRecurrence : ComponentActivity() {
 
                                     HorizontalDivider(modifier = Modifier.padding(bottom = 24.dp))
 
-                                    if (recurrence!!.reoccursOn.isNotEmpty()) {
-                                        Text(
-                                            text = formatZonedDateTime(
-                                                this@ViewRecurrence,
-                                                recurrence!!.reoccursOn
-                                            ),
-                                            style = MaterialTheme.typography.titleMedium,
-                                            color = MaterialTheme.colorScheme.onSurface
-                                        )
-                                    }
-
-                                    Text(
-                                        text = formatAmount(
-                                            recurrence!!.amount,
-                                            Currencies.get(recurrence!!.currency),
-                                            recurrence!!.type
-                                        ),
-                                        style = MaterialTheme.typography.headlineMedium,
-                                        color = when (recurrence!!.type) {
-                                            "Output" -> LocalCustomColors.current.surfaceTintRed
-                                            "Input" -> LocalCustomColors.current.surfaceTintGreen
-                                            else -> LocalCustomColors.current.surfaceTintBlue
-                                        },
-                                        modifier = Modifier.padding(top = 24.dp)
+                                    TransactionViewer(
+                                        type = recurrence!!.type,
+                                        dateTime = recurrence!!.reoccursOn,
+                                        amount = recurrence!!.amount,
+                                        currency = recurrence!!.currency,
+                                        comment = recurrence!!.comment,
+                                        context = this@ViewRecurrence
                                     )
-
-                                    if (recurrence!!.comment.isNotEmpty()) {
-                                        Text(
-                                            text = recurrence!!.comment,
-                                            style = MaterialTheme.typography.headlineMedium,
-                                            color = MaterialTheme.colorScheme.onSurface,
-                                            modifier = Modifier.padding(top = 24.dp)
-                                        )
-                                    }
 
                                     HorizontalDivider(
                                         modifier = Modifier.padding(

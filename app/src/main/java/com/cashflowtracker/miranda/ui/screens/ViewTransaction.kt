@@ -38,6 +38,7 @@ import com.cashflowtracker.miranda.ui.composables.IsRecurrencePillCard
 import com.cashflowtracker.miranda.ui.composables.MapScreen
 import com.cashflowtracker.miranda.ui.composables.MapViewer
 import com.cashflowtracker.miranda.ui.composables.TransactionBubblesToFrom
+import com.cashflowtracker.miranda.ui.composables.TransactionViewer
 import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 import com.cashflowtracker.miranda.ui.viewmodels.AccountsViewModel
@@ -223,40 +224,14 @@ class ViewTransaction : ComponentActivity() {
 
                                     HorizontalDivider(modifier = Modifier.padding(bottom = 24.dp))
 
-                                    if (transaction!!.createdOn.isNotEmpty()) {
-                                        Text(
-                                            text = formatZonedDateTime(
-                                                this@ViewTransaction,
-                                                transaction!!.createdOn
-                                            ),
-                                            style = MaterialTheme.typography.titleMedium,
-                                            color = MaterialTheme.colorScheme.onSurface
-                                        )
-                                    }
-
-                                    Text(
-                                        text = formatAmount(
-                                            transaction!!.amount,
-                                            Currencies.get(transaction!!.currency),
-                                            transaction!!.type
-                                        ),
-                                        style = MaterialTheme.typography.headlineMedium,
-                                        color = when (transaction!!.type) {
-                                            "Output" -> LocalCustomColors.current.surfaceTintRed
-                                            "Input" -> LocalCustomColors.current.surfaceTintGreen
-                                            else -> LocalCustomColors.current.surfaceTintBlue
-                                        },
-                                        modifier = Modifier.padding(top = 24.dp)
+                                    TransactionViewer(
+                                        type = transaction!!.type,
+                                        dateTime = transaction!!.createdOn,
+                                        amount = transaction!!.amount,
+                                        currency = transaction!!.currency,
+                                        comment = transaction!!.comment,
+                                        context = this@ViewTransaction
                                     )
-
-                                    if (transaction!!.comment.isNotEmpty()) {
-                                        Text(
-                                            text = transaction!!.comment,
-                                            style = MaterialTheme.typography.headlineMedium,
-                                            color = MaterialTheme.colorScheme.onSurface,
-                                            modifier = Modifier.padding(top = 24.dp)
-                                        )
-                                    }
 
                                     HorizontalDivider(modifier = Modifier.padding(vertical = 24.dp))
 
