@@ -309,6 +309,7 @@ class ViewRecurrence : ComponentActivity() {
                                 openAlertDialog.value = false
                                 isDeleting = true
                                 coroutineScope.launch(Dispatchers.IO) {
+                                    notificationsVm.actions.removeAllByRecurrenceId(recurrenceId)
                                     vm.actions.removeRecurrence(recurrenceId)
                                     finish()
                                 }
