@@ -177,11 +177,11 @@ fun Home() {
                 }
             }
         }
-        HorizontalDivider(
-            modifier = Modifier.padding(top = 0.dp),
-            thickness = (0.5).dp,
-            color = MaterialTheme.colorScheme.outlineVariant
-        )
+//        HorizontalDivider(
+//            modifier = Modifier.padding(top = 0.dp),
+//            thickness = (0.5).dp,
+//            color = MaterialTheme.colorScheme.outlineVariant
+//        )
         if (filteredAccounts.isNotEmpty()) {
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 items(filteredAccounts) { account ->
