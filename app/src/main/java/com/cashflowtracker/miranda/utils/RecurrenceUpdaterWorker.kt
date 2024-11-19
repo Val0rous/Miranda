@@ -78,7 +78,7 @@ class RecurrenceUpdaterWorker(
                 scheduleNotification(it, recurrence, applicationContext)
             }
 
-            // Schedule new recurrence
+            scheduleRecurrence(recurrence, applicationContext)
 
             Result.success()
         } catch (e: Exception) {

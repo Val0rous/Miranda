@@ -151,7 +151,7 @@ class ViewRecurrence : ComponentActivity() {
 
                                             coroutineScope.launch {
                                                 if (isLocationLoaded.value) {
-                                                    it.location?.split(", ", limit = 2)
+                                                    it.location.split(", ", limit = 2)
                                                         ?.let { item ->
                                                             if (item.size == 2) {
                                                                 coordinates.value =
