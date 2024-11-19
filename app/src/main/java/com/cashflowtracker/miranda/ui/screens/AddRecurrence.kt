@@ -49,6 +49,7 @@ import com.cashflowtracker.miranda.utils.getNotificationTime
 import com.cashflowtracker.miranda.utils.getRepeatTime
 import com.cashflowtracker.miranda.utils.getSuggestions
 import com.cashflowtracker.miranda.utils.scheduleNotification
+import com.cashflowtracker.miranda.utils.scheduleRecurrence
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -249,7 +250,7 @@ class AddRecurrence : ComponentActivity() {
                                     )
 
                                     recurrencesVm.actions.addRecurrence(recurrence)
-                                    notificationsVm.actions.removeAllByRecurrenceId(recurrence.recurrenceId)
+//                                    notificationsVm.actions.removeAllByRecurrenceId(recurrence.recurrenceId)
                                     notifications.forEach {
                                         val dateTime = getNotificationTime(
                                             ZonedDateTime.parse(recurrence.reoccursOn),
@@ -268,6 +269,7 @@ class AddRecurrence : ComponentActivity() {
                                             this@AddRecurrence
                                         )
                                     }
+                                    scheduleRecurrence(recurrence, this@AddRecurrence)
 
                                     finish()
                                 }

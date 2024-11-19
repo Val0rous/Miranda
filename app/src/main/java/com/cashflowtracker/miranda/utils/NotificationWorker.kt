@@ -9,17 +9,17 @@ class NotificationWorker(
     context: Context,
     workerParams: WorkerParameters
 ) : Worker(context, workerParams) {
-    val notificationId = inputData.getString("notificationId") ?: ""
-    val dateTime = inputData.getString("dateTime") ?: ""
-    val notificationType = inputData.getString("notificationType") ?: ""
-    val recurrenceId = inputData.getString("recurrenceId") ?: ""
-    val userId = inputData.getString("userId") ?: ""
-    val recurrenceType = inputData.getString("recurrenceType") ?: ""
-    val source = inputData.getString("source") ?: ""
-    val destination = inputData.getString("destination") ?: ""
-    val amount = inputData.getDouble("amount", 0.0)
-    val currency = inputData.getString("currency") ?: ""
-    val comment = inputData.getString("comment") ?: ""
+    private val notificationId = inputData.getString("notificationId") ?: ""
+    private val dateTime = inputData.getString("dateTime") ?: ""
+    private val notificationType = inputData.getString("notificationType") ?: ""
+    private val recurrenceId = inputData.getString("recurrenceId") ?: ""
+    private val userId = inputData.getString("userId") ?: ""
+    private val recurrenceType = inputData.getString("recurrenceType") ?: ""
+    private val source = inputData.getString("source") ?: ""
+    private val destination = inputData.getString("destination") ?: ""
+    private val amount = inputData.getDouble("amount", 0.0)
+    private val currency = inputData.getString("currency") ?: ""
+    private val comment = inputData.getString("comment") ?: ""
 
 
     override fun doWork(): Result {

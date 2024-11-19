@@ -43,6 +43,31 @@ fun scheduleNotification(notification: Notification, recurrence: Recurrence, con
     WorkManager.getInstance(context).enqueue(notificationRequest)
 }
 
-fun cancelScheduledNotifications(recurrenceId: UUID, context: Context) {
+//fun cancelScheduledNotifications(recurrenceId: UUID, context: Context) {
+//    WorkManager.getInstance(context).cancelAllWorkByTag(recurrenceId.toString())
+//}
+
+fun scheduleRecurrence(recurrence: Recurrence, context: Context) {
+    val zdt = ZonedDateTime.parse(recurrence.reoccursOn)
+    val now = ZonedDateTime.now()
+    val delayMillis = Duration.between(now, zdt).toMillis()
+    if (zdt.isBefore(now)) {
+        return
+    }
+    val data = Data.Builder()
+        .putString("recurrenceId", recurrence.recurrenceId.toString())
+        .build()
+
+
+    val workRequest = OneTimeWorkRequestBuilder<RecurrenceUpdaterWorker>()
+        .setInitialDelay(delayMillis, TimeUnit.MILLISECONDS)
+        .setInputData(data)
+        .addTag(recurrence.recurrenceId.toString())
+        .build()
+
+    WorkManager.getInstance(context).enqueue(workRequest)
+}
+
+fun cancelScheduledRecurrenceAndNotifications(recurrenceId: UUID, context: Context) {
     WorkManager.getInstance(context).cancelAllWorkByTag(recurrenceId.toString())
 }

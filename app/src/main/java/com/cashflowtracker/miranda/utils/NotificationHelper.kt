@@ -40,7 +40,7 @@ object NotificationHelper {
         createNotificationChannel(context)
 
         val notification = NotificationCompat.Builder(context, channelId)
-            .setContentTitle(comment)
+            .setContentTitle("$comment renews ${Notifications.valueOf(type).shortDesc}")
             .setContentText("${formatAmount(amount, currency, type)} with $source to $destination")
             .setSmallIcon(icon)
             .setAutoCancel(true)

@@ -72,7 +72,7 @@ import com.cashflowtracker.miranda.utils.DefaultCategories
 import com.cashflowtracker.miranda.utils.Notifications
 import com.cashflowtracker.miranda.utils.Repeats
 import com.cashflowtracker.miranda.utils.SpecialType
-import com.cashflowtracker.miranda.utils.cancelScheduledNotifications
+import com.cashflowtracker.miranda.utils.cancelScheduledRecurrenceAndNotifications
 import com.cashflowtracker.miranda.utils.formatAmount
 import com.cashflowtracker.miranda.utils.formatZonedDateTime
 import com.cashflowtracker.miranda.utils.getDate
@@ -310,7 +310,10 @@ class ViewRecurrence : ComponentActivity() {
                                 openAlertDialog.value = false
                                 isDeleting = true
                                 coroutineScope.launch(Dispatchers.IO) {
-                                    cancelScheduledNotifications(recurrenceId, this@ViewRecurrence)
+                                    cancelScheduledRecurrenceAndNotifications(
+                                        recurrenceId,
+                                        this@ViewRecurrence
+                                    )
                                     notificationsVm.actions.removeAllByRecurrenceId(recurrenceId)
                                     vm.actions.removeRecurrence(recurrenceId)
                                     finish()
