@@ -2,6 +2,7 @@ package com.cashflowtracker.miranda.ui.composables
 
 import android.content.Context
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -269,7 +270,7 @@ fun TransactionViewer(
     Spacer(modifier = Modifier.height(8.dp))
     Card(
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+            containerColor = LocalCustomColors.current.cardSurface
         ),
         modifier = Modifier
             .fillMaxWidth()
@@ -296,9 +297,9 @@ fun TransactionViewer(
                 ),
                 style = MaterialTheme.typography.headlineMedium,
                 color = when (type) {
-                    "Output" -> LocalCustomColors.current.surfaceTintRed
-                    "Input" -> LocalCustomColors.current.surfaceTintGreen
-                    else -> LocalCustomColors.current.surfaceTintBlue
+                    "Output" -> LocalCustomColors.current.textRed
+                    "Input" -> LocalCustomColors.current.textGreen
+                    else -> LocalCustomColors.current.textBlue
                 },
                 modifier = Modifier.padding(top = 24.dp)
             )
@@ -349,7 +350,7 @@ fun RepeatsPillCard(repeat: Repeats) {
 fun NotificationsPillCard(notifications: List<Notification>) {
     Card(
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+            containerColor = LocalCustomColors.current.cardSurface
         ),
         modifier = Modifier
             .fillMaxWidth()
@@ -410,7 +411,7 @@ fun PillCard(
 ) {
     Card(
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+            containerColor = LocalCustomColors.current.cardSurface
         ),
         modifier = Modifier
             .fillMaxWidth()

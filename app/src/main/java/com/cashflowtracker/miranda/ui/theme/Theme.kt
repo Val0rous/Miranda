@@ -50,7 +50,10 @@ data class CustomColorScheme(
     val surfaceTintYellow: Color,
     val surfaceTintGreen: Color,
     val surfaceTintBlue: Color,
+    val surfaceTintPurple: Color,
+    val surfaceTintDeepPurple: Color,
     val icon: Color,
+    val cardSurface: Color,
     val chartAreaBlue: Color,
     val chartLineBlue: Color,
     val chartAreaRed: Color,
@@ -65,6 +68,12 @@ data class CustomColorScheme(
     val starLineRed: Color,
     val starAreaGreen: Color,
     val starLineGreen: Color,
+    val textRed: Color,
+    val textGreen: Color,
+    val textBlue: Color,
+    val pieRed: Color,
+    val pieGreen: Color,
+    val pieBlue: Color,
 )
 
 private val DarkCustomColors = CustomColorScheme(
@@ -72,7 +81,10 @@ private val DarkCustomColors = CustomColorScheme(
     surfaceTintYellow = Dark_SurfaceTintYellow,
     surfaceTintGreen = Dark_SurfaceTintGreen,
     surfaceTintBlue = Dark_SurfaceTintBlue,
+    surfaceTintPurple = Dark_SurfaceTintPurple,
+    surfaceTintDeepPurple = Dark_SurfaceTintDeepPurple,
     icon = Dark_Icon,
+    cardSurface = Color(red = 29, green = 27, blue = 32),   // surface container low
     chartAreaBlue = ChartArea_Blue,
     chartLineBlue = Dark_ChartLine_Blue,
     chartAreaRed = ChartArea_Red,
@@ -87,6 +99,12 @@ private val DarkCustomColors = CustomColorScheme(
     starLineRed = Dark_StarLine_Red,
     starAreaGreen = Dark_StarArea_Green,
     starLineGreen = Dark_StarLine_Green,
+    textRed = Dark_SurfaceTintRed,
+    textGreen = Dark_SurfaceTintGreen,
+    textBlue = Dark_SurfaceTintBlue,
+    pieRed = Dark_SurfaceTintRed,
+    pieGreen = Dark_SurfaceTintGreen,
+    pieBlue = Dark_SurfaceTintBlue,
 )
 
 private val LightCustomColors = CustomColorScheme(
@@ -94,7 +112,10 @@ private val LightCustomColors = CustomColorScheme(
     surfaceTintYellow = Light_PrimaryFixedYellow,
     surfaceTintGreen = Light_PrimaryFixedGreen,
     surfaceTintBlue = Light_PrimaryFixedBlue,
+    surfaceTintPurple = Light_PrimaryFixedPurple,
+    surfaceTintDeepPurple = Light_PrimaryFixedDeepPurple,
     icon = Light_Icon,
+    cardSurface = Color(red = 255, green = 255, blue = 255),    // surface container lowest
     chartAreaBlue = ChartArea_Blue,
     chartLineBlue = Light_ChartLine_Blue,
     chartAreaRed = ChartArea_Red,
@@ -109,6 +130,12 @@ private val LightCustomColors = CustomColorScheme(
     starLineRed = Light_StarLine_Red,
     starAreaGreen = Light_StarArea_Green,
     starLineGreen = Light_StarLine_Green,
+    textRed = Light_SurfaceTintRed,
+    textGreen = Light_SurfaceTintGreen,
+    textBlue = Light_SurfaceTintBlue,
+    pieRed = Red400,
+    pieGreen = Green400,
+    pieBlue = Blue400,
 )
 
 internal val LocalCustomColors = staticCompositionLocalOf<CustomColorScheme> {

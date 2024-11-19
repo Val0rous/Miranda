@@ -43,7 +43,7 @@ fun AccountListItem(account: Account, modifier: Modifier) {
                 modifier = Modifier
                     .size(40.dp)
                     .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.surfaceTint)
+                    .background(LocalCustomColors.current.surfaceTintBlue)
             ) {
                 Icon(
                     imageVector = ImageVector.vectorResource(
@@ -52,7 +52,7 @@ fun AccountListItem(account: Account, modifier: Modifier) {
                         )
                     ),
                     contentDescription = account.type,
-                    tint = MaterialTheme.colorScheme.surface,
+                    tint = LocalCustomColors.current.icon,
                     modifier = Modifier
                         .size(24.dp)
                         .align(Alignment.Center)
@@ -159,7 +159,7 @@ fun SpecialListItem(item: SpecialType, modifier: Modifier) {
                 modifier = Modifier
                     .size(40.dp)
                     .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.surfaceTint)
+                    .background(LocalCustomColors.current.surfaceTintDeepPurple)
             ) {
                 Icon(
                     imageVector = ImageVector.vectorResource(
@@ -168,7 +168,7 @@ fun SpecialListItem(item: SpecialType, modifier: Modifier) {
                         )
                     ),
                     contentDescription = item.category,
-                    tint = MaterialTheme.colorScheme.surface,
+                    tint = LocalCustomColors.current.icon,
                     modifier = Modifier
                         .size(24.dp)
                         .align(Alignment.Center)

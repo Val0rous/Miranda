@@ -34,11 +34,15 @@ import com.cashflowtracker.miranda.ui.composables.DonutChart
 import com.cashflowtracker.miranda.ui.composables.DonutChartData
 import com.cashflowtracker.miranda.ui.composables.DonutChartDataCollection
 import com.cashflowtracker.miranda.ui.composables.PieChart
+import com.cashflowtracker.miranda.ui.theme.Blue400
+import com.cashflowtracker.miranda.ui.theme.Blue700
 import com.cashflowtracker.miranda.ui.theme.Green400
+import com.cashflowtracker.miranda.ui.theme.Green700
 import com.cashflowtracker.miranda.ui.theme.Light_ChartLine_Blue
 import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 import com.cashflowtracker.miranda.ui.theme.Red400
+import com.cashflowtracker.miranda.ui.theme.Red700
 import com.cashflowtracker.miranda.ui.theme.Yellow400
 import com.cashflowtracker.miranda.ui.viewmodels.TransactionsViewModel
 import com.cashflowtracker.miranda.utils.CategoryClass
@@ -132,9 +136,9 @@ class ViewCategoryStats : ComponentActivity() {
                                 data = transactionTypeCounts,
                                 radiusOuter = 50.dp,
                                 colors = listOf(
-                                    customColors.surfaceTintRed,
-                                    customColors.surfaceTintGreen,
-                                    customColors.surfaceTintBlue
+                                    Red400,
+                                    Green400,
+                                    Blue400
                                 )
                             )
                         }
