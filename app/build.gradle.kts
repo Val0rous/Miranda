@@ -146,4 +146,14 @@ dependencies {
     implementation("com.patrykandpatrick.vico:core:1.15.0")
     // For the view system.
 //    implementation("com.patrykandpatrick.vico:views:1.15.0")
+
+    // WorkManager dependency
+    implementation("androidx.work:work-runtime-ktx:2.10.0")
+
+    // Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
+
+    // Coroutines Play Services for 'await' on Task
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
 }

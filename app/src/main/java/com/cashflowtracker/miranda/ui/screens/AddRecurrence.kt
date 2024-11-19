@@ -48,6 +48,7 @@ import com.cashflowtracker.miranda.utils.calculateBalance
 import com.cashflowtracker.miranda.utils.getNotificationTime
 import com.cashflowtracker.miranda.utils.getRepeatTime
 import com.cashflowtracker.miranda.utils.getSuggestions
+import com.cashflowtracker.miranda.utils.scheduleNotification
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -254,21 +255,19 @@ class AddRecurrence : ComponentActivity() {
                                             ZonedDateTime.parse(recurrence.reoccursOn),
                                             it
                                         )
-//                                            addMillisToTime(ZonedDateTime.parse(recurrence.reoccursOn), -it.time)
-                                        notificationsVm.actions.addNotification(
-                                            Notification(
-                                                dateTime = dateTime,
-                                                notificationType = it.name,
-                                                recurrenceId = recurrence.recurrenceId,
-                                                userId = userId,
-                                            )
+                                        val notification = Notification(
+                                            dateTime = dateTime,
+                                            notificationType = it.name,
+                                            recurrenceId = recurrence.recurrenceId,
+                                            userId = userId,
+                                        )
+                                        notificationsVm.actions.addNotification(notification)
+                                        scheduleNotification(
+                                            notification,
+                                            recurrence,
+                                            this@AddRecurrence
                                         )
                                     }
-//                                    notifications1 = notifications[0].label,
-//                                    notifications2 = notifications[1].label,
-//                                    notifications3 = notifications[2].label,
-//                                    notifications4 = notifications[3].label,
-//                                    notifications5 = notifications[4].label,
 
                                     finish()
                                 }
