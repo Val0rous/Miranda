@@ -31,7 +31,8 @@ class NotificationWorker(
             destination,
             amount,
             Currencies.valueOf(currency),
-            comment
+            comment,
+            iconFactory(recurrenceType, source, destination)
         )
         return Result.success()
     }

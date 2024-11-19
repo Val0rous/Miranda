@@ -34,15 +34,15 @@ object NotificationHelper {
         amount: Double,
         currency: Currencies,
         comment: String,
+        icon: Int,
 //        color: Int
     ) {
         createNotificationChannel(context)
-        val icon = iconFactory(type, source, destination)
 
         val notification = NotificationCompat.Builder(context, channelId)
             .setContentTitle(comment)
             .setContentText("${formatAmount(amount, currency, type)} with $source to $destination")
-            .setSmallIcon(R.drawable.ic_paid)
+            .setSmallIcon(icon)
             .setAutoCancel(true)
 //            .setColor(color)
             .build()
