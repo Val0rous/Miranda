@@ -244,7 +244,8 @@ fun StatsCard(
                 width = coordinates.size.width.dp
             },
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.outlinedCardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow) // Use surfaceVariant color
+        colors = CardDefaults.outlinedCardColors(containerColor = LocalCustomColors.current.cardSurface), // Use surfaceVariant color
+        border = CardDefaults.outlinedCardBorder().copy(width = (0.5).dp)
     ) {
         Text(
             text = title,
@@ -285,7 +286,8 @@ fun CategoriesCard(
                 width = coordinates.size.width.dp
             },
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.outlinedCardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow) // Use surfaceVariant color
+        colors = CardDefaults.outlinedCardColors(containerColor = LocalCustomColors.current.cardSurface), // Use surfaceVariant color
+        border = CardDefaults.outlinedCardBorder().copy(width = (0.5).dp)
     ) {
         Text(
             text = title,

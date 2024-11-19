@@ -77,7 +77,8 @@ fun Home() {
             .fillMaxSize()
     ) {
         OutlinedCard(
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
+            colors = CardDefaults.cardColors(containerColor = LocalCustomColors.current.cardSurface),
+            border = CardDefaults.outlinedCardBorder().copy(width = (0.5).dp),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 16.dp, start = 16.dp, end = 16.dp)
