@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -165,52 +166,25 @@ fun RecurrenceListItem(
                 modifier = Modifier.padding(top = 4.dp)
             )
         },
-        supportingContent = {
-            Card(
-                colors = CardDefaults.cardColors(
-                    containerColor = LocalCustomColors.current.cardSurface
-                ),
-                modifier = Modifier
-                    .padding(top = 6.dp)
-                    .height(21.dp)
-                    .clip(RoundedCornerShape(16.dp))
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(horizontal = 8.dp)
-                ) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(id = R.drawable.ic_replay),
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier
-                            .size(20.dp)
-                            .padding(end = 6.dp)
-                            .scale(
-                                scaleX = -1f,
-                                scaleY = 1f
-                            )   // Flip horizontally
-                            .rotate(-45f)
-                    )
-                    Text(
-                        text = repeat.label,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-            }
-        },
         trailingContent = {
-            Text(
-                text = formatAmount(amount, currency, type),
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurface
+            Column(horizontalAlignment = Alignment.End) {
+                Text(
+                    text = formatAmount(amount, currency, type),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface
 //                                when (transaction.type) {
 //                                    "Output" -> CustomColors.current.surfaceTintRed
 //                                    "Input" -> CustomColors.current.surfaceTintGreen
 //                                    else -> CustomColors.current.surfaceTintBlue
 //                                }
-            )
+                )
+                Text(
+                    text = repeat.label.lowercase(),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+            }
         },
         modifier = modifier.clickable { onClick() }
     )
