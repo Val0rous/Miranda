@@ -53,6 +53,7 @@ import com.cashflowtracker.miranda.ui.composables.CreationPillCard
 import com.cashflowtracker.miranda.ui.composables.MapScreen
 import com.cashflowtracker.miranda.ui.composables.MapViewer
 import com.cashflowtracker.miranda.ui.composables.NotificationsPillCard
+import com.cashflowtracker.miranda.ui.composables.RenewalPillCard
 import com.cashflowtracker.miranda.ui.composables.RepeatsPillCard
 import com.cashflowtracker.miranda.ui.composables.TransactionBubblesToFrom
 import com.cashflowtracker.miranda.ui.composables.TransactionViewer
@@ -276,6 +277,10 @@ class ViewRecurrence : ComponentActivity() {
 //                                        )
 //                                    )
 
+                                    if (reoccursOn.value.isNotEmpty()) {
+                                        RenewalPillCard(reoccursOn.value)
+                                    }
+                                    
                                     if (repeatInterval.value != null) {
                                         RepeatsPillCard(repeatInterval.value!!)
                                     }

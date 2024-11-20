@@ -45,6 +45,7 @@ fun Recurrents() {
                         currency = Currencies.get(it.currency),
                         comment = it.comment,
                         repeat = Repeats.valueOf(it.repeatInterval),
+                        reoccursOn = it.reoccursOn,
                         onClick = {
                             val intent = Intent(context, ViewRecurrence::class.java)
                             intent.putExtra("recurrenceId", it.recurrenceId.toString())

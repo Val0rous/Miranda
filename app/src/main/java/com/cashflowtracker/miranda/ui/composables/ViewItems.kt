@@ -52,6 +52,7 @@ import com.cashflowtracker.miranda.utils.Notifications
 import com.cashflowtracker.miranda.utils.Repeats
 import com.cashflowtracker.miranda.utils.SpecialType
 import com.cashflowtracker.miranda.utils.formatAmount
+import com.cashflowtracker.miranda.utils.formatRenewal
 import com.cashflowtracker.miranda.utils.formatZonedDateTime
 
 @Composable
@@ -390,6 +391,15 @@ fun CreationPillCard(creationDate: String) {
         icon = R.drawable.ic_history,
         description = "Creation date",
         text = "Since $creationDate"
+    )
+}
+
+@Composable
+fun RenewalPillCard(reoccursOn: String) {
+    PillCard(
+        icon = R.drawable.ic_schedule,
+        description = "Renewal",
+        text = formatRenewal(reoccursOn)
     )
 }
 

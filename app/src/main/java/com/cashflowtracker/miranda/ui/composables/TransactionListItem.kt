@@ -1,26 +1,14 @@
 package com.cashflowtracker.miranda.ui.composables
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AssistChip
-import androidx.compose.material3.AssistChipDefaults
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
@@ -29,23 +17,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
 import com.cashflowtracker.miranda.utils.Currencies
-import com.cashflowtracker.miranda.utils.DefaultCategories
 import com.cashflowtracker.miranda.utils.Repeats
-import com.cashflowtracker.miranda.utils.SpecialType
-import com.cashflowtracker.miranda.utils.TransactionType
 import com.cashflowtracker.miranda.utils.formatAmount
 import com.cashflowtracker.miranda.utils.formatDate
+import com.cashflowtracker.miranda.utils.formatRenewal
 import com.cashflowtracker.miranda.utils.formatTime
 import com.cashflowtracker.miranda.utils.iconFactory
 import java.time.ZonedDateTime
@@ -126,6 +109,7 @@ fun RecurrenceListItem(
     currency: Currencies,
     comment: String,
     repeat: Repeats,
+    reoccursOn: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -165,6 +149,36 @@ fun RecurrenceListItem(
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.padding(top = 4.dp)
             )
+        },
+        supportingContent = {
+            Card(
+                colors = CardDefaults.cardColors(
+                    containerColor = LocalCustomColors.current.cardSurface
+                ),
+                modifier = Modifier
+                    .padding(top = 4.dp)
+                    .height(21.dp)
+                    .clip(RoundedCornerShape(50))
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(start = 4.dp, top = 1.dp, bottom = 1.dp, end = 6.dp)
+                ) {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(R.drawable.ic_schedule),
+                        contentDescription = "Repeat",
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier
+                            .size(18.dp)
+                            .padding(end = 4.dp)
+                    )
+                    Text(
+                        text = formatRenewal(reoccursOn).lowercase(),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
         },
         trailingContent = {
             Column(horizontalAlignment = Alignment.End) {

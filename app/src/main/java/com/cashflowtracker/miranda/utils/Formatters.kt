@@ -7,6 +7,7 @@ import com.cashflowtracker.miranda.data.database.Transaction
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
+import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZonedDateTime
@@ -125,4 +126,39 @@ fun formatTimezone(zonedDateTime: ZonedDateTime): String {
             }
         }
     }
+}
+
+fun formatRenewal(dateTime: String): String {
+    val now = ZonedDateTime.now()
+    val renewalTime = ZonedDateTime.parse(dateTime)
+    val duration = Duration.between(now, renewalTime)
+
+    if (duration.isNegative) {
+        return "Already renewed"
+    }
+
+    val days = duration.toDays()
+    val hours = duration.toHours()
+    val minutes = duration.toMinutes()
+    val seconds = duration.seconds
+
+    // Decide the message based on the largest applicable unit
+    val message = when {
+        days >= 730 -> "in ${days / 365} years" // 730 days = 2 years
+        days >= 365 -> "in 1 year"
+        days >= 60 -> "in ${days / 30} months" // Approximate months as 30 days
+        days >= 30 -> "in 1 month"
+        days >= 14 -> "in ${days / 7} weeks"
+        days >= 7 -> "in 1 week"
+        days >= 2 -> "in $days days"
+        days == 1L -> "in 1 day"
+        hours >= 2 -> "in ${hours % 24} hours"
+        hours == 1L -> "in 1 hour"
+        minutes >= 2 -> "in ${minutes % 60} minutes"
+        minutes == 1L -> "in 1 minute"
+        seconds >= 0 -> "in less than a minute"
+        else -> return "Already renewed"
+    }
+
+    return "Renews $message"
 }
