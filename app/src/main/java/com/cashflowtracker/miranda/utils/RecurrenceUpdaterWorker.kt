@@ -9,13 +9,10 @@ import com.cashflowtracker.miranda.data.repositories.AccountsRepository
 import com.cashflowtracker.miranda.data.repositories.NotificationsRepository
 import com.cashflowtracker.miranda.data.repositories.RecurrencesRepository
 import com.cashflowtracker.miranda.data.repositories.TransactionsRepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.time.ZonedDateTime
 import java.util.UUID
-import kotlin.coroutines.CoroutineContext
 
 class RecurrenceUpdaterWorker(
     context: Context,
@@ -26,7 +23,6 @@ class RecurrenceUpdaterWorker(
     private val transactionsRepo: TransactionsRepository by inject()
     private val accountsRepo: AccountsRepository by inject()
 
-    //    private val userId = UUID.fromString(inputData.getString("userId"))
     private val recurrenceId = UUID.fromString(inputData.getString("recurrenceId"))
 
     override suspend fun doWork(): Result {
