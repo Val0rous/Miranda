@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -35,18 +34,13 @@ import com.cashflowtracker.miranda.data.database.Transaction
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserId
 import com.cashflowtracker.miranda.ui.composables.AlertDialogIconTitle
 import com.cashflowtracker.miranda.ui.composables.IsRecurrencePillCard
-import com.cashflowtracker.miranda.ui.composables.MapScreen
 import com.cashflowtracker.miranda.ui.composables.MapViewer
 import com.cashflowtracker.miranda.ui.composables.TransactionBubblesToFrom
 import com.cashflowtracker.miranda.ui.composables.TransactionViewer
-import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 import com.cashflowtracker.miranda.ui.viewmodels.AccountsViewModel
 import com.cashflowtracker.miranda.ui.viewmodels.TransactionsViewModel
 import com.cashflowtracker.miranda.utils.Coordinates
-import com.cashflowtracker.miranda.utils.Currencies
-import com.cashflowtracker.miranda.utils.formatAmount
-import com.cashflowtracker.miranda.utils.formatZonedDateTime
 import com.cashflowtracker.miranda.utils.revertTransaction
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -68,7 +62,8 @@ class ViewTransaction : ComponentActivity() {
             var isLoaded by remember { mutableStateOf(false) }
             var transaction by remember { mutableStateOf<Transaction?>(null) }
             var isDeleting by remember { mutableStateOf(false) }
-            val openAlertDialog = remember { mutableStateOf(false) }
+            val openDeleteAlertDialog = remember { mutableStateOf(false) }
+            val openEditAlertDialog = remember { mutableStateOf(false) }
             var sourceType by remember { mutableStateOf("") }
             var destinationType by remember { mutableStateOf("") }
             val accountsVm = koinViewModel<AccountsViewModel>()
@@ -180,13 +175,17 @@ class ViewTransaction : ComponentActivity() {
                                     )
                                 },
                                 onClick = {
-                                    val intent =
-                                        Intent(
-                                            this@ViewTransaction,
-                                            EditTransaction::class.java
-                                        )
-                                    intent.putExtra("transactionId", transactionId.toString())
-                                    startActivity(intent)
+                                    if (!isCreatedByRecurrence.value) {
+                                        val intent =
+                                            Intent(
+                                                this@ViewTransaction,
+                                                EditTransaction::class.java
+                                            )
+                                        intent.putExtra("transactionId", transactionId.toString())
+                                        startActivity(intent)
+                                    } else {
+                                        openEditAlertDialog.value = true
+                                    }
                                 }
                             )
                             NavigationBarItem(
@@ -200,7 +199,7 @@ class ViewTransaction : ComponentActivity() {
                                 },
                                 enabled = !isDeleting,
                                 onClick = {
-                                    openAlertDialog.value = true
+                                    openDeleteAlertDialog.value = true
                                 },
                             )
                         }
@@ -248,14 +247,14 @@ class ViewTransaction : ComponentActivity() {
                         }
                     }
 
-                    if (openAlertDialog.value) {
+                    if (openDeleteAlertDialog.value) {
                         AlertDialogIconTitle(
                             icon = R.drawable.ic_delete,
                             onDismissRequest = {
-                                openAlertDialog.value = false
+                                openDeleteAlertDialog.value = false
                             },
                             onConfirmation = {
-                                openAlertDialog.value = false
+                                openDeleteAlertDialog.value = false
                                 isDeleting = true
                                 coroutineScope.launch(Dispatchers.IO) {
                                     revertTransaction(transaction!!, accountsVm, userId)
@@ -264,8 +263,30 @@ class ViewTransaction : ComponentActivity() {
                                 }
                             },
                             dialogTitle = "Delete transaction",
-                            dialogText = "This operation is irreversible. This transaction will be reverted upon deletion",
+                            dialogText = "This operation is irreversible.\nTransaction will be reverted upon deletion",
                             actionText = "Delete"
+                        )
+                    }
+
+                    if (openEditAlertDialog.value) {
+                        AlertDialogIconTitle(
+                            icon = R.drawable.ic_schedule,
+                            onDismissRequest = {
+                                openEditAlertDialog.value = false
+                            },
+                            onConfirmation = {
+                                val intent =
+                                    Intent(
+                                        this@ViewTransaction,
+                                        EditTransaction::class.java
+                                    )
+                                intent.putExtra("transactionId", transactionId.toString())
+                                openEditAlertDialog.value = false
+                                startActivity(intent)
+                            },
+                            dialogTitle = "Recurrent transaction",
+                            dialogText = "Editing this transaction will make it lose its recurrent status",
+                            actionText = "Edit"
                         )
                     }
                 }
