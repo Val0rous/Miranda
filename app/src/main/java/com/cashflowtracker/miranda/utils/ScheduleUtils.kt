@@ -7,6 +7,9 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.cashflowtracker.miranda.data.database.Notification
 import com.cashflowtracker.miranda.data.database.Recurrence
+import com.cashflowtracker.miranda.data.repositories.NotificationsRepository
+import com.cashflowtracker.miranda.ui.viewmodels.NotificationsViewModel
+import org.koin.androidx.compose.koinViewModel
 import java.time.Duration
 import java.time.ZonedDateTime
 import java.util.UUID
@@ -38,14 +41,21 @@ fun scheduleNotification(notification: Notification, recurrence: Recurrence, con
     val notificationRequest = OneTimeWorkRequestBuilder<NotificationWorker>()
         .setInputData(data)
         .setInitialDelay(delayMillis, TimeUnit.MILLISECONDS)
-        .addTag(recurrence.recurrenceId.toString())
+        .addTag(notification.notificationId.toString())
         .build()
     WorkManager.getInstance(context).enqueue(notificationRequest)
 }
 
-//fun cancelScheduledNotifications(recurrenceId: UUID, context: Context) {
-//    WorkManager.getInstance(context).cancelAllWorkByTag(recurrenceId.toString())
-//}
+fun cancelScheduledNotifications(
+    recurrenceId: UUID,
+    notificationsVm: NotificationsViewModel,
+    context: Context
+) {
+    val notifications = notificationsVm.actions.getAllByRecurrenceId(recurrenceId)
+    notifications.forEach {
+        WorkManager.getInstance(context).cancelAllWorkByTag(it.notificationId.toString())
+    }
+}
 
 fun scheduleRecurrence(recurrence: Recurrence, context: Context) {
     val zdt = ZonedDateTime.parse(recurrence.reoccursOn)
@@ -68,6 +78,11 @@ fun scheduleRecurrence(recurrence: Recurrence, context: Context) {
     WorkManager.getInstance(context).enqueue(workRequest)
 }
 
-fun cancelScheduledRecurrenceAndNotifications(recurrenceId: UUID, context: Context) {
+fun cancelScheduledRecurrenceAndNotifications(
+    recurrenceId: UUID,
+    notificationsVm: NotificationsViewModel,
+    context: Context
+) {
+    cancelScheduledNotifications(recurrenceId, notificationsVm, context)
     WorkManager.getInstance(context).cancelAllWorkByTag(recurrenceId.toString())
 }

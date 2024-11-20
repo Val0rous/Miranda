@@ -18,6 +18,7 @@ interface NotificationsActions {
     fun removeNotification(notification: Notification): Job
     fun removeAllByRecurrenceId(recurrenceId: UUID): Job
     fun getAllByUserIdFlow(userId: UUID): Flow<List<Notification>>
+    fun getAllByRecurrenceId(recurrenceId: UUID): List<Notification>
     fun getAllByRecurrenceIdFlow(recurrenceId: UUID): Flow<List<Notification>>
 }
 
@@ -45,6 +46,11 @@ class NotificationsViewModel(
         override fun getAllByUserIdFlow(userId: UUID): Flow<List<Notification>> =
             viewModelScope.run {
                 repository.getAllByUserIdFlow(userId)
+            }
+
+        override fun getAllByRecurrenceId(recurrenceId: UUID): List<Notification> =
+            viewModelScope.run {
+                repository.getAllByRecurrenceId(recurrenceId)
             }
 
         override fun getAllByRecurrenceIdFlow(recurrenceId: UUID): Flow<List<Notification>> =

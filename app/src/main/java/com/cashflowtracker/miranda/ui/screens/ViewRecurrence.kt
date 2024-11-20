@@ -280,7 +280,7 @@ class ViewRecurrence : ComponentActivity() {
                                     if (reoccursOn.value.isNotEmpty()) {
                                         RenewalPillCard(reoccursOn.value)
                                     }
-                                    
+
                                     if (repeatInterval.value != null) {
                                         RepeatsPillCard(repeatInterval.value!!)
                                     }
@@ -317,6 +317,7 @@ class ViewRecurrence : ComponentActivity() {
                                 coroutineScope.launch(Dispatchers.IO) {
                                     cancelScheduledRecurrenceAndNotifications(
                                         recurrenceId,
+                                        notificationsVm,
                                         this@ViewRecurrence
                                     )
                                     notificationsVm.actions.removeAllByRecurrenceId(recurrenceId)
