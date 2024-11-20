@@ -15,9 +15,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserId
+import com.cashflowtracker.miranda.ui.composables.RecurrenceListItem
 import com.cashflowtracker.miranda.ui.composables.TransactionListItem
 import com.cashflowtracker.miranda.ui.viewmodels.RecurrencesViewModel
 import com.cashflowtracker.miranda.utils.Currencies
+import com.cashflowtracker.miranda.utils.Repeats
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -34,7 +36,7 @@ fun Recurrents() {
         if (recurrences.isNotEmpty()) {
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 items(recurrences) {
-                    TransactionListItem(
+                    RecurrenceListItem(
                         type = it.type,
                         dateTime = it.reoccursOn,
                         source = it.source,
@@ -42,6 +44,7 @@ fun Recurrents() {
                         amount = it.amount,
                         currency = Currencies.get(it.currency),
                         comment = it.comment,
+                        repeat = Repeats.valueOf(it.repeatInterval),
                         onClick = {
                             val intent = Intent(context, ViewRecurrence::class.java)
                             intent.putExtra("recurrenceId", it.recurrenceId.toString())
