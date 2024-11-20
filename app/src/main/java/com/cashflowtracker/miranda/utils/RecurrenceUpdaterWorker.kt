@@ -32,9 +32,7 @@ class RecurrenceUpdaterWorker(
     override suspend fun doWork(): Result {
         return try {
             val oldRecurrence = recurrencesRepo.getByRecurrenceId(recurrenceId)
-            println("Old Recurrence: $oldRecurrence")
             val oldNotifications = notificationsRepo.getAllByRecurrenceId(recurrenceId)
-            println("Old Notifications: $oldNotifications")
 
             val transaction = Transaction(
                 type = oldRecurrence.type,
@@ -48,7 +46,6 @@ class RecurrenceUpdaterWorker(
                 userId = oldRecurrence.userId,
                 isCreatedByRecurrence = true
             )
-            println("Transaction: $transaction")
             transactionsRepo.upsert(transaction)
             calculateBalance(
                 transaction.amount,
@@ -66,7 +63,6 @@ class RecurrenceUpdaterWorker(
                     Repeats.valueOf(oldRecurrence.repeatInterval)
                 )
             )
-            println("New Recurrence: $recurrence")
             recurrencesRepo.upsert(recurrence)
 
             oldNotifications.forEach {
@@ -76,12 +72,10 @@ class RecurrenceUpdaterWorker(
                         Notifications.valueOf(it.notificationType)
                     )
                 )
-                println("New Notification: $notification")
                 notificationsRepo.upsert(notification)
             }
 
             val notifications = notificationsRepo.getAllByRecurrenceId(recurrenceId)
-            println("New Notifications: $notifications")
             notifications.forEach {
                 scheduleNotification(it, recurrence, applicationContext)
             }
