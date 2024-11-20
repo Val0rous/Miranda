@@ -9,16 +9,18 @@ import com.cashflowtracker.miranda.data.repositories.AccountsRepository
 import com.cashflowtracker.miranda.data.repositories.NotificationsRepository
 import com.cashflowtracker.miranda.data.repositories.RecurrencesRepository
 import com.cashflowtracker.miranda.data.repositories.TransactionsRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.time.ZonedDateTime
 import java.util.UUID
+import kotlin.coroutines.CoroutineContext
 
 class RecurrenceUpdaterWorker(
     context: Context,
     workerParams: WorkerParameters
 ) : CoroutineWorker(context, workerParams), KoinComponent {
-
     private val notificationsRepo: NotificationsRepository by inject()
     private val recurrencesRepo: RecurrencesRepository by inject()
     private val transactionsRepo: TransactionsRepository by inject()
@@ -30,7 +32,9 @@ class RecurrenceUpdaterWorker(
     override suspend fun doWork(): Result {
         return try {
             val oldRecurrence = recurrencesRepo.getByRecurrenceId(recurrenceId)
+            println("Old Recurrence: $oldRecurrence")
             val oldNotifications = notificationsRepo.getAllByRecurrenceId(recurrenceId)
+            println("Old Notifications: $oldNotifications")
 
             val transaction = Transaction(
                 type = oldRecurrence.type,
@@ -44,6 +48,7 @@ class RecurrenceUpdaterWorker(
                 userId = oldRecurrence.userId,
                 isCreatedByRecurrence = true
             )
+            println("Transaction: $transaction")
             transactionsRepo.upsert(transaction)
             calculateBalance(
                 transaction.amount,
@@ -58,9 +63,10 @@ class RecurrenceUpdaterWorker(
             val recurrence = oldRecurrence.copy(
                 reoccursOn = getRepeatTime(
                     ZonedDateTime.parse(oldRecurrence.reoccursOn),
-                    Repeats.valueOf(oldRecurrence.type)
+                    Repeats.valueOf(oldRecurrence.repeatInterval)
                 )
             )
+            println("New Recurrence: $recurrence")
             recurrencesRepo.upsert(recurrence)
 
             oldNotifications.forEach {
@@ -70,10 +76,12 @@ class RecurrenceUpdaterWorker(
                         Notifications.valueOf(it.notificationType)
                     )
                 )
+                println("New Notification: $notification")
                 notificationsRepo.upsert(notification)
             }
 
             val notifications = notificationsRepo.getAllByRecurrenceId(recurrenceId)
+            println("New Notifications: $notifications")
             notifications.forEach {
                 scheduleNotification(it, recurrence, applicationContext)
             }
