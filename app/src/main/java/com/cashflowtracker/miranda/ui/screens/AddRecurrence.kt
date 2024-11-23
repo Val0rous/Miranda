@@ -76,7 +76,7 @@ class AddRecurrence : ComponentActivity() {
             val notificationsVm = koinViewModel<NotificationsViewModel>()
             val transactionsVm = koinViewModel<TransactionsViewModel>()
             val accountsVm = koinViewModel<AccountsViewModel>()
-            val transactionType = remember { mutableStateOf<TransactionType?>(null) }
+            val transactionType = remember { mutableStateOf("") }
             val selectedDate = remember { mutableStateOf("") }
             val selectedTime = remember { mutableStateOf("") }
             val selectedTimeZone = remember {
@@ -117,7 +117,7 @@ class AddRecurrence : ComponentActivity() {
             val sourceLauncher = rememberLauncherForActivityResult(
                 contract = ActivityResultContracts.StartActivityForResult()
             ) { result ->
-                if (result.resultCode == Activity.RESULT_OK) {
+                if (result.resultCode == RESULT_OK) {
                     source = result.data?.getStringExtra("sourceTitle") ?: ""
                     sourceIcon = result.data?.getStringExtra("sourceIcon")?.toInt()
                 }
@@ -126,7 +126,7 @@ class AddRecurrence : ComponentActivity() {
             val destinationLauncher = rememberLauncherForActivityResult(
                 contract = ActivityResultContracts.StartActivityForResult()
             ) { result ->
-                if (result.resultCode == Activity.RESULT_OK) {
+                if (result.resultCode == RESULT_OK) {
                     destination = result.data?.getStringExtra("destinationTitle") ?: ""
                     destinationIcon = result.data?.getStringExtra("destinationIcon")?.toInt()
                 }
@@ -168,7 +168,7 @@ class AddRecurrence : ComponentActivity() {
 
             val isFormValid by remember {
                 derivedStateOf {
-                    transactionType.value != null
+                    transactionType.value.isNotEmpty()
                             && selectedDate.value.isNotEmpty()
                             && selectedTime.value.isNotEmpty()
                             && source.isNotEmpty()
@@ -212,7 +212,7 @@ class AddRecurrence : ComponentActivity() {
                                     if (isCreateFirstOccurrence.value) {
                                         transactionsVm.actions.addTransaction(
                                             Transaction(
-                                                type = transactionType.value!!.name,
+                                                type = transactionType.value,
                                                 createdOn = createdOn,
                                                 source = source,
                                                 destination = destination,
@@ -228,7 +228,7 @@ class AddRecurrence : ComponentActivity() {
                                         calculateBalance(
                                             amount.doubleValue,
                                             currency.value,
-                                            transactionType.value!!.name,
+                                            transactionType.value,
                                             source,
                                             destination,
                                             accountsVm,
@@ -237,7 +237,7 @@ class AddRecurrence : ComponentActivity() {
                                     }
 
                                     val recurrence = Recurrence(
-                                        type = transactionType.value!!.name,
+                                        type = transactionType.value,
                                         createdOn = createdOn,
                                         source = source,
                                         destination = destination,
@@ -315,13 +315,13 @@ class AddRecurrence : ComponentActivity() {
 
                         NotificationsForm(notifications)
 
-                        SourceForm(source, sourceIcon, transactionType.value!!.name, sourceLauncher)
+                        SourceForm(source, sourceIcon, transactionType.value, sourceLauncher)
                         Spacer(modifier = Modifier.height(8.dp))
 
                         DestinationForm(
                             destination,
                             destinationIcon,
-                            transactionType.value!!.name,
+                            transactionType.value,
                             destinationLauncher
                         )
                         Spacer(modifier = Modifier.height(8.dp))

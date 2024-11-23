@@ -58,7 +58,7 @@ class AddTransaction : ComponentActivity() {
             val context = LocalContext.current
             val vm = koinViewModel<TransactionsViewModel>()
             val accountsVm = koinViewModel<AccountsViewModel>()
-            val transactionType = remember { mutableStateOf<TransactionType?>(null) }
+            val transactionType = remember { mutableStateOf("") }
             val selectedDate = remember { mutableStateOf("") }
             val selectedTime = remember { mutableStateOf("") }
             val selectedTimeZone = remember {
@@ -149,7 +149,7 @@ class AddTransaction : ComponentActivity() {
 
             val isFormValid by remember {
                 derivedStateOf {
-                    transactionType.value != null
+                    transactionType.value.isNotEmpty()
                             && selectedDate.value.isNotEmpty()
                             && selectedTime.value.isNotEmpty()
                             && source.isNotEmpty()
@@ -190,7 +190,7 @@ class AddTransaction : ComponentActivity() {
 
                                     vm.actions.addTransaction(
                                         Transaction(
-                                            type = transactionType.value!!.name,
+                                            type = transactionType.value,
                                             createdOn = formattedDateTime,
                                             source = source,
                                             destination = destination,
@@ -205,7 +205,7 @@ class AddTransaction : ComponentActivity() {
                                     calculateBalance(
                                         amount.doubleValue,
                                         currency.value,
-                                        transactionType.value!!.name,
+                                        transactionType.value,
                                         source,
                                         destination,
                                         accountsVm,
@@ -242,13 +242,13 @@ class AddTransaction : ComponentActivity() {
                             selectedTime.value
                         )
 
-                        SourceForm(source, sourceIcon, transactionType.value!!.name, sourceLauncher)
+                        SourceForm(source, sourceIcon, transactionType.value, sourceLauncher)
                         Spacer(modifier = Modifier.height(8.dp))
 
                         DestinationForm(
                             destination,
                             destinationIcon,
-                            transactionType.value!!.name,
+                            transactionType.value,
                             destinationLauncher
                         )
                         Spacer(modifier = Modifier.height(8.dp))

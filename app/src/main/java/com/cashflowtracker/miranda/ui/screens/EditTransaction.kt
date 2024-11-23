@@ -88,7 +88,7 @@ class EditTransaction : ComponentActivity() {
             val oldDestination = remember { mutableStateOf("") }
             val oldAmount = remember { mutableDoubleStateOf(0.0) }
             val oldCurrency = remember { mutableStateOf(Currencies.EUR) }
-            val transactionType = remember { mutableStateOf<TransactionType?>(null) }
+            val transactionType = remember { mutableStateOf("") }
             val selectedDate = remember { mutableStateOf("") }
             val selectedTime = remember { mutableStateOf("") }
             val selectedTimeZone = remember {
@@ -128,7 +128,7 @@ class EditTransaction : ComponentActivity() {
             val sourceLauncher = rememberLauncherForActivityResult(
                 contract = ActivityResultContracts.StartActivityForResult()
             ) { result ->
-                if (result.resultCode == Activity.RESULT_OK) {
+                if (result.resultCode == RESULT_OK) {
                     source = result.data?.getStringExtra("sourceTitle") ?: ""
                     sourceIcon = result.data?.getStringExtra("sourceIcon")?.toInt()
                 }
@@ -137,7 +137,7 @@ class EditTransaction : ComponentActivity() {
             val destinationLauncher = rememberLauncherForActivityResult(
                 contract = ActivityResultContracts.StartActivityForResult()
             ) { result ->
-                if (result.resultCode == Activity.RESULT_OK) {
+                if (result.resultCode == RESULT_OK) {
                     destination = result.data?.getStringExtra("destinationTitle") ?: ""
                     destinationIcon = result.data?.getStringExtra("destinationIcon")?.toInt()
                 }
@@ -179,7 +179,7 @@ class EditTransaction : ComponentActivity() {
 
             val isFormValid by remember {
                 derivedStateOf {
-                    transactionType.value != null
+                    transactionType.value.isNotEmpty()
                             && selectedDate.value.isNotEmpty()
                             && selectedTime.value.isNotEmpty()
                             && source.isNotEmpty()
@@ -203,7 +203,7 @@ class EditTransaction : ComponentActivity() {
                 coroutineScope.launch(Dispatchers.IO) {
                     transaction = vm.actions.getByTransactionId(transactionId.value).also {
                         oldTransactionType.value = it.type
-                        transactionType.value = TransactionType.valueOf(it.type)
+                        transactionType.value = it.type
 
                         try {
                             val zonedDateTime = ZonedDateTime.parse(
@@ -313,7 +313,7 @@ class EditTransaction : ComponentActivity() {
                                     vm.actions.updateTransaction(
                                         Transaction(
                                             transactionId = transaction!!.transactionId,
-                                            type = transactionType.value!!.name,
+                                            type = transactionType.value,
                                             createdOn = formattedDateTime,
                                             source = source,
                                             destination = destination,
@@ -328,7 +328,7 @@ class EditTransaction : ComponentActivity() {
                                     calculateBalance(
                                         amount.doubleValue,
                                         currency.value,
-                                        transactionType.value!!.name,
+                                        transactionType.value,
                                         source,
                                         destination,
                                         accountsVm,
@@ -370,7 +370,7 @@ class EditTransaction : ComponentActivity() {
                             SourceForm(
                                 source,
                                 sourceIcon,
-                                transactionType.value!!.name,
+                                transactionType.value,
                                 sourceLauncher
                             )
                             Spacer(modifier = Modifier.height(8.dp))
@@ -378,7 +378,7 @@ class EditTransaction : ComponentActivity() {
                             DestinationForm(
                                 destination,
                                 destinationIcon,
-                                transactionType.value!!.name,
+                                transactionType.value,
                                 destinationLauncher
                             )
                             Spacer(modifier = Modifier.height(8.dp))
