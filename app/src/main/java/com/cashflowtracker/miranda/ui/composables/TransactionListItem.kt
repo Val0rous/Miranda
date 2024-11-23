@@ -1,6 +1,7 @@
 package com.cashflowtracker.miranda.ui.composables
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
@@ -151,34 +152,34 @@ fun RecurrenceListItem(
             )
         },
         supportingContent = {
-            Card(
-                colors = CardDefaults.cardColors(
-                    containerColor = LocalCustomColors.current.cardSurface
-                ),
-                modifier = Modifier
-                    .padding(top = 4.dp)
-                    .height(21.dp)
-                    .clip(RoundedCornerShape(50))
+//            Card(
+//                colors = CardDefaults.cardColors(
+//                    containerColor = LocalCustomColors.current.cardSurface
+//                ),
+//                modifier = Modifier
+//                    .padding(top = 4.dp)
+//                    .height(21.dp)
+//                    .clip(RoundedCornerShape(50))
+//            ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                modifier = Modifier.padding(start = 1.dp, top = 3.dp, bottom = 1.dp, end = 6.dp)
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(start = 4.dp, top = 1.dp, bottom = 1.dp, end = 6.dp)
-                ) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.ic_schedule),
-                        contentDescription = "Repeat",
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier
-                            .size(18.dp)
-                            .padding(end = 4.dp)
-                    )
-                    Text(
-                        text = formatRenewal(reoccursOn).lowercase(),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
+                Icon(
+                    imageVector = ImageVector.vectorResource(R.drawable.ic_schedule),
+                    contentDescription = "Repeat",
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier
+                        .size(12.dp)
+                )
+                Text(
+                    text = formatRenewal(reoccursOn).lowercase(),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
+//            }
         },
         trailingContent = {
             Column(horizontalAlignment = Alignment.End) {
