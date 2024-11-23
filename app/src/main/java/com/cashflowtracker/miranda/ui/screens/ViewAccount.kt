@@ -220,7 +220,7 @@ class ViewAccount : ComponentActivity() {
                                         Text(text = "Type")
                                         Spacer(modifier = Modifier.weight(1f))
                                         Text(
-                                            text = account!!.type,
+                                            text = AccountType.getType(account!!.type),
                                             style = MaterialTheme.typography.titleMedium,
                                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                                             textAlign = TextAlign.End

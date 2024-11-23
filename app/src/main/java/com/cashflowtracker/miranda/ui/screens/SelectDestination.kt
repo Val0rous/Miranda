@@ -112,7 +112,7 @@ class SelectDestination : ComponentActivity() {
                                                     "destinationIcon",
                                                     AccountType.getIcon(account.type).toString()
                                                 )
-                                        setResult(Activity.RESULT_OK, resultIntent)
+                                        setResult(RESULT_OK, resultIntent)
                                         finish()
                                     })
                             }
@@ -125,13 +125,13 @@ class SelectDestination : ComponentActivity() {
                                         val resultIntent =
                                             Intent().putExtra(
                                                 "destinationTitle",
-                                                category.category
+                                                category.name
                                             )
                                                 .putExtra(
                                                     "destinationIcon",
                                                     category.icon.toString()
                                                 )
-                                        setResult(Activity.RESULT_OK, resultIntent)
+                                        setResult(RESULT_OK, resultIntent)
                                         finish()
                                     }
                                 )

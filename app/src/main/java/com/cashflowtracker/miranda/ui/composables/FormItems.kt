@@ -60,6 +60,7 @@ import com.cashflowtracker.miranda.ui.screens.SelectAccountType
 import com.cashflowtracker.miranda.ui.screens.SelectCurrency
 import com.cashflowtracker.miranda.ui.screens.SelectDestination
 import com.cashflowtracker.miranda.ui.screens.SelectSource
+import com.cashflowtracker.miranda.utils.AccountType
 import com.cashflowtracker.miranda.utils.Coordinates
 import com.cashflowtracker.miranda.utils.Currencies
 import com.cashflowtracker.miranda.utils.LocationService
@@ -69,6 +70,8 @@ import com.cashflowtracker.miranda.utils.Repeats
 import com.cashflowtracker.miranda.utils.StartMonitoringResult
 import com.cashflowtracker.miranda.utils.TimeZoneEntry
 import com.cashflowtracker.miranda.utils.formatAmount
+import com.cashflowtracker.miranda.utils.formatDestination
+import com.cashflowtracker.miranda.utils.formatSource
 import com.cashflowtracker.miranda.utils.rememberPermission
 import java.text.DecimalFormat
 import java.text.NumberFormat
@@ -213,7 +216,7 @@ fun SourceForm(
             }
         ) {
             OutlinedTextField(
-                value = source,
+                value = formatSource(source, transactionType),
                 onValueChange = { },
                 label = { Text("Source") },
                 readOnly = true,
@@ -276,7 +279,7 @@ fun DestinationForm(
             }
         ) {
             OutlinedTextField(
-                value = destination,
+                value = formatDestination(destination, transactionType),
                 onValueChange = { },
                 label = { Text("Destination") },
                 readOnly = true,
@@ -694,7 +697,7 @@ fun AccountTypeForm(
             }
         ) {
             OutlinedTextField(
-                value = accountType,
+                value = AccountType.getType(accountType),
                 onValueChange = { },
                 label = { Text("Type") },
                 readOnly = true,

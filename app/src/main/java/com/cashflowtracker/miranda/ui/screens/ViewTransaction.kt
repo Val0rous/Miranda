@@ -145,7 +145,7 @@ class ViewTransaction : ComponentActivity() {
                             title = {
                                 if (isLoaded) {
                                     if (!isDeleting) {
-                                        Text(TransactionType.valueOf(transaction!!.type).type)
+                                        Text(TransactionType.getType(transaction!!.type))
                                     }
                                 }
                             },

@@ -162,3 +162,23 @@ fun formatRenewal(dateTime: String): String {
 
     return "Renews $message"
 }
+
+fun formatSource(source: String, transactionType: String): String {
+    return when (transactionType) {
+        TransactionType.OUTPUT.name -> AccountType.getType(source).ifEmpty { source }
+        TransactionType.INPUT.name -> when (source) {
+            SpecialType.POCKET.name, SpecialType.EXTRA.name -> SpecialType.getType(source)
+            else -> DefaultCategories.getCategory(source)
+        }
+
+        else -> AccountType.getType(source).ifEmpty { source }
+    }
+}
+
+fun formatDestination(destination: String, transactionType: String): String {
+    return when (transactionType) {
+        TransactionType.OUTPUT.name -> DefaultCategories.getCategory(destination)
+        TransactionType.INPUT.name -> AccountType.getType(destination).ifEmpty { destination }
+        else -> AccountType.getType(destination).ifEmpty { destination }
+    }
+}

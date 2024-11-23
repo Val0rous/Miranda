@@ -1,6 +1,5 @@
 package com.cashflowtracker.miranda.ui.screens
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -121,13 +120,13 @@ class SelectSource : ComponentActivity() {
                         }
                         if (transactionType == TransactionType.INPUT.name) {
                             // Special accounts list
-                            items(SpecialType.entries) { item ->
+                            items(SpecialType.entries) {
                                 SpecialListItem(
-                                    item = item,
+                                    item = it,
                                     modifier = Modifier.clickable {
                                         val resultIntent =
-                                            Intent().putExtra("sourceTitle", item.category)
-                                                .putExtra("sourceIcon", item.icon.toString())
+                                            Intent().putExtra("sourceTitle", it.name)
+                                                .putExtra("sourceIcon", it.icon.toString())
                                         setResult(RESULT_OK, resultIntent)
                                         finish()
                                     })
@@ -135,14 +134,14 @@ class SelectSource : ComponentActivity() {
                         }
                         if (transactionType == TransactionType.INPUT.name) {
                             // Category list
-                            items(DefaultCategories.entries) { category ->
+                            items(DefaultCategories.entries) {
                                 CategoryListItem(
-                                    category = category,
+                                    category = it,
                                     modifier = Modifier.clickable {
                                         val resultIntent =
                                             Intent()
-                                                .putExtra("sourceTitle", category.category)
-                                                .putExtra("sourceIcon", category.icon.toString())
+                                                .putExtra("sourceTitle", it.name)
+                                                .putExtra("sourceIcon", it.icon.toString())
                                         setResult(RESULT_OK, resultIntent)
                                         finish()
                                     }

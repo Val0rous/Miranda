@@ -84,6 +84,7 @@ fun CategoryListItem(category: DefaultCategories, modifier: Modifier) {
                             CategoryClass.NECESSITY -> LocalCustomColors.current.surfaceTintRed
                             CategoryClass.CONVENIENCE -> LocalCustomColors.current.surfaceTintYellow
                             CategoryClass.LUXURY -> LocalCustomColors.current.surfaceTintGreen
+                            else -> LocalCustomColors.current.surfaceTintBlue
                         }
                     )
             ) {
@@ -138,6 +139,8 @@ fun CategoryListItem(category: DefaultCategories, modifier: Modifier) {
                             )
                         }
                     }
+
+                CategoryClass.UNRANKED -> {}
             }
         },
         modifier = modifier
@@ -164,7 +167,7 @@ fun SpecialListItem(item: SpecialType, modifier: Modifier) {
                 Icon(
                     imageVector = ImageVector.vectorResource(
                         SpecialType.getIcon(
-                            item.category
+                            item.name
                         )
                     ),
                     contentDescription = item.category,

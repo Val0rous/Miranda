@@ -5,7 +5,13 @@ import com.cashflowtracker.miranda.R
 enum class TransactionType(val type: String) {
     OUTPUT("Output"),
     INPUT("Input"),
-    TRANSFER("Transfer")
+    TRANSFER("Transfer");
+
+    companion object {
+        fun getType(type: String): String {
+            return TransactionType.valueOf(type).type
+        }
+    }
 }
 
 enum class CategoryClass(val stars: Char, val label: String) {
@@ -17,6 +23,8 @@ enum class CategoryClass(val stars: Char, val label: String) {
 
     /** Three Stars */
     LUXURY('3', "Luxury"),
+
+    UNRANKED('0', "Unranked")
 }
 
 /** Default categories
@@ -71,16 +79,22 @@ enum class DefaultCategories(val category: String, val icon: Int, val type: Cate
     TRAVEL("Travel", R.drawable.ic_travel, CategoryClass.LUXURY);
 
     companion object {
+        fun getCategory(category: String): String {
+            return DefaultCategories.entries.find {
+                it.name == category
+            }?.category ?: ""
+        }
+
         fun getIcon(category: String): Int {
             return DefaultCategories.entries.find {
-                it.category == category
+                it.name == category
             }?.icon ?: R.drawable.ic_default_empty
         }
 
         fun getType(category: String): CategoryClass {
             return DefaultCategories.entries.find {
-                it.category == category
-            }?.type ?: CategoryClass.CONVENIENCE
+                it.name == category
+            }?.type ?: CategoryClass.UNRANKED
         }
     }
 }

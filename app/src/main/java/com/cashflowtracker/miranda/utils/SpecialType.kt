@@ -9,9 +9,15 @@ enum class SpecialType(val category: String, val icon: Int) {
     CREDITS("Credits", R.drawable.ic_money_bag);
 
     companion object {
+        fun getType(category: String): String {
+            return SpecialType.entries.find {
+                it.name == category
+            }?.category ?: ""
+        }
+
         fun getIcon(category: String): Int {
             return SpecialType.entries.find {
-                it.category == category
+                it.name == category
             }?.icon ?: R.drawable.ic_default_empty
         }
     }

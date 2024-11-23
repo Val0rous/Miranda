@@ -19,9 +19,15 @@ enum class AccountType(val type: String, val icon: Int) {
     OTHER_ACCOUNT("Other Account", R.drawable.ic_universal_currency);
 
     companion object {
+        fun getType(accountType: String): String {
+            return entries.find {
+                it.name == accountType
+            }?.type ?: ""
+        }
+
         fun getIcon(type: String): Int {
             return entries.find {
-                it.type == type
+                it.name == type
             }?.icon ?: R.drawable.ic_default_empty
         }
     }

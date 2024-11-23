@@ -46,13 +46,16 @@ import com.cashflowtracker.miranda.utils.CategoryClass
 import com.cashflowtracker.miranda.utils.Coordinates
 import com.cashflowtracker.miranda.utils.Currencies
 import com.cashflowtracker.miranda.utils.DefaultCategories
+import com.cashflowtracker.miranda.utils.GetStarIcons
 import com.cashflowtracker.miranda.utils.Notifications
 import com.cashflowtracker.miranda.utils.Repeats
 import com.cashflowtracker.miranda.utils.SpecialType
 import com.cashflowtracker.miranda.utils.TransactionType
 import com.cashflowtracker.miranda.utils.backgroundColorFactory
 import com.cashflowtracker.miranda.utils.formatAmount
+import com.cashflowtracker.miranda.utils.formatDestination
 import com.cashflowtracker.miranda.utils.formatRenewal
+import com.cashflowtracker.miranda.utils.formatSource
 import com.cashflowtracker.miranda.utils.formatZonedDateTime
 import com.cashflowtracker.miranda.utils.textColorFactory
 
@@ -85,7 +88,7 @@ fun TransactionBubblesToFrom(
 
                             TransactionType.INPUT.name -> {
                                 when (transaction.source) {
-                                    SpecialType.POCKET.category, SpecialType.EXTRA.category -> SpecialType.getIcon(
+                                    SpecialType.POCKET.name, SpecialType.EXTRA.name -> SpecialType.getIcon(
                                         transaction.source
                                     )
 
@@ -106,51 +109,13 @@ fun TransactionBubblesToFrom(
                 )
             }
             Text(
-                text = transaction.source,
+                text = formatSource(transaction.source, transaction.type),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.padding(top = 8.dp)
             )
             if (transaction.type == TransactionType.INPUT.name) {
-                Row(modifier = Modifier.padding(top = 4.dp)) {
-                    when (DefaultCategories.getType(transaction.source)) {
-                        CategoryClass.NECESSITY -> repeat(1) {
-                            Icon(
-                                imageVector = ImageVector.vectorResource(
-                                    R.drawable.ic_star_filled
-                                ),
-                                contentDescription = "",
-                                tint = Red400,
-                                modifier = Modifier
-                                    .size(24.dp)
-                            )
-                        }
-
-                        CategoryClass.CONVENIENCE -> repeat(2) {
-                            Icon(
-                                imageVector = ImageVector.vectorResource(
-                                    R.drawable.ic_star_filled
-                                ),
-                                contentDescription = "",
-                                tint = Yellow400,
-                                modifier = Modifier
-                                    .size(24.dp)
-                            )
-                        }
-
-                        CategoryClass.LUXURY -> repeat(3) {
-                            Icon(
-                                imageVector = ImageVector.vectorResource(
-                                    R.drawable.ic_star_filled
-                                ),
-                                contentDescription = "",
-                                tint = Green400,
-                                modifier = Modifier
-                                    .size(24.dp)
-                            )
-                        }
-                    }
-                }
+                GetStarIcons(transaction.source)
             }
         }
 
@@ -198,51 +163,13 @@ fun TransactionBubblesToFrom(
                 )
             }
             Text(
-                text = transaction.destination,
+                text = formatDestination(transaction.destination, transaction.type),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.padding(top = 8.dp)
             )
             if (transaction.type == TransactionType.OUTPUT.name) {
-                Row(modifier = Modifier.padding(top = 4.dp)) {
-                    when (DefaultCategories.getType(transaction.destination)) {
-                        CategoryClass.NECESSITY -> repeat(1) {
-                            Icon(
-                                imageVector = ImageVector.vectorResource(
-                                    R.drawable.ic_star_filled
-                                ),
-                                contentDescription = "",
-                                tint = Red400,
-                                modifier = Modifier
-                                    .size(24.dp)
-                            )
-                        }
-
-                        CategoryClass.CONVENIENCE -> repeat(2) {
-                            Icon(
-                                imageVector = ImageVector.vectorResource(
-                                    R.drawable.ic_star_filled
-                                ),
-                                contentDescription = "",
-                                tint = Yellow400,
-                                modifier = Modifier
-                                    .size(24.dp)
-                            )
-                        }
-
-                        CategoryClass.LUXURY -> repeat(3) {
-                            Icon(
-                                imageVector = ImageVector.vectorResource(
-                                    R.drawable.ic_star_filled
-                                ),
-                                contentDescription = "",
-                                tint = Green400,
-                                modifier = Modifier
-                                    .size(24.dp)
-                            )
-                        }
-                    }
-                }
+                GetStarIcons(transaction.destination)
             }
         }
     }

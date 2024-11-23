@@ -3,7 +3,9 @@ package com.cashflowtracker.miranda.utils
 import android.graphics.Bitmap
 import android.graphics.Paint
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
@@ -28,8 +30,12 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.R
+import com.cashflowtracker.miranda.ui.theme.Green400
 import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
+import com.cashflowtracker.miranda.ui.theme.Red400
+import com.cashflowtracker.miranda.ui.theme.Yellow400
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import kotlin.math.min
@@ -49,8 +55,8 @@ fun iconFactory(type: String, source: String, destination: String): Int {
 
         TransactionType.INPUT.name -> {
             when (source) {
-                SpecialType.POCKET.category,
-                SpecialType.EXTRA.category -> SpecialType.getIcon(source)
+                SpecialType.POCKET.name,
+                SpecialType.EXTRA.name -> SpecialType.getIcon(source)
 
                 else -> DefaultCategories.getIcon(source)
             }
@@ -81,6 +87,51 @@ fun textColorFactory(type: String): Color {
         TransactionType.OUTPUT.name -> LocalCustomColors.current.textRed
         TransactionType.INPUT.name -> LocalCustomColors.current.textGreen
         else -> LocalCustomColors.current.textBlue
+    }
+}
+
+@Composable
+fun GetStarIcons(category: String) {
+    Row(modifier = Modifier.padding(top = 4.dp)) {
+        when (DefaultCategories.getType(category)) {
+            CategoryClass.NECESSITY -> repeat(1) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(
+                        R.drawable.ic_star_filled
+                    ),
+                    contentDescription = "",
+                    tint = Red400,
+                    modifier = Modifier
+                        .size(24.dp)
+                )
+            }
+
+            CategoryClass.CONVENIENCE -> repeat(2) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(
+                        R.drawable.ic_star_filled
+                    ),
+                    contentDescription = "",
+                    tint = Yellow400,
+                    modifier = Modifier
+                        .size(24.dp)
+                )
+            }
+
+            CategoryClass.LUXURY -> repeat(3) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(
+                        R.drawable.ic_star_filled
+                    ),
+                    contentDescription = "",
+                    tint = Green400,
+                    modifier = Modifier
+                        .size(24.dp)
+                )
+            }
+
+            CategoryClass.UNRANKED -> {}
+        }
     }
 }
 
