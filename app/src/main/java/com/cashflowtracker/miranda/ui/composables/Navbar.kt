@@ -1,5 +1,6 @@
 package com.cashflowtracker.miranda.ui.composables
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -13,6 +14,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.utils.Routes
 
@@ -57,8 +59,14 @@ object NavbarItems {
 fun Navbar(navController: NavHostController) {
     var navigationSelectedItem by remember { mutableIntStateOf(0) }
 
+    val currentBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = currentBackStackEntry?.destination
+
     NavigationBar {
         NavbarItems.items.forEachIndexed { index, item ->
+            if (currentDestination?.route == item.route) {
+                navigationSelectedItem = index
+            }
             NavigationBarItem(
                 selected = index == navigationSelectedItem,
                 label = { Text(item.label) },
@@ -73,7 +81,6 @@ fun Navbar(navController: NavHostController) {
                     )
                 },
                 onClick = {
-                    navigationSelectedItem = index
                     navController.navigate(item.route) {
                         popUpTo(navController.graph.findStartDestination().id) {
                             saveState = true
@@ -81,6 +88,7 @@ fun Navbar(navController: NavHostController) {
                         launchSingleTop = true
                         restoreState = true
                     }
+                    navigationSelectedItem = index
                 }
             )
         }
