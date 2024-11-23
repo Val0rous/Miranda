@@ -41,6 +41,7 @@ import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 import com.cashflowtracker.miranda.ui.viewmodels.AccountsViewModel
 import com.cashflowtracker.miranda.ui.viewmodels.TransactionsViewModel
 import com.cashflowtracker.miranda.utils.Coordinates
+import com.cashflowtracker.miranda.utils.TransactionType
 import com.cashflowtracker.miranda.utils.revertTransaction
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -84,7 +85,9 @@ class ViewTransaction : ComponentActivity() {
 
                                             coroutineScope.launch(Dispatchers.IO) {
                                                 if (!isDeleting) {
-                                                    if (it.type == "Output" || it.type == "Transfer") {
+                                                    if (it.type == TransactionType.OUTPUT.name
+                                                        || it.type == TransactionType.TRANSFER.name
+                                                    ) {
                                                         accountsVm.actions.getTypeByTitle(
                                                             it.source,
                                                             userId
@@ -97,7 +100,9 @@ class ViewTransaction : ComponentActivity() {
 
                                             coroutineScope.launch(Dispatchers.IO) {
                                                 if (!isDeleting) {
-                                                    if (it.type == "Input" || it.type == "Transfer") {
+                                                    if (it.type == TransactionType.INPUT.name
+                                                        || it.type == TransactionType.TRANSFER.name
+                                                    ) {
                                                         accountsVm.actions.getTypeByTitle(
                                                             it.destination,
                                                             userId
@@ -110,8 +115,8 @@ class ViewTransaction : ComponentActivity() {
 
                                             coroutineScope.launch {
                                                 if (isLocationLoaded.value) {
-                                                    it.location?.split(", ", limit = 2)
-                                                        ?.let { item ->
+                                                    it.location.split(", ", limit = 2)
+                                                        .let { item ->
                                                             if (item.size == 2) {
                                                                 coordinates.value =
                                                                     Coordinates(
@@ -140,7 +145,7 @@ class ViewTransaction : ComponentActivity() {
                             title = {
                                 if (isLoaded) {
                                     if (!isDeleting) {
-                                        Text(transaction!!.type)
+                                        Text(TransactionType.valueOf(transaction!!.type).type)
                                     }
                                 }
                             },

@@ -18,7 +18,7 @@ fun calculateBalance(
 ) {
     if (amount != 0.0) {
         when (transactionType) {
-            "Output" -> {
+            TransactionType.OUTPUT.name -> {
                 val sourceAccountId =
                     accountsVm.actions.getByTitleOrNull(
                         source,
@@ -32,7 +32,7 @@ fun calculateBalance(
                 }
             }
 
-            "Input" -> {
+            TransactionType.INPUT.name -> {
                 val destinationAccountId =
                     accountsVm.actions.getByTitleOrNull(
                         destination,
@@ -46,7 +46,7 @@ fun calculateBalance(
                 }
             }
 
-            "Transfer" -> {
+            TransactionType.TRANSFER.name -> {
                 val sourceAccountId =
                     accountsVm.actions.getByTitleOrNull(
                         source,
@@ -83,7 +83,7 @@ suspend fun calculateBalance(
 ) {
     if (amount != 0.0) {
         when (transactionType) {
-            "Output" -> {
+            TransactionType.OUTPUT.name -> {
                 val sourceAccountId =
                     accountsRepo.getByTitleOrNull(source, userId)?.accountId
                 if (sourceAccountId != null) {
@@ -91,7 +91,7 @@ suspend fun calculateBalance(
                 }
             }
 
-            "Input" -> {
+            TransactionType.INPUT.name -> {
                 val destinationAccountId =
                     accountsRepo.getByTitleOrNull(destination, userId)?.accountId
                 if (destinationAccountId != null) {
@@ -99,7 +99,7 @@ suspend fun calculateBalance(
                 }
             }
 
-            "Transfer" -> {
+            TransactionType.TRANSFER.name -> {
                 val sourceAccountId =
                     accountsRepo.getByTitleOrNull(source, userId)?.accountId
                 val destinationAccountId =
@@ -136,7 +136,7 @@ fun revertTransaction(
 ) {
     if (amount != 0.0) {
         when (transactionType) {
-            "Output" -> {
+            TransactionType.OUTPUT.name -> {
                 val sourceId = accountsVm.actions.getByTitleOrNull(
                     source,
                     userId
@@ -149,7 +149,7 @@ fun revertTransaction(
                 }
             }
 
-            "Input" -> {
+            TransactionType.INPUT.name -> {
                 val destinationId =
                     accountsVm.actions.getByTitleOrNull(
                         destination,
@@ -163,7 +163,7 @@ fun revertTransaction(
                 }
             }
 
-            "Transfer" -> {
+            TransactionType.TRANSFER.name -> {
                 val sourceId = accountsVm.actions.getByTitleOrNull(
                     source,
                     userId

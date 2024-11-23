@@ -33,6 +33,7 @@ import com.cashflowtracker.miranda.ui.viewmodels.TransactionsViewModel
 import com.cashflowtracker.miranda.utils.Currencies
 import com.cashflowtracker.miranda.utils.LocationService
 import com.cashflowtracker.miranda.utils.TimeZoneEntry
+import com.cashflowtracker.miranda.utils.TransactionType
 import com.cashflowtracker.miranda.utils.buildZonedDateTime
 import com.cashflowtracker.miranda.utils.calculateBalance
 import com.cashflowtracker.miranda.utils.getSuggestions
@@ -57,7 +58,7 @@ class AddTransaction : ComponentActivity() {
             val context = LocalContext.current
             val vm = koinViewModel<TransactionsViewModel>()
             val accountsVm = koinViewModel<AccountsViewModel>()
-            val transactionType = remember { mutableStateOf("") }
+            val transactionType = remember { mutableStateOf<TransactionType?>(null) }
             val selectedDate = remember { mutableStateOf("") }
             val selectedTime = remember { mutableStateOf("") }
             val selectedTimeZone = remember {
@@ -148,7 +149,7 @@ class AddTransaction : ComponentActivity() {
 
             val isFormValid by remember {
                 derivedStateOf {
-                    transactionType.value.isNotEmpty()
+                    transactionType.value != null
                             && selectedDate.value.isNotEmpty()
                             && selectedTime.value.isNotEmpty()
                             && source.isNotEmpty()
@@ -189,7 +190,7 @@ class AddTransaction : ComponentActivity() {
 
                                     vm.actions.addTransaction(
                                         Transaction(
-                                            type = transactionType.value,
+                                            type = transactionType.value!!.name,
                                             createdOn = formattedDateTime,
                                             source = source,
                                             destination = destination,
@@ -204,7 +205,7 @@ class AddTransaction : ComponentActivity() {
                                     calculateBalance(
                                         amount.doubleValue,
                                         currency.value,
-                                        transactionType.value,
+                                        transactionType.value!!.name,
                                         source,
                                         destination,
                                         accountsVm,
@@ -241,13 +242,13 @@ class AddTransaction : ComponentActivity() {
                             selectedTime.value
                         )
 
-                        SourceForm(source, sourceIcon, transactionType, sourceLauncher)
+                        SourceForm(source, sourceIcon, transactionType.value!!.name, sourceLauncher)
                         Spacer(modifier = Modifier.height(8.dp))
 
                         DestinationForm(
                             destination,
                             destinationIcon,
-                            transactionType,
+                            transactionType.value!!.name,
                             destinationLauncher
                         )
                         Spacer(modifier = Modifier.height(8.dp))

@@ -36,6 +36,7 @@ import com.cashflowtracker.miranda.ui.viewmodels.AccountsViewModel
 import com.cashflowtracker.miranda.utils.AccountType
 import com.cashflowtracker.miranda.utils.DefaultCategories
 import com.cashflowtracker.miranda.utils.SpecialType
+import com.cashflowtracker.miranda.utils.TransactionType
 import org.koin.androidx.compose.koinViewModel
 
 class SelectSource : ComponentActivity() {
@@ -99,7 +100,9 @@ class SelectSource : ComponentActivity() {
                             .fillMaxSize()
                             .padding(paddingValues)
                     ) {
-                        if (transactionType == "Output" || transactionType == "Transfer") {
+                        if (transactionType == TransactionType.OUTPUT.name
+                            || transactionType == TransactionType.TRANSFER.name
+                        ) {
                             // User accounts list - not the enum types
                             items(accounts) { account ->
                                 AccountListItem(
@@ -111,12 +114,12 @@ class SelectSource : ComponentActivity() {
                                                     "sourceIcon",
                                                     AccountType.getIcon(account.type).toString()
                                                 )
-                                        setResult(Activity.RESULT_OK, resultIntent)
+                                        setResult(RESULT_OK, resultIntent)
                                         finish()
                                     })
                             }
                         }
-                        if (transactionType == "Input") {
+                        if (transactionType == TransactionType.INPUT.name) {
                             // Special accounts list
                             items(SpecialType.entries) { item ->
                                 SpecialListItem(
@@ -125,12 +128,12 @@ class SelectSource : ComponentActivity() {
                                         val resultIntent =
                                             Intent().putExtra("sourceTitle", item.category)
                                                 .putExtra("sourceIcon", item.icon.toString())
-                                        setResult(Activity.RESULT_OK, resultIntent)
+                                        setResult(RESULT_OK, resultIntent)
                                         finish()
                                     })
                             }
                         }
-                        if (transactionType == "Input") {
+                        if (transactionType == TransactionType.INPUT.name) {
                             // Category list
                             items(DefaultCategories.entries) { category ->
                                 CategoryListItem(
@@ -140,7 +143,7 @@ class SelectSource : ComponentActivity() {
                                             Intent()
                                                 .putExtra("sourceTitle", category.category)
                                                 .putExtra("sourceIcon", category.icon.toString())
-                                        setResult(Activity.RESULT_OK, resultIntent)
+                                        setResult(RESULT_OK, resultIntent)
                                         finish()
                                     }
                                 )

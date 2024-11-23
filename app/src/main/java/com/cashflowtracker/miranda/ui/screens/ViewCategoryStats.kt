@@ -64,9 +64,9 @@ class ViewCategoryStats : ComponentActivity() {
                 .collectAsState(initial = emptyList())
 
             val transactionOrder = listOf(
-                TransactionType.OUTPUT.type,
-                TransactionType.INPUT.type,
-                TransactionType.TRANSFER.type
+                TransactionType.OUTPUT.name,
+                TransactionType.INPUT.name,
+                TransactionType.TRANSFER.name
             )
             val transactionTypeCounts =
                 transactions.groupingBy { it.type }.eachCount()
@@ -79,7 +79,7 @@ class ViewCategoryStats : ComponentActivity() {
                 CategoryClass.LUXURY.label
             )
             val transactionCategoryCounts =
-                transactions.filter { it.type == TransactionType.OUTPUT.type }
+                transactions.filter { it.type == TransactionType.OUTPUT.name }
                     .groupingBy { DefaultCategories.getType(it.destination).label }.eachCount()
                     .let { map -> categoryOrder.associateWith { map[it] ?: 0 } }
 

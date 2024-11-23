@@ -4,7 +4,6 @@ import android.graphics.Bitmap
 import android.graphics.Paint
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
@@ -29,8 +28,6 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.times
 import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
 import com.google.android.gms.maps.model.BitmapDescriptor
@@ -46,11 +43,11 @@ import kotlin.math.roundToInt
  */
 fun iconFactory(type: String, source: String, destination: String): Int {
     return when (type) {
-        "Output" -> {
+        TransactionType.OUTPUT.name -> {
             DefaultCategories.getIcon(destination)
         }
 
-        "Input" -> {
+        TransactionType.INPUT.name -> {
             when (source) {
                 SpecialType.POCKET.category,
                 SpecialType.EXTRA.category -> SpecialType.getIcon(source)
@@ -59,13 +56,31 @@ fun iconFactory(type: String, source: String, destination: String): Int {
             }
         }
 
-        "Transfer" -> {
+        TransactionType.TRANSFER.name -> {
             R.drawable.ic_sync
         }
 
         else -> {
             R.drawable.ic_default_empty
         }
+    }
+}
+
+@Composable
+fun backgroundColorFactory(type: String): Color {
+    return when (type) {
+        TransactionType.OUTPUT.name -> LocalCustomColors.current.surfaceTintRed
+        TransactionType.INPUT.name -> LocalCustomColors.current.surfaceTintGreen
+        else -> LocalCustomColors.current.surfaceTintBlue
+    }
+}
+
+@Composable
+fun textColorFactory(type: String): Color {
+    return when (type) {
+        TransactionType.OUTPUT.name -> LocalCustomColors.current.textRed
+        TransactionType.INPUT.name -> LocalCustomColors.current.textGreen
+        else -> LocalCustomColors.current.textBlue
     }
 }
 
@@ -77,11 +92,7 @@ fun createRoundedMarkerIcon(
 ): BitmapDescriptor {
     val context = LocalContext.current
     val iconResId = iconFactory(type, source, destination)
-    val backgroundColor = when (type) {
-        "Output" -> LocalCustomColors.current.surfaceTintRed
-        "Input" -> LocalCustomColors.current.surfaceTintGreen
-        else -> LocalCustomColors.current.surfaceTintBlue
-    }
+    val backgroundColor = backgroundColorFactory(type)
     // Load vector image
     val vector = ImageVector.vectorResource(iconResId)
     val painter = rememberVectorPainter(vector)

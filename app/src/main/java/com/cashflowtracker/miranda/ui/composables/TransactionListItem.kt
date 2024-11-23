@@ -27,6 +27,7 @@ import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
 import com.cashflowtracker.miranda.utils.Currencies
 import com.cashflowtracker.miranda.utils.Repeats
+import com.cashflowtracker.miranda.utils.TransactionType
 import com.cashflowtracker.miranda.utils.formatAmount
 import com.cashflowtracker.miranda.utils.formatDate
 import com.cashflowtracker.miranda.utils.formatRenewal
@@ -68,8 +69,8 @@ fun TransactionListItem(
                 iconColor = LocalCustomColors.current.icon,
                 backgroundSize = 40.dp,
                 backgroundColor = when (type) {
-                    "Output" -> LocalCustomColors.current.surfaceTintRed
-                    "Input" -> LocalCustomColors.current.surfaceTintGreen
+                    TransactionType.OUTPUT.name -> LocalCustomColors.current.surfaceTintRed
+                    TransactionType.INPUT.name -> LocalCustomColors.current.surfaceTintGreen
                     else -> LocalCustomColors.current.surfaceTintBlue
                 }
             )
@@ -135,8 +136,8 @@ fun RecurrenceListItem(
                 iconColor = LocalCustomColors.current.icon,
                 backgroundSize = 40.dp,
                 backgroundColor = when (type) {
-                    "Output" -> LocalCustomColors.current.surfaceTintRed
-                    "Input" -> LocalCustomColors.current.surfaceTintGreen
+                    TransactionType.OUTPUT.name -> LocalCustomColors.current.surfaceTintRed
+                    TransactionType.INPUT.name -> LocalCustomColors.current.surfaceTintGreen
                     else -> LocalCustomColors.current.surfaceTintBlue
                 }
             )

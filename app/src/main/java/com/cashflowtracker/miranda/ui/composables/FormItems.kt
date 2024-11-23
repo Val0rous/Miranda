@@ -184,7 +184,7 @@ fun NotificationsForm(notifications: SnapshotStateList<Notifications>) {
 fun SourceForm(
     source: String,
     sourceIcon: Int?,
-    transactionType: MutableState<String>,
+    transactionType: String,
     sourceLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>
 ) {
     val context = LocalContext.current
@@ -208,7 +208,7 @@ fun SourceForm(
                         context,
                         SelectSource::class.java
                     )
-                intent.putExtra("transactionType", transactionType.value)
+                intent.putExtra("transactionType", transactionType)
                 sourceLauncher.launch(intent)
             }
         ) {
@@ -246,7 +246,7 @@ fun SourceForm(
 fun DestinationForm(
     destination: String,
     destinationIcon: Int?,
-    transactionType: MutableState<String>,
+    transactionType: String,
     destinationLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>
 ) {
     val context = LocalContext.current
@@ -271,7 +271,7 @@ fun DestinationForm(
                         context,
                         SelectDestination::class.java
                     )
-                intent.putExtra("transactionType", transactionType.value)
+                intent.putExtra("transactionType", transactionType)
                 destinationLauncher.launch(intent)
             }
         ) {

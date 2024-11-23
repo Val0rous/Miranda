@@ -34,6 +34,7 @@ import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 import com.cashflowtracker.miranda.ui.viewmodels.AccountsViewModel
 import com.cashflowtracker.miranda.utils.AccountType
 import com.cashflowtracker.miranda.utils.DefaultCategories
+import com.cashflowtracker.miranda.utils.TransactionType
 import org.koin.androidx.compose.koinViewModel
 
 class SelectDestination : ComponentActivity() {
@@ -97,7 +98,9 @@ class SelectDestination : ComponentActivity() {
                             .fillMaxSize()
                             .padding(paddingValues)
                     ) {
-                        if (transactionType == "Input" || transactionType == "Transfer") {
+                        if (transactionType == TransactionType.INPUT.name
+                            || transactionType == TransactionType.TRANSFER.name
+                        ) {
                             // User accounts list - not the enum types
                             items(accounts) { account ->
                                 AccountListItem(
@@ -114,7 +117,7 @@ class SelectDestination : ComponentActivity() {
                                     })
                             }
                         }
-                        if (transactionType == "Output") {
+                        if (transactionType == TransactionType.OUTPUT.name) {
                             items(DefaultCategories.entries) { category ->
                                 CategoryListItem(
                                     category = category,

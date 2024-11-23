@@ -2,7 +2,6 @@ package com.cashflowtracker.miranda.ui.composables
 
 import android.content.Context
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -38,7 +37,6 @@ import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.data.database.BaseTransaction
 import com.cashflowtracker.miranda.data.database.Notification
-import com.cashflowtracker.miranda.data.database.Transaction
 import com.cashflowtracker.miranda.ui.theme.Green400
 import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
 import com.cashflowtracker.miranda.ui.theme.Red400
@@ -51,9 +49,12 @@ import com.cashflowtracker.miranda.utils.DefaultCategories
 import com.cashflowtracker.miranda.utils.Notifications
 import com.cashflowtracker.miranda.utils.Repeats
 import com.cashflowtracker.miranda.utils.SpecialType
+import com.cashflowtracker.miranda.utils.TransactionType
+import com.cashflowtracker.miranda.utils.backgroundColorFactory
 import com.cashflowtracker.miranda.utils.formatAmount
 import com.cashflowtracker.miranda.utils.formatRenewal
 import com.cashflowtracker.miranda.utils.formatZonedDateTime
+import com.cashflowtracker.miranda.utils.textColorFactory
 
 @Composable
 fun TransactionBubblesToFrom(
@@ -73,22 +74,16 @@ fun TransactionBubblesToFrom(
                 modifier = Modifier
                     .size(56.dp)
                     .clip(CircleShape)
-                    .background(
-                        when (transaction.type) {
-                            "Output" -> LocalCustomColors.current.surfaceTintRed
-                            "Input" -> LocalCustomColors.current.surfaceTintGreen
-                            else -> LocalCustomColors.current.surfaceTintBlue
-                        }
-                    )
+                    .background(backgroundColorFactory(transaction.type))
             ) {
                 Icon(
                     imageVector = ImageVector.vectorResource(
                         when (transaction.type) {
-                            "Output" -> AccountType.getIcon(
+                            TransactionType.OUTPUT.name -> AccountType.getIcon(
                                 sourceType
                             )
 
-                            "Input" -> {
+                            TransactionType.INPUT.name -> {
                                 when (transaction.source) {
                                     SpecialType.POCKET.category, SpecialType.EXTRA.category -> SpecialType.getIcon(
                                         transaction.source
@@ -116,7 +111,7 @@ fun TransactionBubblesToFrom(
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.padding(top = 8.dp)
             )
-            if (transaction.type == "Input") {
+            if (transaction.type == TransactionType.INPUT.name) {
                 Row(modifier = Modifier.padding(top = 4.dp)) {
                     when (DefaultCategories.getType(transaction.source)) {
                         CategoryClass.NECESSITY -> repeat(1) {
@@ -177,22 +172,16 @@ fun TransactionBubblesToFrom(
                 modifier = Modifier
                     .size(56.dp)
                     .clip(CircleShape)
-                    .background(
-                        when (transaction.type) {
-                            "Output" -> LocalCustomColors.current.surfaceTintRed
-                            "Input" -> LocalCustomColors.current.surfaceTintGreen
-                            else -> LocalCustomColors.current.surfaceTintBlue
-                        }
-                    )
+                    .background(backgroundColorFactory(transaction.type))
             ) {
                 Icon(
                     imageVector = ImageVector.vectorResource(
                         when (transaction.type) {
-                            "Output" -> DefaultCategories.getIcon(
+                            TransactionType.OUTPUT.name -> DefaultCategories.getIcon(
                                 transaction.destination
                             )
 
-                            "Input" -> AccountType.getIcon(
+                            TransactionType.INPUT.name -> AccountType.getIcon(
                                 destinationType
                             )
 
@@ -214,7 +203,7 @@ fun TransactionBubblesToFrom(
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.padding(top = 8.dp)
             )
-            if (transaction.type == "Output") {
+            if (transaction.type == TransactionType.OUTPUT.name) {
                 Row(modifier = Modifier.padding(top = 4.dp)) {
                     when (DefaultCategories.getType(transaction.destination)) {
                         CategoryClass.NECESSITY -> repeat(1) {
@@ -297,11 +286,7 @@ fun TransactionViewer(
                     amount, Currencies.get(currency), type
                 ),
                 style = MaterialTheme.typography.headlineMedium,
-                color = when (type) {
-                    "Output" -> LocalCustomColors.current.textRed
-                    "Input" -> LocalCustomColors.current.textGreen
-                    else -> LocalCustomColors.current.textBlue
-                },
+                color = textColorFactory(type),
                 modifier = Modifier.padding(top = 24.dp)
             )
 

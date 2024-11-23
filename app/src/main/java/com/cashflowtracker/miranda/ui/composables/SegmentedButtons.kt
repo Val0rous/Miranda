@@ -37,20 +37,31 @@ import com.cashflowtracker.miranda.utils.TransactionType
 
 @Composable
 fun SegmentedButtonType(
-    transactionType: MutableState<String>,
+    transactionType: MutableState<TransactionType?>,
     isTypeChanged: MutableState<Boolean>,
     modifier: Modifier
 ) {
-    var selectedIndex by remember { mutableIntStateOf(0) }
-    transactionType.value = TransactionType.OUTPUT.type
+    var selectedIndex by remember {
+        mutableIntStateOf(
+            when (transactionType.value) {
+                TransactionType.OUTPUT -> 0
+                TransactionType.INPUT -> 1
+                TransactionType.TRANSFER -> 2
+                null -> {
+                    transactionType.value = TransactionType.OUTPUT
+                    0
+                }
+            }
+        )
+    }
 
     SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
         SegmentedButton(
             selected = selectedIndex == 0,
             onClick = {
                 selectedIndex = 0
-                isTypeChanged.value = transactionType.value != TransactionType.OUTPUT.type
-                transactionType.value = TransactionType.OUTPUT.type
+                isTypeChanged.value = transactionType.value != TransactionType.OUTPUT
+                transactionType.value = TransactionType.OUTPUT
             },
             shape = SegmentedButtonDefaults.itemShape(
                 index = 0,
@@ -72,8 +83,8 @@ fun SegmentedButtonType(
             selected = selectedIndex == 1,
             onClick = {
                 selectedIndex = 1
-                isTypeChanged.value = transactionType.value != TransactionType.INPUT.type
-                transactionType.value = TransactionType.INPUT.type
+                isTypeChanged.value = transactionType.value != TransactionType.INPUT
+                transactionType.value = TransactionType.INPUT
             },
             shape = SegmentedButtonDefaults.itemShape(
                 index = 1,
@@ -95,8 +106,8 @@ fun SegmentedButtonType(
             selected = selectedIndex == 2,
             onClick = {
                 selectedIndex = 2
-                isTypeChanged.value = transactionType.value != TransactionType.TRANSFER.type
-                transactionType.value = TransactionType.TRANSFER.type
+                isTypeChanged.value = transactionType.value != TransactionType.TRANSFER
+                transactionType.value = TransactionType.TRANSFER
             },
             shape = SegmentedButtonDefaults.itemShape(
                 index = 2,

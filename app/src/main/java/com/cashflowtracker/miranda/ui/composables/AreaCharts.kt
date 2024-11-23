@@ -56,8 +56,8 @@ fun AreaChart(
     transactions.forEach { item ->
         val date = ZonedDateTime.parse(item.createdOn, DateTimeFormatter.ISO_ZONED_DATE_TIME)
         val deltaAmount = when (item.type) {
-            TransactionType.OUTPUT.type -> -item.amount
-            TransactionType.INPUT.type -> item.amount
+            TransactionType.OUTPUT.name -> -item.amount
+            TransactionType.INPUT.name -> item.amount
             else -> 0.0
         }
         currentBalance += deltaAmount
@@ -167,8 +167,8 @@ fun AreaChartThumbnail(
     transactions.forEach { item ->
         dateList.add(ZonedDateTime.parse(item.createdOn, DateTimeFormatter.ISO_ZONED_DATE_TIME))
         val deltaAmount = when (item.type) {
-            TransactionType.OUTPUT.type -> -item.amount
-            TransactionType.INPUT.type -> item.amount
+            TransactionType.OUTPUT.name -> -item.amount
+            TransactionType.INPUT.name -> item.amount
             else -> 0.0
         }
         currentBalance += deltaAmount

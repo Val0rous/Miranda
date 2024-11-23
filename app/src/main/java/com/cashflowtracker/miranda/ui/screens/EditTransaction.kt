@@ -47,6 +47,7 @@ import com.cashflowtracker.miranda.utils.Currencies
 import com.cashflowtracker.miranda.utils.DefaultCategories
 import com.cashflowtracker.miranda.utils.LocationService
 import com.cashflowtracker.miranda.utils.TimeZoneEntry
+import com.cashflowtracker.miranda.utils.TransactionType
 import com.cashflowtracker.miranda.utils.buildZonedDateTime
 import com.cashflowtracker.miranda.utils.calculateBalance
 import com.cashflowtracker.miranda.utils.getSuggestions
@@ -87,7 +88,7 @@ class EditTransaction : ComponentActivity() {
             val oldDestination = remember { mutableStateOf("") }
             val oldAmount = remember { mutableDoubleStateOf(0.0) }
             val oldCurrency = remember { mutableStateOf(Currencies.EUR) }
-            val transactionType = remember { mutableStateOf("") }
+            val transactionType = remember { mutableStateOf<TransactionType?>(null) }
             val selectedDate = remember { mutableStateOf("") }
             val selectedTime = remember { mutableStateOf("") }
             val selectedTimeZone = remember {
@@ -178,7 +179,7 @@ class EditTransaction : ComponentActivity() {
 
             val isFormValid by remember {
                 derivedStateOf {
-                    transactionType.value.isNotEmpty()
+                    transactionType.value != null
                             && selectedDate.value.isNotEmpty()
                             && selectedTime.value.isNotEmpty()
                             && source.isNotEmpty()
@@ -202,7 +203,7 @@ class EditTransaction : ComponentActivity() {
                 coroutineScope.launch(Dispatchers.IO) {
                     transaction = vm.actions.getByTransactionId(transactionId.value).also {
                         oldTransactionType.value = it.type
-                        transactionType.value = it.type
+                        transactionType.value = TransactionType.valueOf(it.type)
 
                         try {
                             val zonedDateTime = ZonedDateTime.parse(
@@ -218,7 +219,6 @@ class EditTransaction : ComponentActivity() {
                                         Locale.getDefault()
                                     )
                                 )
-
 
                             // Format time
                             selectedTime.value = zonedDateTime.toLocalTime()
@@ -275,7 +275,7 @@ class EditTransaction : ComponentActivity() {
                         amount.doubleValue = it.amount
                         currency.value = Currencies.get(it.currency)
                         comment.value = it.comment
-                        location.value = it.location ?: ""
+                        location.value = it.location
                         isLoaded = true
                     }
                 }
@@ -313,7 +313,7 @@ class EditTransaction : ComponentActivity() {
                                     vm.actions.updateTransaction(
                                         Transaction(
                                             transactionId = transaction!!.transactionId,
-                                            type = transactionType.value,
+                                            type = transactionType.value!!.name,
                                             createdOn = formattedDateTime,
                                             source = source,
                                             destination = destination,
@@ -328,7 +328,7 @@ class EditTransaction : ComponentActivity() {
                                     calculateBalance(
                                         amount.doubleValue,
                                         currency.value,
-                                        transactionType.value,
+                                        transactionType.value!!.name,
                                         source,
                                         destination,
                                         accountsVm,
@@ -367,13 +367,18 @@ class EditTransaction : ComponentActivity() {
                                 selectedTime.value
                             )
 
-                            SourceForm(source, sourceIcon, transactionType, sourceLauncher)
+                            SourceForm(
+                                source,
+                                sourceIcon,
+                                transactionType.value!!.name,
+                                sourceLauncher
+                            )
                             Spacer(modifier = Modifier.height(8.dp))
 
                             DestinationForm(
                                 destination,
                                 destinationIcon,
-                                transactionType,
+                                transactionType.value!!.name,
                                 destinationLauncher
                             )
                             Spacer(modifier = Modifier.height(8.dp))

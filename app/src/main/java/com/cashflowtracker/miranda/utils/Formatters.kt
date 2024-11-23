@@ -39,8 +39,8 @@ fun formatAmount(amount: Double, currency: Currencies, transactionType: String =
     val currencySymbol = Currency.getInstance(currency.name).symbol
 
     val sign = when (transactionType) {
-        TransactionType.OUTPUT.type -> if (amount != 0.0) "-" else ""
-        TransactionType.INPUT.type -> if (amount != 0.0) "+" else ""
+        TransactionType.OUTPUT.name -> if (amount != 0.0) "-" else ""
+        TransactionType.INPUT.name -> if (amount != 0.0) "+" else ""
         else -> ""
     }
     return "$sign$formattedNumber $currencySymbol"

@@ -73,6 +73,7 @@ import com.cashflowtracker.miranda.utils.DefaultCategories
 import com.cashflowtracker.miranda.utils.Notifications
 import com.cashflowtracker.miranda.utils.Repeats
 import com.cashflowtracker.miranda.utils.SpecialType
+import com.cashflowtracker.miranda.utils.TransactionType
 import com.cashflowtracker.miranda.utils.cancelScheduledRecurrenceAndNotifications
 import com.cashflowtracker.miranda.utils.formatAmount
 import com.cashflowtracker.miranda.utils.formatZonedDateTime
@@ -126,7 +127,9 @@ class ViewRecurrence : ComponentActivity() {
 
                                             coroutineScope.launch(Dispatchers.IO) {
                                                 if (!isDeleting) {
-                                                    if (it.type == "Output" || it.type == "Transfer") {
+                                                    if (it.type == TransactionType.OUTPUT.name
+                                                        || it.type == TransactionType.TRANSFER.name
+                                                    ) {
                                                         accountsVm.actions.getTypeByTitle(
                                                             it.source,
                                                             userId
@@ -139,7 +142,9 @@ class ViewRecurrence : ComponentActivity() {
 
                                             coroutineScope.launch(Dispatchers.IO) {
                                                 if (!isDeleting) {
-                                                    if (it.type == "Input" || it.type == "Transfer") {
+                                                    if (it.type == TransactionType.INPUT.name
+                                                        || it.type == TransactionType.TRANSFER.name
+                                                    ) {
                                                         accountsVm.actions.getTypeByTitle(
                                                             it.destination,
                                                             userId
@@ -153,7 +158,7 @@ class ViewRecurrence : ComponentActivity() {
                                             coroutineScope.launch {
                                                 if (isLocationLoaded.value) {
                                                     it.location.split(", ", limit = 2)
-                                                        ?.let { item ->
+                                                        .let { item ->
                                                             if (item.size == 2) {
                                                                 coordinates.value =
                                                                     Coordinates(
@@ -182,7 +187,7 @@ class ViewRecurrence : ComponentActivity() {
                             title = {
                                 if (isLoaded) {
                                     if (!isDeleting) {
-                                        Text("Next " + recurrence!!.type)
+                                        Text("Next " + TransactionType.valueOf(recurrence!!.type).type)
                                     }
                                 }
                             },

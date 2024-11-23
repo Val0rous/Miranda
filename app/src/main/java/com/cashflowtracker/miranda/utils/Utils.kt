@@ -7,15 +7,15 @@ import com.cashflowtracker.miranda.data.database.Transaction
 
 fun <T : BaseTransaction> getSuggestions(
     list: List<T>,
-    transactionType: MutableState<String>,
+    transactionType: MutableState<TransactionType?>,
     source: String,
     destination: String
 ): List<String> {
     return list
         .filter {
             when (transactionType.value) {
-                TransactionType.OUTPUT.type -> it.type == TransactionType.OUTPUT.type && it.destination == destination
-                TransactionType.INPUT.type -> it.type == TransactionType.INPUT.type && it.source == source
+                TransactionType.OUTPUT -> TransactionType.valueOf(it.type).name == TransactionType.OUTPUT.name && it.destination == destination
+                TransactionType.INPUT -> TransactionType.valueOf(it.type).name == TransactionType.INPUT.name && it.source == source
                 else -> false
             }
         }
