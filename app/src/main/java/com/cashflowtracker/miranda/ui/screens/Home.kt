@@ -30,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -98,7 +99,7 @@ fun Home() {
                     modifier = Modifier.padding(bottom = 12.dp)
                 ) {
                     Text(
-                        "Total Balance",
+                        text = stringResource(R.string.total_balance),
                         style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold)
                     )
                     Spacer(Modifier.weight(1f))
@@ -114,7 +115,7 @@ fun Home() {
                             } else {
                                 ImageVector.vectorResource(R.drawable.ic_visibility_filled)
                             },
-                            contentDescription = "Toggle Visibility",
+                            contentDescription = stringResource(R.string.toggle_visibility),
                             tint = if (!balanceVisible) {
                                 MaterialTheme.colorScheme.onSurfaceVariant
                             } else {
@@ -137,7 +138,7 @@ fun Home() {
             modifier = Modifier.padding(top = 24.dp, bottom = 0.dp, start = 16.dp, end = 8.dp)
         ) {
             Text(
-                "Accounts",
+                text = stringResource(R.string.accounts),
                 style = MaterialTheme.typography.titleLarge
             )
             Spacer(Modifier.weight(1f))
@@ -149,7 +150,7 @@ fun Home() {
                 ) {
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.ic_add),
-                        contentDescription = "Add Account",
+                        contentDescription = stringResource(R.string.add_account),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
@@ -160,7 +161,7 @@ fun Home() {
                 ) {
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.ic_swap_vert),
-                        contentDescription = "Sort",
+                        contentDescription = stringResource(R.string.sort),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
@@ -171,7 +172,7 @@ fun Home() {
                 ) {
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.ic_filter_list),
-                        contentDescription = "Filter",
+                        contentDescription = stringResource(R.string.filter),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
@@ -241,7 +242,7 @@ fun Home() {
                 contentAlignment = Alignment.Center,
                 modifier = Modifier.fillMaxSize()
             ) {
-                Text("No accounts yet. Tap on + to add one!")
+                Text(stringResource(R.string.no_accounts))
             }
         }
     }

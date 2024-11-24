@@ -17,7 +17,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.data.database.Transaction
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserId
 import com.cashflowtracker.miranda.data.repositories.ThemeRepository.getThemePreferenceFlow
@@ -63,7 +66,7 @@ fun Stats() {
                 horizontalArrangement = Arrangement.spacedBy(6.dp) // Reduced padding between cards
             ) {
                 StatsCard(
-                    title = "Overall Cashflow",
+                    title = stringResource(R.string.overall_cashflow),
                     modifier = Modifier.weight(1f),
                     transactions = transactions,
                     chartLineColor = LocalCustomColors.current.chartLineBlue,
@@ -91,7 +94,7 @@ fun Stats() {
                     yearlyInitialBalance += deltaAmount
                 }
                 StatsCard(
-                    title = "Yearly Report",
+                    title = stringResource(R.string.yearly_report),
                     modifier = Modifier.weight(1f),
                     transactions = yearlyTransactions,
                     initialBalance = yearlyInitialBalance,
@@ -151,7 +154,7 @@ fun Stats() {
                     quarterlyInitialBalance += deltaAmount
                 }
                 StatsCard(
-                    title = "Quarterly Report",
+                    title = stringResource(R.string.quarterly_report),
                     modifier = Modifier.weight(1f),
                     transactions = quarterlyTransactions,
                     initialBalance = quarterlyInitialBalance,
@@ -180,7 +183,7 @@ fun Stats() {
                     monthlyInitialBalance += deltaAmount
                 }
                 StatsCard(
-                    title = "Monthly Report",
+                    title = stringResource(R.string.monthly_report),
                     modifier = Modifier.weight(1f),
                     transactions = monthlyTransactions,
                     initialBalance = monthlyInitialBalance,
@@ -200,7 +203,7 @@ fun Stats() {
                 horizontalArrangement = Arrangement.spacedBy(6.dp) // Reduced padding between cards
             ) {
                 CategoriesCard(
-                    title = "Categories",
+                    title = stringResource(R.string.categories),
                     modifier = Modifier.weight(1f),
                     onClick = {
                         context.startActivity(Intent(context, ViewCategoryStats::class.java))
@@ -218,7 +221,7 @@ fun Stats() {
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                Text("Making transactions will unlock some magic")
+                Text(stringResource(R.string.no_stats))
             }
         }
     }
@@ -250,6 +253,8 @@ fun StatsCard(
         Text(
             text = title,
             style = MaterialTheme.typography.titleMedium,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
             //textAlign = Alignment.TopStart, // Align content to the top start
             modifier = Modifier
                 .fillMaxWidth()

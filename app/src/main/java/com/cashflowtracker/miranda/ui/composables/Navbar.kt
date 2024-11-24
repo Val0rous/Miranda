@@ -11,6 +11,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -19,7 +20,7 @@ import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.utils.Routes
 
 data class NavbarItem(
-    val label: String,
+    val label: Int,
     val icon: Int,
     val filledIcon: Int,
     val route: String
@@ -28,25 +29,25 @@ data class NavbarItem(
 object NavbarItems {
     val items = listOf(
         NavbarItem(
-            label = "Home",
+            label = R.string.home,
             icon = R.drawable.ic_home,
             filledIcon = R.drawable.ic_home_filled,
             route = Routes.Home.route
         ),
         NavbarItem(
-            label = "Transactions",
+            label = R.string.transactions,
             icon = R.drawable.ic_assignment,
             filledIcon = R.drawable.ic_assignment_filled,
             route = Routes.Transactions.route
         ),
         NavbarItem(
-            label = "Recurrents",
+            label = R.string.recurrents,
             icon = R.drawable.ic_schedule,
             filledIcon = R.drawable.ic_schedule_filled,
             route = Routes.Recurrents.route
         ),
         NavbarItem(
-            label = "Stats",
+            label = R.string.stats,
             icon = R.drawable.ic_leaderboard,
             filledIcon = R.drawable.ic_leaderboard_filled,
             route = Routes.Stats.route
@@ -67,9 +68,10 @@ fun Navbar(navController: NavHostController) {
             if (currentDestination?.route == item.route) {
                 navigationSelectedItem = index
             }
+            val label = stringResource(item.label)
             NavigationBarItem(
                 selected = index == navigationSelectedItem,
-                label = { Text(item.label) },
+                label = { Text(label) },
                 icon = {
                     Icon(
                         imageVector = if (index == navigationSelectedItem) {
@@ -77,7 +79,7 @@ fun Navbar(navController: NavHostController) {
                         } else {
                             ImageVector.vectorResource(item.icon)
                         },
-                        contentDescription = item.label
+                        contentDescription = label
                     )
                 },
                 onClick = {

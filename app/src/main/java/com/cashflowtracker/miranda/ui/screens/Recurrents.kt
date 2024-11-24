@@ -13,7 +13,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserId
 import com.cashflowtracker.miranda.ui.composables.RecurrenceListItem
 import com.cashflowtracker.miranda.ui.composables.TransactionListItem
@@ -59,7 +61,7 @@ fun Recurrents() {
                 contentAlignment = Alignment.Center,
                 modifier = Modifier.fillMaxSize()
             ) {
-                Text("No recurrents found", textAlign = TextAlign.Center)
+                Text(stringResource(R.string.no_recurrents), textAlign = TextAlign.Center)
             }
         }
     }

@@ -2,8 +2,6 @@ package com.cashflowtracker.miranda.utils
 
 import androidx.compose.runtime.MutableState
 import com.cashflowtracker.miranda.data.database.BaseTransaction
-import com.cashflowtracker.miranda.data.database.Recurrence
-import com.cashflowtracker.miranda.data.database.Transaction
 
 fun <T : BaseTransaction> getSuggestions(
     list: List<T>,
