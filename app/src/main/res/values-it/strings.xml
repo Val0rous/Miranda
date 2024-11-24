@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Miranda</string>
+    <string name="add_transaction_shortcut_short_label">Aggiungi Transazione</string>
+    <string name="add_transaction_shortcut_long_label">Crea una nuova transazione</string>
+    <string name="add_transaction_disabled_message">La scorciatoia per aggiungere una transazione è disabilitata</string>
+
+    <!-- Account types -->
+    <string name="account_type_bank">Banca</string>
+    <string name="account_type_wallet">Portafoglio</string>
+    <string name="account_type_credit_debit_card">Carta di Credito/Debito</string>
+    <string name="account_type_investments_stocks">Investimenti/Azioni</string>
+    <string name="account_type_safe">Cassaforte</string>
+    <string name="account_type_savings">Risparmi</string>
+    <string name="account_type_sim_card">Carta SIM</string>
+    <string name="account_type_bitcoin_wallet">Portafoglio Bitcoin</string>
+    <string name="account_type_payment_platform">Piattaforma di Pagamento</string>
+    <string name="account_type_other_account">Altro Conto</string>
+
+    <!-- Special types -->
+    <string name="special_type_pocket">Tasca</string>
+    <string name="special_type_extra">Extra</string>
+    <string name="special_type_debts">Debiti</string>
+    <string name="special_type_credits">Crediti</string>
+
+    <!-- Transaction types -->
+    <string name="transaction_type_output">Uscita</string>
+    <string name="transaction_type_input">Entrata</string>
+    <string name="transaction_type_transfer">Trasferimento</string>
+
+    <!-- Category classes -->
+    <string name="category_class_necessity">Necessità</string>
+    <string name="category_class_convenience">Comodità</string>
+    <string name="category_class_luxury">Lusso</string>
+    <string name="category_class_unranked">Non Classificato</string>
+
+    <!-- Default categories -->
+    <string name="category_bank">Banca</string>
+    <string name="category_car">Auto</string>
+    <string name="category_rent">Affitto</string>
+    <string name="category_family">Famiglia</string>
+    <string name="category_fees">Commissioni</string>
+    <string name="category_food">Cibo</string>
+    <string name="category_fuel">Carburante</string>
+    <string name="category_healthcare">Sanità</string>
+    <string name="category_household">Casa</string>
+    <string name="category_insurance">Assicurazione</string>
+    <string name="category_job">Lavoro</string>
+    <string name="category_phone_internet">Telefono/Internet</string>
+    <string name="category_fines">Multe</string>
+    <string name="category_supplements">Integratori</string>
+    <string name="category_transport">Trasporti</string>
+
+    <string name="category_meal">Pasto</string>
+    <string name="category_personal_care">Cura Personale</string>
+    <string name="category_app_software">App/Software</string>
+    <string name="category_books">Libri</string>
+    <string name="category_electronics">Elettronica</string>
+    <string name="category_friends">Amici</string>
+    <string name="category_gifts">Regali</string>
+    <string name="category_lost">Perso</string>
+    <string name="category_other">Altro</string>
+    <string name="category_shipping">Spedizioni</string>
+    <string name="category_sport">Sport</string>
+    <string name="category_crypto">Criptovalute</string>
+    <string name="category_accessories">Accessori</string>
+    <string name="category_cafe">Caffetteria</string>
+    <string name="category_clothing">Abbigliamento</string>
+
+    <string name="category_cinema">Cinema</string>
+    <string name="category_bet">Scommesse</string>
+    <string name="category_entertainment">Intrattenimento</string>
+    <string name="category_fun">Divertimento</string>
+    <string name="category_gaming">Giochi</string>
+    <string name="category_hobby">Hobby</string>
+    <string name="category_hotel">Hotel</string>
+    <string name="category_pub">Pub</string>
+    <string name="category_munchies">Snack</string>
+    <string name="category_restaurant">Ristorante</string>
+    <string name="category_stuff">Cose</string>
+    <string name="category_travel">Viaggi</string>
+
+    <!-- Currencies -->
+    <string name="currency_euro">Euro</string>
+    <string name="currency_us_dollar">Dollaro Statunitense</string>
+    <string name="currency_british_pound">Sterlina Britannica</string>
+    <string name="currency_japanese_yen">Yen Giapponese</string>
+    <string name="currency_australian_dollar">Dollaro Australiano</string>
+    <string name="currency_canadian_dollar">Dollaro Canadese</string>
+    <string name="currency_swiss_franc">Franco Svizzero</string>
+    <string name="currency_chinese_yuan">Yuan Cinese</string>
+    <string name="currency_hong_kong_dollar">Dollaro di Hong Kong</string>
+    <string name="currency_new_zealand_dollar">Dollaro Neozelandese</string>
+    <string name="currency_russian_ruble">Rublo Russo</string>
+    <string name="currency_singapore_dollar">Dollaro di Singapore</string>
+    <string name="currency_swedish_krona">Corona Svedese</string>
+    <string name="currency_south_african_rand">Rand Sudafricano</string>
+    <string name="currency_south_korean_won">Won Sudcoreano</string>
+    <string name="currency_icelandic_krona">Corona Islandese</string>
+    <string name="currency_indian_rupee">Rupia Indiana</string>
+    <string name="currency_mexican_peso">Peso Messicano</string>
+    <string name="currency_brazilian_real">Real Brasiliano</string>
+    <string name="currency_argentine_peso">Peso Argentino</string>
+    <string name="currency_polish_zloty">Zloty Polacco</string>
+    <string name="currency_norwegian_krone">Corona Norvegese</string>
+    <string name="currency_danish_krone">Corona Danese</string>
+    <string name="currency_hungarian_forint">Fiorino Ungherese</string>
+    <string name="currency_czech_koruna">Corona Ceca</string>
+    <string name="currency_turkish_lira">Lira Turca</string>
+    <string name="currency_united_arab_emirates_dirham">Dirham degli Emirati Arabi Uniti</string>
+    <string name="currency_saudi_riyal">Riyal Saudita</string>
+    <string name="currency_malaysian_ringgit">Ringgit Malese</string>
+    <string name="currency_thai_baht">Baht Thailandese</string>
+    <string name="currency_philippine_peso">Peso Filippino</string>
+    <string name="currency_indonesian_rupiah">Rupia Indonesiana</string>
+    <string name="currency_vietnamese_dong">Dong Vietnamita</string>
+    <string name="currency_bangladeshi_taka">Taka Bengalese</string>
+    <string name="currency_pakistani_rupee">Rupia Pakistana</string>
+    <string name="currency_sri_lankan_rupee">Rupia dello Sri Lanka</string>
+    <string name="currency_israeli_shekel">Shekel Israeliano</string>
+    <string name="currency_egyptian_pound">Sterlina Egiziana</string>
+    <string name="currency_nigerian_naira">Naira Nigeriana</string>
+    <string name="currency_kenyan_shilling">Scellino Kenyota</string>
+    <string name="currency_bitcoin">Bitcoin</string>
+
+    <!-- Countries -->
+    <string name="country_austria">Austria</string>
+    <string name="country_belgium">Belgio</string>
+    <string name="country_croatia">Croazia</string>
+    <string name="country_cyprus">Cipro</string>
+    <string name="country_estonia">Estonia</string>
+    <string name="country_finland">Finlandia</string>
+    <string name="country_france">Francia</string>
+    <string name="country_germany">Germania</string>
+    <string name="country_greece">Grecia</string>
+    <string name="country_ireland">Irlanda</string>
+    <string name="country_italy">Italia</string>
+    <string name="country_latvia">Lettonia</string>
+    <string name="country_lithuania">Lituania</string>
+    <string name="country_luxembourg">Lussemburgo</string>
+    <string name="country_malta">Malta</string>
+    <string name="country_netherlands">Paesi Bassi</string>
+    <string name="country_portugal">Portogallo</string>
+    <string name="country_slovakia">Slovacchia</string>
+    <string name="country_slovenia">Slovenia</string>
+    <string name="country_spain">Spagna</string>
+    <string name="country_united_states">Stati Uniti</string>
+    <string name="country_puerto_rico">Porto Rico</string>
+    <string name="country_guam">Guam</string>
+    <string name="country_marshall_islands">Isole Marshall</string>
+    <string name="country_el_salvador">El Salvador</string>
+    <string name="country_ecuador">Ecuador</string>
+    <string name="country_east_timor">Timor Est</string>
+    <string name="country_zimbabwe">Zimbabwe</string>
+    <string name="country_australia">Australia</string>
+    <string name="country_nauru">Nauru</string>
+    <string name="country_kiribati">Kiribati</string>
+    <string name="country_tuvalu">Tuvalu</string>
+    <string name="country_switzerland">Svizzera</string>
+    <string name="country_liechtenstein">Liechtenstein</string>
+    <string name="country_denmark">Danimarca</string>
+    <string name="country_greenland">Groenlandia</string>
+    <string name="country_argentina">Argentina</string>
+    <string name="country_bangladesh">Bangladesh</string>
+    <string name="country_brazil">Brasile</string>
+    <string name="country_canada">Canada</string>
+    <string name="country_china">Cina</string>
+    <string name="country_czech_republic">Repubblica Ceca</string>
+    <string name="country_egypt">Egitto</string>
+    <string name="country_hong_kong">Hong Kong</string>
+    <string name="country_hungary">Ungheria</string>
+    <string name="country_iceland">Islanda</string>
+    <string name="country_india">India</string>
+    <string name="country_indonesia">Indonesia</string>
+    <string name="country_israel">Israele</string>
+    <string name="country_japan">Giappone</string>
+    <string name="country_kenya">Kenya</string>
+    <string name="country_malaysia">Malesia</string>
+    <string name="country_mexico">Messico</string>
+    <string name="country_new_zealand">Nuova Zelanda</string>
+    <string name="country_nigeria">Nigeria</string>
+    <string name="country_norway">Norvegia</string>
+    <string name="country_pakistan">Pakistan</string>
+    <string name="country_philippines">Filippine</string>
+    <string name="country_poland">Polonia</string>
+    <string name="country_russia">Russia</string>
+    <string name="country_saudi_arabia">Arabia Saudita</string>
+    <string name="country_singapore">Singapore</string>
+    <string name="country_south_africa">Sudafrica</string>
+    <string name="country_south_korea">Corea del Sud</string>
+    <string name="country_sri_lanka">Sri Lanka</string>
+    <string name="country_sweden">Svezia</string>
+    <string name="country_united_arab_emirates">Emirati Arabi Uniti</string>
+    <string name="country_united_kingdom">Regno Unito</string>
+    <string name="country_thailand">Thailandia</string>
+    <string name="country_turkey">Turchia</string>
+    <string name="country_vietnam">Vietnam</string>
+</resources>

@@ -46,7 +46,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Miranda"
         android:minSdkVersion="23"
-        tools:targetApi="34">
+        tools:targetApi="34"
+        android:localeConfig="@xml/locales_config">
 
         <!--below is the code for default activity which is Main Activity-->
         <activity
