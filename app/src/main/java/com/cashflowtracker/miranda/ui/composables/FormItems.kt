@@ -51,6 +51,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -90,7 +91,7 @@ fun DateTimeForm(
     ) {
         Icon(
             imageVector = ImageVector.vectorResource(R.drawable.ic_schedule),
-            contentDescription = "Date & Time"
+            contentDescription = stringResource(R.string.date_and_time)
         )
         Spacer(modifier = Modifier.width(4.dp))
         DatePicker(selectedDate = selectedDate)
@@ -114,7 +115,7 @@ fun TimeZoneForm(
     ) {
         Icon(
             imageVector = ImageVector.vectorResource(R.drawable.ic_public),
-            contentDescription = "Time Zone"
+            contentDescription = stringResource(R.string.time_zone)
         )
         Spacer(modifier = Modifier.width(4.dp))
         TimeZonePicker(selectedTimeZone, timezoneLauncher, date, time)
@@ -129,7 +130,7 @@ fun RepeatForm(selectedRepeat: MutableState<Repeats>) {
     ) {
         Icon(
             imageVector = ImageVector.vectorResource(R.drawable.ic_replay),
-            contentDescription = "Repeat",
+            contentDescription = stringResource(R.string.repeat),
             modifier = Modifier
                 .scale(scaleX = -1f, scaleY = 1f)   // Flip horizontally
                 .rotate(-45f)
@@ -149,7 +150,7 @@ fun CreateFirstOccurrenceForm(isCreateFirstOccurrence: MutableState<Boolean>) {
     ) {
         Spacer(modifier = Modifier.width(12.dp))
         Text(
-            "Create First Occurrence",
+            text = stringResource(R.string.create_first_occurrence),
             style = MaterialTheme.typography.titleSmall
         )
         Spacer(modifier = Modifier.weight(1f))
@@ -173,7 +174,7 @@ fun NotificationsForm(notifications: SnapshotStateList<Notifications>) {
         Box(modifier = Modifier.padding(top = 12.dp)) {
             Icon(
                 ImageVector.vectorResource(R.drawable.ic_notifications),
-                contentDescription = "Notifications"
+                contentDescription = stringResource(R.string.notifications)
             )
         }
         Spacer(modifier = Modifier.width(4.dp))
@@ -197,9 +198,10 @@ fun SourceForm(
             .offset(y = (0).dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        val label = stringResource(R.string.source)
         Icon(
             imageVector = ImageVector.vectorResource(R.drawable.ic_logout),
-            contentDescription = "Source"
+            contentDescription = label
         )
         Spacer(modifier = Modifier.width(16.dp))
 
@@ -218,7 +220,7 @@ fun SourceForm(
             OutlinedTextField(
                 value = formatSource(source, transactionType),
                 onValueChange = { },
-                label = { Text("Source") },
+                label = { Text(label) },
                 readOnly = true,
                 modifier = Modifier.fillMaxWidth(),
                 trailingIcon = {
@@ -259,9 +261,10 @@ fun DestinationForm(
             .offset(y = (0).dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        val label = stringResource(R.string.destination)
         Icon(
             imageVector = ImageVector.vectorResource(R.drawable.ic_login),
-            contentDescription = "Destination"
+            contentDescription = label
         )
         Spacer(modifier = Modifier.width(16.dp))
 
@@ -281,7 +284,7 @@ fun DestinationForm(
             OutlinedTextField(
                 value = formatDestination(destination, transactionType),
                 onValueChange = { },
-                label = { Text("Destination") },
+                label = { Text(label) },
                 readOnly = true,
                 modifier = Modifier.fillMaxWidth(),
                 trailingIcon = {
@@ -339,9 +342,10 @@ fun AmountForm(
                 .offset(y = (0).dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            val label = stringResource(R.string.amount)
             Icon(
                 imageVector = ImageVector.vectorResource(R.drawable.ic_payments),
-                contentDescription = "Amount"
+                contentDescription = label
             )
             Spacer(modifier = Modifier.width(16.dp))
             // Amount Field
@@ -398,7 +402,7 @@ fun AmountForm(
                         contentPadding = PaddingValues(horizontal = 0.dp, vertical = 0.dp)
                     )
                 },
-                label = { Text("Amount") },
+                label = { Text(label) },
                 placeholder = {
                     if (currency.value.showDecimals) {
                         Text(numberFormat.format(0.0) + " ${currency.value.symbol}")
@@ -459,16 +463,17 @@ fun CommentForm(comment: MutableState<String>, suggestions: List<String>) {
                 .offset(y = (0).dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            val label = stringResource(R.string.comment)
             Icon(
                 imageVector = ImageVector.vectorResource(R.drawable.ic_chat),
-                contentDescription = "Comment"
+                contentDescription = label
             )
             Spacer(modifier = Modifier.width(16.dp))
             // Comment Field
             OutlinedTextField(
                 value = comment.value,
                 onValueChange = { text -> comment.value = text },
-                label = { Text("Comment") },
+                label = { Text(label) },
                 modifier = Modifier.fillMaxWidth()
             )
         }
@@ -552,7 +557,7 @@ fun LocationForm(
     ) {
         Icon(
             imageVector = ImageVector.vectorResource(R.drawable.ic_location_on),
-            contentDescription = "Location"
+            contentDescription = stringResource(R.string.location)
         )
         Spacer(modifier = Modifier.width(16.dp))
         // Location Field with Placeholder Map
@@ -653,16 +658,17 @@ fun AccountTitleForm(
             .padding(bottom = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        val title = stringResource(R.string.title)
         Icon(
             imageVector = ImageVector.vectorResource(R.drawable.ic_match_case),
-            contentDescription = "Title"
+            contentDescription = title
         )
         Spacer(modifier = Modifier.width(16.dp))
         // Title Field
         OutlinedTextField(
             value = accountTitle.value,
             onValueChange = { text -> accountTitle.value = text },
-            label = { Text("Title") },
+            label = { Text(title) },
             isError = isError.value,
             modifier = Modifier.fillMaxWidth()
         )
@@ -682,9 +688,10 @@ fun AccountTypeForm(
             .offset(y = (0).dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        val type = stringResource(R.string.type)
         Icon(
             imageVector = ImageVector.vectorResource(R.drawable.ic_category),
-            contentDescription = "Type"
+            contentDescription = type
         )
         Spacer(modifier = Modifier.width(16.dp))
         // Type Field
@@ -699,7 +706,7 @@ fun AccountTypeForm(
             OutlinedTextField(
                 value = AccountType.getType(accountType),
                 onValueChange = { },
-                label = { Text("Type") },
+                label = { Text(type) },
                 readOnly = true,
                 modifier = Modifier.fillMaxWidth(),
                 trailingIcon = {

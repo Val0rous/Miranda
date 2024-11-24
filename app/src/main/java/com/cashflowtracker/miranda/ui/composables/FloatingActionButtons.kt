@@ -34,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityOptionsCompat
@@ -77,8 +78,9 @@ fun ExpandableFAB(expanded: MutableState<Boolean>) {
                 }
             ) {
 //                Spacer(modifier = Modifier.weight(1f))
-                Box { Text("Recurrence") }
-                Spacer(modifier = Modifier.width(28.dp))
+                val label = stringResource(R.string.recurrence)
+                Box { Text(label) }
+                Spacer(modifier = Modifier.width(24.dp))
                 FloatingActionButton(
                     onClick = {
                         expanded.value = false
@@ -100,7 +102,7 @@ fun ExpandableFAB(expanded: MutableState<Boolean>) {
                 ) {
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.ic_schedule),
-                        contentDescription = "Recurrence"
+                        contentDescription = label
                     )
                 }
             }
@@ -129,7 +131,7 @@ fun ExpandableFAB(expanded: MutableState<Boolean>) {
         ) {
             if (expanded.value) {
 //                Spacer(modifier = Modifier.weight(1f))
-                Box { Text("Transaction") }
+                Box { Text(stringResource(R.string.transaction)) }
                 Spacer(modifier = Modifier.width(16.dp))
             }
             FloatingActionButton(
@@ -164,9 +166,9 @@ fun ExpandableFAB(expanded: MutableState<Boolean>) {
                         ImageVector.vectorResource(id = R.drawable.ic_assignment_filled)
                     },
                     contentDescription = if (!expanded.value) {
-                        "Add"
+                        stringResource(R.string.add)
                     } else {
-                        "Add Assignment"
+                        stringResource(R.string.add_transaction)
                     },
                     tint = if (expanded.value) {
                         MaterialTheme.colorScheme.onPrimary

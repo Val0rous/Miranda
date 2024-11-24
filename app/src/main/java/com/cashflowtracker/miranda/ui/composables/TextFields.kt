@@ -28,6 +28,7 @@ import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.password
 import androidx.compose.ui.semantics.semantics
@@ -49,6 +50,7 @@ import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest
 import com.google.android.libraries.places.api.net.PlacesClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 
@@ -95,6 +97,7 @@ fun PasswordTextField(
     )
 }
 
+@OptIn(FlowPreview::class)
 @Composable
 fun LocationTextField(
     location: MutableState<String>,
@@ -109,7 +112,7 @@ fun LocationTextField(
     var isGps by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
-
+    val loading = stringResource(R.string.loading)
 
     LaunchedEffect(key1 = locationService.coordinates) {
         if (locationService.coordinates != null) {
@@ -206,7 +209,7 @@ fun LocationTextField(
 //                )
 //            }
         },
-        label = { Text("Location") },
+        label = { Text(stringResource(R.string.location)) },
         singleLine = true,
         isError = isError.value,
         placeholder = { Text("12.3456789, -98.7654321") },
@@ -215,7 +218,7 @@ fun LocationTextField(
                 onClick = {
                     requestLocation()
                     isGps = true
-                    location.value = "Loading..."
+                    location.value = loading
                 },
                 modifier = Modifier.padding(end = 5.dp)
             ) {

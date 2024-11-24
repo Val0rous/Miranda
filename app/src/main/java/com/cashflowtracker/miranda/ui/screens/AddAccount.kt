@@ -22,7 +22,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.data.database.Account
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserEmail
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserId
@@ -76,7 +78,7 @@ class AddAccount : ComponentActivity() {
                 Scaffold(
                     topBar = {
                         AddEditTopAppBar(
-                            buttonText = "Create",
+                            buttonText = stringResource(R.string.create),
                             isButtonEnabled = isFormValid,
                             onIconButtonClick = { finish() },
                             onButtonClick = {

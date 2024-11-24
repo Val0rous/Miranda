@@ -17,6 +17,8 @@
     <string name="filter">Filtra</string>
     <string name="current_balance">Saldo attuale</string>
     <string name="toggle_visibility">Alterna Visibilità</string>
+    <string name="create">Crea</string>
+    <string name="title">Titolo</string>
     <string name="type">Tipo</string>
     <string name="created_on">Creato il</string>
     <string name="favorite">Preferito</string>
@@ -28,6 +30,9 @@
     <string name="apply">Applica</string>
     <string name="add_transaction">Aggiungi Transazione</string>
     <string name="add_recurrence">Aggiungi Ricorrenza</string>
+    <string name="add">Aggiungi</string>
+    <string name="transaction">Transazione</string>
+    <string name="recurrence">Ricorrenza</string>
     <string name="settings">Impostazioni</string>
     <string name="theme">Tema</string>
     <string name="logout">Esci</string>
@@ -36,12 +41,13 @@
     <string name="theme_system">Sistema</string>
     <string name="theme_dark">Scuro</string>
     <string name="map_view">Vista Mappa</string>
-    <string name="source">Fonte</string>
+    <string name="source">Origine</string>
     <string name="destination">Destinazione</string>
     <string name="amount">Importo</string>
     <string name="comment">Commento</string>
     <string name="location">Posizione</string>
     <string name="time_zones">Fusi Orari</string>
+    <string name="time_zone">Fuso Orario</string>
     <string name="create_first_occurrence">Crea Prima Ricorrenza</string>
     <string name="add_notification">Aggiungi Notifica</string>
     <string name="overall_cashflow">Flusso Totale</string>
@@ -57,7 +63,12 @@
     <string name="no_transactions">Nessuna transazione trovata</string>
     <string name="no_recurrents">Nessuna ricorrenza trovata</string>
     <string name="no_stats">Effettua transazioni per sbloccare un po\' di magia</string>
-
+    <string name="back">Indietro</string>
+    <string name="date_and_time">Data e Ora</string>
+    <string name="repeat">Ripeti</string>
+    <string name="notifications">Notifiche</string>
+    <string name="loading">Caricamento...</string>
+    <string name="currency">Valuta</string>
 
     <!-- Account types -->
     <string name="account_type_bank">Banca</string>

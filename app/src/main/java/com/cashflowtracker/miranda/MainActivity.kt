@@ -22,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -113,7 +114,7 @@ class MainActivity : ComponentActivity() {
                                 Routes.Transactions.route -> {
                                     ExtendedFAB(
                                         R.drawable.ic_assignment,
-                                        "Add Transaction",
+                                        stringResource(R.string.add_transaction),
                                         AddTransaction::class.java
                                     )
                                 }
@@ -121,7 +122,7 @@ class MainActivity : ComponentActivity() {
                                 Routes.Recurrents.route -> {
                                     ExtendedFAB(
                                         R.drawable.ic_schedule,
-                                        "Add Recurrence",
+                                        stringResource(R.string.add_recurrence),
                                         AddRecurrence::class.java
                                     )
                                 }

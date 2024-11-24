@@ -47,7 +47,7 @@ class SelectCurrency : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     topBar = {
                         TopAppBar(
-                            title = { Text("Currency") },
+                            title = { Text(stringResource(R.string.currency)) },
                             navigationIcon = {
                                 IconButton(
                                     onClick = { finish() },
@@ -59,7 +59,7 @@ class SelectCurrency : ComponentActivity() {
                                 ) {
                                     Icon(
                                         ImageVector.vectorResource(R.drawable.ic_arrow_back),
-                                        contentDescription = "Back"
+                                        contentDescription = stringResource(R.string.back)
                                     )
                                 }
                             },

@@ -29,6 +29,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.R
@@ -169,7 +170,7 @@ fun SegmentedButtonTheme(
                     SBIcon(inactive = true, icon = R.drawable.ic_light_mode)
                     Spacer(modifier = Modifier.width(8.dp))
                 }
-                Text(text = "Light", maxLines = 1)
+                Text(text = stringResource(R.string.theme_light), maxLines = 1)
             }
         }
 
@@ -192,7 +193,7 @@ fun SegmentedButtonTheme(
                     SBIcon(inactive = true, icon = R.drawable.ic_smartphone)
                     Spacer(modifier = Modifier.width(8.dp))
                 }
-                Text(text = "System", maxLines = 1)
+                Text(text = stringResource(R.string.theme_system), maxLines = 1)
             }
         }
 
@@ -215,7 +216,7 @@ fun SegmentedButtonTheme(
                     SBIcon(inactive = true, icon = R.drawable.ic_dark_mode)
                     Spacer(modifier = Modifier.width(8.dp))
                 }
-                Text(text = "Dark", maxLines = 1)
+                Text(text = stringResource(R.string.theme_dark), maxLines = 1)
             }
         }
     }

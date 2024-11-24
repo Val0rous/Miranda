@@ -26,6 +26,7 @@ import com.cashflowtracker.miranda.ui.composables.SegmentedButtonTheme
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 import kotlinx.coroutines.launch
 import androidx.compose.material3.Scaffold
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.clearLoggedUserId
@@ -59,12 +60,12 @@ class Settings : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     topBar = {
                         TopAppBar(
-                            title = { Text("Settings") },
+                            title = { Text(stringResource(R.string.settings)) },
                             navigationIcon = {
                                 IconButton(onClick = { finish() }) {
                                     Icon(
                                         imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_back),
-                                        contentDescription = "Back"
+                                        contentDescription = stringResource(R.string.back)
                                     )
                                 }
                             }
@@ -84,7 +85,7 @@ class Settings : ComponentActivity() {
                             horizontalArrangement = Arrangement.SpaceBetween,
                         ) {
                             Text(
-                                text = "Theme",
+                                text = stringResource(R.string.theme),
                                 style = MaterialTheme.typography.labelLarge,
                                 color = MaterialTheme.colorScheme.onSurface
                             )
@@ -119,7 +120,7 @@ class Settings : ComponentActivity() {
                                     .fillMaxWidth()
                                     .height(56.dp)
                             ) {
-                                Text("Logout")
+                                Text(stringResource(R.string.logout))
                             }
                             Spacer(modifier = Modifier.height(16.dp))
                             Button(
@@ -129,7 +130,7 @@ class Settings : ComponentActivity() {
                                     .fillMaxWidth()
                                     .height(56.dp)
                             ) {
-                                Text("Delete account")
+                                Text(stringResource(R.string.delete_account))
                             }
                         }
                     }
