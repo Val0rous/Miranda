@@ -182,3 +182,16 @@ fun formatDestination(destination: String, transactionType: String): String {
         else -> AccountType.getType(destination).ifEmpty { destination }
     }
 }
+
+fun getInitials(fullName: String): String {
+    val names = fullName.trim().split("\\s+".toRegex()) // Split by any whitespace
+    return when (names.size) {
+        0 -> ""
+        1 -> names.first().take(1).uppercase()
+        else -> {
+            val firstInitial = names.first().take(1).uppercase()
+            val lastInitial = names.last().take(1).uppercase()
+            firstInitial + lastInitial
+        }
+    }
+}

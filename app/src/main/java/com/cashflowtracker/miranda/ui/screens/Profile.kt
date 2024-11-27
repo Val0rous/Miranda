@@ -40,6 +40,7 @@ import com.cashflowtracker.miranda.data.repositories.UsersRepository
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 import com.cashflowtracker.miranda.ui.viewmodels.UsersViewModel
 import com.cashflowtracker.miranda.utils.AccountType
+import com.cashflowtracker.miranda.utils.getInitials
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -116,15 +117,23 @@ class Profile : ComponentActivity() {
                                             )
                                         }
                                     } else {
-                                        Icon(
-                                            imageVector = Icons.Default.AccountCircle,
-                                            contentDescription = "Profile Picture",
-                                            tint = MaterialTheme.colorScheme.onPrimary,
+                                        Text(
+                                            text = getInitials(userName),
+                                            style = MaterialTheme.typography.displayMedium,
+                                            color = MaterialTheme.colorScheme.onPrimary,
                                             modifier = Modifier
-                                                .size(96.dp)
-                                                .clip(CircleShape)
+//                                                .size(64.dp)
                                                 .align(Alignment.Center)
                                         )
+//                                        Icon(
+//                                            imageVector = Icons.Default.AccountCircle,
+//                                            contentDescription = "Profile Picture",
+//                                            tint = MaterialTheme.colorScheme.onPrimary,
+//                                            modifier = Modifier
+//                                                .size(96.dp)
+//                                                .clip(CircleShape)
+//                                                .align(Alignment.Center)
+//                                        )
                                     }
                                 }
 

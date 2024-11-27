@@ -15,6 +15,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
@@ -28,17 +33,53 @@ import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentU
 import com.cashflowtracker.miranda.ui.screens.MapView
 import com.cashflowtracker.miranda.ui.screens.Profile
 import com.cashflowtracker.miranda.ui.screens.Settings
+import com.cashflowtracker.miranda.ui.viewmodels.UsersViewModel
+import com.cashflowtracker.miranda.utils.getInitials
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.koin.androidx.compose.koinViewModel
 import java.util.Date
 import java.util.Locale
+
+@Composable
+fun ProfileButton() {
+    val context = LocalContext.current
+    val email = context.getCurrentUserEmail()
+    var userName by remember { mutableStateOf("") }
+    val usersVm = koinViewModel<UsersViewModel>()
+
+    LaunchedEffect(email) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val user = usersVm.actions.getByEmail(email)
+            userName = user.name
+        }
+    }
+
+    IconButton(
+        onClick = {
+            context.startActivity(Intent(context, Profile::class.java))
+        },
+        colors = IconButtonDefaults.iconButtonColors(containerColor = MaterialTheme.colorScheme.primary)
+    ) {
+//        Icon(
+//            ImageVector.vectorResource(R.drawable.ic_account_circle_filled),
+//            contentDescription = "Profile",
+//            tint = MaterialTheme.colorScheme.onPrimary
+//        )
+        Text(
+            text = getInitials(userName),
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onPrimary
+        )
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeStatsTopAppBar() {
     val context = LocalContext.current
-//    val userEmail = context.getCurrentUserEmail() // Recupera l'email dell'utente loggato
 
     TopAppBar(
         title = { },
@@ -52,18 +93,7 @@ fun HomeStatsTopAppBar() {
                     contentDescription = "Settings"
                 )
             }
-            IconButton(
-                onClick = {
-                    context.startActivity(Intent(context, Profile::class.java))
-                },
-                colors = IconButtonDefaults.iconButtonColors(containerColor = MaterialTheme.colorScheme.primary)
-            ) {
-                Icon(
-                    ImageVector.vectorResource(R.drawable.ic_account_circle_filled),
-                    contentDescription = "Profile",
-                    tint = MaterialTheme.colorScheme.onPrimary
-                )
-            }
+            ProfileButton()
         }
     )
 }
@@ -105,18 +135,7 @@ fun TransactionsTopAppBar() {
                     contentDescription = "Settings"
                 )
             }
-            IconButton(
-                onClick = {
-                    context.startActivity(Intent(context, Profile::class.java))
-                },
-                colors = IconButtonDefaults.iconButtonColors(containerColor = MaterialTheme.colorScheme.primary)
-            ) {
-                Icon(
-                    ImageVector.vectorResource(R.drawable.ic_account_circle_filled),
-                    contentDescription = "Profile",
-                    tint = MaterialTheme.colorScheme.onPrimary
-                )
-            }
+            ProfileButton()
         }
     )
 }
@@ -150,18 +169,7 @@ fun RecurrentsTopAppBar() {
                     contentDescription = "Settings"
                 )
             }
-            IconButton(
-                onClick = {
-                    context.startActivity(Intent(context, Profile::class.java))
-                },
-                colors = IconButtonDefaults.iconButtonColors(containerColor = MaterialTheme.colorScheme.primary)
-            ) {
-                Icon(
-                    ImageVector.vectorResource(R.drawable.ic_account_circle_filled),
-                    contentDescription = "Profile",
-                    tint = MaterialTheme.colorScheme.onPrimary
-                )
-            }
+            ProfileButton()
         }
     )
 }
