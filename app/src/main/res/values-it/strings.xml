@@ -69,6 +69,7 @@
     <string name="notifications">Notifiche</string>
     <string name="loading">Caricamento...</string>
     <string name="currency">Valuta</string>
+    <string name="get_gps_location">Ottieni posizione GPS</string>
 
     <!-- Account types -->
     <string name="account_type_bank">Banca</string>

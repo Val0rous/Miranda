@@ -235,7 +235,7 @@ fun LocationTextField(
                     } else {
                         MaterialTheme.colorScheme.onSurface
                     },
-                    contentDescription = "Get GPS location"
+                    contentDescription = stringResource(R.string.get_gps_location)
                 )
             }
         },
