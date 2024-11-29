@@ -1,7 +1,6 @@
 package com.cashflowtracker.miranda.ui.composables
 
 import android.content.Intent
-import android.icu.text.SimpleDateFormat
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -16,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,152 +24,133 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.cashflowtracker.miranda.R
-import com.cashflowtracker.miranda.data.database.Account
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserEmail
-import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserId
 import com.cashflowtracker.miranda.ui.screens.MapView
-import com.cashflowtracker.miranda.ui.screens.Profile
 import com.cashflowtracker.miranda.ui.screens.Settings
 import com.cashflowtracker.miranda.ui.viewmodels.UsersViewModel
+import com.cashflowtracker.miranda.utils.Routes
 import com.cashflowtracker.miranda.utils.getInitials
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.koin.androidx.compose.koinViewModel
-import java.util.Date
-import java.util.Locale
 
 @Composable
-fun ProfileButton() {
+fun ProfileButton(showProfileIconMenu: MutableState<Boolean>) {
     val context = LocalContext.current
     val email = context.getCurrentUserEmail()
     var userName by remember { mutableStateOf("") }
+    var userEmail by remember { mutableStateOf("") }
     val usersVm = koinViewModel<UsersViewModel>()
 
     LaunchedEffect(email) {
         CoroutineScope(Dispatchers.IO).launch {
             val user = usersVm.actions.getByEmail(email)
             userName = user.name
+            userEmail = user.email
         }
     }
 
     IconButton(
         onClick = {
-            context.startActivity(Intent(context, Profile::class.java))
+            showProfileIconMenu.value = true
+//            context.startActivity(Intent(context, Profile::class.java))
         },
-        colors = IconButtonDefaults.iconButtonColors(containerColor = MaterialTheme.colorScheme.primary)
-    ) {
-//        Icon(
-//            ImageVector.vectorResource(R.drawable.ic_account_circle_filled),
-//            contentDescription = "Profile",
-//            tint = MaterialTheme.colorScheme.onPrimary
+        colors = IconButtonDefaults.iconButtonColors(containerColor = MaterialTheme.colorScheme.primary),
+//        modifier = Modifier.border(
+//            BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
+//            CircleShape
 //        )
+    ) {
         Text(
             text = getInitials(userName),
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onPrimary
         )
     }
+
+    if (showProfileIconMenu.value) {
+        ProfileIconMenu(showProfileIconMenu, userName, userEmail)
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeStatsTopAppBar() {
+fun MainTopAppBar(currentRoute: String?, showProfileIconMenu: MutableState<Boolean>) {
     val context = LocalContext.current
 
     TopAppBar(
-        title = { },
+        title = {
+            val text = when (currentRoute) {
+                Routes.Home.route -> "Miranda"
+                Routes.Transactions.route -> "Transactions"
+                Routes.Recurrents.route -> "Recurrents"
+                Routes.Stats.route -> "Stats"
+                else -> ""
+            }
+            Text(
+                text = text,
+                style = if (currentRoute == Routes.Home.route) {
+                    MaterialTheme.typography.titleLarge.copy(
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.W800,
+                        letterSpacing = (0.4).sp
+                    )
+                } else {
+                    MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Normal)
+                },
+                color = if (currentRoute == Routes.Home.route) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    MaterialTheme.colorScheme.onSurfaceVariant
+                }
+            )
+        },
         actions = {
-            IconButton(
-                onClick = {
-                    context.startActivity(Intent(context, Settings::class.java))
-                }) {
-                Icon(
-                    ImageVector.vectorResource(R.drawable.ic_settings),
-                    contentDescription = "Settings"
-                )
+            if (currentRoute == Routes.Transactions.route
+                || currentRoute == Routes.Recurrents.route
+            ) {
+                IconButton(onClick = { /* TODO: Sort */ }) {
+                    Icon(
+                        ImageVector.vectorResource(R.drawable.ic_swap_vert),
+                        contentDescription = "Sort"
+                    )
+                }
+                IconButton(onClick = { /* TODO: Filter */ }) {
+                    Icon(
+                        ImageVector.vectorResource(R.drawable.ic_filter_list),
+                        contentDescription = "Filter"
+                    )
+                }
             }
-            ProfileButton()
-        }
-    )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun TransactionsTopAppBar() {
-    val context = LocalContext.current
-
-    TopAppBar(
-        title = { },
-        actions = {
-            IconButton(onClick = { /* TODO: Sort */ }) {
-                Icon(
-                    ImageVector.vectorResource(R.drawable.ic_swap_vert),
-                    contentDescription = "Sort"
-                )
+            if (currentRoute == Routes.Transactions.route) {
+                IconButton(
+                    onClick = {
+                        context.startActivity(Intent(context, MapView::class.java))
+                    }
+                ) {
+                    Icon(
+                        ImageVector.vectorResource(R.drawable.ic_map),
+                        contentDescription = "Map View"
+                    )
+                }
             }
-            IconButton(onClick = { /* TODO: Filter */ }) {
-                Icon(
-                    ImageVector.vectorResource(R.drawable.ic_filter_list),
-                    contentDescription = "Filter"
-                )
-            }
-            IconButton(onClick = {
-                context.startActivity(Intent(context, MapView::class.java))
-            }) {
-                Icon(
-                    ImageVector.vectorResource(R.drawable.ic_map),
-                    contentDescription = "Map View"
-                )
-            }
-            IconButton(
-                onClick = {
-                    context.startActivity(Intent(context, Settings::class.java))
-                }) {
-                Icon(
-                    ImageVector.vectorResource(R.drawable.ic_settings),
-                    contentDescription = "Settings"
-                )
-            }
-            ProfileButton()
-        }
-    )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun RecurrentsTopAppBar() {
-    val context = LocalContext.current
-
-    TopAppBar(
-        title = { },
-        actions = {
-            IconButton(onClick = { /* TODO: Sort */ }) {
-                Icon(
-                    ImageVector.vectorResource(R.drawable.ic_swap_vert),
-                    contentDescription = "Sort"
-                )
-            }
-            IconButton(onClick = { /* TODO: Filter */ }) {
-                Icon(
-                    ImageVector.vectorResource(R.drawable.ic_filter_list),
-                    contentDescription = "Filter"
-                )
-            }
-            IconButton(
-                onClick = {
-                    context.startActivity(Intent(context, Settings::class.java))
-                }) {
-                Icon(
-                    ImageVector.vectorResource(R.drawable.ic_settings),
-                    contentDescription = "Settings"
-                )
-            }
-            ProfileButton()
+//            IconButton(
+//                onClick = {
+//                    context.startActivity(Intent(context, Settings::class.java))
+//                }) {
+//                Icon(
+//                    ImageVector.vectorResource(R.drawable.ic_settings),
+//                    contentDescription = "Settings"
+//                )
+//            }
+            ProfileButton(showProfileIconMenu)
         }
     )
 }

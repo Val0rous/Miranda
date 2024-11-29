@@ -1,0 +1,289 @@
+package com.cashflowtracker.miranda.ui.composables
+
+import android.content.Intent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.BasicAlertDialog
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import com.cashflowtracker.miranda.R
+import com.cashflowtracker.miranda.ui.screens.Profile
+import com.cashflowtracker.miranda.ui.screens.Settings
+import com.cashflowtracker.miranda.ui.viewmodels.UsersViewModel
+import com.cashflowtracker.miranda.utils.getInitials
+import org.koin.androidx.compose.koinViewModel
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ProfileIconMenu(
+    showProfileIconMenu: MutableState<Boolean>,
+    userName: String,
+    userEmail: String
+) {
+    val context = LocalContext.current
+    val usersVm = koinViewModel<UsersViewModel>()
+
+    BasicAlertDialog(
+        modifier = Modifier,
+        onDismissRequest = { showProfileIconMenu.value = false }
+    ) {
+        Card(
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh),
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(24.dp))
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(bottom = 0.dp)
+            ) {
+                IconButton(
+                    onClick = {
+                        showProfileIconMenu.value = false
+                    },
+                    modifier = Modifier.padding(start = 4.dp, top = 8.dp)
+                ) {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(R.drawable.ic_close),
+                        contentDescription = "Close"
+                    )
+                }
+                Text(
+                    text = "Miranda",
+                    style = MaterialTheme.typography.headlineSmall,
+                    modifier = Modifier
+                        .padding(start = 16.dp)
+                        .weight(1f),
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.width(48.dp))
+            }
+            Card(
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 8.dp, end = 8.dp, top = 4.dp)
+                    .clip(RoundedCornerShape(24.dp))
+            ) {
+                ListItem(
+                    headlineContent = {
+                        Text(
+                            text = userName,
+                            style = MaterialTheme.typography.titleSmall,
+                            modifier = Modifier
+                                .offset(x = (-4).dp)
+                                .padding(bottom = 1.dp)
+                        )
+                    },
+                    supportingContent = {
+                        Text(
+                            text = userEmail,
+                            style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Normal),
+                            modifier = Modifier
+                                .offset(x = (-4).dp)
+                                .padding(top = 1.dp)
+                        )
+                    },
+                    leadingContent = {
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(CircleShape)
+                                .background(MaterialTheme.colorScheme.primary, CircleShape)
+                                .padding(end = 0.dp)
+                        ) {
+                            Text(
+                                text = getInitials(userName),
+                                style = MaterialTheme.typography.titleMedium,
+                                color = MaterialTheme.colorScheme.onPrimary,
+                                modifier = Modifier
+                            )
+                        }
+                    },
+                    modifier = Modifier.clickable {
+                        context.startActivity(Intent(context, Profile::class.java)).also {
+                            showProfileIconMenu.value = false
+                        }
+                    }
+                )
+
+                Spacer(modifier = Modifier.height(2.dp))
+
+                ListItem(
+                    headlineContent = {
+                        Text(
+                            text = "Custom Categories",
+                            style = MaterialTheme.typography.titleSmall,
+                            modifier = Modifier.padding(start = 4.dp)
+                        )
+                    },
+                    leadingContent = {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(R.drawable.ic_category),
+                            contentDescription = "Custom Categories",
+                            modifier = Modifier
+                                .padding(start = 10.dp)
+                                .size(22.dp)
+                        )
+                    },
+                    modifier = Modifier
+                        .height(52.dp)
+                        .clickable {
+                            showProfileIconMenu.value = false
+                        }
+                )
+
+                Spacer(modifier = Modifier.height(2.dp))
+
+                ListItem(
+                    headlineContent = {
+                        Text(
+                            text = "Archive",
+                            style = MaterialTheme.typography.titleSmall,
+                            modifier = Modifier.padding(start = 4.dp)
+                        )
+                    },
+                    leadingContent = {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(R.drawable.ic_history),
+                            contentDescription = "Archive",
+                            modifier = Modifier
+                                .padding(start = 10.dp)
+                                .size(22.dp)
+                        )
+                    },
+                    modifier = Modifier
+                        .height(52.dp)
+                        .clickable {
+                            showProfileIconMenu.value = false
+                        }
+                )
+            }
+            ListItem(
+                headlineContent = {
+                    Text(
+                        text = "Settings",
+                        style = MaterialTheme.typography.titleSmall,
+                        modifier = Modifier.padding(start = 4.dp)
+                    )
+                },
+                leadingContent = {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(R.drawable.ic_settings),
+                        contentDescription = "Settings",
+                        modifier = Modifier
+                            .padding(start = 18.dp)
+                            .size(22.dp)
+                    )
+                },
+                colors = ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh),
+                modifier = Modifier
+                    .height(52.dp)
+                    .clickable {
+                        context
+                            .startActivity(Intent(context, Settings::class.java))
+                            .also {
+                                showProfileIconMenu.value = false
+                            }
+                    }
+            )
+            ListItem(
+                headlineContent = {
+                    Text(
+                        text = "About",
+                        style = MaterialTheme.typography.titleSmall,
+                        modifier = Modifier.padding(start = 4.dp)
+                    )
+                },
+                leadingContent = {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(R.drawable.ic_info),
+                        contentDescription = "About",
+                        modifier = Modifier
+                            .padding(start = 18.dp)
+                            .size(22.dp)
+                    )
+                },
+                colors = ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh),
+                modifier = Modifier
+                    .height(52.dp)
+                    .clickable {
+                        showProfileIconMenu.value = false
+                    }
+            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .padding(bottom = 4.dp)
+                    .height(40.dp)
+            ) {
+                Spacer(modifier = Modifier.weight(1f))
+                TextButton(
+                    onClick = {
+                        showProfileIconMenu.value = false
+                    },
+                    modifier = Modifier
+                ) {
+                    Text(
+                        text = "Privacy Policy",
+                        style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Normal),
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+                Text(
+                    text = " • ",
+                    style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Normal),
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                TextButton(
+                    onClick = {
+                        showProfileIconMenu.value = false
+                    },
+                    modifier = Modifier
+                ) {
+                    Text(
+                        text = "Terms of Service",
+                        style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Normal),
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+                Spacer(modifier = Modifier.weight(1f))
+            }
+        }
+    }
+}

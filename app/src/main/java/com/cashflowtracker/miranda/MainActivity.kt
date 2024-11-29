@@ -32,10 +32,9 @@ import androidx.navigation.compose.rememberNavController
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getLoggedUserEmailOrNull
 import com.cashflowtracker.miranda.ui.composables.ExpandableFAB
 import com.cashflowtracker.miranda.ui.composables.ExtendedFAB
-import com.cashflowtracker.miranda.ui.composables.HomeStatsTopAppBar
+import com.cashflowtracker.miranda.ui.composables.MainTopAppBar
 import com.cashflowtracker.miranda.ui.composables.Navbar
-import com.cashflowtracker.miranda.ui.composables.RecurrentsTopAppBar
-import com.cashflowtracker.miranda.ui.composables.TransactionsTopAppBar
+import com.cashflowtracker.miranda.ui.composables.ProfileIconMenu
 import com.cashflowtracker.miranda.ui.screens.AddRecurrence
 import com.cashflowtracker.miranda.ui.screens.AddTransaction
 import com.cashflowtracker.miranda.ui.screens.Home
@@ -75,6 +74,7 @@ class MainActivity : ComponentActivity() {
                 Modifier
                     .fillMaxSize()
             }
+            val showProfileIconMenu = remember { mutableStateOf(false) }
 
             val vm = koinViewModel<UsersViewModel>()
             val state by vm.state.collectAsStateWithLifecycle()
@@ -89,21 +89,7 @@ class MainActivity : ComponentActivity() {
                 MirandaTheme {
                     Scaffold(
                         modifier = modifier,
-                        topBar = {
-                            when (currentRoute) {
-                                Routes.Home.route, Routes.Stats.route -> {
-                                    HomeStatsTopAppBar()
-                                }
-
-                                Routes.Transactions.route -> {
-                                    TransactionsTopAppBar()
-                                }
-
-                                Routes.Recurrents.route -> {
-                                    RecurrentsTopAppBar()
-                                }
-                            }
-                        },
+                        topBar = { MainTopAppBar(currentRoute, showProfileIconMenu) },
                         bottomBar = { Navbar(navController) },
                         floatingActionButton = {
                             when (currentRoute) {
