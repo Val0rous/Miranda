@@ -93,7 +93,6 @@ fun ProfileButton(
             }
     ) {
         if (profilePicturePath != null && profilePicturePath!!.isNotEmpty()) {
-//                                        profilePicturePath?.let { path ->
             AsyncImage(
                 model = ImageRequest.Builder(context)
                     .data(Uri.parse(profilePicturePath)).crossfade(true)
@@ -104,7 +103,6 @@ fun ProfileButton(
                     .size(size)
                     .clip(CircleShape)
             )
-//                                        }
         } else {
             Text(
                 text = getInitials(userName),
@@ -114,24 +112,9 @@ fun ProfileButton(
                     MaterialTheme.typography.displayMedium
                 },
                 color = MaterialTheme.colorScheme.onPrimary,
-//                                            modifier = Modifier
-//                                                .align(Alignment.Center)
             )
         }
     }
-
-//    IconButton(
-//        onClick = {
-//            showProfileIconMenu.value = true
-//        },
-//        colors = IconButtonDefaults.iconButtonColors(containerColor = MaterialTheme.colorScheme.primary),
-//    ) {
-//        Text(
-//            text = getInitials(userName),
-//            style = MaterialTheme.typography.titleMedium,
-//            color = MaterialTheme.colorScheme.onPrimary
-//        )
-//    }
 
     if (showProfileIconMenu.value) {
         ProfileIconMenu(showProfileIconMenu, userName, userEmail)

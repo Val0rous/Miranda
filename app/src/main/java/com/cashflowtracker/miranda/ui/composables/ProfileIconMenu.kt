@@ -101,7 +101,7 @@ fun ProfileIconMenu(
                     text = stringResource(R.string.app_name),
                     style = MaterialTheme.typography.titleLarge.copy(
                         fontSize = 22.sp,
-                        fontWeight = FontWeight.W800,
+                        fontWeight = FontWeight.SemiBold,
                         letterSpacing = (0.4).sp
                     ),
                     color = MaterialTheme.colorScheme.primary,
@@ -212,6 +212,35 @@ fun ProfileIconMenu(
                         }
                 )
             }
+            ListItem(
+                headlineContent = {
+                    Text(
+                        text = "Your data in ${stringResource(R.string.app_name)}",
+                        style = MaterialTheme.typography.titleSmall,
+                        modifier = Modifier.offset(x = (-2).dp)
+                    )
+                },
+                leadingContent = {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(R.drawable.ic_shield_lock),
+                        contentDescription = "Your data in ${stringResource(R.string.app_name)}",
+                        modifier = Modifier
+                            .offset(x = (-4).dp)
+                            .padding(start = 18.dp)
+                            .size(22.dp)
+                    )
+                },
+                colors = ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh),
+                modifier = Modifier
+                    .height(52.dp)
+                    .clickable {
+//                        context
+//                            .startActivity(Intent(context, Settings::class.java))
+//                            .also {
+                        showProfileIconMenu.value = false
+//                            }
+                    }
+            )
             ListItem(
                 headlineContent = {
                     Text(
