@@ -72,9 +72,6 @@ class ViewCategoryStats : ComponentActivity() {
                 .groupingBy { it.type }
                 .eachCount()
                 .mapKeys { (key, _) -> TransactionType.getType(key) }
-//                .filterKeys { it in transactionOrder }
-//                .mapValues { it.value }
-//                .let { map -> transactionOrder.associateWith { map[TransactionType.getType(it)] ?: 0 } }
                 .let { map ->
                     transactionOrder.associate { type ->
                         TransactionType.getType(type) to (map[TransactionType.getType(type)] ?: 0)
