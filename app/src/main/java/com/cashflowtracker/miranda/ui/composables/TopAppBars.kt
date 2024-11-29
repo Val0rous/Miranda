@@ -1,9 +1,15 @@
 package com.cashflowtracker.miranda.ui.composables
 
 import android.content.Intent
+import android.net.Uri
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -16,12 +22,16 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -29,8 +39,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserEmail
+import com.cashflowtracker.miranda.data.repositories.PreferencesRepository.getProfilePicturePathFlow
 import com.cashflowtracker.miranda.ui.screens.MapView
 import com.cashflowtracker.miranda.ui.screens.Settings
 import com.cashflowtracker.miranda.ui.viewmodels.UsersViewModel
@@ -42,12 +55,20 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun ProfileButton(showProfileIconMenu: MutableState<Boolean>) {
+fun ProfileButton(
+    showProfileIconMenu: MutableState<Boolean> = mutableStateOf(false),
+    isBigPic: Boolean = false,
+    modifier: Modifier = Modifier
+) {
     val context = LocalContext.current
     val email = context.getCurrentUserEmail()
     var userName by remember { mutableStateOf("") }
     var userEmail by remember { mutableStateOf("") }
     val usersVm = koinViewModel<UsersViewModel>()
+    val profilePicturePathFlow = remember { context.getProfilePicturePathFlow() }
+    val profilePicturePath by profilePicturePathFlow.collectAsState(initial = null)
+
+    val size = if (!isBigPic) 40.dp else 128.dp
 
     LaunchedEffect(email) {
         CoroutineScope(Dispatchers.IO).launch {
@@ -57,23 +78,60 @@ fun ProfileButton(showProfileIconMenu: MutableState<Boolean>) {
         }
     }
 
-    IconButton(
-        onClick = {
-            showProfileIconMenu.value = true
-//            context.startActivity(Intent(context, Profile::class.java))
-        },
-        colors = IconButtonDefaults.iconButtonColors(containerColor = MaterialTheme.colorScheme.primary),
-//        modifier = Modifier.border(
-//            BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
-//            CircleShape
-//        )
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = modifier
+            .size(size)
+            .clip(CircleShape)
+            .background(MaterialTheme.colorScheme.primary, CircleShape)
+            .clickable {
+                if (!isBigPic) {
+                    showProfileIconMenu.value = true
+                } else {
+                    // Do nothing
+                }
+            }
     ) {
-        Text(
-            text = getInitials(userName),
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onPrimary
-        )
+        if (profilePicturePath != null && profilePicturePath!!.isNotEmpty()) {
+//                                        profilePicturePath?.let { path ->
+            AsyncImage(
+                model = ImageRequest.Builder(context)
+                    .data(Uri.parse(profilePicturePath)).crossfade(true)
+                    .build(),
+                contentDescription = "Profile picture",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(size)
+                    .clip(CircleShape)
+            )
+//                                        }
+        } else {
+            Text(
+                text = getInitials(userName),
+                style = if (!isBigPic) {
+                    MaterialTheme.typography.titleMedium
+                } else {
+                    MaterialTheme.typography.displayMedium
+                },
+                color = MaterialTheme.colorScheme.onPrimary,
+//                                            modifier = Modifier
+//                                                .align(Alignment.Center)
+            )
+        }
     }
+
+//    IconButton(
+//        onClick = {
+//            showProfileIconMenu.value = true
+//        },
+//        colors = IconButtonDefaults.iconButtonColors(containerColor = MaterialTheme.colorScheme.primary),
+//    ) {
+//        Text(
+//            text = getInitials(userName),
+//            style = MaterialTheme.typography.titleMedium,
+//            color = MaterialTheme.colorScheme.onPrimary
+//        )
+//    }
 
     if (showProfileIconMenu.value) {
         ProfileIconMenu(showProfileIconMenu, userName, userEmail)
@@ -150,7 +208,10 @@ fun MainTopAppBar(currentRoute: String?, showProfileIconMenu: MutableState<Boole
 //                    contentDescription = "Settings"
 //                )
 //            }
-            ProfileButton(showProfileIconMenu)
+            ProfileButton(
+                showProfileIconMenu,
+                modifier = Modifier.padding(start = 10.dp, end = 12.dp)
+            )
         }
     )
 }
