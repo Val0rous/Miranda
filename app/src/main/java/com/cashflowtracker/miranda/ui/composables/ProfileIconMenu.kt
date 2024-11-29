@@ -34,11 +34,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.ui.screens.Profile
 import com.cashflowtracker.miranda.ui.screens.Settings
@@ -56,25 +60,25 @@ fun ProfileIconMenu(
     val context = LocalContext.current
     val usersVm = koinViewModel<UsersViewModel>()
 
-    BasicAlertDialog(
-        modifier = Modifier,
-        onDismissRequest = { showProfileIconMenu.value = false }
+    Dialog(
+        onDismissRequest = { showProfileIconMenu.value = false },
+        properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
         Card(
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh),
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(24.dp))
+                .padding(horizontal = 16.dp)
+                .clip(RoundedCornerShape(28.dp))
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(bottom = 0.dp)
+                modifier = Modifier.padding(start = 4.dp, top = 4.dp, bottom = 0.dp)
             ) {
                 IconButton(
                     onClick = {
                         showProfileIconMenu.value = false
                     },
-                    modifier = Modifier.padding(start = 4.dp, top = 8.dp)
                 ) {
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.ic_close),
@@ -82,20 +86,24 @@ fun ProfileIconMenu(
                     )
                 }
                 Text(
-                    text = "Miranda",
-                    style = MaterialTheme.typography.headlineSmall,
+                    text = stringResource(R.string.app_name),
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.W800,
+                        letterSpacing = (0.4).sp
+                    ),
+                    color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier
-                        .padding(start = 16.dp)
+                        .padding(start = 16.dp, end = 56.dp)
                         .weight(1f),
                     textAlign = TextAlign.Center
                 )
-                Spacer(modifier = Modifier.width(48.dp))
             }
             Card(
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 8.dp, end = 8.dp, top = 4.dp)
+                    .padding(start = 10.dp, end = 10.dp, top = 4.dp)
                     .clip(RoundedCornerShape(24.dp))
             ) {
                 ListItem(
@@ -104,7 +112,7 @@ fun ProfileIconMenu(
                             text = userName,
                             style = MaterialTheme.typography.titleSmall,
                             modifier = Modifier
-                                .offset(x = (-4).dp)
+                                .offset(x = (-10).dp)
                                 .padding(bottom = 1.dp)
                         )
                     },
@@ -113,7 +121,7 @@ fun ProfileIconMenu(
                             text = userEmail,
                             style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Normal),
                             modifier = Modifier
-                                .offset(x = (-4).dp)
+                                .offset(x = (-10).dp)
                                 .padding(top = 1.dp)
                         )
                     },
@@ -121,6 +129,7 @@ fun ProfileIconMenu(
                         Box(
                             contentAlignment = Alignment.Center,
                             modifier = Modifier
+                                .offset(x = (-6).dp)
                                 .size(40.dp)
                                 .clip(CircleShape)
                                 .background(MaterialTheme.colorScheme.primary, CircleShape)
@@ -134,11 +143,15 @@ fun ProfileIconMenu(
                             )
                         }
                     },
-                    modifier = Modifier.clickable {
-                        context.startActivity(Intent(context, Profile::class.java)).also {
-                            showProfileIconMenu.value = false
+                    modifier = Modifier
+                        .height(60.dp)
+                        .clickable {
+                            context
+                                .startActivity(Intent(context, Profile::class.java))
+                                .also {
+                                    showProfileIconMenu.value = false
+                                }
                         }
-                    }
                 )
 
                 Spacer(modifier = Modifier.height(2.dp))
@@ -148,7 +161,7 @@ fun ProfileIconMenu(
                         Text(
                             text = "Custom Categories",
                             style = MaterialTheme.typography.titleSmall,
-                            modifier = Modifier.padding(start = 4.dp)
+                            modifier = Modifier.offset(x = (-2).dp)
                         )
                     },
                     leadingContent = {
@@ -156,6 +169,7 @@ fun ProfileIconMenu(
                             imageVector = ImageVector.vectorResource(R.drawable.ic_category),
                             contentDescription = "Custom Categories",
                             modifier = Modifier
+                                .offset(x = (-6).dp)
                                 .padding(start = 10.dp)
                                 .size(22.dp)
                         )
@@ -174,7 +188,7 @@ fun ProfileIconMenu(
                         Text(
                             text = "Archive",
                             style = MaterialTheme.typography.titleSmall,
-                            modifier = Modifier.padding(start = 4.dp)
+                            modifier = Modifier.offset(x = (-2).dp)
                         )
                     },
                     leadingContent = {
@@ -182,6 +196,7 @@ fun ProfileIconMenu(
                             imageVector = ImageVector.vectorResource(R.drawable.ic_history),
                             contentDescription = "Archive",
                             modifier = Modifier
+                                .offset(x = (-6).dp)
                                 .padding(start = 10.dp)
                                 .size(22.dp)
                         )
@@ -198,7 +213,7 @@ fun ProfileIconMenu(
                     Text(
                         text = "Settings",
                         style = MaterialTheme.typography.titleSmall,
-                        modifier = Modifier.padding(start = 4.dp)
+                        modifier = Modifier.offset(x = (-2).dp)
                     )
                 },
                 leadingContent = {
@@ -206,6 +221,7 @@ fun ProfileIconMenu(
                         imageVector = ImageVector.vectorResource(R.drawable.ic_settings),
                         contentDescription = "Settings",
                         modifier = Modifier
+                            .offset(x = (-4).dp)
                             .padding(start = 18.dp)
                             .size(22.dp)
                     )
@@ -226,7 +242,7 @@ fun ProfileIconMenu(
                     Text(
                         text = "About",
                         style = MaterialTheme.typography.titleSmall,
-                        modifier = Modifier.padding(start = 4.dp)
+                        modifier = Modifier.offset(x = (-2).dp)
                     )
                 },
                 leadingContent = {
@@ -234,6 +250,7 @@ fun ProfileIconMenu(
                         imageVector = ImageVector.vectorResource(R.drawable.ic_info),
                         contentDescription = "About",
                         modifier = Modifier
+                            .offset(x = (-4).dp)
                             .padding(start = 18.dp)
                             .size(22.dp)
                     )
