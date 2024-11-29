@@ -66,6 +66,7 @@
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
         </activity>
+        <activity android:name=".ui.screens.About" />
         <activity android:name=".ui.screens.AddAccount" />
         <activity android:name=".ui.screens.AddRecurrence" />
         <activity android:name=".ui.screens.AddTransaction" />

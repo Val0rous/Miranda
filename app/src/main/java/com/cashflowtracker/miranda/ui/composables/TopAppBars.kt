@@ -99,7 +99,7 @@ fun MainTopAppBar(currentRoute: String?, showProfileIconMenu: MutableState<Boole
                 style = if (currentRoute == Routes.Home.route) {
                     MaterialTheme.typography.titleLarge.copy(
                         fontSize = 22.sp,
-                        fontWeight = FontWeight.W800,
+                        fontWeight = FontWeight.SemiBold,
                         letterSpacing = (0.4).sp
                     )
                 } else {

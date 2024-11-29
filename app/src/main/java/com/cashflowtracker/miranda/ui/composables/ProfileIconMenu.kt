@@ -44,8 +44,10 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.cashflowtracker.miranda.R
+import com.cashflowtracker.miranda.ui.screens.About
 import com.cashflowtracker.miranda.ui.screens.Profile
 import com.cashflowtracker.miranda.ui.screens.Settings
+import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
 import com.cashflowtracker.miranda.ui.viewmodels.UsersViewModel
 import com.cashflowtracker.miranda.utils.getInitials
 import org.koin.androidx.compose.koinViewModel
@@ -58,7 +60,8 @@ fun ProfileIconMenu(
     userEmail: String
 ) {
     val context = LocalContext.current
-    val usersVm = koinViewModel<UsersViewModel>()
+//    val usersVm = koinViewModel<UsersViewModel>()
+    val customColors = LocalCustomColors.current
 
     Dialog(
         onDismissRequest = { showProfileIconMenu.value = false },
@@ -143,6 +146,7 @@ fun ProfileIconMenu(
                             )
                         }
                     },
+                    colors = ListItemDefaults.colors(containerColor = customColors.cardSurface),
                     modifier = Modifier
                         .height(60.dp)
                         .clickable {
@@ -174,6 +178,7 @@ fun ProfileIconMenu(
                                 .size(22.dp)
                         )
                     },
+                    colors = ListItemDefaults.colors(containerColor = customColors.cardSurface),
                     modifier = Modifier
                         .height(52.dp)
                         .clickable {
@@ -201,6 +206,7 @@ fun ProfileIconMenu(
                                 .size(22.dp)
                         )
                     },
+                    colors = ListItemDefaults.colors(containerColor = customColors.cardSurface),
                     modifier = Modifier
                         .height(52.dp)
                         .clickable {
@@ -259,7 +265,11 @@ fun ProfileIconMenu(
                 modifier = Modifier
                     .height(52.dp)
                     .clickable {
-                        showProfileIconMenu.value = false
+                        context
+                            .startActivity(Intent(context, About::class.java))
+                            .also {
+                                showProfileIconMenu.value = false
+                            }
                     }
             )
             Row(
