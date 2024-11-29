@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,12 +30,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserId
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getLoggedUserEmailOrNull
 import com.cashflowtracker.miranda.ui.composables.ExpandableFAB
 import com.cashflowtracker.miranda.ui.composables.ExtendedFAB
 import com.cashflowtracker.miranda.ui.composables.MainTopAppBar
 import com.cashflowtracker.miranda.ui.composables.Navbar
-import com.cashflowtracker.miranda.ui.composables.ProfileIconMenu
 import com.cashflowtracker.miranda.ui.screens.AddRecurrence
 import com.cashflowtracker.miranda.ui.screens.AddTransaction
 import com.cashflowtracker.miranda.ui.screens.Home
@@ -43,6 +44,9 @@ import com.cashflowtracker.miranda.ui.screens.Recurrents
 import com.cashflowtracker.miranda.ui.screens.Stats
 import com.cashflowtracker.miranda.ui.screens.Transactions
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
+import com.cashflowtracker.miranda.ui.viewmodels.AccountsViewModel
+import com.cashflowtracker.miranda.ui.viewmodels.RecurrencesViewModel
+import com.cashflowtracker.miranda.ui.viewmodels.TransactionsViewModel
 import com.cashflowtracker.miranda.ui.viewmodels.UsersViewModel
 import com.cashflowtracker.miranda.utils.PermissionStatus
 import com.cashflowtracker.miranda.utils.Routes
@@ -76,8 +80,8 @@ class MainActivity : ComponentActivity() {
             }
             val showProfileIconMenu = remember { mutableStateOf(false) }
 
-            val vm = koinViewModel<UsersViewModel>()
-            val state by vm.state.collectAsStateWithLifecycle()
+            val usersVm = koinViewModel<UsersViewModel>()
+            val state by usersVm.state.collectAsStateWithLifecycle()
             if (userEmail.isNullOrEmpty()) {
                 val intent = Intent(
                     this@MainActivity,
@@ -86,6 +90,19 @@ class MainActivity : ComponentActivity() {
                 startActivity(intent)
                 finish()
             } else {
+                val userId = context.getCurrentUserId()
+                val accountsVm = koinViewModel<AccountsViewModel>()
+                val accounts by accountsVm.actions.getAllByUserId(userId)
+                    .collectAsState(initial = emptyList())
+                val totalBalance by accountsVm.actions.getTotalBalance(userId)
+                    .collectAsState(initial = 0.0)
+                val transactionsVm = koinViewModel<TransactionsViewModel>()
+                val transactions by transactionsVm.actions.getAllByUserIdFlow(userId)
+                    .collectAsState(initial = emptyList())
+                val recurrencesVm = koinViewModel<RecurrencesViewModel>()
+                val recurrences by recurrencesVm.actions.getAllByUserIdFlow(userId)
+                    .collectAsState(initial = emptyList())
+
                 MirandaTheme {
                     Scaffold(
                         modifier = modifier,
@@ -131,16 +148,16 @@ class MainActivity : ComponentActivity() {
                             modifier = Modifier.padding(paddingValues = paddingValues)
                         ) {
                             composable(Routes.Home.route) {
-                                Home()
+                                Home(accounts, totalBalance)
                             }
                             composable(Routes.Transactions.route) {
-                                Transactions()
+                                Transactions(transactions)
                             }
                             composable(Routes.Recurrents.route) {
-                                Recurrents()
+                                Recurrents(recurrences)
                             }
                             composable(Routes.Stats.route) {
-                                Stats()
+                                Stats(transactions)
                             }
                         }
                     }

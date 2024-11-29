@@ -16,20 +16,19 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.cashflowtracker.miranda.R
-import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserId
+import com.cashflowtracker.miranda.data.database.Recurrence
 import com.cashflowtracker.miranda.ui.composables.RecurrenceListItem
-import com.cashflowtracker.miranda.ui.composables.TransactionListItem
 import com.cashflowtracker.miranda.ui.viewmodels.RecurrencesViewModel
 import com.cashflowtracker.miranda.utils.Currencies
 import com.cashflowtracker.miranda.utils.Repeats
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun Recurrents() {
+fun Recurrents(recurrences: List<Recurrence>) {
     val context = LocalContext.current
-    val vm = koinViewModel<RecurrencesViewModel>()
-    val userId = context.getCurrentUserId()
-    val recurrences by vm.actions.getAllByUserIdFlow(userId).collectAsState(initial = emptyList())
+//    val recurrencesVm = koinViewModel<RecurrencesViewModel>()
+//    val userId = context.getCurrentUserId()
+//    val recurrences by recurrencesVm.actions.getAllByUserIdFlow(userId).collectAsState(initial = emptyList())
 
     Column(
         modifier = Modifier

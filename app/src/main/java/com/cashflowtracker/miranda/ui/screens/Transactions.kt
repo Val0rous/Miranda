@@ -16,6 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.cashflowtracker.miranda.R
+import com.cashflowtracker.miranda.data.database.Transaction
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserId
 import com.cashflowtracker.miranda.ui.composables.TransactionListItem
 import com.cashflowtracker.miranda.ui.viewmodels.TransactionsViewModel
@@ -23,11 +24,11 @@ import com.cashflowtracker.miranda.utils.Currencies
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun Transactions() {
+fun Transactions(transactions: List<Transaction>) {
     val context = LocalContext.current
-    val vm = koinViewModel<TransactionsViewModel>()
-    val userId = context.getCurrentUserId()
-    val transactions by vm.actions.getAllByUserIdFlow(userId).collectAsState(initial = emptyList())
+//    val transactionsVm = koinViewModel<TransactionsViewModel>()
+//    val userId = context.getCurrentUserId()
+//    val transactions by transactionsVm.actions.getAllByUserIdFlow(userId).collectAsState(initial = emptyList())
 
     Column(
         modifier = Modifier

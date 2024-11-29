@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
@@ -38,6 +37,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cashflowtracker.miranda.R
+import com.cashflowtracker.miranda.data.database.Account
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserId
 import com.cashflowtracker.miranda.data.repositories.PreferencesRepository.getBalanceVisibility
 import com.cashflowtracker.miranda.data.repositories.PreferencesRepository.setBalanceVisibility
@@ -51,14 +51,14 @@ import com.cashflowtracker.miranda.utils.AccountType
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun Home() {
+fun Home(accounts: List<Account>, totalBalance: Double) {
     val context = LocalContext.current
     var balanceVisible by remember { mutableStateOf(context.getBalanceVisibility()) }
     val showFilterDialog = remember { mutableStateOf(false) }
-    val vm = koinViewModel<AccountsViewModel>()
-    val userId = context.getCurrentUserId()
-    val accounts by vm.actions.getAllByUserId(userId).collectAsState(initial = emptyList())
-    val totalBalance by vm.actions.getTotalBalance(userId).collectAsState(initial = 0.0)
+//    val accountsVm = koinViewModel<AccountsViewModel>()
+//    val userId = context.getCurrentUserId()
+//    val accounts by accountsVm.actions.getAllByUserId(userId).collectAsState(initial = emptyList())
+//    val totalBalance by accountsVm.actions.getTotalBalance(userId).collectAsState(initial = 0.0)
     val filterSelections = remember {
         AccountType.entries.associate { item ->
             item.type to mutableStateOf(false)

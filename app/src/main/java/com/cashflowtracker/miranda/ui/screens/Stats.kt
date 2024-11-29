@@ -36,11 +36,11 @@ import java.time.Month
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun Stats() {
+fun Stats(transactions: List<Transaction>) {
     val context = LocalContext.current
-    val vm = koinViewModel<TransactionsViewModel>()
-    val userId = context.getCurrentUserId()
-    val transactions by vm.actions.getAllByUserIdFlow(userId).collectAsState(initial = emptyList())
+//    val transactionsVm = koinViewModel<TransactionsViewModel>()
+//    val userId = context.getCurrentUserId()
+//    val transactions by transactionsVm.actions.getAllByUserIdFlow(userId).collectAsState(initial = emptyList())
 
     val date = LocalDate.now()
     val currentYear = date.format(DateTimeFormatter.ofPattern("yyyy"))
