@@ -68,20 +68,29 @@ class ViewCategoryStats : ComponentActivity() {
                 TransactionType.INPUT.name,
                 TransactionType.TRANSFER.name
             )
-            val transactionTypeCounts =
-                transactions.groupingBy { it.type }.eachCount()
-                    .filterKeys { it in transactionOrder }.mapValues { it.value }
-                    .let { map -> transactionOrder.associateWith { map[it] ?: 0 } }
+            val transactionTypeCounts = transactions
+                .groupingBy { it.type }
+                .eachCount()
+                .mapKeys { (key, _) -> TransactionType.getType(key) }
+//                .filterKeys { it in transactionOrder }
+//                .mapValues { it.value }
+//                .let { map -> transactionOrder.associateWith { map[TransactionType.getType(it)] ?: 0 } }
+                .let { map ->
+                    transactionOrder.associate { type ->
+                        TransactionType.getType(type) to (map[TransactionType.getType(type)] ?: 0)
+                    }
+                }
 
             val categoryOrder = listOf(
                 CategoryClass.NECESSITY.label,
                 CategoryClass.CONVENIENCE.label,
                 CategoryClass.LUXURY.label
             )
-            val transactionCategoryCounts =
-                transactions.filter { it.type == TransactionType.OUTPUT.name }
-                    .groupingBy { DefaultCategories.getType(it.destination).label }.eachCount()
-                    .let { map -> categoryOrder.associateWith { map[it] ?: 0 } }
+            val transactionCategoryCounts = transactions
+                .filter { it.type == TransactionType.OUTPUT.name }
+                .groupingBy { DefaultCategories.getType(it.destination).label }
+                .eachCount()
+                .let { map -> categoryOrder.associateWith { map[it] ?: 0 } }
 
 
             MirandaTheme {
