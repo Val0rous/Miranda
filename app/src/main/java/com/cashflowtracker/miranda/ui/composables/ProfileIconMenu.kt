@@ -278,13 +278,19 @@ fun ProfileIconMenu(
                 ) {
                     Text(
                         text = "Privacy Policy",
-                        style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Normal),
+                        style = MaterialTheme.typography.titleSmall.copy(
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Normal
+                        ),
                         color = MaterialTheme.colorScheme.onSurface
                     )
                 }
                 Text(
                     text = " • ",
-                    style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Normal),
+                    style = MaterialTheme.typography.titleSmall.copy(
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Normal
+                    ),
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 TextButton(
@@ -295,7 +301,10 @@ fun ProfileIconMenu(
                 ) {
                     Text(
                         text = "Terms of Service",
-                        style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Normal),
+                        style = MaterialTheme.typography.titleSmall.copy(
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Normal
+                        ),
                         color = MaterialTheme.colorScheme.onSurface
                     )
                 }
