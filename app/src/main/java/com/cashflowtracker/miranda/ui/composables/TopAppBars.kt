@@ -58,7 +58,14 @@ import org.koin.androidx.compose.koinViewModel
 fun ProfileButton(
     showProfileIconMenu: MutableState<Boolean> = mutableStateOf(false),
     isBigPic: Boolean = false,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {
+        if (!isBigPic) {
+            showProfileIconMenu.value = true
+        } else {
+            // Do nothing
+        }
+    }
 ) {
     val context = LocalContext.current
     val email = context.getCurrentUserEmail()
@@ -84,13 +91,7 @@ fun ProfileButton(
             .size(size)
             .clip(CircleShape)
             .background(MaterialTheme.colorScheme.primary, CircleShape)
-            .clickable {
-                if (!isBigPic) {
-                    showProfileIconMenu.value = true
-                } else {
-                    // Do nothing
-                }
-            }
+            .clickable { onClick() }
     ) {
         if (profilePicturePath != null && profilePicturePath!!.isNotEmpty()) {
             AsyncImage(

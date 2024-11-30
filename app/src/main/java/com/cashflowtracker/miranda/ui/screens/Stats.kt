@@ -56,7 +56,7 @@ fun Stats(transactions: List<Transaction>) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(12.dp),
         verticalArrangement = Arrangement.spacedBy(6.dp) // Reduced padding between rows
     ) {
         if (transactions.isNotEmpty()) {
