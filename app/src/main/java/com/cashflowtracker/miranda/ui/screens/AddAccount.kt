@@ -50,13 +50,13 @@ class AddAccount : ComponentActivity() {
             val scrollState = rememberScrollState()
             val coroutineScope = rememberCoroutineScope()
             val context = LocalContext.current
-            val accountTitle = remember { mutableStateOf<String>("") }
+            val accountTitle = remember { mutableStateOf("") }
             var accountType by remember { mutableStateOf("") }
             var accountIcon by remember { mutableStateOf<Int?>(null) }
             val launcher = rememberLauncherForActivityResult(
                 contract = ActivityResultContracts.StartActivityForResult()
             ) { result ->
-                if (result.resultCode == Activity.RESULT_OK) {
+                if (result.resultCode == RESULT_OK) {
                     accountType = result.data?.getStringExtra("accountType") ?: ""
                     accountIcon = result.data?.getStringExtra("accountIcon")?.toInt()
                 }
@@ -117,7 +117,6 @@ class AddAccount : ComponentActivity() {
                     Column(
                         modifier = Modifier
                             .padding(paddingValues)
-                            .padding(16.dp)
                             .verticalScroll(scrollState)
                     ) {
                         AccountTitleForm(accountTitle, isError)

@@ -114,9 +114,9 @@ class SelectAccountType : ComponentActivity() {
                                 },
                                 modifier = Modifier.clickable {
                                     val resultIntent =
-                                        Intent().putExtra("accountType", it.type)
+                                        Intent().putExtra("accountType", it.name)
                                             .putExtra("accountIcon", it.icon.toString())
-                                    setResult(Activity.RESULT_OK, resultIntent)
+                                    setResult(RESULT_OK, resultIntent)
                                     finish()
                                 }
                             )

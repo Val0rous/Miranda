@@ -549,6 +549,7 @@ fun AmountForm(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(vertical = 2.dp)
                 .offset(y = (-4).dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -700,6 +701,7 @@ fun CommentForm(comment: MutableState<String>, suggestions: List<String>) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(vertical = 2.dp)
                 .offset(y = (0).dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -809,7 +811,7 @@ fun LocationForm(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = 16.dp, vertical = 2.dp)
             .offset(y = (0).dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -916,7 +918,7 @@ fun AccountTitleForm(
         modifier = Modifier
             .fillMaxWidth()
             .offset(y = (0).dp)
-            .padding(bottom = 16.dp),
+            .padding(vertical = 2.dp, horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         val title = stringResource(R.string.title)
@@ -930,11 +932,22 @@ fun AccountTitleForm(
         OutlinedTextField(
             value = accountTitle.value,
             onValueChange = { text -> accountTitle.value = text },
-            label = { Text(title) },
+            placeholder = { Text(title) },
             isError = isError.value,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .offset(x = (-16).dp, y = (1).dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Color.Transparent,
+                unfocusedBorderColor = Color.Transparent,
+                focusedLabelColor = Color.Transparent,
+                unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                errorTextColor = MaterialTheme.colorScheme.error,
+                errorBorderColor = Color.Transparent
+            )
         )
     }
+    HorizontalDivider()
 }
 
 @Composable
@@ -947,7 +960,14 @@ fun AccountTypeForm(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .offset(y = (0).dp),
+            .padding(vertical = 8.dp)
+            .clickable {
+                val intent = Intent(context, SelectAccountType::class.java)
+                //intent.putExtra("accountType", accountType)
+                launcher.launch(intent)
+            }
+            .height(50.dp)
+            .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         val type = stringResource(R.string.type)
@@ -957,41 +977,72 @@ fun AccountTypeForm(
             tint = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Spacer(modifier = Modifier.width(16.dp))
-        // Type Field
-        Box(modifier = Modifier
-            .fillMaxWidth()
-            .clickable {
-                val intent = Intent(context, SelectAccountType::class.java)
-                //intent.putExtra("accountType", accountType)
-                launcher.launch(intent)
-            }
-        ) {
-            OutlinedTextField(
-                value = AccountType.getType(accountType),
-                onValueChange = { },
-                label = { Text(type) },
-                readOnly = true,
-                modifier = Modifier.fillMaxWidth(),
-                trailingIcon = {
-                    accountIcon?.let { iconId ->
-                        Icon(
-                            imageVector = ImageVector.vectorResource(
-                                iconId
-                            ),
-                            contentDescription = accountType,
-                            modifier = Modifier.padding(end = 12.dp)
-                        )
-                    }
-                },
-                enabled = false,
-                colors = OutlinedTextFieldDefaults.colors(
-                    disabledTextColor = MaterialTheme.colorScheme.onSurface,
-                    disabledContainerColor = MaterialTheme.colorScheme.surface,
-                    disabledBorderColor = MaterialTheme.colorScheme.outline,
-                    disabledTrailingIconColor = MaterialTheme.colorScheme.onSurface,
-                    disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+
+        Text(
+            text = if (accountType.isNotEmpty()) {
+                AccountType.getType(accountType).also {
+                    println(AccountType.getType(accountType))
+                }
+            } else {
+                type
+            },
+            color = if (accountType.isNotEmpty()) {
+                MaterialTheme.colorScheme.onSurface
+            } else {
+                MaterialTheme.colorScheme.onSurfaceVariant
+            },
+            style = MaterialTheme.typography.titleMedium.copy(
+                fontWeight = FontWeight.Normal
+            )
+        )
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        accountIcon?.let { iconId ->
+            Icon(
+                imageVector = ImageVector.vectorResource(
+                    iconId
+                ),
+                contentDescription = accountType,
+                modifier = Modifier.padding(end = 12.dp)
             )
         }
+
+
+//        // Type Field
+//        Box(modifier = Modifier
+//            .fillMaxWidth()
+//            .clickable {
+//
+//            }
+//        ) {
+//            OutlinedTextField(
+//                value = AccountType.getType(accountType),
+//                onValueChange = { },
+//                label = { Text(type) },
+//                readOnly = true,
+//                modifier = Modifier.fillMaxWidth(),
+//                trailingIcon = {
+//                    accountIcon?.let { iconId ->
+//                        Icon(
+//                            imageVector = ImageVector.vectorResource(
+//                                iconId
+//                            ),
+//                            contentDescription = accountType,
+//                            modifier = Modifier.padding(end = 12.dp)
+//                        )
+//                    }
+//                },
+//                enabled = false,
+//                colors = OutlinedTextFieldDefaults.colors(
+//                    disabledTextColor = MaterialTheme.colorScheme.onSurface,
+//                    disabledContainerColor = MaterialTheme.colorScheme.surface,
+//                    disabledBorderColor = MaterialTheme.colorScheme.outline,
+//                    disabledTrailingIconColor = MaterialTheme.colorScheme.onSurface,
+//                    disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+//                )
+//            )
+//        }
     }
+//    HorizontalDivider()
 }

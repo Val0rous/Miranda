@@ -108,7 +108,9 @@ class EditAccount : ComponentActivity() {
                                             userId
                                         )
                                     }
-                                    if (existingAccount != null) {
+                                    if (existingAccount != null
+                                        && existingAccount.accountId != accountId.value
+                                    ) {
                                         isError.value = true
                                         return@launch
                                     } else {
@@ -133,7 +135,6 @@ class EditAccount : ComponentActivity() {
                     Column(
                         modifier = Modifier
                             .padding(paddingValues)
-                            .padding(16.dp)
                             .verticalScroll(scrollState)
                     ) {
                         if (isLoaded) {
