@@ -13,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.font.FontWeight
 import com.cashflowtracker.miranda.utils.formatDateWithWeekday
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -83,7 +84,13 @@ fun DatePicker(selectedDate: MutableState<String>) {
 
     // This TextButton triggers the date picker dialog
     TextButton(onClick = { isDatePickerVisible = true }) {
-        Text(displayDate, color = MaterialTheme.colorScheme.onBackground)
+        Text(
+            text = displayDate,
+            color = MaterialTheme.colorScheme.onBackground,
+            style = MaterialTheme.typography.titleMedium.copy(
+                fontWeight = FontWeight.Normal
+            )
+        )
     }
 
     if (isDatePickerVisible) {

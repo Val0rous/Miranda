@@ -3,13 +3,18 @@ package com.cashflowtracker.miranda.ui.composables
 import android.content.Context
 import android.view.KeyEvent
 import android.view.inputmethod.InputMethodManager
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -22,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.onKeyEvent
@@ -48,6 +54,7 @@ import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest
 import com.google.android.libraries.places.api.net.PlacesClient
+import com.google.maps.android.compose.Circle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
@@ -180,6 +187,8 @@ fun LocationTextField(
         }
     }
 
+    var isFocused by remember { mutableStateOf(false) }
+
     OutlinedTextField(
         value = location.value,
         onValueChange = { text ->
@@ -209,10 +218,15 @@ fun LocationTextField(
 //                )
 //            }
         },
-        label = { Text(stringResource(R.string.location)) },
+        placeholder = {
+            if (!isFocused) {
+                Text(stringResource(R.string.location))
+            } else {
+                Text("12.3456789, -98.7654321")
+            }
+        },
         singleLine = true,
         isError = isError.value,
-        placeholder = { Text("12.3456789, -98.7654321") },
         trailingIcon = {
             IconButton(
                 onClick = {
@@ -220,7 +234,9 @@ fun LocationTextField(
                     isGps = true
                     location.value = loading
                 },
-                modifier = Modifier.padding(end = 5.dp)
+                modifier = Modifier
+                    .padding(end = 5.dp)
+                    .offset(x = 16.dp)
             ) {
                 Icon(
                     imageVector = if (isGps and isLocationLoaded.value) {
@@ -233,12 +249,22 @@ fun LocationTextField(
                     tint = if (isGps) {
                         MaterialTheme.colorScheme.primary
                     } else {
-                        MaterialTheme.colorScheme.onSurface
+                        MaterialTheme.colorScheme.onSurfaceVariant
                     },
                     contentDescription = stringResource(R.string.get_gps_location)
                 )
             }
         },
         modifier = modifier
+            .onFocusChanged { focusState ->
+                isFocused = focusState.isFocused
+            }
+            .offset(x = (-16).dp, y = (0).dp),
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = Color.Transparent,
+            unfocusedBorderColor = Color.Transparent,
+            focusedLabelColor = Color.Transparent,
+            unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
+        )
     )
 }

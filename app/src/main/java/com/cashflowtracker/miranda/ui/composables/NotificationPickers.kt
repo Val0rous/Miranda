@@ -1,17 +1,21 @@
 package com.cashflowtracker.miranda.ui.composables
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -28,7 +32,9 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.utils.Notifications
@@ -76,50 +82,44 @@ fun NotificationPickerDialog(
 }
 
 @Composable
-fun NotificationPicker(selectedNotifications: SnapshotStateList<Notifications>) {
-    var isNotificationPickerVisible by remember { mutableStateOf(false) }
-    if (selectedNotifications.isNotEmpty()) {
-        selectedNotifications.forEach { notification ->
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    notification.label,
-                    modifier = Modifier.padding(start = 12.dp),
-                    style = MaterialTheme.typography.titleSmall
-                )    // TODO: Replace with DropdownMenu listing notification options
-                Spacer(modifier = Modifier.weight(1f))
-                IconButton(
-                    onClick = { selectedNotifications.remove(notification) }
-                ) {
-                    Icon(
-                        ImageVector.vectorResource(R.drawable.ic_close),
-                        contentDescription = "Delete Notification"
-                    )
-                }
-            }
-        }
-    }
-
-    // Max 5 notifications for each recurrence
-    if (selectedNotifications.size < 5) {
-        TextButton(onClick = { isNotificationPickerVisible = true }) {
-            Text("Add notification", color = MaterialTheme.colorScheme.outline)
-        }
-    }
-
-    if (isNotificationPickerVisible) {
-        NotificationPickerDialog(
-            onDismiss = { isNotificationPickerVisible = false },
-            onNotificationSelected = { notification ->
-                selectedNotifications.add(notification)
-                isNotificationPickerVisible = false
-            },
-            selectedNotifications = selectedNotifications
+fun NotificationIcon() {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier.padding(top = 0.dp)
+    ) {
+        Icon(
+            imageVector = ImageVector.vectorResource(R.drawable.ic_notifications),
+            contentDescription = stringResource(R.string.notifications),
+            tint = MaterialTheme.colorScheme.onSurfaceVariant
         )
+    }
+    Spacer(modifier = Modifier.width(16.dp))
+}
 
+@Composable
+fun NotificationPicker(
+    isNotificationPickerVisible: MutableState<Boolean>,
+    showIcon: Boolean = false
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(50.dp)
+            .clickable { isNotificationPickerVisible.value = true }
+            .padding(horizontal = 16.dp)
+    ) {
+        if (showIcon) {
+            NotificationIcon()
+        } else {
+            Spacer(modifier = Modifier.width(40.dp))
+        }
+        Text(
+            text = "Add notification",
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            style = MaterialTheme.typography.titleMedium.copy(
+                fontWeight = FontWeight.Normal
+            )
+        )
     }
 }

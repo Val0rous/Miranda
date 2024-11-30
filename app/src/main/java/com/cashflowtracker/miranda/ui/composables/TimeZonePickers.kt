@@ -21,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.ui.screens.SelectTimeZone
 import com.cashflowtracker.miranda.utils.TimeZoneEntry
@@ -58,16 +59,10 @@ fun combineDateAndTime(dateString: String, timeString: String): Date {
 @Composable
 fun TimeZonePicker(
     selectedTimeZone: MutableState<TimeZoneEntry>,
-    launcher: ManagedActivityResultLauncher<Intent, ActivityResult>,
     date: String,
     time: String,
 ) {
-//    var isTimeZonePickerVisible by remember { mutableStateOf(false) }
-    val context = LocalContext.current
     val dateTime = combineDateAndTime(date, time)
-
-    val is24HourClock = android.text.format.DateFormat.is24HourFormat(context)
-    val timeFormatter = if (is24HourClock) "HH:mm" else "h:mm a"
 
     // Initialize the selectedTimeZone with the current system time zone
     val timeZoneId = selectedTimeZone.value.id ?: TimeZone.getDefault().id
@@ -77,29 +72,11 @@ fun TimeZonePicker(
     val gmtFormat = getTimeZoneInGMTFormat(timeZoneId, dateTime)
     val displayText = displayName   //"$gmtFormat - $displayName"
 
-    // Initialize the selectedTimeZone with the current system time zone in GMT format
-//    val currentTimeZoneId = TimeZone.getDefault().id
-//    val currentTimeZone = remember { getTimeZoneInGMTFormat(currentTimeZoneId) }
-
-//    if (selectedTimeZone.value == null) {
-//        val id = TimeZone.getDefault().id
-//        selectedTimeZone.value = TimeZoneEntry(
-//            id = id,
-//            displayName = getTimeZoneInGMTFormat(id, dateTime),
-//            gmtFormat = getCurrentTimeZone(),
-//            country = "Earth",
-//        )
-//    }
-
-    // This TextButton triggers the time zone picker dialog
-    TextButton(onClick = {
-        val intent = Intent(context, SelectTimeZone::class.java)
-        intent.putExtra("dateTimeMillis", dateTime.time)
-        launcher.launch(intent)
-    }) {
-        Text(
-            text = displayText,
-            color = MaterialTheme.colorScheme.onSurface
+    Text(
+        text = displayText,
+        color = MaterialTheme.colorScheme.onSurface,
+        style = MaterialTheme.typography.titleMedium.copy(
+            fontWeight = FontWeight.Normal
         )
-    }
+    )
 }

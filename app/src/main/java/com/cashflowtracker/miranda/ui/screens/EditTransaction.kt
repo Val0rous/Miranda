@@ -344,7 +344,7 @@ class EditTransaction : ComponentActivity() {
                     Column(
                         modifier = Modifier
                             .padding(paddingValues)
-                            .padding(16.dp)
+                            .padding(top = 8.dp)
                             .verticalScroll(scrollState)
                     ) {
                         if (isLoaded) {
@@ -373,7 +373,6 @@ class EditTransaction : ComponentActivity() {
                                 transactionType.value,
                                 sourceLauncher
                             )
-                            Spacer(modifier = Modifier.height(8.dp))
 
                             DestinationForm(
                                 destination,

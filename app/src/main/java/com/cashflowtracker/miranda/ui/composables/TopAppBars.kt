@@ -220,8 +220,9 @@ fun AddEditTopAppBar(
                 )
             ) {
                 Icon(
-                    ImageVector.vectorResource(R.drawable.ic_close),
-                    contentDescription = "Close"
+                    imageVector = ImageVector.vectorResource(R.drawable.ic_close),
+                    contentDescription = "Close",
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         },

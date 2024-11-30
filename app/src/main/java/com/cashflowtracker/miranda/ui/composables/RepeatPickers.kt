@@ -24,6 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.utils.Notifications
 import com.cashflowtracker.miranda.utils.Repeats
@@ -71,19 +72,24 @@ fun RepeatPickerDialog(
 }
 
 @Composable
-fun RepeatPicker(selectedRepeat: MutableState<Repeats>) {
-    var isRepeatPickerVisible by remember { mutableStateOf(false) }
+fun RepeatPicker(
+    isRepeatPickerVisible: MutableState<Boolean>,
+    selectedRepeat: MutableState<Repeats>
+) {
+    Text(
+        text = selectedRepeat.value.label,
+        color = MaterialTheme.colorScheme.onSurface,
+        style = MaterialTheme.typography.titleMedium.copy(
+            fontWeight = FontWeight.Normal
+        )
+    )
 
-    TextButton(onClick = { isRepeatPickerVisible = true }) {
-        Text(selectedRepeat.value.label, color = MaterialTheme.colorScheme.onSurface)
-    }
-
-    if (isRepeatPickerVisible) {
+    if (isRepeatPickerVisible.value) {
         RepeatPickerDialog(
-            onDismiss = { isRepeatPickerVisible = false },
+            onDismiss = { isRepeatPickerVisible.value = false },
             onRepeatSelected = { repeat ->
                 selectedRepeat.value = repeat
-                isRepeatPickerVisible = false
+                isRepeatPickerVisible.value = false
             },
             selectedRepeat = selectedRepeat
         )

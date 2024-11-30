@@ -15,6 +15,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import com.cashflowtracker.miranda.utils.formatTime
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -99,7 +100,13 @@ fun TimePicker(selectedTime: MutableState<String>) {
 
     // This TextButton triggers the time picker dialog
     TextButton(onClick = { isTimePickerVisible = true }) {
-        Text(text = displayTime, color = MaterialTheme.colorScheme.onBackground)
+        Text(
+            text = displayTime,
+            color = MaterialTheme.colorScheme.onBackground,
+            style = MaterialTheme.typography.titleMedium.copy(
+                fontWeight = FontWeight.Normal
+            )
+        )
     }
 
     if (isTimePickerVisible) {
