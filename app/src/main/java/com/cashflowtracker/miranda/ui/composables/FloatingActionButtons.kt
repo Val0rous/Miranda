@@ -94,8 +94,8 @@ fun ExpandableFAB(expanded: MutableState<Boolean>) {
                             options.toBundle()
                         )
                     },
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                    contentColor = MaterialTheme.colorScheme.primary,
                     modifier = Modifier
                         .padding(end = 8.dp)
                         .size(40.dp)
@@ -154,7 +154,7 @@ fun ExpandableFAB(expanded: MutableState<Boolean>) {
                 containerColor = if (expanded.value) {
                     MaterialTheme.colorScheme.primary
                 } else {
-                    MaterialTheme.colorScheme.primaryContainer
+                    MaterialTheme.colorScheme.secondaryContainer
                 },
                 modifier = Modifier.size(56.dp)
             ) {
@@ -173,7 +173,7 @@ fun ExpandableFAB(expanded: MutableState<Boolean>) {
                     tint = if (expanded.value) {
                         MaterialTheme.colorScheme.onPrimary
                     } else {
-                        MaterialTheme.colorScheme.onPrimaryContainer
+                        MaterialTheme.colorScheme.onSecondaryContainer
                     },
                     modifier = Modifier.rotate(rotation)
                 )
@@ -201,14 +201,14 @@ fun ExtendedFAB(icon: Int, label: String, activity: Class<*>) {
                 Intent(context, activity), options.toBundle()
             )
         },
-        containerColor = MaterialTheme.colorScheme.primaryContainer,
+        containerColor = MaterialTheme.colorScheme.secondaryContainer,
         modifier = Modifier.height(56.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
                 imageVector = ImageVector.vectorResource(icon),
                 contentDescription = label,
-                tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                tint = MaterialTheme.colorScheme.onSecondaryContainer,
             )
             Spacer(modifier = Modifier.size(12.dp))
             Text(label)
