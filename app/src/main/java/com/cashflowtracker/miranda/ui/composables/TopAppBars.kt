@@ -33,6 +33,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -130,7 +131,7 @@ fun MainTopAppBar(currentRoute: String?, showProfileIconMenu: MutableState<Boole
     TopAppBar(
         title = {
             val text = when (currentRoute) {
-                Routes.Home.route -> "Miranda"
+                Routes.Home.route -> stringResource(R.string.app_name)
                 Routes.Transactions.route -> "Transactions"
                 Routes.Recurrents.route -> "Recurrents"
                 Routes.Stats.route -> "Stats"

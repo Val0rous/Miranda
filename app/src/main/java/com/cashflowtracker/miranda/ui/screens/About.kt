@@ -85,7 +85,7 @@ class About : ComponentActivity() {
                                 }
                             )
                             Text(
-                                text = "Miranda",
+                                text = stringResource(R.string.app_name),
                                 style = MaterialTheme.typography.titleLarge,
                                 fontWeight = FontWeight.SemiBold,
                                 modifier = Modifier.padding(top = 16.dp)

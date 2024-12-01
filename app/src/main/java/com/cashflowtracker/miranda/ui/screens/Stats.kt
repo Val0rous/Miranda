@@ -171,9 +171,9 @@ fun Stats(transactions: List<Transaction>) {
                     transaction.createdOn.startsWith(currentMonth)
                 }
                 var monthlyInitialBalance = 0.0
-                val firstMonthlyTransaction = monthlyTransactions.first()
+                val firstMonthlyTransaction = monthlyTransactions.firstOrNull()
                 val beforeMonthlyTransactions =
-                    transactions.takeWhile { it != firstMonthlyTransaction }
+                    transactions.takeWhile { it != firstMonthlyTransaction!! }
                 beforeMonthlyTransactions.forEach { item ->
                     val deltaAmount = when (item.type) {
                         TransactionType.OUTPUT.type -> -item.amount
