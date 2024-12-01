@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
@@ -22,15 +21,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.data.database.Transaction
-import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserId
 import com.cashflowtracker.miranda.data.repositories.ThemeRepository.getThemePreferenceFlow
 import com.cashflowtracker.miranda.ui.composables.AreaChartThumbnail
 import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
-import com.cashflowtracker.miranda.ui.viewmodels.TransactionsViewModel
 import com.cashflowtracker.miranda.utils.Routes
 import com.cashflowtracker.miranda.utils.StarWithBorder
 import com.cashflowtracker.miranda.utils.TransactionType
-import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDate
 import java.time.Month
 import java.time.format.DateTimeFormatter
@@ -42,16 +38,31 @@ fun Stats(transactions: List<Transaction>) {
 //    val userId = context.getCurrentUserId()
 //    val transactions by transactionsVm.actions.getAllByUserIdFlow(userId).collectAsState(initial = emptyList())
 
-    val date = LocalDate.now()
-    val currentYear = date.format(DateTimeFormatter.ofPattern("yyyy"))
-    val currentMonth = date.format(DateTimeFormatter.ofPattern("yyyy-MM"))
-    val currentQuarter = when (date.month) {
-        Month.JANUARY, Month.FEBRUARY, Month.MARCH -> "Q1"
-        Month.APRIL, Month.MAY, Month.JUNE -> "Q2"
-        Month.JULY, Month.AUGUST, Month.SEPTEMBER -> "Q3"
-        Month.OCTOBER, Month.NOVEMBER, Month.DECEMBER -> "Q4"
-        else -> ""
-    }
+    val today = LocalDate.now()
+    val dateFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+
+    val date365DaysAgo = today.minusDays(365)
+    val date90DaysAgo = today.minusDays(90)
+    val date30DaysAgo = today.minusDays(30)
+
+    val transactionsWithParsedDates = transactions.mapNotNull { transaction ->
+        val parsedDate = try {
+            LocalDate.parse(transaction.createdOn, dateFormatter)
+        } catch (e: Exception) {
+            null
+        }
+        parsedDate?.let { transaction to it }
+    }.sortedBy { it.second }
+
+//    val currentYear = today.format(DateTimeFormatter.ofPattern("yyyy"))
+//    val currentMonth = today.format(DateTimeFormatter.ofPattern("yyyy-MM"))
+//    val currentQuarter = when (today.month) {
+//        Month.JANUARY, Month.FEBRUARY, Month.MARCH -> "Q1"
+//        Month.APRIL, Month.MAY, Month.JUNE -> "Q2"
+//        Month.JULY, Month.AUGUST, Month.SEPTEMBER -> "Q3"
+//        Month.OCTOBER, Month.NOVEMBER, Month.DECEMBER -> "Q4"
+//        else -> ""
+//    }
 
     Column(
         modifier = Modifier
@@ -78,25 +89,31 @@ fun Stats(transactions: List<Transaction>) {
                     }
                 )
 
-                val yearlyTransactions = transactions.filter { transaction ->
-                    transaction.createdOn.startsWith(currentYear)
+
+                val yearlyTransactions = transactionsWithParsedDates.filter { (_, date) ->
+                    !date.isBefore(date365DaysAgo) && !date.isAfter(today)
                 }
-                var yearlyInitialBalance = 0.0
-                val firstYearlyTransaction = yearlyTransactions.first()
-                val beforeYearlyTransactions =
-                    transactions.takeWhile { it != firstYearlyTransaction }
-                beforeYearlyTransactions.forEach { item ->
-                    val deltaAmount = when (item.type) {
-                        TransactionType.OUTPUT.type -> -item.amount
-                        TransactionType.INPUT.type -> item.amount
-                        else -> 0.0
-                    }
-                    yearlyInitialBalance += deltaAmount
-                }
+                val yearlyInitialBalance =
+                    calculateInitialBalance(transactionsWithParsedDates, yearlyTransactions)
+//                val yearlyTransactions = transactions.filter { transaction ->
+//                    transaction.createdOn.startsWith(currentYear)
+//                }
+//                var yearlyInitialBalance = 0.0
+//                val firstYearlyTransaction = yearlyTransactions.first()
+//                val beforeYearlyTransactions =
+//                    transactions.takeWhile { it != firstYearlyTransaction }
+//                beforeYearlyTransactions.forEach { item ->
+//                    val deltaAmount = when (item.type) {
+//                        TransactionType.OUTPUT.type -> -item.amount
+//                        TransactionType.INPUT.type -> item.amount
+//                        else -> 0.0
+//                    }
+//                    yearlyInitialBalance += deltaAmount
+//                }
                 StatsCard(
                     title = stringResource(R.string.yearly_report),
                     modifier = Modifier.weight(1f),
-                    transactions = yearlyTransactions,
+                    transactions = yearlyTransactions.map { it.first },
                     initialBalance = yearlyInitialBalance,
                     chartLineColor = LocalCustomColors.current.chartLineRed,
                     chartAreaColor = LocalCustomColors.current.chartAreaRed,
@@ -113,50 +130,55 @@ fun Stats(transactions: List<Transaction>) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(6.dp) // Reduced padding between cards
             ) {
-                val quarterlyTransactions = transactions.filter { transaction ->
-                    val transactionDate =
-                        LocalDate.parse(
-                            transaction.createdOn,
-                            DateTimeFormatter.ISO_ZONED_DATE_TIME
-                        )
-                    val transactionYear = transactionDate.year.toString()
-                    val transactionMonth = transactionDate.month
-                    transactionYear == currentYear && when (currentQuarter) {
-                        "Q1" -> transactionMonth in listOf(
-                            Month.JANUARY, Month.FEBRUARY, Month.MARCH
-                        )
-
-                        "Q2" -> transactionMonth in listOf(
-                            Month.APRIL, Month.MAY, Month.JUNE
-                        )
-
-                        "Q3" -> transactionMonth in listOf(
-                            Month.JULY, Month.AUGUST, Month.SEPTEMBER
-                        )
-
-                        "Q4" -> transactionMonth in listOf(
-                            Month.OCTOBER, Month.NOVEMBER, Month.DECEMBER
-                        )
-
-                        else -> false
-                    }
+                val quarterlyTransactions = transactionsWithParsedDates.filter { (_, date) ->
+                    !date.isBefore(date30DaysAgo) && !date.isAfter(today)
                 }
-                var quarterlyInitialBalance = 0.0
-                val firstQuarterlyTransaction = quarterlyTransactions.first()
-                val beforeQuarterlyTransactions =
-                    transactions.takeWhile { it != firstQuarterlyTransaction }
-                beforeQuarterlyTransactions.forEach { item ->
-                    val deltaAmount = when (item.type) {
-                        TransactionType.OUTPUT.type -> -item.amount
-                        TransactionType.INPUT.type -> item.amount
-                        else -> 0.0
-                    }
-                    quarterlyInitialBalance += deltaAmount
-                }
+                val quarterlyInitialBalance =
+                    calculateInitialBalance(transactionsWithParsedDates, quarterlyTransactions)
+//                val quarterlyTransactions = transactions.filter { transaction ->
+//                    val transactionDate =
+//                        LocalDate.parse(
+//                            transaction.createdOn,
+//                            DateTimeFormatter.ISO_ZONED_DATE_TIME
+//                        )
+//                    val transactionYear = transactionDate.year.toString()
+//                    val transactionMonth = transactionDate.month
+//                    transactionYear == currentYear && when (currentQuarter) {
+//                        "Q1" -> transactionMonth in listOf(
+//                            Month.JANUARY, Month.FEBRUARY, Month.MARCH
+//                        )
+//
+//                        "Q2" -> transactionMonth in listOf(
+//                            Month.APRIL, Month.MAY, Month.JUNE
+//                        )
+//
+//                        "Q3" -> transactionMonth in listOf(
+//                            Month.JULY, Month.AUGUST, Month.SEPTEMBER
+//                        )
+//
+//                        "Q4" -> transactionMonth in listOf(
+//                            Month.OCTOBER, Month.NOVEMBER, Month.DECEMBER
+//                        )
+//
+//                        else -> false
+//                    }
+//                }
+//                var quarterlyInitialBalance = 0.0
+//                val firstQuarterlyTransaction = quarterlyTransactions.first()
+//                val beforeQuarterlyTransactions =
+//                    transactions.takeWhile { it != firstQuarterlyTransaction }
+//                beforeQuarterlyTransactions.forEach { item ->
+//                    val deltaAmount = when (item.type) {
+//                        TransactionType.OUTPUT.type -> -item.amount
+//                        TransactionType.INPUT.type -> item.amount
+//                        else -> 0.0
+//                    }
+//                    quarterlyInitialBalance += deltaAmount
+//                }
                 StatsCard(
                     title = stringResource(R.string.quarterly_report),
                     modifier = Modifier.weight(1f),
-                    transactions = quarterlyTransactions,
+                    transactions = quarterlyTransactions.map { it.first },
                     initialBalance = quarterlyInitialBalance,
                     chartLineColor = LocalCustomColors.current.chartLineGreen,
                     chartAreaColor = LocalCustomColors.current.chartAreaGreen,
@@ -167,25 +189,30 @@ fun Stats(transactions: List<Transaction>) {
                     }
                 )
 
-                val monthlyTransactions = transactions.filter { transaction ->
-                    transaction.createdOn.startsWith(currentMonth)
+                val monthlyTransactions = transactionsWithParsedDates.filter { (_, date) ->
+                    !date.isBefore(date90DaysAgo) && !date.isAfter(today)
                 }
-                var monthlyInitialBalance = 0.0
-                val firstMonthlyTransaction = monthlyTransactions.firstOrNull()
-                val beforeMonthlyTransactions =
-                    transactions.takeWhile { it != firstMonthlyTransaction!! }
-                beforeMonthlyTransactions.forEach { item ->
-                    val deltaAmount = when (item.type) {
-                        TransactionType.OUTPUT.type -> -item.amount
-                        TransactionType.INPUT.type -> item.amount
-                        else -> 0.0
-                    }
-                    monthlyInitialBalance += deltaAmount
-                }
+                val monthlyInitialBalance =
+                    calculateInitialBalance(transactionsWithParsedDates, monthlyTransactions)
+//                val monthlyTransactions = transactions.filter { transaction ->
+//                    transaction.createdOn.startsWith(currentMonth)
+//                }
+//                var monthlyInitialBalance = 0.0
+//                val firstMonthlyTransaction = monthlyTransactions.firstOrNull()
+//                val beforeMonthlyTransactions =
+//                    transactions.takeWhile { it != firstMonthlyTransaction!! }
+//                beforeMonthlyTransactions.forEach { item ->
+//                    val deltaAmount = when (item.type) {
+//                        TransactionType.OUTPUT.type -> -item.amount
+//                        TransactionType.INPUT.type -> item.amount
+//                        else -> 0.0
+//                    }
+//                    monthlyInitialBalance += deltaAmount
+//                }
                 StatsCard(
                     title = stringResource(R.string.monthly_report),
                     modifier = Modifier.weight(1f),
-                    transactions = monthlyTransactions,
+                    transactions = monthlyTransactions.map { it.first },
                     initialBalance = monthlyInitialBalance,
                     chartLineColor = LocalCustomColors.current.chartLineYellow,
                     chartAreaColor = LocalCustomColors.current.chartAreaYellow,
@@ -224,6 +251,37 @@ fun Stats(transactions: List<Transaction>) {
                 Text(stringResource(R.string.no_stats))
             }
         }
+    }
+}
+
+// Helper function to calculate the initial balance before the given transactions
+private fun calculateInitialBalance(
+    allTransactions: List<Pair<Transaction, LocalDate>>,
+    periodTransactions: List<Pair<Transaction, LocalDate>>
+): Double {
+    if (periodTransactions.isEmpty()) {
+        // If there are no transactions in the period, return the last known balance
+        return allTransactions.fold(0.0) { balance, (transaction, _) ->
+            balance + transaction.amountDelta()
+        }
+    }
+
+    val firstTransactionDate = periodTransactions.first().second
+    val transactionsBeforePeriod = allTransactions.filter { (_, date) ->
+        date.isBefore(firstTransactionDate)
+    }
+
+    return transactionsBeforePeriod.fold(0.0) { balance, (transaction, _) ->
+        balance + transaction.amountDelta()
+    }
+}
+
+// Extension function to calculate the amount delta based on transaction type
+private fun Transaction.amountDelta(): Double {
+    return when (this.type) {
+        TransactionType.OUTPUT.type -> -this.amount
+        TransactionType.INPUT.type -> this.amount
+        else -> 0.0
     }
 }
 
