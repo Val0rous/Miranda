@@ -156,9 +156,6 @@ class ViewCategoryStats : ComponentActivity() {
                                                     data = transactionCategoryCounts,
                                                     radiusOuter = 50.dp,
                                                     colors = listOf(
-//                                customColors.surfaceTintRed,
-//                                customColors.surfaceTintYellow,
-//                                customColors.surfaceTintGreen
                                                         Red400,
                                                         Yellow400,
                                                         Green400
@@ -190,53 +187,53 @@ class ViewCategoryStats : ComponentActivity() {
                             }
                         }
 
-                        item {
-                            val viewData = DonutChartDataCollection(
-                                listOf(
-                                    DonutChartData(
-                                        transactionCategoryCounts["Necessity"]!!.toFloat(),
-                                        Red400,
-                                        "Necessary"
-                                    ),
-                                    DonutChartData(
-                                        transactionCategoryCounts["Convenience"]!!.toFloat(),
-                                        Yellow400,
-                                        "Convenience"
-                                    ),
-                                    DonutChartData(
-                                        transactionCategoryCounts["Luxury"]!!.toFloat(),
-                                        Green400,
-                                        "Luxury"
-                                    )
-                                )
-                            )
-                            DonutChart(
-                                Modifier.padding(paddingValues),
-                                chartSize = 200.dp,
-                                data = viewData
-                            ) { selected ->
-                                AnimatedContent(targetState = selected, label = "") {
-                                    val amount = it?.amount ?: viewData.totalAmount
-                                    val text = it?.title ?: "Total"
-
-                                    Column(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        horizontalAlignment = Alignment.CenterHorizontally
-                                    ) {
-                                        Text(
-                                            "$amount",
-                                            style = MaterialTheme.typography.titleLarge,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                                        )
-                                        Text(
-                                            text,
-                                            style = MaterialTheme.typography.titleMedium,
-                                            color = MaterialTheme.colorScheme.onSurface
-                                        )
-                                    }
-                                }
-                            }
-                        }
+//                        item {
+//                            val viewData = DonutChartDataCollection(
+//                                listOf(
+//                                    DonutChartData(
+//                                        transactionCategoryCounts["Necessity"]!!.toFloat(),
+//                                        Red400,
+//                                        "Necessary"
+//                                    ),
+//                                    DonutChartData(
+//                                        transactionCategoryCounts["Convenience"]!!.toFloat(),
+//                                        Yellow400,
+//                                        "Convenience"
+//                                    ),
+//                                    DonutChartData(
+//                                        transactionCategoryCounts["Luxury"]!!.toFloat(),
+//                                        Green400,
+//                                        "Luxury"
+//                                    )
+//                                )
+//                            )
+//                            DonutChart(
+//                                Modifier.padding(paddingValues),
+//                                chartSize = 200.dp,
+//                                data = viewData
+//                            ) { selected ->
+//                                AnimatedContent(targetState = selected, label = "") {
+//                                    val amount = it?.amount ?: viewData.totalAmount
+//                                    val text = it?.title ?: "Total"
+//
+//                                    Column(
+//                                        modifier = Modifier.fillMaxWidth(),
+//                                        horizontalAlignment = Alignment.CenterHorizontally
+//                                    ) {
+//                                        Text(
+//                                            "$amount",
+//                                            style = MaterialTheme.typography.titleLarge,
+//                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+//                                        )
+//                                        Text(
+//                                            text,
+//                                            style = MaterialTheme.typography.titleMedium,
+//                                            color = MaterialTheme.colorScheme.onSurface
+//                                        )
+//                                    }
+//                                }
+//                            }
+//                        }
                     }
                 }
             }
