@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Miranda</string>
+    <string name="app_name" translatable="false">Flowtracker</string>
     <string name="add_transaction_shortcut_short_label">Add Transaction</string>
     <string name="add_transaction_shortcut_long_label">Create a new transaction</string>
     <string name="add_transaction_disabled_message">Add Transaction shortcut is disabled</string>
