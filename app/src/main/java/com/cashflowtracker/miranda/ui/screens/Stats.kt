@@ -113,7 +113,7 @@ fun Stats(transactions: List<Transaction>) {
                 StatsCard(
                     title = stringResource(R.string.yearly_report),
                     modifier = Modifier.weight(1f),
-                    transactions = yearlyTransactions.map { it.first },
+                    transactions = yearlyTransactions.map { it.first }.reversed(),
                     initialBalance = yearlyInitialBalance,
                     chartLineColor = LocalCustomColors.current.chartLineRed,
                     chartAreaColor = LocalCustomColors.current.chartAreaRed,
@@ -178,7 +178,7 @@ fun Stats(transactions: List<Transaction>) {
                 StatsCard(
                     title = stringResource(R.string.quarterly_report),
                     modifier = Modifier.weight(1f),
-                    transactions = quarterlyTransactions.map { it.first },
+                    transactions = quarterlyTransactions.map { it.first }.reversed(),
                     initialBalance = quarterlyInitialBalance,
                     chartLineColor = LocalCustomColors.current.chartLineGreen,
                     chartAreaColor = LocalCustomColors.current.chartAreaGreen,
@@ -212,7 +212,7 @@ fun Stats(transactions: List<Transaction>) {
                 StatsCard(
                     title = stringResource(R.string.monthly_report),
                     modifier = Modifier.weight(1f),
-                    transactions = monthlyTransactions.map { it.first },
+                    transactions = monthlyTransactions.map { it.first }.reversed(),
                     initialBalance = monthlyInitialBalance,
                     chartLineColor = LocalCustomColors.current.chartLineYellow,
                     chartAreaColor = LocalCustomColors.current.chartAreaYellow,

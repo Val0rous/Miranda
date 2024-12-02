@@ -59,10 +59,11 @@ dependencies {
     implementation(platform("androidx.compose:compose-bom:2024.11.00"))
     implementation("androidx.lifecycle:lifecycle-runtime-compose-android:2.8.7")
     implementation("androidx.preference:preference-ktx:1.2.1")
-    implementation("androidx.media3:media3-effect:1.4.1")
+    implementation("androidx.media3:media3-effect:1.5.0")
     androidTestImplementation(platform("androidx.compose:compose-bom:2024.11.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
+    implementation("androidx.compose.foundation:foundation:1.7.5")
 
     // Android Studio Preview support
     implementation("androidx.compose.ui:ui-tooling-preview")
@@ -75,7 +76,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
     implementation("androidx.navigation:navigation-runtime-ktx:2.8.4")
     implementation("androidx.navigation:navigation-compose:2.8.4")
-    implementation("androidx.media3:media3-test-utils:1.4.1")
+    implementation("androidx.media3:media3-test-utils:1.5.0")
     //implementation("androidx.room:room-ktx:2.6.1")
     val roomVersion = "2.6.1"
     implementation("androidx.room:room-runtime:$roomVersion")
@@ -155,5 +156,5 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
 
     // Coroutines Play Services for 'await' on Task
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.8.1")
 }

@@ -6,11 +6,18 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -23,6 +30,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
@@ -33,6 +41,7 @@ import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentU
 import com.cashflowtracker.miranda.ui.composables.DonutChart
 import com.cashflowtracker.miranda.ui.composables.DonutChartData
 import com.cashflowtracker.miranda.ui.composables.DonutChartDataCollection
+import com.cashflowtracker.miranda.ui.composables.DotsIndicator
 import com.cashflowtracker.miranda.ui.composables.PieChart
 import com.cashflowtracker.miranda.ui.theme.Blue400
 import com.cashflowtracker.miranda.ui.theme.Blue700
@@ -117,36 +126,68 @@ class ViewCategoryStats : ComponentActivity() {
                     }
                 ) { paddingValues ->
                     val customColors = LocalCustomColors.current
+                    val pagerState = rememberPagerState(pageCount = { 2 })
                     LazyColumn(
                         modifier = Modifier
                             .padding(paddingValues = paddingValues)
                             .fillMaxSize()
                     ) {
                         item {
-                            PieChart(
-                                data = transactionCategoryCounts,
-                                radiusOuter = 50.dp,
-                                colors = listOf(
+                            ElevatedCard(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(250.dp)
+                                    .padding(16.dp)
+                                    .clip(RoundedCornerShape(24.dp))
+                            ) {
+                                Column(
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    HorizontalPager(
+                                        state = pagerState,
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .fillMaxWidth()
+                                            .padding(top = 8.dp)
+                                    ) { page ->
+                                        when (page) {
+                                            0 -> {
+                                                PieChart(
+                                                    data = transactionCategoryCounts,
+                                                    radiusOuter = 50.dp,
+                                                    colors = listOf(
 //                                customColors.surfaceTintRed,
 //                                customColors.surfaceTintYellow,
 //                                customColors.surfaceTintGreen
-                                    Red400,
-                                    Yellow400,
-                                    Green400
-                                )
-                            )
-                        }
+                                                        Red400,
+                                                        Yellow400,
+                                                        Green400
+                                                    )
+                                                )
+                                            }
 
-                        item {
-                            PieChart(
-                                data = transactionTypeCounts,
-                                radiusOuter = 50.dp,
-                                colors = listOf(
-                                    Red400,
-                                    Green400,
-                                    Blue400
-                                )
-                            )
+                                            1 -> {
+                                                PieChart(
+                                                    data = transactionTypeCounts,
+                                                    radiusOuter = 50.dp,
+                                                    colors = listOf(
+                                                        Red400,
+                                                        Green400,
+                                                        Blue400
+                                                    )
+                                                )
+                                            }
+                                        }
+                                    }
+                                    DotsIndicator(
+                                        totalDots = 2,
+                                        selectedIndex = pagerState.currentPage,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(vertical = 8.dp)
+                                    )
+                                }
+                            }
                         }
 
                         item {
