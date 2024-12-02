@@ -1,5 +1,7 @@
 package com.cashflowtracker.miranda.ui.composables
 
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableIntStateOf
@@ -14,7 +16,9 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.data.database.Transaction
+import com.cashflowtracker.miranda.utils.Currencies
 import com.cashflowtracker.miranda.utils.TransactionType
+import com.cashflowtracker.miranda.utils.formatAmountAsInt
 import com.patrykandpatrick.vico.compose.axis.horizontal.rememberBottomAxis
 import com.patrykandpatrick.vico.compose.axis.vertical.rememberStartAxis
 import com.patrykandpatrick.vico.compose.chart.Chart
@@ -30,6 +34,8 @@ import com.patrykandpatrick.vico.core.component.shape.Shapes
 import com.patrykandpatrick.vico.core.component.shape.shader.DynamicShaders
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 import com.patrykandpatrick.vico.core.entry.FloatEntry
+import java.time.LocalDate
+import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.UUID
@@ -121,7 +127,7 @@ fun AreaChart(
         ProvideChartStyle() {
             val marker = rememberMarker()
             Chart(
-                modifier = modifier,
+                modifier = modifier.padding(start = 1.dp),
                 chart = lineChart(
                     lines = datasetLineSpec
                 ),
@@ -130,11 +136,12 @@ fun AreaChart(
                     title = "Top values",
                     tickLength = 2.dp,
                     valueFormatter = { value, _ ->
-                        value.toInt().toString()
+                        //value.toInt().toString()
+                        formatAmountAsInt(value, Currencies.EUR)
                     },
                     itemPlacer = AxisItemPlacer.Vertical.default(
                         maxItemCount = 6
-                    )
+                    ),
                 ),
                 bottomAxis = rememberBottomAxis(
                     title = "Count of values",

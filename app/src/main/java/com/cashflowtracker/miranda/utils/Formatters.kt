@@ -46,6 +46,35 @@ fun formatAmount(amount: Double, currency: Currencies, transactionType: String =
     return "$sign$formattedNumber $currencySymbol"
 }
 
+fun formatAmountAsInt(amount: Float, currency: Currencies): String {
+    val numberFormat = NumberFormat.getNumberInstance(Locale.getDefault()) //as DecimalFormat
+    numberFormat.minimumFractionDigits = 0
+    numberFormat.maximumFractionDigits = 1
+
+    val suffix = when {
+        amount >= 1_000_000_000 -> "B"
+        amount >= 1_000_000 -> "M"
+        amount >= 1_000 -> "K"
+        else -> ""
+    }
+    val divisor = when (suffix) {
+        "B" -> 1_000_000_000
+        "M" -> 1_000_000
+        "K" -> 1_000
+        else -> 1
+    }
+
+    val scaledAmount = amount / divisor
+    val formattedNumber = if (suffix.isNotEmpty()) {
+        numberFormat.format(scaledAmount)
+    } else {
+        scaledAmount.toInt().toString()
+    }
+    val currencySymbol = Currency.getInstance(currency.name).symbol
+
+    return "$formattedNumber$suffix$currencySymbol"
+}
+
 fun formatTime(context: Context, time: String): String {
     return try {
         // Parse the input time string (HH:mm)

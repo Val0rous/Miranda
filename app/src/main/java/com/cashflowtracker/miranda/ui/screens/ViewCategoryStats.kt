@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -45,6 +46,7 @@ import com.cashflowtracker.miranda.ui.composables.DotsIndicator
 import com.cashflowtracker.miranda.ui.composables.PieChart
 import com.cashflowtracker.miranda.ui.theme.Blue400
 import com.cashflowtracker.miranda.ui.theme.Blue700
+import com.cashflowtracker.miranda.ui.theme.CustomColorScheme
 import com.cashflowtracker.miranda.ui.theme.Green400
 import com.cashflowtracker.miranda.ui.theme.Green700
 import com.cashflowtracker.miranda.ui.theme.Light_ChartLine_Blue
@@ -134,6 +136,9 @@ class ViewCategoryStats : ComponentActivity() {
                     ) {
                         item {
                             ElevatedCard(
+                                colors = CardDefaults.cardColors(
+                                    containerColor = LocalCustomColors.current.cardSurface
+                                ),
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(250.dp)

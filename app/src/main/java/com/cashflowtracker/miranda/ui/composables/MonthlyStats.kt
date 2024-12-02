@@ -110,7 +110,7 @@ fun MonthlyChart(transactions: List<Transaction>) {
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxWidth()
-                        .padding(16.dp),
+                        .padding(vertical = 16.dp),
                     transactions = filteredTransactions,
                     initialBalance = initialBalance,
                     chartLineColor = LocalCustomColors.current.chartLineYellow,

@@ -18,7 +18,7 @@ fun OverallChart(transactions: List<Transaction>) {
     AreaChart(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(vertical = 16.dp),
         transactions = transactions,
         chartLineColor = LocalCustomColors.current.chartLineBlue,
         chartAreaColor = LocalCustomColors.current.chartAreaBlue
