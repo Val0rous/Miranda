@@ -118,7 +118,7 @@ class Settings : ComponentActivity() {
                                 },
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .height(56.dp)
+                                    .height(50.dp)
                             ) {
                                 Text(stringResource(R.string.logout))
                             }
@@ -128,7 +128,7 @@ class Settings : ComponentActivity() {
                                 colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.error),
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .height(56.dp)
+                                    .height(50.dp)
                             ) {
                                 Text(stringResource(R.string.delete_account))
                             }
