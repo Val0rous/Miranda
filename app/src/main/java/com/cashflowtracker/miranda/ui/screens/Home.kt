@@ -152,17 +152,17 @@ fun Home(accounts: List<Account>, totalBalance: Double) {
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
-                IconButton(
-                    onClick = {
-                        // TODO
-                    },
-                ) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.ic_swap_vert),
-                        contentDescription = stringResource(R.string.sort),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
+//                IconButton(
+//                    onClick = {
+//                        // TODO
+//                    },
+//                ) {
+//                    Icon(
+//                        imageVector = ImageVector.vectorResource(R.drawable.ic_swap_vert),
+//                        contentDescription = stringResource(R.string.sort),
+//                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+//                    )
+//                }
                 IconButton(
                     onClick = {
                         showFilterDialog.value = true

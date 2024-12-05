@@ -156,22 +156,6 @@ fun MainTopAppBar(currentRoute: String?, showProfileIconMenu: MutableState<Boole
             )
         },
         actions = {
-            if (currentRoute == Routes.Transactions.route
-                || currentRoute == Routes.Recurrents.route
-            ) {
-                IconButton(onClick = { /* TODO: Sort */ }) {
-                    Icon(
-                        ImageVector.vectorResource(R.drawable.ic_swap_vert),
-                        contentDescription = "Sort"
-                    )
-                }
-                IconButton(onClick = { /* TODO: Filter */ }) {
-                    Icon(
-                        ImageVector.vectorResource(R.drawable.ic_filter_list),
-                        contentDescription = "Filter"
-                    )
-                }
-            }
             if (currentRoute == Routes.Transactions.route) {
                 IconButton(
                     onClick = {
@@ -181,6 +165,22 @@ fun MainTopAppBar(currentRoute: String?, showProfileIconMenu: MutableState<Boole
                     Icon(
                         ImageVector.vectorResource(R.drawable.ic_map),
                         contentDescription = "Map View"
+                    )
+                }
+            }
+            if (currentRoute == Routes.Transactions.route
+                || currentRoute == Routes.Recurrents.route
+            ) {
+//                IconButton(onClick = { /* TODO: Sort */ }) {
+//                    Icon(
+//                        ImageVector.vectorResource(R.drawable.ic_swap_vert),
+//                        contentDescription = "Sort"
+//                    )
+//                }
+                IconButton(onClick = { /* TODO: Filter */ }) {
+                    Icon(
+                        ImageVector.vectorResource(R.drawable.ic_filter_list),
+                        contentDescription = "Filter"
                     )
                 }
             }

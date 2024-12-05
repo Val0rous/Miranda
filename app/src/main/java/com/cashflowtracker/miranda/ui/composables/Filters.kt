@@ -42,7 +42,7 @@ fun AccountsFilter(
         onDismissRequest = { isVisible.value = false }
     ) {
         Text(
-            text = "Filter Accounts",
+            text = "Sort & Filter Accounts",
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.titleLarge,
             modifier = Modifier
@@ -90,6 +90,23 @@ fun AccountsFilter(
                 )
             }
         }
+//        Text(
+//            text = "Sort by",
+//            style = MaterialTheme.typography.titleMedium,
+//            modifier = Modifier.padding(start = 16.dp)
+//        )
+//        FlowRow(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(horizontal = 12.dp),
+//            verticalArrangement = Arrangement.spacedBy((-6).dp)
+//        ) {
+//            FilterChip(
+//                onClick = {},
+//                label = { Text("Default") },
+//                selected = false
+//            )
+//        }
         HorizontalDivider(modifier = Modifier.padding(top = 8.dp))
 
         Row(
