@@ -62,27 +62,27 @@ fun AccountsFilter(
                 .padding(horizontal = 12.dp),
             verticalArrangement = Arrangement.spacedBy((-6).dp)
         ) {
-            AccountType.entries.sortedBy { it.type.length }.forEach { item ->
+            AccountType.entries.sortedBy { it.type.length }.forEach {
                 FilterChip(
                     modifier = Modifier.padding(end = 6.dp),
                     onClick = {
-                        selections[item.name]!!.value = !selections[item.name]!!.value
+                        selections[it.name]!!.value = !selections[it.name]!!.value
                     },
-                    label = { Text(item.type) },
-                    selected = selections[item.name]!!.value,
+                    label = { Text(it.type) },
+                    selected = selections[it.name]!!.value,
                     leadingIcon = {
                         Icon(
                             imageVector = ImageVector.vectorResource(
-                                if (selections[item.name]!!.value) {
+                                if (selections[it.name]!!.value) {
                                     R.drawable.ic_check
                                 } else {
-                                    item.icon
+                                    it.icon
                                 }
                             ),
-                            contentDescription = if (selections[item.name]!!.value) {
-                                "Checked ${item.icon}"
+                            contentDescription = if (selections[it.name]!!.value) {
+                                "Checked ${it.icon}"
                             } else {
-                                "${item.icon}"
+                                "${it.icon}"
                             },
                             modifier = Modifier.size(FilterChipDefaults.IconSize)
                         )
