@@ -5,12 +5,19 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -27,6 +34,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
@@ -175,14 +183,15 @@ class ViewAccount : ComponentActivity() {
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(paddingValues)
-                            .padding(vertical = 32.dp, horizontal = 24.dp)
+                            .padding(top = 32.dp)
+                            .padding(horizontal = 16.dp)
                     ) {
                         item {
                             if (isLoaded) {
                                 if (!isDeleting) {
                                     Row(
                                         verticalAlignment = Alignment.CenterVertically,
-                                        modifier = Modifier.padding(bottom = 32.dp)
+                                        modifier = Modifier.padding(start = 8.dp, bottom = 32.dp)
                                     ) {
                                         IconWithBackground(
                                             icon = AccountType.getIcon(account!!.type),
@@ -199,47 +208,98 @@ class ViewAccount : ComponentActivity() {
                                             modifier = Modifier.padding(start = 22.dp)
                                         )
                                     }
-                                    Row(
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        modifier = Modifier.padding(bottom = 32.dp)
+                                    Card(
+                                        colors = CardDefaults.cardColors(
+                                            containerColor = LocalCustomColors.current.cardSurface
+                                        ),
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clip(RoundedCornerShape(24.dp))
                                     ) {
-                                        Text(text = "Current balance")
-                                        Spacer(modifier = Modifier.weight(1f))
-                                        BalanceText(
-                                            balance = account!!.balance,
-                                            isVisible = balanceVisible,
-                                            style = MaterialTheme.typography.titleMedium,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                            textAlign = TextAlign.End
-                                        )
-                                    }
-                                    Row(
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        modifier = Modifier.padding(bottom = 32.dp)
-                                    ) {
-                                        Text(text = "Type")
-                                        Spacer(modifier = Modifier.weight(1f))
-                                        Text(
-                                            text = AccountType.getType(account!!.type),
-                                            style = MaterialTheme.typography.titleMedium,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                            textAlign = TextAlign.End
-                                        )
-                                    }
-                                    Row(
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        modifier = Modifier.padding(bottom = 32.dp)
-                                    ) {
-                                        Text(text = "Created on")
-                                        Spacer(modifier = Modifier.weight(1f))
-                                        Text(
-                                            text = formatDate(account!!.createdOn),
-                                            style = MaterialTheme.typography.titleMedium,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                            textAlign = TextAlign.End
-                                        )
+                                        Column(
+                                            modifier = Modifier.padding(
+                                                horizontal = 16.dp,
+                                                vertical = 16.dp
+                                            ),
+                                            verticalArrangement = Arrangement.spacedBy(20.dp)
+                                        ) {
+                                            Row(
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                modifier = Modifier.padding()
+                                            ) {
+                                                Text(text = "Current balance")
+                                                Spacer(modifier = Modifier.weight(1f))
+                                                BalanceText(
+                                                    balance = account!!.balance,
+                                                    isVisible = balanceVisible,
+                                                    style = MaterialTheme.typography.titleMedium,
+                                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                                    textAlign = TextAlign.End
+                                                )
+                                            }
+                                            Row(
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                modifier = Modifier.padding()
+                                            ) {
+                                                Text(text = "Type")
+                                                Spacer(modifier = Modifier.weight(1f))
+                                                Text(
+                                                    text = AccountType.getType(account!!.type),
+                                                    style = MaterialTheme.typography.titleMedium,
+                                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                                    textAlign = TextAlign.End
+                                                )
+                                            }
+                                            Row(
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                modifier = Modifier.padding()
+                                            ) {
+                                                Text(text = "Created on")
+                                                Spacer(modifier = Modifier.weight(1f))
+                                                Text(
+                                                    text = formatDate(account!!.createdOn),
+                                                    style = MaterialTheme.typography.titleMedium,
+                                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                                    textAlign = TextAlign.End
+                                                )
+                                            }
+                                        }
                                     }
                                 }
+                            }
+                        }
+                        item {
+                            Row(
+                                modifier = Modifier
+                                    .padding(top = 12.dp)
+                                    .fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+
+                                FilterChip(
+                                    modifier = Modifier.weight(1f),
+                                    onClick = { },
+                                    label = {
+                                        Text(
+                                            text = "Stats",
+                                            textAlign = TextAlign.Center,
+                                            modifier = Modifier.weight(1f)
+                                        )
+                                    },
+                                    selected = true
+                                )
+                                FilterChip(
+                                    modifier = Modifier.weight(1f),
+                                    onClick = { },
+                                    label = {
+                                        Text(
+                                            text = "Recent",
+                                            textAlign = TextAlign.Center,
+                                            modifier = Modifier.weight(1f)
+                                        )
+                                    },
+                                    selected = false
+                                )
                             }
                         }
                     }

@@ -132,7 +132,7 @@ class SelectCurrency : ComponentActivity() {
                                 },
                                 modifier = Modifier.clickable {
                                     val resultIntent = Intent().putExtra("currency", it)
-                                    setResult(Activity.RESULT_OK, resultIntent)
+                                    setResult(RESULT_OK, resultIntent)
                                     finish()
                                 }
                             )
