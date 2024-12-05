@@ -94,6 +94,7 @@ import com.cashflowtracker.miranda.utils.formatSource
 import com.cashflowtracker.miranda.utils.rememberPermission
 import java.text.DecimalFormat
 import java.text.NumberFormat
+import java.util.Currency
 import java.util.Locale
 
 @Composable
@@ -528,6 +529,7 @@ fun AmountForm(
     val context = LocalContext.current
     val locale = Locale.getDefault()
     val numberFormat = NumberFormat.getNumberInstance(locale) as DecimalFormat
+    val currencySymbol = Currency.getInstance(currency.value.name).symbol
 
     numberFormat.isGroupingUsed = true // Use thousand separators
     numberFormat.minimumFractionDigits = if (currency.value.showDecimals) 2 else 0
@@ -620,9 +622,9 @@ fun AmountForm(
                         Text(label)
                     } else {
                         if (currency.value.showDecimals) {
-                            Text(numberFormat.format(0.0) + " ${currency.value.symbol}")
+                            Text(numberFormat.format(0.0) + " $currencySymbol")
                         } else {
-                            Text("0 ${currency.value.symbol}")
+                            Text("0 $currencySymbol")
                         }
                     }
                 },

@@ -35,6 +35,7 @@ import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 import com.cashflowtracker.miranda.utils.Currencies
+import java.util.Currency
 
 class SelectCurrency : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -87,6 +88,7 @@ class SelectCurrency : ComponentActivity() {
                             .padding(paddingValues)
                     ) {
                         items(Currencies.entries) {
+                            val currencySymbol = Currency.getInstance(it.name).symbol
                             ListItem(
                                 headlineContent = {
                                     Text(
@@ -103,10 +105,20 @@ class SelectCurrency : ComponentActivity() {
                                         contentAlignment = Alignment.Center
                                     ) {
                                         Text(
-                                            text = it.symbol,
-                                            style = MaterialTheme.typography.labelLarge.copy(
-                                                fontSize = 20.sp
-                                            ),
+                                            text = currencySymbol,
+                                            style = when (currencySymbol.length) {
+                                                1 -> MaterialTheme.typography.labelLarge.copy(
+                                                    fontSize = 18.sp
+                                                )
+
+                                                2 -> MaterialTheme.typography.labelLarge.copy(
+                                                    fontSize = 17.sp
+                                                )
+
+                                                else -> MaterialTheme.typography.labelLarge.copy(
+                                                    fontSize = 16.sp
+                                                )
+                                            },
                                             color = LocalCustomColors.current.icon,
 //                                            textAlign = TextAlign.Center,
                                         )
