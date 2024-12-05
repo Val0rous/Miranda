@@ -61,21 +61,27 @@ class YourData : ComponentActivity() {
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(top = 24.dp, bottom = 24.dp)
+                                .padding(top = 16.dp, bottom = 32.dp)
                         ) {
                             Icon(
                                 imageVector = ImageVector.vectorResource(R.drawable.ic_shield_lock_filled_48px),
                                 contentDescription = "",
                                 tint = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier
-                                    .size(160.dp)
-                                    .padding(bottom = 16.dp)
+                                    .size(144.dp)
                             )
                         }
                         Column(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .padding(PaddingValues(24.dp)),
+                                .padding(
+                                    PaddingValues(
+                                        top = 0.dp,
+                                        start = 24.dp,
+                                        end = 24.dp,
+                                        bottom = 24.dp
+                                    )
+                                ),
                             verticalArrangement = Arrangement.spacedBy(24.dp)
                         ) {
                             Text(
