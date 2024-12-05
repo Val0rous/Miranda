@@ -88,6 +88,7 @@
         <activity android:name=".ui.screens.ViewChartStats" />
         <activity android:name=".ui.screens.ViewRecurrence" />
         <activity android:name=".ui.screens.ViewTransaction" />
+        <activity android:name=".ui.screens.YourData" />
 
 
         <meta-data

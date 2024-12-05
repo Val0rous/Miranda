@@ -21,6 +21,7 @@ fun OverallChart(transactions: List<Transaction>) {
             .padding(vertical = 16.dp),
         transactions = transactions,
         chartLineColor = LocalCustomColors.current.chartLineBlue,
-        chartAreaColor = LocalCustomColors.current.chartAreaBlue
+        chartAreaColor = LocalCustomColors.current.chartAreaBlue,
+        isScrollToEnd = true
     )
 }

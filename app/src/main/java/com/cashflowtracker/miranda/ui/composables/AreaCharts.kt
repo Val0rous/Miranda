@@ -1,5 +1,6 @@
 package com.cashflowtracker.miranda.ui.composables
 
+import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -53,6 +54,7 @@ fun AreaChart(
     initialBalance: Double = 0.0,
     chartLineColor: Color,
     chartAreaColor: Color,
+    isScrollToEnd: Boolean = false
 ) {
     val chartItems = mutableListOf<ChartItem>()
 

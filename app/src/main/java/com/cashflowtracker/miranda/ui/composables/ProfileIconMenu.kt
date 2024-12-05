@@ -40,6 +40,7 @@ import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.ui.screens.About
 import com.cashflowtracker.miranda.ui.screens.Profile
 import com.cashflowtracker.miranda.ui.screens.Settings
+import com.cashflowtracker.miranda.ui.screens.YourData
 import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -217,11 +218,11 @@ fun ProfileIconMenu(
                 modifier = Modifier
                     .height(52.dp)
                     .clickable {
-//                        context
-//                            .startActivity(Intent(context, Settings::class.java))
-//                            .also {
-                        showProfileIconMenu.value = false
-//                            }
+                        context
+                            .startActivity(Intent(context, YourData::class.java))
+                            .also {
+                                showProfileIconMenu.value = false
+                            }
                     }
             )
             ListItem(
