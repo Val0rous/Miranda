@@ -61,7 +61,7 @@ fun Home(accounts: List<Account>, totalBalance: Double) {
 //    val totalBalance by accountsVm.actions.getTotalBalance(userId).collectAsState(initial = 0.0)
     val filterSelections = remember {
         AccountType.entries.associate { item ->
-            item.type to mutableStateOf(false)
+            item.name to mutableStateOf(false)
         }
     }
 

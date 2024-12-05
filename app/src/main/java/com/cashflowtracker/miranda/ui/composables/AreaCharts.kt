@@ -95,10 +95,12 @@ fun AreaChart(
                 lineThicknessDp = 3f,
                 lineBackgroundShader = DynamicShaders.fromBrush(
                     brush = Brush.verticalGradient(
-                        listOf(
+                        colors = listOf(
                             chartAreaColor.copy(DefaultAlpha.LINE_BACKGROUND_SHADER_START),
                             chartAreaColor.copy(DefaultAlpha.LINE_BACKGROUND_SHADER_END)
-                        )
+                        ),
+                        startY = 0f,
+                        endY = Float.POSITIVE_INFINITY
                     )
                 ),
                 point = pointShape,

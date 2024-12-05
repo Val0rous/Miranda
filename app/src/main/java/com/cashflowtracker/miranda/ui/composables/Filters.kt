@@ -66,20 +66,20 @@ fun AccountsFilter(
                 FilterChip(
                     modifier = Modifier.padding(end = 6.dp),
                     onClick = {
-                        selections[item.type]!!.value = !selections[item.type]!!.value
+                        selections[item.name]!!.value = !selections[item.name]!!.value
                     },
                     label = { Text(item.type) },
-                    selected = selections[item.type]!!.value,
+                    selected = selections[item.name]!!.value,
                     leadingIcon = {
                         Icon(
                             imageVector = ImageVector.vectorResource(
-                                if (selections[item.type]!!.value) {
+                                if (selections[item.name]!!.value) {
                                     R.drawable.ic_check
                                 } else {
                                     item.icon
                                 }
                             ),
-                            contentDescription = if (selections[item.type]!!.value) {
+                            contentDescription = if (selections[item.name]!!.value) {
                                 "Checked ${item.icon}"
                             } else {
                                 "${item.icon}"
