@@ -51,6 +51,7 @@ import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.data.database.Account
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserId
 import com.cashflowtracker.miranda.ui.composables.AlertDialogIconTitle
+import com.cashflowtracker.miranda.ui.composables.AreaChart
 import com.cashflowtracker.miranda.ui.composables.BalanceText
 import com.cashflowtracker.miranda.ui.composables.IconWithBackground
 import com.cashflowtracker.miranda.ui.composables.RecurrenceListItem
@@ -379,7 +380,23 @@ class ViewAccount : ComponentActivity() {
                             }
                         }
                         when (index) {
-                            0 -> {}
+                            0 -> {
+                                if (transactions.isNotEmpty()) {
+                                    item {
+                                        AreaChart(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(horizontal = 16.dp)
+                                                .padding(bottom = 16.dp),
+                                            transactions = transactions,
+                                            currency = Currencies.get(Currencies.EUR.name),
+                                            chartLineColor = LocalCustomColors.current.chartLineBlue,
+                                            chartAreaColor = LocalCustomColors.current.chartAreaBlue
+                                        )
+                                    }
+                                }
+                            }
+
                             1 -> {
                                 items(transactions) {
                                     TransactionListItem(

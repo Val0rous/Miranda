@@ -52,6 +52,7 @@ fun AreaChart(
     modifier: Modifier,
     transactions: List<Transaction>,
     initialBalance: Double = 0.0,
+    currency: Currencies = Currencies.EUR,
     chartLineColor: Color,
     chartAreaColor: Color,
     isScrollToEnd: Boolean = false
@@ -141,7 +142,7 @@ fun AreaChart(
                     tickLength = 2.dp,
                     valueFormatter = { value, _ ->
                         //value.toInt().toString()
-                        formatAmountAsInt(value, Currencies.EUR)
+                        formatAmountAsInt(value, currency)
                     },
                     itemPlacer = AxisItemPlacer.Vertical.default(
                         maxItemCount = 6
