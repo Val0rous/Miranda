@@ -118,7 +118,8 @@ class SelectSource : ComponentActivity() {
                                                 )
                                         setResult(RESULT_OK, resultIntent)
                                         finish()
-                                    })
+                                    }
+                                )
                             }
                         }
                         if (transactionType == TransactionType.INPUT.name) {

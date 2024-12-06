@@ -386,12 +386,13 @@ class ViewAccount : ComponentActivity() {
                                         AreaChart(
                                             modifier = Modifier
                                                 .fillMaxWidth()
-                                                .padding(horizontal = 16.dp)
+                                                .padding(start = 0.dp)
                                                 .padding(bottom = 16.dp),
                                             transactions = transactions,
                                             currency = Currencies.get(Currencies.EUR.name),
                                             chartLineColor = LocalCustomColors.current.chartLineBlue,
-                                            chartAreaColor = LocalCustomColors.current.chartAreaBlue
+                                            chartAreaColor = LocalCustomColors.current.chartAreaBlue,
+                                            pointSize = 0f
                                         )
                                     }
                                 }

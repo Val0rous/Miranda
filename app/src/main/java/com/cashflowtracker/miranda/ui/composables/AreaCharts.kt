@@ -55,6 +55,8 @@ fun AreaChart(
     currency: Currencies = Currencies.EUR,
     chartLineColor: Color,
     chartAreaColor: Color,
+    lineThickness: Float = 3f,
+    pointSize: Float = 0f, //12f,
     isScrollToEnd: Boolean = false
 ) {
     val chartItems = mutableListOf<ChartItem>()
@@ -93,7 +95,7 @@ fun AreaChart(
         datasetLineSpec.add(
             LineChart.LineSpec(
                 lineColor = chartLineColor.toArgb(),
-                lineThicknessDp = 3f,
+                lineThicknessDp = lineThickness,
                 lineBackgroundShader = DynamicShaders.fromBrush(
                     brush = Brush.verticalGradient(
                         colors = listOf(
@@ -105,7 +107,7 @@ fun AreaChart(
                     )
                 ),
                 point = pointShape,
-                pointSizeDp = 12f,
+                pointSizeDp = pointSize,
             )
         )
         dataPoints.add(
