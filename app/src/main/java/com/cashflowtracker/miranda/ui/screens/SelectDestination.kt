@@ -30,10 +30,12 @@ import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserId
 import com.cashflowtracker.miranda.ui.composables.AccountListItem
 import com.cashflowtracker.miranda.ui.composables.CategoryListItem
+import com.cashflowtracker.miranda.ui.composables.SpecialListItem
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 import com.cashflowtracker.miranda.ui.viewmodels.AccountsViewModel
 import com.cashflowtracker.miranda.utils.AccountType
 import com.cashflowtracker.miranda.utils.DefaultCategories
+import com.cashflowtracker.miranda.utils.SpecialType
 import com.cashflowtracker.miranda.utils.TransactionType
 import org.koin.androidx.compose.koinViewModel
 
@@ -118,6 +120,22 @@ class SelectDestination : ComponentActivity() {
                                         setResult(RESULT_OK, resultIntent)
                                         finish()
                                     })
+                            }
+                        }
+                        if (transactionType == TransactionType.OUTPUT.name) {
+                            items(SpecialType.entries) {
+                                if (it.isDestination) {
+                                    SpecialListItem(
+                                        item = it,
+                                        modifier = Modifier.clickable {
+                                            val resultIntent =
+                                                Intent().putExtra("destinationTitle", it.name)
+                                                    .putExtra("destinationIcon", it.icon.toString())
+                                            setResult(RESULT_OK, resultIntent)
+                                            finish()
+                                        }
+                                    )
+                                }
                             }
                         }
                         if (transactionType == TransactionType.OUTPUT.name) {

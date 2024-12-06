@@ -196,7 +196,11 @@ fun formatSource(source: String, transactionType: String): String {
     return when (transactionType) {
         TransactionType.OUTPUT.name -> AccountType.getType(source).ifEmpty { source }
         TransactionType.INPUT.name -> when (source) {
-            SpecialType.POCKET.name, SpecialType.EXTRA.name -> SpecialType.getType(source)
+            SpecialType.POCKET.name,
+            SpecialType.EXTRA.name,
+            SpecialType.DEBTS.name,
+            SpecialType.CREDITS.name -> SpecialType.getType(source)
+
             else -> DefaultCategories.getCategory(source)
         }
 

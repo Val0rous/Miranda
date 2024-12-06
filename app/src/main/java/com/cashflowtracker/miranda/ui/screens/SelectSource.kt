@@ -124,16 +124,18 @@ class SelectSource : ComponentActivity() {
                         if (transactionType == TransactionType.INPUT.name) {
                             // Special accounts list
                             items(SpecialType.entries) {
-                                SpecialListItem(
-                                    item = it,
-                                    modifier = Modifier.clickable {
-                                        val resultIntent =
-                                            Intent().putExtra("sourceTitle", it.name)
-                                                .putExtra("sourceIcon", it.icon.toString())
-                                        setResult(RESULT_OK, resultIntent)
-                                        finish()
-                                    }
-                                )
+                                if (it.isSource) {
+                                    SpecialListItem(
+                                        item = it,
+                                        modifier = Modifier.clickable {
+                                            val resultIntent =
+                                                Intent().putExtra("sourceTitle", it.name)
+                                                    .putExtra("sourceIcon", it.icon.toString())
+                                            setResult(RESULT_OK, resultIntent)
+                                            finish()
+                                        }
+                                    )
+                                }
                             }
                         }
                         if (transactionType == TransactionType.INPUT.name) {

@@ -2,11 +2,16 @@ package com.cashflowtracker.miranda.utils
 
 import com.cashflowtracker.miranda.R
 
-enum class SpecialType(val category: String, val icon: Int) {
-    POCKET("Pocket", R.drawable.ic_guardian),
-    EXTRA("Extra", R.drawable.ic_cake),
-    DEBTS("Debts", R.drawable.ic_credit_card_clock),
-    CREDITS("Credits", R.drawable.ic_money_bag);
+enum class SpecialType(
+    val category: String,
+    val icon: Int,
+    val isSource: Boolean,
+    val isDestination: Boolean
+) {
+    POCKET("Pocket", R.drawable.ic_guardian, true, false),
+    EXTRA("Extra", R.drawable.ic_cake, true, false),
+    DEBTS("Debts", R.drawable.ic_credit_card_clock, true, true),
+    CREDITS("Credits", R.drawable.ic_money_bag, true, true);
 
     companion object {
         fun getType(category: String): String {
