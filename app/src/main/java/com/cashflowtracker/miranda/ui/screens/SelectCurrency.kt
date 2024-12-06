@@ -112,11 +112,13 @@ class SelectCurrency : ComponentActivity() {
                                                 )
 
                                                 2 -> MaterialTheme.typography.labelLarge.copy(
-                                                    fontSize = 17.sp
+                                                    fontSize = 17.sp,
+                                                    letterSpacing = (-0.2).sp
                                                 )
 
                                                 else -> MaterialTheme.typography.labelLarge.copy(
-                                                    fontSize = 16.sp
+                                                    fontSize = 16.sp,
+                                                    letterSpacing = (-0.4).sp
                                                 )
                                             },
                                             color = LocalCustomColors.current.icon,
