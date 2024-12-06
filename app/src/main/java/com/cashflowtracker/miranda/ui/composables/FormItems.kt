@@ -55,6 +55,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
@@ -74,11 +75,13 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.R
+import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserId
 import com.cashflowtracker.miranda.ui.screens.SelectAccountType
 import com.cashflowtracker.miranda.ui.screens.SelectCurrency
 import com.cashflowtracker.miranda.ui.screens.SelectDestination
 import com.cashflowtracker.miranda.ui.screens.SelectSource
 import com.cashflowtracker.miranda.ui.screens.SelectTimeZone
+import com.cashflowtracker.miranda.ui.viewmodels.AccountsViewModel
 import com.cashflowtracker.miranda.utils.AccountType
 import com.cashflowtracker.miranda.utils.Coordinates
 import com.cashflowtracker.miranda.utils.Currencies
@@ -88,14 +91,19 @@ import com.cashflowtracker.miranda.utils.PermissionStatus
 import com.cashflowtracker.miranda.utils.Repeats
 import com.cashflowtracker.miranda.utils.StartMonitoringResult
 import com.cashflowtracker.miranda.utils.TimeZoneEntry
+import com.cashflowtracker.miranda.utils.TransactionType
 import com.cashflowtracker.miranda.utils.formatAmount
 import com.cashflowtracker.miranda.utils.formatDestination
 import com.cashflowtracker.miranda.utils.formatSource
 import com.cashflowtracker.miranda.utils.rememberPermission
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.Currency
 import java.util.Locale
+import java.util.UUID
 
 @Composable
 fun DateTimeForm(
@@ -289,6 +297,22 @@ fun SourceForm(
     sourceLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>
 ) {
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+    val accountsVm = koinViewModel<AccountsViewModel>()
+    var sourceText by remember { mutableStateOf(source) }
+    LaunchedEffect(source) {
+        if ((transactionType == TransactionType.OUTPUT.name
+                    || transactionType == TransactionType.TRANSFER.name)
+            && source.isNotEmpty()
+        ) {
+            coroutineScope.launch(Dispatchers.IO) {
+                sourceText =
+                    accountsVm.actions.getByAccountId(UUID.fromString(source)).title
+            }
+        } else {
+            sourceText = source
+        }
+    }
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -316,12 +340,12 @@ fun SourceForm(
         Spacer(modifier = Modifier.width(16.dp))
 
         Text(
-            text = if (source.isNotEmpty()) {
-                formatSource(source, transactionType)
+            text = if (sourceText.isNotEmpty()) {
+                formatSource(sourceText, transactionType)
             } else {
                 label
             },
-            color = if (source.isNotEmpty()) {
+            color = if (sourceText.isNotEmpty()) {
                 MaterialTheme.colorScheme.onSurface
             } else {
                 MaterialTheme.colorScheme.onSurfaceVariant
@@ -338,7 +362,7 @@ fun SourceForm(
                 imageVector = ImageVector.vectorResource(
                     iconId
                 ),
-                contentDescription = source,
+                contentDescription = sourceText,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(end = 8.dp)
             )
@@ -424,6 +448,22 @@ fun DestinationForm(
     destinationLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>
 ) {
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+    val accountsVm = koinViewModel<AccountsViewModel>()
+    var destinationText by remember { mutableStateOf(destination) }
+    LaunchedEffect(destination) {
+        if ((transactionType == TransactionType.INPUT.name
+                    || transactionType == TransactionType.TRANSFER.name)
+            && destination.isNotEmpty()
+        ) {
+            coroutineScope.launch(Dispatchers.IO) {
+                destinationText =
+                    accountsVm.actions.getByAccountId(UUID.fromString(destination)).title
+            }
+        } else {
+            destinationText = destination
+        }
+    }
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -450,12 +490,12 @@ fun DestinationForm(
         Spacer(modifier = Modifier.width(16.dp))
 
         Text(
-            text = if (destination.isNotEmpty()) {
-                formatDestination(destination, transactionType)
+            text = if (destinationText.isNotEmpty()) {
+                formatDestination(destinationText, transactionType)
             } else {
                 label
             },
-            color = if (destination.isNotEmpty()) {
+            color = if (destinationText.isNotEmpty()) {
                 MaterialTheme.colorScheme.onSurface
             } else {
                 MaterialTheme.colorScheme.onSurfaceVariant

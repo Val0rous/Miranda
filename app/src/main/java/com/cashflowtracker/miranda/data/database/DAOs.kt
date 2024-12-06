@@ -124,14 +124,14 @@ interface AccountsDao {
     @Query("SELECT * FROM account WHERE userId = :userId ORDER BY isFavorite DESC, balance DESC, title ASC")
     fun getAllByUserId(userId: UUID): Flow<List<Account>>
 
-    @Query("SELECT * FROM account WHERE accountId = :accountId AND userId = :userId")
-    fun getByAccountId(accountId: UUID, userId: UUID): Account
+    @Query("SELECT * FROM account WHERE accountId = :accountId")
+    fun getByAccountId(accountId: UUID): Account
 
-    @Query("SELECT * FROM account WHERE accountId = :accountId AND userId = :userId")
-    fun getByAccountIdFlow(accountId: UUID, userId: UUID): Flow<Account>
+    @Query("SELECT * FROM account WHERE accountId = :accountId")
+    fun getByAccountIdFlow(accountId: UUID): Flow<Account>
 
-    @Query("SELECT * FROM account WHERE accountId = :accountId AND userId = :userId")
-    fun getByAccountIdOrNull(accountId: UUID, userId: UUID): Account?
+    @Query("SELECT * FROM account WHERE accountId = :accountId")
+    fun getByAccountIdOrNull(accountId: UUID): Account?
 
     @Query("SELECT * FROM account WHERE LOWER(title) = LOWER(:title) AND userId = :userId")
     fun getByTitleOrNull(title: String, userId: UUID): Account?
@@ -144,6 +144,9 @@ interface AccountsDao {
 
     @Query("SELECT type FROM account WHERE LOWER(title) = LOWER(:title) AND userId = :userId")
     fun getTypeByTitle(title: String, userId: UUID): Flow<String>
+
+    @Query("SELECT type FROM account WHERE accountId = :accountId")
+    fun getTypeByAccountId(accountId: UUID): Flow<String>
 }
 
 @Dao

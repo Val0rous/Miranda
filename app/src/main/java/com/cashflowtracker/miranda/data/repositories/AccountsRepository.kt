@@ -11,14 +11,14 @@ class AccountsRepository(private val accountsDao: AccountsDao) {
     suspend fun deleteByAccountId(accountId: UUID) =
         accountsDao.deleteByAccountId(accountId)
 
-    fun getByAccountId(accountId: UUID, userId: UUID) =
-        accountsDao.getByAccountId(accountId, userId)
+    fun getByAccountId(accountId: UUID) =
+        accountsDao.getByAccountId(accountId)
 
-    fun getByAccountIdOrNull(accountId: UUID, userId: UUID) =
-        accountsDao.getByAccountIdOrNull(accountId, userId)
+    fun getByAccountIdOrNull(accountId: UUID) =
+        accountsDao.getByAccountIdOrNull(accountId)
 
-    fun getByAccountIdFlow(accountId: UUID, userId: UUID) =
-        accountsDao.getByAccountIdFlow(accountId, userId)
+    fun getByAccountIdFlow(accountId: UUID) =
+        accountsDao.getByAccountIdFlow(accountId)
 
     fun getAllByUserId(userId: UUID) = accountsDao.getAllByUserId(userId)
     fun getByTitleOrNull(title: String, userId: UUID) = accountsDao.getByTitleOrNull(title, userId)
@@ -30,6 +30,7 @@ class AccountsRepository(private val accountsDao: AccountsDao) {
         accountsDao.updateBalance(accountId, amount)
 
     fun getTypeByTitle(title: String, userId: UUID) = accountsDao.getTypeByTitle(title, userId)
+    fun getTypeByAccountId(accountId: UUID) = accountsDao.getTypeByAccountId(accountId)
 //    val accounts: Flow<List<Account>>? = accountsDao.getAllByUserId(userId)
 }
 

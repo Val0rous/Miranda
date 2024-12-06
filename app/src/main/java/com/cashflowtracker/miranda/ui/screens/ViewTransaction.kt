@@ -88,9 +88,8 @@ class ViewTransaction : ComponentActivity() {
                                                     if (it.type == TransactionType.OUTPUT.name
                                                         || it.type == TransactionType.TRANSFER.name
                                                     ) {
-                                                        accountsVm.actions.getTypeByTitle(
-                                                            it.source,
-                                                            userId
+                                                        accountsVm.actions.getTypeByAccountId(
+                                                            UUID.fromString(it.source)
                                                         ).collect { item ->
                                                             sourceType = item
                                                         }
@@ -103,9 +102,8 @@ class ViewTransaction : ComponentActivity() {
                                                     if (it.type == TransactionType.INPUT.name
                                                         || it.type == TransactionType.TRANSFER.name
                                                     ) {
-                                                        accountsVm.actions.getTypeByTitle(
-                                                            it.destination,
-                                                            userId
+                                                        accountsVm.actions.getTypeByAccountId(
+                                                            UUID.fromString(it.destination)
                                                         ).collect { item ->
                                                             destinationType = item
                                                         }

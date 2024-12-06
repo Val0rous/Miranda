@@ -84,7 +84,7 @@ class EditAccount : ComponentActivity() {
             var account by remember { mutableStateOf<Account?>(null) }
             LaunchedEffect(Unit) {
                 coroutineScope.launch(Dispatchers.IO) {
-                    account = vm.actions.getByAccountId(accountId.value, userId).also {
+                    account = vm.actions.getByAccountId(accountId.value).also {
                         accountTitle.value = it.title
                         accountType = it.type
                         accountIcon = AccountType.getIcon(it.type)

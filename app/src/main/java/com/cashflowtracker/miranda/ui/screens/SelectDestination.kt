@@ -107,7 +107,10 @@ class SelectDestination : ComponentActivity() {
                                     account = account,
                                     modifier = Modifier.clickable {
                                         val resultIntent =
-                                            Intent().putExtra("destinationTitle", account.title)
+                                            Intent().putExtra(
+                                                "destinationTitle",
+                                                account.accountId.toString()
+                                            )
                                                 .putExtra(
                                                     "destinationIcon",
                                                     AccountType.getIcon(account.type).toString()

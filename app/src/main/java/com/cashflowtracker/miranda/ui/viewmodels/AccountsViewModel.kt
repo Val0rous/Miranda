@@ -18,14 +18,15 @@ interface AccountsActions {
     fun removeAccount(account: Account): Job
     fun removeAccount(accountId: UUID): Job
     fun getAllByUserId(userId: UUID): Flow<List<Account>>
-    fun getByAccountId(accountId: UUID, userId: UUID): Account
-    fun getByAccountIdFlow(accountId: UUID, userId: UUID): Flow<Account>
-    fun getByAccountIdOrNull(accountId: UUID, userId: UUID): Account?
+    fun getByAccountId(accountId: UUID): Account
+    fun getByAccountIdFlow(accountId: UUID): Flow<Account>
+    fun getByAccountIdOrNull(accountId: UUID): Account?
     fun getByTitleOrNull(title: String, userId: UUID): Account?
     fun toggleIsFavorite(accountId: UUID, userId: UUID, isFavorite: Boolean): Job
     fun getTotalBalance(userId: UUID): Flow<Double>
     fun updateBalance(accountId: UUID, amount: Double): Job
     fun getTypeByTitle(title: String, userId: UUID): Flow<String>
+    fun getTypeByAccountId(accountId: UUID): Flow<String>
 }
 
 class AccountsViewModel(private val repository: AccountsRepository) : ViewModel() {
@@ -51,17 +52,17 @@ class AccountsViewModel(private val repository: AccountsRepository) : ViewModel(
             repository.deleteByAccountId(accountId)
         }
 
-        override fun getByAccountId(accountId: UUID, userId: UUID) = viewModelScope.run {
-            repository.getByAccountId(accountId, userId)
+        override fun getByAccountId(accountId: UUID) = viewModelScope.run {
+            repository.getByAccountId(accountId)
         }
 
-        override fun getByAccountIdFlow(accountId: UUID, userId: UUID): Flow<Account> =
+        override fun getByAccountIdFlow(accountId: UUID): Flow<Account> =
             viewModelScope.run {
-                repository.getByAccountIdFlow(accountId, userId)
+                repository.getByAccountIdFlow(accountId)
             }
 
-        override fun getByAccountIdOrNull(accountId: UUID, userId: UUID) = viewModelScope.run {
-            repository.getByAccountIdOrNull(accountId, userId)
+        override fun getByAccountIdOrNull(accountId: UUID) = viewModelScope.run {
+            repository.getByAccountIdOrNull(accountId)
         }
 
         override fun getByTitleOrNull(title: String, userId: UUID) = viewModelScope.run {
@@ -89,5 +90,11 @@ class AccountsViewModel(private val repository: AccountsRepository) : ViewModel(
             viewModelScope.run {
                 repository.getTypeByTitle(title, userId)
             }
+
+        override fun getTypeByAccountId(accountId: UUID): Flow<String> = viewModelScope.run {
+            viewModelScope.run {
+                repository.getTypeByAccountId(accountId)
+            }
+        }
     }
 }

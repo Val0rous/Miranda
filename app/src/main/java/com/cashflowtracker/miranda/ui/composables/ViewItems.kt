@@ -24,7 +24,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,6 +47,7 @@ import com.cashflowtracker.miranda.ui.theme.Green400
 import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
 import com.cashflowtracker.miranda.ui.theme.Red400
 import com.cashflowtracker.miranda.ui.theme.Yellow400
+import com.cashflowtracker.miranda.ui.viewmodels.AccountsViewModel
 import com.cashflowtracker.miranda.utils.AccountType
 import com.cashflowtracker.miranda.utils.CategoryClass
 import com.cashflowtracker.miranda.utils.Coordinates
@@ -58,6 +65,10 @@ import com.cashflowtracker.miranda.utils.formatRenewal
 import com.cashflowtracker.miranda.utils.formatSource
 import com.cashflowtracker.miranda.utils.formatZonedDateTime
 import com.cashflowtracker.miranda.utils.textColorFactory
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
+import java.util.UUID
 
 @Composable
 fun TransactionBubblesToFrom(
@@ -65,6 +76,37 @@ fun TransactionBubblesToFrom(
     sourceType: String,
     destinationType: String
 ) {
+    val coroutineScope = rememberCoroutineScope()
+    val accountsVm = koinViewModel<AccountsViewModel>()
+    var sourceText by remember { mutableStateOf(transaction.source) }
+    LaunchedEffect(transaction.source) {
+        if ((transaction.type == TransactionType.OUTPUT.name
+                    || transaction.type == TransactionType.TRANSFER.name)
+            && transaction.source.isNotEmpty()
+        ) {
+            coroutineScope.launch(Dispatchers.IO) {
+                sourceText =
+                    accountsVm.actions.getByAccountId(UUID.fromString(transaction.source)).title
+            }
+        } else {
+            sourceText = transaction.source
+        }
+    }
+    var destinationText by remember { mutableStateOf(transaction.destination) }
+    LaunchedEffect(transaction.destination) {
+        if ((transaction.type == TransactionType.INPUT.name
+                    || transaction.type == TransactionType.TRANSFER.name)
+            && transaction.destination.isNotEmpty()
+        ) {
+            coroutineScope.launch(Dispatchers.IO) {
+                destinationText =
+                    accountsVm.actions.getByAccountId(UUID.fromString(transaction.destination)).title
+            }
+        } else {
+            destinationText = transaction.destination
+        }
+    }
+
     Row(
         verticalAlignment = Alignment.Top,
         modifier = Modifier.padding(bottom = 24.dp)
@@ -109,7 +151,7 @@ fun TransactionBubblesToFrom(
                 )
             }
             Text(
-                text = formatSource(transaction.source, transaction.type),
+                text = formatSource(sourceText, transaction.type),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.padding(top = 8.dp)
@@ -163,7 +205,7 @@ fun TransactionBubblesToFrom(
                 )
             }
             Text(
-                text = formatDestination(transaction.destination, transaction.type),
+                text = formatDestination(destinationText, transaction.type),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.padding(top = 8.dp)

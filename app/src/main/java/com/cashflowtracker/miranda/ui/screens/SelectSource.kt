@@ -108,7 +108,10 @@ class SelectSource : ComponentActivity() {
                                     account = account,
                                     modifier = Modifier.clickable {
                                         val resultIntent =
-                                            Intent().putExtra("sourceTitle", account.title)
+                                            Intent().putExtra(
+                                                "sourceTitle",
+                                                account.accountId.toString()
+                                            )
                                                 .putExtra(
                                                     "sourceIcon",
                                                     AccountType.getIcon(account.type).toString()
@@ -129,7 +132,8 @@ class SelectSource : ComponentActivity() {
                                                 .putExtra("sourceIcon", it.icon.toString())
                                         setResult(RESULT_OK, resultIntent)
                                         finish()
-                                    })
+                                    }
+                                )
                             }
                         }
                         if (transactionType == TransactionType.INPUT.name) {
