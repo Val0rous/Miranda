@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
 import com.cashflowtracker.miranda.utils.Routes
 
@@ -77,6 +78,9 @@ fun ChartTabs(navController: NavHostController, startDestination: String) {
         }
     }
 
+    val currentBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = currentBackStackEntry?.destination
+
     TabRow(
         modifier = Modifier.fillMaxWidth(),
         selectedTabIndex = selectedTabIndex,
@@ -99,10 +103,12 @@ fun ChartTabs(navController: NavHostController, startDestination: String) {
         }
     ) {
         ChartTabsItems.items.forEachIndexed { index, item ->
+            if (currentDestination?.route == item.route) {
+                selectedTabIndex = index
+            }
             Tab(
                 selected = index == selectedTabIndex,
                 onClick = {
-                    selectedTabIndex = index
                     navController.navigate(item.route) {
                         popUpTo(navController.graph.findStartDestination().id) {
                             saveState = true
@@ -110,6 +116,7 @@ fun ChartTabs(navController: NavHostController, startDestination: String) {
                         launchSingleTop = true
                         restoreState = true
                     }
+                    selectedTabIndex = index
                 },
                 text = {
                     Text(
