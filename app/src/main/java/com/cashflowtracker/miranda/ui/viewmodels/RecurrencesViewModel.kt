@@ -19,6 +19,7 @@ interface RecurrencesActions {
     fun getAllByUserIdFlow(userId: UUID): Flow<List<Recurrence>>
     fun getByRecurrenceId(recurrenceId: UUID): Recurrence
     fun getByRecurrenceIdFlow(recurrenceId: UUID): Flow<Recurrence>
+    fun getAllByAccountIdFlow(accountId: String): Flow<List<Recurrence>>
     fun getRecurrencesWithNotifications(recurrenceId: UUID): Flow<List<RecurrenceWithNotification>>
 }
 
@@ -52,6 +53,11 @@ class RecurrencesViewModel(
         override fun getByRecurrenceIdFlow(recurrenceId: UUID): Flow<Recurrence> =
             viewModelScope.run {
                 repository.getByRecurrenceIdFlow(recurrenceId)
+            }
+
+        override fun getAllByAccountIdFlow(accountId: String): Flow<List<Recurrence>> =
+            viewModelScope.run {
+                repository.getAllByAccountIdFlow(accountId)
             }
 
         override fun getRecurrencesWithNotifications(recurrenceId: UUID): Flow<List<RecurrenceWithNotification>> =

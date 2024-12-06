@@ -6,13 +6,14 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -27,11 +28,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SelectableChipColors
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -51,12 +53,20 @@ import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentU
 import com.cashflowtracker.miranda.ui.composables.AlertDialogIconTitle
 import com.cashflowtracker.miranda.ui.composables.BalanceText
 import com.cashflowtracker.miranda.ui.composables.IconWithBackground
+import com.cashflowtracker.miranda.ui.composables.RecurrenceListItem
+import com.cashflowtracker.miranda.ui.composables.TransactionListItem
 import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 import com.cashflowtracker.miranda.ui.viewmodels.AccountsViewModel
+import com.cashflowtracker.miranda.ui.viewmodels.RecurrencesViewModel
+import com.cashflowtracker.miranda.ui.viewmodels.TransactionsViewModel
 import com.cashflowtracker.miranda.utils.AccountType
+import com.cashflowtracker.miranda.utils.Currencies
+import com.cashflowtracker.miranda.utils.Repeats
 import com.cashflowtracker.miranda.utils.formatDate
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flatMap
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.androidx.compose.koinViewModel
@@ -70,7 +80,8 @@ class ViewAccount : ComponentActivity() {
         val initialAccountId = UUID.fromString(intent.getStringExtra("accountId") ?: "")
 //        println("initialAccountTitle: $initialAccountId")
         setContent {
-            val userId = LocalContext.current.getCurrentUserId()
+            val context = LocalContext.current
+            val userId = context.getCurrentUserId()
             val accountId by remember { mutableStateOf(initialAccountId) }
             val balanceVisible by remember {
                 mutableStateOf(
@@ -81,7 +92,9 @@ class ViewAccount : ComponentActivity() {
                 )
             }
             val coroutineScope = rememberCoroutineScope()
-            val vm = koinViewModel<AccountsViewModel>()
+            val accountsVm = koinViewModel<AccountsViewModel>()
+            val transactionsVm = koinViewModel<TransactionsViewModel>()
+            val recurrencesVm = koinViewModel<RecurrencesViewModel>()
             var isLoaded by remember { mutableStateOf(false) }
             var account by remember { mutableStateOf<Account?>(null) }
             var isFavorite by remember { mutableStateOf(false) }
@@ -91,7 +104,7 @@ class ViewAccount : ComponentActivity() {
             LaunchedEffect(key1 = accountId, key2 = isDeleting) {
                 if (!isDeleting) {
                     coroutineScope.launch(Dispatchers.IO) {
-                        vm.actions.getByAccountIdFlow(accountId)
+                        accountsVm.actions.getByAccountIdFlow(accountId)
                             .collect {
                                 withContext(Dispatchers.Main) {
                                     account = it.also {
@@ -148,7 +161,11 @@ class ViewAccount : ComponentActivity() {
                                 },
                                 onClick = {
                                     isFavorite = !isFavorite
-                                    vm.actions.toggleIsFavorite(accountId, userId, isFavorite)
+                                    accountsVm.actions.toggleIsFavorite(
+                                        accountId,
+                                        userId,
+                                        isFavorite
+                                    )
                                 }
                             )
                             NavigationBarItem(
@@ -184,19 +201,27 @@ class ViewAccount : ComponentActivity() {
                         }
                     }
                 ) { paddingValues ->
+                    var index by remember { mutableIntStateOf(0) }
+                    val transactions =
+                        transactionsVm.actions.getAllByAccountIdFlow(accountId.toString())
+                            .collectAsState(emptyList()).value
+                    val recurrences =
+                        recurrencesVm.actions.getAllByAccountIdFlow(accountId.toString())
+                            .collectAsState(emptyList()).value
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(paddingValues)
-                            .padding(top = 32.dp)
-                            .padding(horizontal = 16.dp)
                     ) {
                         item {
                             if (isLoaded) {
                                 if (!isDeleting) {
                                     Row(
                                         verticalAlignment = Alignment.CenterVertically,
-                                        modifier = Modifier.padding(start = 8.dp, bottom = 32.dp)
+                                        modifier = Modifier
+                                            .padding(start = 8.dp, bottom = 32.dp)
+                                            .padding(top = 32.dp)
+                                            .padding(horizontal = 16.dp)
                                     ) {
                                         IconWithBackground(
                                             icon = AccountType.getIcon(account!!.type),
@@ -219,6 +244,7 @@ class ViewAccount : ComponentActivity() {
                                         ),
                                         modifier = Modifier
                                             .fillMaxWidth()
+                                            .padding(horizontal = 16.dp)
                                             .clip(RoundedCornerShape(24.dp))
                                     ) {
                                         Column(
@@ -277,42 +303,132 @@ class ViewAccount : ComponentActivity() {
                             Row(
                                 modifier = Modifier
                                     .padding(top = 12.dp)
+                                    .padding(horizontal = 16.dp)
                                     .fillMaxWidth(),
                                 horizontalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
+                                if (transactions.isNotEmpty()) {
+                                    FilterChip(
+                                        modifier = Modifier.weight(1f),
+                                        onClick = { index = 0 },
+                                        label = {
+                                            Text(
+                                                text = "Stats",
+                                                textAlign = TextAlign.Center,
+                                                modifier = Modifier.weight(1f)
+                                            )
+                                        },
+                                        selected = index == 0,
+                                        border = BorderStroke(
+                                            (0.1).dp,
+                                            MaterialTheme.colorScheme.surfaceVariant
+                                        ),
+                                        colors = InputChipDefaults.inputChipColors(
+                                            containerColor = LocalCustomColors.current.cardSurface,
+                                            selectedContainerColor = MaterialTheme.colorScheme.secondaryContainer
+                                                .copy(alpha = 0.8f)
+                                        )
+                                    )
+                                }
+                                if (transactions.isNotEmpty()) {
+                                    FilterChip(
+                                        modifier = Modifier.weight(1f),
+                                        onClick = { index = 1 },
+                                        label = {
+                                            Text(
+                                                text = "Recents",
+                                                textAlign = TextAlign.Center,
+                                                modifier = Modifier.weight(1f)
+                                            )
+                                        },
+                                        selected = index == 1,
+                                        border = BorderStroke(
+                                            (0.1).dp,
+                                            MaterialTheme.colorScheme.surfaceVariant
+                                        ),
+                                        colors = InputChipDefaults.inputChipColors(
+                                            containerColor = LocalCustomColors.current.cardSurface,
+                                            selectedContainerColor = MaterialTheme.colorScheme.secondaryContainer
+                                                .copy(alpha = 0.8f)
+                                        )
+                                    )
+                                }
+                                if (recurrences.isNotEmpty()) {
+                                    FilterChip(
+                                        modifier = Modifier.weight(1f),
+                                        onClick = { index = 2 },
+                                        label = {
+                                            Text(
+                                                text = "Recurrents",
+                                                textAlign = TextAlign.Center,
+                                                modifier = Modifier.weight(1f)
+                                            )
+                                        },
+                                        selected = index == 2,
+                                        border = BorderStroke(
+                                            (0.1).dp,
+                                            MaterialTheme.colorScheme.surfaceVariant
+                                        ),
+                                        colors = InputChipDefaults.inputChipColors(
+                                            containerColor = LocalCustomColors.current.cardSurface,
+                                            selectedContainerColor = MaterialTheme.colorScheme.secondaryContainer
+                                                .copy(alpha = 0.8f)
+                                        )
+                                    )
+                                }
+                            }
+                        }
+                        when (index) {
+                            0 -> {}
+                            1 -> {
+                                items(transactions) {
+                                    TransactionListItem(
+                                        type = it.type,
+                                        dateTime = it.createdOn,
+                                        source = it.source,
+                                        destination = it.destination,
+                                        amount = it.amount,
+                                        currency = Currencies.get(it.currency),
+                                        comment = it.comment,
+                                        onClick = {
+                                            val intent =
+                                                Intent(context, ViewTransaction::class.java)
+                                            intent.putExtra(
+                                                "transactionId",
+                                                it.transactionId.toString()
+                                            )
+                                            context.startActivity(intent)
+                                        },
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(horizontal = 0.dp)
+                                    )
+                                }
+                            }
 
-                                FilterChip(
-                                    modifier = Modifier.weight(1f),
-                                    onClick = { },
-                                    label = {
-                                        Text(
-                                            text = "Stats",
-                                            textAlign = TextAlign.Center,
-                                            modifier = Modifier.weight(1f)
-                                        )
-                                    },
-                                    selected = true,
-                                    colors = InputChipDefaults.inputChipColors(
-                                        selectedContainerColor = MaterialTheme.colorScheme.secondaryContainer
-                                            .copy(alpha = 0.8f)
+                            2 -> {
+                                items(recurrences) {
+                                    RecurrenceListItem(
+                                        type = it.type,
+                                        dateTime = it.reoccursOn,
+                                        source = it.source,
+                                        destination = it.destination,
+                                        amount = it.amount,
+                                        currency = Currencies.get(it.currency),
+                                        comment = it.comment,
+                                        repeat = Repeats.valueOf(it.repeatInterval),
+                                        reoccursOn = it.reoccursOn,
+                                        onClick = {
+                                            val intent =
+                                                Intent(context, ViewRecurrence::class.java)
+                                            intent.putExtra(
+                                                "recurrenceId",
+                                                it.recurrenceId.toString()
+                                            )
+                                            context.startActivity(intent)
+                                        }
                                     )
-                                )
-                                FilterChip(
-                                    modifier = Modifier.weight(1f),
-                                    onClick = { },
-                                    label = {
-                                        Text(
-                                            text = "Transactions",
-                                            textAlign = TextAlign.Center,
-                                            modifier = Modifier.weight(1f)
-                                        )
-                                    },
-                                    selected = false,
-                                    border = BorderStroke((0).dp, Color.Transparent),
-                                    colors = InputChipDefaults.inputChipColors(
-                                        containerColor = LocalCustomColors.current.cardSurface,
-                                    )
-                                )
+                                }
                             }
                         }
                     }
@@ -326,7 +442,7 @@ class ViewAccount : ComponentActivity() {
                                 openAlertDialog.value = false
                                 isDeleting = true
                                 coroutineScope.launch {
-                                    vm.actions.removeAccount(accountId)
+                                    accountsVm.actions.removeAccount(accountId)
                                     finish()
                                 }
                             },

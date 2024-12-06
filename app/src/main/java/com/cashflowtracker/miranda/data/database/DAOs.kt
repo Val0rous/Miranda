@@ -60,6 +60,9 @@ interface TransactionsDao {
 
     @Query("SELECT * FROM 'transaction' WHERE transactionId = :transactionId")
     fun getByTransactionIdFlow(transactionId: UUID): Flow<Transaction>
+
+    @Query("SELECT * FROM 'transaction' WHERE source = :accountId OR destination = :accountId ORDER BY createdOn DESC")
+    fun getAllByAccountIdFlow(accountId: String): Flow<List<Transaction>>
 }
 
 @Dao
@@ -81,6 +84,9 @@ interface RecurrencesDao {
 
     @Query("SELECT * FROM recurrence WHERE recurrenceId = :recurrenceId")
     fun getByRecurrenceIdFlow(recurrenceId: UUID): Flow<Recurrence>
+
+    @Query("SELECT * FROM recurrence WHERE source = :accountId OR destination = :accountId ORDER BY reoccursOn ASC")
+    fun getAllByAccountIdFlow(accountId: String): Flow<List<Recurrence>>
 }
 
 @Dao

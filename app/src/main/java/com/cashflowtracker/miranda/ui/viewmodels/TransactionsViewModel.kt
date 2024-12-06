@@ -18,6 +18,7 @@ interface TransactionsActions {
     fun getAllWithLocationByUserIdFlow(userId: UUID): Flow<List<Transaction>>
     fun getByTransactionId(transactionId: UUID): Transaction
     fun getByTransactionIdFlow(transactionId: UUID): Flow<Transaction>
+    fun getAllByAccountIdFlow(accountId: String): Flow<List<Transaction>>
 }
 
 class TransactionsViewModel(private val repository: TransactionsRepository) : ViewModel() {
@@ -55,5 +56,9 @@ class TransactionsViewModel(private val repository: TransactionsRepository) : Vi
                 repository.getByTransactionIdFlow(transactionId)
             }
 
+        override fun getAllByAccountIdFlow(accountId: String): Flow<List<Transaction>> =
+            viewModelScope.run {
+                repository.getAllByAccountIdFlow(accountId)
+            }
     }
 }

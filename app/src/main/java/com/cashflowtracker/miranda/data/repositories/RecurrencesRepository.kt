@@ -15,4 +15,5 @@ class RecurrencesRepository(private val recurrencesDao: RecurrencesDao) {
     fun getByRecurrenceIdFlow(recurrenceId: UUID) =
         recurrencesDao.getByRecurrenceIdFlow(recurrenceId)
 
+    fun getAllByAccountIdFlow(accountId: String) = recurrencesDao.getAllByAccountIdFlow(accountId)
 }
