@@ -5,9 +5,13 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
+import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -21,14 +25,22 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -188,9 +200,41 @@ fun ExpandableFAB(expanded: MutableState<Boolean>) {
  *  @param activity The activity to be launched when the FAB is clicked
  */
 @Composable
-fun ExtendedFAB(icon: Int, label: String, activity: Class<*>) {
+fun ExtendedFAB(
+    icon: Int,
+    label: String,
+    activity: Class<*>,
+    lazyListState: LazyListState,
+    isFabExpanded: MutableState<Boolean>
+) {
     val context = LocalContext.current
-    ExtendedFloatingActionButton(
+
+    var previousIndex by remember { mutableIntStateOf(0) }
+    var previousScrollOffset by remember { mutableIntStateOf(0) }
+    var accumulatedScroll by remember { mutableIntStateOf(0) }
+    val scrollLeeway = 250
+
+    // Update FAB expansion state based on scroll direction
+    LaunchedEffect(lazyListState) {
+        snapshotFlow { lazyListState.firstVisibleItemIndex to lazyListState.firstVisibleItemScrollOffset }
+            .collect { (index, scrollOffset) ->
+                val delta = (index - previousIndex) * 1000 + (scrollOffset - previousScrollOffset)
+                accumulatedScroll += delta
+
+                if (accumulatedScroll > scrollLeeway) {
+                    isFabExpanded.value = false // Scrolling up, hide text
+                    accumulatedScroll = 0
+                } else if (accumulatedScroll < -scrollLeeway) {
+                    isFabExpanded.value = true // Scrolling down, show text
+                    accumulatedScroll = 0
+                }
+
+                previousIndex = index
+                previousScrollOffset = scrollOffset
+            }
+    }
+
+    FloatingActionButton(
         onClick = {
             val options = ActivityOptionsCompat.makeCustomAnimation(
                 context,
@@ -204,14 +248,29 @@ fun ExtendedFAB(icon: Int, label: String, activity: Class<*>) {
         containerColor = MaterialTheme.colorScheme.secondaryContainer,
         modifier = Modifier.height(56.dp)
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(horizontal = 16.dp)
+        ) {
             Icon(
                 imageVector = ImageVector.vectorResource(icon),
                 contentDescription = label,
                 tint = MaterialTheme.colorScheme.onSecondaryContainer,
             )
-            Spacer(modifier = Modifier.size(12.dp))
-            Text(label)
+            AnimatedVisibility(
+                visible = isFabExpanded.value,
+                enter = fadeIn(animationSpec = tween(durationMillis = 300)) + expandHorizontally(
+                    animationSpec = tween(durationMillis = 300)
+                ),
+                exit = fadeOut(animationSpec = tween(durationMillis = 250)) + shrinkHorizontally(
+                    animationSpec = tween(durationMillis = 250)
+                )
+            ) {
+                Text(
+                    text = label,
+                    modifier = Modifier.padding(start = 12.dp, end = 3.dp)
+                )
+            }
         }
     }
 }

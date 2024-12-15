@@ -11,6 +11,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.LaunchedEffect
@@ -103,6 +104,11 @@ class MainActivity : ComponentActivity() {
                 val recurrences by recurrencesVm.actions.getAllByUserIdFlow(userId)
                     .collectAsState(initial = emptyList())
 
+                val transactionsListState = rememberLazyListState()
+                val recurrentsListState = rememberLazyListState()
+                val isTransactionsFABExpanded = remember { mutableStateOf(true) }
+                val isRecurrentsFABExpanded = remember { mutableStateOf(true) }
+
                 MirandaTheme {
                     Scaffold(
                         modifier = modifier,
@@ -118,7 +124,9 @@ class MainActivity : ComponentActivity() {
                                     ExtendedFAB(
                                         R.drawable.ic_assignment,
                                         stringResource(R.string.add_transaction),
-                                        AddTransaction::class.java
+                                        AddTransaction::class.java,
+                                        transactionsListState,
+                                        isTransactionsFABExpanded
                                     )
                                 }
 
@@ -126,7 +134,9 @@ class MainActivity : ComponentActivity() {
                                     ExtendedFAB(
                                         R.drawable.ic_schedule,
                                         stringResource(R.string.add_recurrence),
-                                        AddRecurrence::class.java
+                                        AddRecurrence::class.java,
+                                        recurrentsListState,
+                                        isRecurrentsFABExpanded
                                     )
                                 }
 
@@ -151,10 +161,10 @@ class MainActivity : ComponentActivity() {
                                 Home(accounts, totalBalance)
                             }
                             composable(Routes.Transactions.route) {
-                                Transactions(transactions)
+                                Transactions(transactions, transactionsListState)
                             }
                             composable(Routes.Recurrents.route) {
-                                Recurrents(recurrences)
+                                Recurrents(recurrences, recurrentsListState)
                             }
                             composable(Routes.Stats.route) {
                                 Stats(transactions)

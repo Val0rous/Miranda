@@ -5,11 +5,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -17,14 +16,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.data.database.Transaction
-import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserId
 import com.cashflowtracker.miranda.ui.composables.TransactionListItem
-import com.cashflowtracker.miranda.ui.viewmodels.TransactionsViewModel
 import com.cashflowtracker.miranda.utils.Currencies
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun Transactions(transactions: List<Transaction>) {
+fun Transactions(transactions: List<Transaction>, transactionsListState: LazyListState) {
     val context = LocalContext.current
 //    val transactionsVm = koinViewModel<TransactionsViewModel>()
 //    val userId = context.getCurrentUserId()
@@ -35,7 +31,10 @@ fun Transactions(transactions: List<Transaction>) {
             .fillMaxSize()
     ) {
         if (transactions.isNotEmpty()) {
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
+            LazyColumn(
+                state = transactionsListState,
+                modifier = Modifier.fillMaxSize()
+            ) {
                 items(transactions) {
                     TransactionListItem(
                         type = it.type,

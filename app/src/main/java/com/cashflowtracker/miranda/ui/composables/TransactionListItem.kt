@@ -97,7 +97,9 @@ fun TransactionListItem(
 //                                }
             )
         },
-        modifier = modifier.clickable { onClick() }
+        modifier = modifier
+            .height(60.dp)
+            .clickable { onClick() }
     )
 }
 
@@ -165,7 +167,7 @@ fun RecurrenceListItem(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
-                modifier = Modifier.padding(start = 1.dp, top = 3.dp, bottom = 1.dp, end = 6.dp)
+                modifier = Modifier.padding(start = 1.dp, top = 3.dp, bottom = 0.dp, end = 6.dp)
             ) {
                 Icon(
                     imageVector = ImageVector.vectorResource(R.drawable.ic_schedule),
@@ -202,6 +204,8 @@ fun RecurrenceListItem(
                 )
             }
         },
-        modifier = modifier.clickable { onClick() }
+        modifier = modifier
+            .height(76.dp)
+            .clickable { onClick() }
     )
 }

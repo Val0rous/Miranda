@@ -5,11 +5,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -18,13 +17,11 @@ import androidx.compose.ui.text.style.TextAlign
 import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.data.database.Recurrence
 import com.cashflowtracker.miranda.ui.composables.RecurrenceListItem
-import com.cashflowtracker.miranda.ui.viewmodels.RecurrencesViewModel
 import com.cashflowtracker.miranda.utils.Currencies
 import com.cashflowtracker.miranda.utils.Repeats
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun Recurrents(recurrences: List<Recurrence>) {
+fun Recurrents(recurrences: List<Recurrence>, recurrentsListState: LazyListState) {
     val context = LocalContext.current
 //    val recurrencesVm = koinViewModel<RecurrencesViewModel>()
 //    val userId = context.getCurrentUserId()
@@ -35,7 +32,10 @@ fun Recurrents(recurrences: List<Recurrence>) {
             .fillMaxSize()
     ) {
         if (recurrences.isNotEmpty()) {
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
+            LazyColumn(
+                state = recurrentsListState,
+                modifier = Modifier.fillMaxSize()
+            ) {
                 items(recurrences) {
                     RecurrenceListItem(
                         type = it.type,
