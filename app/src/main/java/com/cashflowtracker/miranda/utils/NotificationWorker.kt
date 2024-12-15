@@ -1,14 +1,25 @@
 package com.cashflowtracker.miranda.utils
 
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
+import androidx.work.CoroutineWorker
 import androidx.work.Worker
 import androidx.work.WorkerParameters
+import com.cashflowtracker.miranda.data.repositories.AccountsRepository
+import com.cashflowtracker.miranda.ui.screens.ViewRecurrence
+import kotlinx.coroutines.CoroutineScope
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import org.koin.java.KoinJavaComponent.inject
 import java.util.UUID
 
 class NotificationWorker(
     context: Context,
     workerParams: WorkerParameters
-) : Worker(context, workerParams) {
+) : CoroutineWorker(context, workerParams), KoinComponent {
+    private val accountsRepo: AccountsRepository by inject()
+
     private val notificationId = inputData.getString("notificationId") ?: ""
     private val dateTime = inputData.getString("dateTime") ?: ""
     private val notificationType = inputData.getString("notificationType") ?: ""
@@ -22,7 +33,37 @@ class NotificationWorker(
     private val comment = inputData.getString("comment") ?: ""
 
 
-    override fun doWork(): Result {
+    override suspend fun doWork(): Result {
+        val source = if ((recurrenceType == TransactionType.OUTPUT.name
+                    || recurrenceType == TransactionType.TRANSFER.name)
+            && source.isNotEmpty()
+        ) {
+            accountsRepo.getByAccountId(UUID.fromString(source)).title
+        } else {
+            this.source
+        }
+
+        val destination = if ((recurrenceType == TransactionType.INPUT.name
+                    || recurrenceType == TransactionType.TRANSFER.name)
+            && destination.isNotEmpty()
+        ) {
+            accountsRepo.getByAccountId(UUID.fromString(destination)).title
+        } else {
+            this.destination
+        }
+
+        val intent = Intent(applicationContext, ViewRecurrence::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        intent.putExtra("recurrenceId", recurrenceId)
+
+        val pendingIntent = PendingIntent.getActivity(
+            applicationContext,
+            0,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
         NotificationHelper.sendNotification(
             applicationContext,
             UUID.fromString(notificationId).hashCode(),
@@ -32,7 +73,8 @@ class NotificationWorker(
             amount,
             Currencies.valueOf(currency),
             comment,
-            iconFactory(recurrenceType, source, destination)
+            iconFactory(recurrenceType, source, destination),
+            pendingIntent
         )
         return Result.success()
     }

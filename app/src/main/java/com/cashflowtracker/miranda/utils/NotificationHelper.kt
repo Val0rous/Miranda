@@ -3,6 +3,7 @@ package com.cashflowtracker.miranda.utils
 import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import android.os.Build
 import androidx.compose.ui.graphics.toArgb
@@ -35,6 +36,7 @@ object NotificationHelper {
         currency: Currencies,
         comment: String,
         icon: Int,
+        pendingIntent: PendingIntent
 //        color: Int
     ) {
         createNotificationChannel(context)
@@ -44,6 +46,7 @@ object NotificationHelper {
             .setContentText("${formatAmount(amount, currency, type)} with $source to $destination")
             .setSmallIcon(icon)
             .setAutoCancel(true)
+            .setContentIntent(pendingIntent)
 //            .setColor(color)
             .build()
 
