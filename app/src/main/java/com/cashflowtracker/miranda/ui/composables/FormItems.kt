@@ -1022,7 +1022,7 @@ fun AccountTypeForm(
 
         Text(
             text = if (accountType.isNotEmpty()) {
-                AccountType.getType(accountType).also {
+                stringResource(AccountType.getType(accountType)).also {
                     println(AccountType.getType(accountType))
                 }
             } else {

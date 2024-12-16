@@ -193,6 +193,5 @@ fun DetailsPieChartItem(
                 overflow = TextOverflow.Ellipsis
             )
         }
-
     }
 }

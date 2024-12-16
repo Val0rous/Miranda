@@ -28,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.R
@@ -91,7 +92,7 @@ class SelectAccountType : ComponentActivity() {
                             ListItem(
                                 headlineContent = {
                                     Text(
-                                        text = it.type,
+                                        text = stringResource(it.type),
                                         style = MaterialTheme.typography.bodyLarge
                                     )
                                 },
@@ -104,7 +105,7 @@ class SelectAccountType : ComponentActivity() {
                                     ) {
                                         Icon(
                                             imageVector = ImageVector.vectorResource(it.icon),
-                                            contentDescription = it.type,
+                                            contentDescription = stringResource(it.type),
                                             tint = LocalCustomColors.current.icon,
                                             modifier = Modifier
                                                 .size(24.dp)

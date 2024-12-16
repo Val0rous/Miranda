@@ -26,7 +26,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.R
@@ -38,6 +42,7 @@ fun AccountsFilter(
     isVisible: MutableState<Boolean>,
     selections: Map<String, MutableState<Boolean>>
 ) {
+    val context = LocalContext.current
     ModalBottomSheet(
         onDismissRequest = { isVisible.value = false }
     ) {
@@ -62,13 +67,13 @@ fun AccountsFilter(
                 .padding(horizontal = 12.dp),
             verticalArrangement = Arrangement.spacedBy((-6).dp)
         ) {
-            AccountType.entries.sortedBy { it.type.length }.forEach {
+            AccountType.entries.sortedBy { context.getString(it.type).length }.forEach {
                 FilterChip(
                     modifier = Modifier.padding(end = 6.dp),
                     onClick = {
                         selections[it.name]!!.value = !selections[it.name]!!.value
                     },
-                    label = { Text(it.type) },
+                    label = { Text(stringResource(it.type)) },
                     selected = selections[it.name]!!.value,
                     leadingIcon = {
                         Icon(
