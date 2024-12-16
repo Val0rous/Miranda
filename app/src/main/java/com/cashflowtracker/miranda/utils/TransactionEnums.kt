@@ -2,29 +2,29 @@ package com.cashflowtracker.miranda.utils
 
 import com.cashflowtracker.miranda.R
 
-enum class TransactionType(val type: String) {
-    OUTPUT("Output"),
-    INPUT("Input"),
-    TRANSFER("Transfer");
+enum class TransactionType(val type: Int) {
+    OUTPUT(R.string.transaction_type_output),
+    INPUT(R.string.transaction_type_input),
+    TRANSFER(R.string.transaction_type_transfer);
 
     companion object {
-        fun getType(type: String): String {
+        fun getType(type: String): Int {
             return TransactionType.valueOf(type).type
         }
     }
 }
 
-enum class CategoryClass(val stars: Char, val label: String) {
+enum class CategoryClass(val stars: Char, val label: Int) {
     /** One Star */
-    NECESSITY('1', "Necessity"),
+    NECESSITY('1', R.string.category_class_necessity),
 
     /** Two Stars */
-    CONVENIENCE('2', "Convenience"),
+    CONVENIENCE('2', R.string.category_class_convenience),
 
     /** Three Stars */
-    LUXURY('3', "Luxury"),
+    LUXURY('3', R.string.category_class_luxury),
 
-    UNRANKED('0', "Unranked")
+    UNRANKED('0', R.string.category_class_unranked)
 }
 
 /** Default categories
@@ -32,68 +32,104 @@ enum class CategoryClass(val stars: Char, val label: String) {
  *  @param icon Path of category icon
  *  @param type Category type (stars)
  */
-enum class DefaultCategories(val category: String, val icon: Int, val type: CategoryClass) {
-    BANK("Bank", R.drawable.ic_account_balance, CategoryClass.NECESSITY),
-    CAR("Car", R.drawable.ic_directions_car, CategoryClass.NECESSITY),
-    RENT("Rent", R.drawable.ic_apartment, CategoryClass.NECESSITY),
-    FAMILY("Family", R.drawable.ic_family_restroom, CategoryClass.NECESSITY),
-    FEES("Fees", R.drawable.ic_paid, CategoryClass.NECESSITY),
-    FOOD("Food", R.drawable.ic_local_pizza, CategoryClass.NECESSITY),
-    FUEL("Fuel", R.drawable.ic_local_gas_station, CategoryClass.NECESSITY),
-    HEALTHCARE("Healthcare", R.drawable.ic_ecg_heart, CategoryClass.NECESSITY),
-    HOUSEHOLD("Household", R.drawable.ic_cottage, CategoryClass.NECESSITY),
-    INSURANCE("Insurance", R.drawable.ic_heap_snapshot_large, CategoryClass.NECESSITY),
-    JOB("Job", R.drawable.ic_work, CategoryClass.NECESSITY),
-    PHONE_INTERNET("Phone/Internet", R.drawable.ic_language, CategoryClass.NECESSITY),
-    FINES("Fines", R.drawable.ic_receipt_long, CategoryClass.NECESSITY),
-    SUPPLEMENTS("Supplements", R.drawable.ic_medication, CategoryClass.NECESSITY),
-    TRANSPORT("Transport", R.drawable.ic_directions_subway, CategoryClass.NECESSITY),
+enum class DefaultCategories(val category: Int, val icon: Int, val type: CategoryClass) {
+    BANK(R.string.category_bank, R.drawable.ic_account_balance, CategoryClass.NECESSITY),
+    CAR(R.string.category_car, R.drawable.ic_directions_car, CategoryClass.NECESSITY),
+    RENT(R.string.category_rent, R.drawable.ic_apartment, CategoryClass.NECESSITY),
+    FAMILY(R.string.category_family, R.drawable.ic_family_restroom, CategoryClass.NECESSITY),
+    FEES(R.string.category_fees, R.drawable.ic_paid, CategoryClass.NECESSITY),
+    FOOD(R.string.category_food, R.drawable.ic_local_pizza, CategoryClass.NECESSITY),
+    FUEL(R.string.category_fuel, R.drawable.ic_local_gas_station, CategoryClass.NECESSITY),
+    HEALTHCARE(R.string.category_healthcare, R.drawable.ic_ecg_heart, CategoryClass.NECESSITY),
+    HOUSEHOLD(R.string.category_household, R.drawable.ic_cottage, CategoryClass.NECESSITY),
+    INSURANCE(
+        R.string.category_insurance,
+        R.drawable.ic_heap_snapshot_large,
+        CategoryClass.NECESSITY
+    ),
+    JOB(R.string.category_job, R.drawable.ic_work, CategoryClass.NECESSITY),
+    PHONE_INTERNET(
+        R.string.category_phone_internet,
+        R.drawable.ic_language,
+        CategoryClass.NECESSITY
+    ),
+    FINES(R.string.category_fines, R.drawable.ic_receipt_long, CategoryClass.NECESSITY),
+    SUPPLEMENTS(R.string.category_supplements, R.drawable.ic_medication, CategoryClass.NECESSITY),
+    TRANSPORT(
+        R.string.category_transport,
+        R.drawable.ic_directions_subway,
+        CategoryClass.NECESSITY
+    ),
 
-    MEAL("Meal", R.drawable.ic_ramen_dining, CategoryClass.CONVENIENCE),
-    PERSONAL_CARE("Personal Care", R.drawable.ic_health_and_beauty, CategoryClass.CONVENIENCE),
-    APP_SOFTWARE("App/Software", R.drawable.ic_sdk, CategoryClass.CONVENIENCE),
-    BOOKS("Books", R.drawable.ic_menu_book, CategoryClass.CONVENIENCE),
-    ELECTRONICS("Electronics", R.drawable.ic_charging_station, CategoryClass.CONVENIENCE),
-    FRIENDS("Friends", R.drawable.ic_group, CategoryClass.CONVENIENCE),
-    GIFTS("Gifts", R.drawable.ic_featured_seasonal_and_gifts, CategoryClass.CONVENIENCE),
-    LOST("Lost", R.drawable.ic_indeterminate_question_box, CategoryClass.CONVENIENCE),
-    OTHER("Other", R.drawable.ic_pending, CategoryClass.CONVENIENCE),
-    SHIPPING("Shipping", R.drawable.ic_package_2, CategoryClass.CONVENIENCE),
-    SPORT("Sport", R.drawable.ic_sports_and_outdoors, CategoryClass.CONVENIENCE),
-    CRYPTO("Crypto", R.drawable.ic_currency_bitcoin, CategoryClass.CONVENIENCE),
-    ACCESSORIES("Accessories", R.drawable.ic_media_output, CategoryClass.CONVENIENCE),
-    CAFE("Café", R.drawable.ic_local_cafe, CategoryClass.CONVENIENCE),
-    CLOTHING("Clothing", R.drawable.ic_apparel, CategoryClass.CONVENIENCE),
+    MEAL(R.string.category_meal, R.drawable.ic_ramen_dining, CategoryClass.CONVENIENCE),
+    PERSONAL_CARE(
+        R.string.category_personal_care,
+        R.drawable.ic_health_and_beauty,
+        CategoryClass.CONVENIENCE
+    ),
+    APP_SOFTWARE(R.string.category_app_software, R.drawable.ic_sdk, CategoryClass.CONVENIENCE),
+    BOOKS(R.string.category_books, R.drawable.ic_menu_book, CategoryClass.CONVENIENCE),
+    ELECTRONICS(
+        R.string.category_electronics,
+        R.drawable.ic_charging_station,
+        CategoryClass.CONVENIENCE
+    ),
+    FRIENDS(R.string.category_friends, R.drawable.ic_group, CategoryClass.CONVENIENCE),
+    GIFTS(
+        R.string.category_gifts,
+        R.drawable.ic_featured_seasonal_and_gifts,
+        CategoryClass.CONVENIENCE
+    ),
+    LOST(
+        R.string.category_lost,
+        R.drawable.ic_indeterminate_question_box,
+        CategoryClass.CONVENIENCE
+    ),
+    OTHER(R.string.category_other, R.drawable.ic_pending, CategoryClass.CONVENIENCE),
+    SHIPPING(R.string.category_shipping, R.drawable.ic_package_2, CategoryClass.CONVENIENCE),
+    SPORT(R.string.category_sport, R.drawable.ic_sports_and_outdoors, CategoryClass.CONVENIENCE),
+    CRYPTO(R.string.category_crypto, R.drawable.ic_currency_bitcoin, CategoryClass.CONVENIENCE),
+    ACCESSORIES(
+        R.string.category_accessories,
+        R.drawable.ic_media_output,
+        CategoryClass.CONVENIENCE
+    ),
+    CAFE(R.string.category_cafe, R.drawable.ic_local_cafe, CategoryClass.CONVENIENCE),
+    CLOTHING(R.string.category_clothing, R.drawable.ic_apparel, CategoryClass.CONVENIENCE),
 
-    CINEMA("Cinema", R.drawable.ic_movie, CategoryClass.LUXURY),
-    BET("Bet", R.drawable.ic_casino, CategoryClass.LUXURY),
-    ENTERTAINMENT("Entertainment", R.drawable.ic_local_activity, CategoryClass.LUXURY),
-    FUN("Fun", R.drawable.ic_celebration, CategoryClass.LUXURY),
-    GAMING("Gaming", R.drawable.ic_stadia_controller, CategoryClass.LUXURY),
-    HOBBY("Hobby", R.drawable.ic_downhill_skiing, CategoryClass.LUXURY),
-    HOTEL("Hotel", R.drawable.ic_hotel, CategoryClass.LUXURY),
-    PUB("Pub", R.drawable.ic_local_bar, CategoryClass.LUXURY),
-    MUNCHIES("Munchies", R.drawable.ic_icecream, CategoryClass.LUXURY),
-    RESTAURANT("Restaurant", R.drawable.ic_restaurant, CategoryClass.LUXURY),
-    STUFF("Stuff", R.drawable.ic_widgets, CategoryClass.LUXURY),
-    TRAVEL("Travel", R.drawable.ic_travel, CategoryClass.LUXURY);
+    CINEMA(R.string.category_cinema, R.drawable.ic_movie, CategoryClass.LUXURY),
+    BET(R.string.category_bet, R.drawable.ic_casino, CategoryClass.LUXURY),
+    ENTERTAINMENT(
+        R.string.category_entertainment,
+        R.drawable.ic_local_activity,
+        CategoryClass.LUXURY
+    ),
+    FUN(R.string.category_fun, R.drawable.ic_celebration, CategoryClass.LUXURY),
+    GAMING(R.string.category_gaming, R.drawable.ic_stadia_controller, CategoryClass.LUXURY),
+    HOBBY(R.string.category_hobby, R.drawable.ic_downhill_skiing, CategoryClass.LUXURY),
+    HOTEL(R.string.category_hotel, R.drawable.ic_hotel, CategoryClass.LUXURY),
+    PUB(R.string.category_pub, R.drawable.ic_local_bar, CategoryClass.LUXURY),
+    MUNCHIES(R.string.category_munchies, R.drawable.ic_icecream, CategoryClass.LUXURY),
+    RESTAURANT(R.string.category_restaurant, R.drawable.ic_restaurant, CategoryClass.LUXURY),
+    STUFF(R.string.category_stuff, R.drawable.ic_widgets, CategoryClass.LUXURY),
+    TRAVEL(R.string.category_travel, R.drawable.ic_travel, CategoryClass.LUXURY);
 
     companion object {
-        fun getCategory(category: String): String {
+        fun getCategory(categoryName: String): Int {
             return DefaultCategories.entries.find {
-                it.name == category
-            }?.category ?: ""
+                it.name == categoryName
+            }?.category ?: 0
         }
 
-        fun getIcon(category: String): Int {
+        fun getIcon(categoryName: String): Int {
             return DefaultCategories.entries.find {
-                it.name == category
+                it.name == categoryName
             }?.icon ?: R.drawable.ic_default_empty
         }
 
-        fun getType(category: String): CategoryClass {
+        fun getType(categoryName: String): CategoryClass {
             return DefaultCategories.entries.find {
-                it.name == category
+                it.name == categoryName
             }?.type ?: CategoryClass.UNRANKED
         }
     }

@@ -37,6 +37,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -76,6 +77,7 @@ fun TransactionBubblesToFrom(
     sourceType: String,
     destinationType: String
 ) {
+    val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val accountsVm = koinViewModel<AccountsViewModel>()
     var sourceText by remember { mutableStateOf(transaction.source) }
@@ -151,7 +153,7 @@ fun TransactionBubblesToFrom(
                 )
             }
             Text(
-                text = formatSource(sourceText, transaction.type),
+                text = formatSource(sourceText, transaction.type, context),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.padding(top = 8.dp)
@@ -205,7 +207,7 @@ fun TransactionBubblesToFrom(
                 )
             }
             Text(
-                text = formatDestination(destinationText, transaction.type),
+                text = formatDestination(destinationText, transaction.type, context),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.padding(top = 8.dp)

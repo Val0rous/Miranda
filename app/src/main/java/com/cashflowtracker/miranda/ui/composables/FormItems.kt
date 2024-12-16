@@ -341,7 +341,7 @@ fun SourceForm(
 
         Text(
             text = if (sourceText.isNotEmpty()) {
-                formatSource(sourceText, transactionType)
+                formatSource(sourceText, transactionType, context)
             } else {
                 label
             },
@@ -491,7 +491,7 @@ fun DestinationForm(
 
         Text(
             text = if (destinationText.isNotEmpty()) {
-                formatDestination(destinationText, transactionType)
+                formatDestination(destinationText, transactionType, context)
             } else {
                 label
             },

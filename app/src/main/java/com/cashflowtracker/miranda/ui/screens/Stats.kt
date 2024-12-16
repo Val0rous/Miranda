@@ -279,8 +279,8 @@ private fun calculateInitialBalance(
 // Extension function to calculate the amount delta based on transaction type
 private fun Transaction.amountDelta(): Double {
     return when (this.type) {
-        TransactionType.OUTPUT.type -> -this.amount
-        TransactionType.INPUT.type -> this.amount
+        TransactionType.OUTPUT.name -> -this.amount
+        TransactionType.INPUT.name -> this.amount
         else -> 0.0
     }
 }

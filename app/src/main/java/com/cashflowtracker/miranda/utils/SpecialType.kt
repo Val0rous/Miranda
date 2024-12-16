@@ -3,21 +3,21 @@ package com.cashflowtracker.miranda.utils
 import com.cashflowtracker.miranda.R
 
 enum class SpecialType(
-    val category: String,
+    val category: Int,
     val icon: Int,
     val isSource: Boolean,
     val isDestination: Boolean
 ) {
-    POCKET("Pocket", R.drawable.ic_guardian, true, false),
-    EXTRA("Extra", R.drawable.ic_cake, true, false),
-    DEBTS("Debts", R.drawable.ic_credit_card_clock, true, true),
-    CREDITS("Credits", R.drawable.ic_money_bag, true, true);
+    POCKET(R.string.special_type_pocket, R.drawable.ic_guardian, true, false),
+    EXTRA(R.string.special_type_extra, R.drawable.ic_cake, true, false),
+    DEBTS(R.string.special_type_debts, R.drawable.ic_credit_card_clock, true, true),
+    CREDITS(R.string.special_type_credits, R.drawable.ic_money_bag, true, true);
 
     companion object {
-        fun getType(category: String): String {
+        fun getCategory(categoryName: String): Int {
             return SpecialType.entries.find {
-                it.name == category
-            }?.category ?: ""
+                it.name == categoryName
+            }?.category ?: 0
         }
 
         fun getIcon(category: String): Int {

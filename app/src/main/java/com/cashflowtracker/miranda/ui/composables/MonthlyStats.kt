@@ -99,8 +99,8 @@ fun MonthlyChart(transactions: List<Transaction>) {
 
                 beforeTransactions.forEach { item ->
                     val deltaAmount = when (item.type) {
-                        TransactionType.OUTPUT.type -> -item.amount
-                        TransactionType.INPUT.type -> item.amount
+                        TransactionType.OUTPUT.name -> -item.amount
+                        TransactionType.INPUT.name -> item.amount
                         else -> 0.0
                     }
                     initialBalance += deltaAmount

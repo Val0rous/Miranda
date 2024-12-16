@@ -3,7 +3,6 @@ package com.cashflowtracker.miranda.utils
 import android.annotation.SuppressLint
 import android.content.Context
 import android.text.format.DateFormat
-import com.cashflowtracker.miranda.data.database.Transaction
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
@@ -12,7 +11,6 @@ import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-import java.util.Calendar
 import java.util.Currency
 import java.util.Date
 import java.util.Locale
@@ -192,25 +190,25 @@ fun formatRenewal(dateTime: String): String {
     return "Renews $message"
 }
 
-fun formatSource(source: String, transactionType: String): String {
+fun formatSource(source: String, transactionType: String, context: Context): String {
     return when (transactionType) {
         TransactionType.OUTPUT.name -> source //AccountType.getType(source).ifEmpty { source }
         TransactionType.INPUT.name -> when (source) {
             SpecialType.POCKET.name,
             SpecialType.EXTRA.name,
             SpecialType.DEBTS.name,
-            SpecialType.CREDITS.name -> SpecialType.getType(source)
+            SpecialType.CREDITS.name -> context.getString(SpecialType.getCategory(source))
 
-            else -> DefaultCategories.getCategory(source)
+            else -> context.getString(DefaultCategories.getCategory(source))
         }
 
         else -> source //AccountType.getType(source).ifEmpty { source }
     }
 }
 
-fun formatDestination(destination: String, transactionType: String): String {
+fun formatDestination(destination: String, transactionType: String, context: Context): String {
     return when (transactionType) {
-        TransactionType.OUTPUT.name -> DefaultCategories.getCategory(destination)
+        TransactionType.OUTPUT.name -> context.getString(DefaultCategories.getCategory(destination))
         TransactionType.INPUT.name -> destination //AccountType.getType(destination).ifEmpty { destination }
         else -> destination //AccountType.getType(destination).ifEmpty { destination }
     }

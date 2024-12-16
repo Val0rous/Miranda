@@ -35,6 +35,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.R
@@ -79,13 +80,14 @@ class ViewCategoryStats : ComponentActivity() {
                 TransactionType.INPUT.name,
                 TransactionType.TRANSFER.name
             )
-            val transactionTypeCounts = transactions
+            val transactionTypeCounts: Map<String, Int> = transactions
                 .groupingBy { it.type }
                 .eachCount()
-                .mapKeys { (key, _) -> TransactionType.getType(key) }
+                //.mapKeys { (key, _) -> TransactionType.getType(key) }
                 .let { map ->
                     transactionOrder.associate { type ->
-                        TransactionType.getType(type) to (map[TransactionType.getType(type)] ?: 0)
+                        val localizedType = stringResource(TransactionType.getType(type))
+                        localizedType to (map[type] ?: 0)
                     }
                 }
 
@@ -94,11 +96,16 @@ class ViewCategoryStats : ComponentActivity() {
                 CategoryClass.CONVENIENCE.label,
                 CategoryClass.LUXURY.label
             )
-            val transactionCategoryCounts = transactions
+            val transactionCategoryCounts: Map<String, Int> = transactions
                 .filter { it.type == TransactionType.OUTPUT.name }
                 .groupingBy { DefaultCategories.getType(it.destination).label }
                 .eachCount()
-                .let { map -> categoryOrder.associateWith { map[it] ?: 0 } }
+                .let { map ->
+                    categoryOrder.associate { type ->
+                        val localizedCategory = stringResource(type)
+                        localizedCategory to (map[type] ?: 0)
+                    }
+                }
 
 
             MirandaTheme {

@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.R
@@ -69,7 +70,7 @@ fun CategoryListItem(category: DefaultCategories, modifier: Modifier) {
     ListItem(
         headlineContent = {
             Text(
-                text = category.category,
+                text = stringResource(category.category),
                 style = MaterialTheme.typography.bodyLarge
             )
         },
@@ -90,7 +91,7 @@ fun CategoryListItem(category: DefaultCategories, modifier: Modifier) {
             ) {
                 Icon(
                     imageVector = ImageVector.vectorResource(category.icon),
-                    contentDescription = category.category,
+                    contentDescription = stringResource(category.category),
                     tint = LocalCustomColors.current.icon,
                     modifier = Modifier
                         .size(24.dp)
@@ -153,7 +154,7 @@ fun SpecialListItem(item: SpecialType, modifier: Modifier) {
     ListItem(
         headlineContent = {
             Text(
-                text = item.category,
+                text = stringResource(item.category),
                 style = MaterialTheme.typography.bodyLarge
             )
         },
@@ -170,7 +171,7 @@ fun SpecialListItem(item: SpecialType, modifier: Modifier) {
                             item.name
                         )
                     ),
-                    contentDescription = item.category,
+                    contentDescription = stringResource(item.category),
                     tint = LocalCustomColors.current.icon,
                     modifier = Modifier
                         .size(24.dp)
