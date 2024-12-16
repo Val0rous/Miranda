@@ -32,6 +32,7 @@ import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.data.repositories.ThemeRepository.getSystemDefaultTheme
@@ -57,9 +58,11 @@ fun SegmentedButtonType(
         )
     }
 
-    SingleChoiceSegmentedButtonRow(modifier = Modifier
-        .fillMaxWidth()
-        .padding(horizontal = 16.dp)) {
+    SingleChoiceSegmentedButtonRow(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+    ) {
         SegmentedButton(
             selected = selectedIndex == 0,
             onClick = {
@@ -79,7 +82,11 @@ fun SegmentedButtonType(
                     SBIcon(inactive = true, icon = R.drawable.ic_upload)
                     Spacer(modifier = Modifier.width(8.dp))
                 }
-                Text(text = "Output", maxLines = 1)
+                Text(
+                    text = stringResource(R.string.transaction_type_output),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
             }
         }
 
@@ -102,7 +109,11 @@ fun SegmentedButtonType(
                     SBIcon(inactive = true, icon = R.drawable.ic_download)
                     Spacer(modifier = Modifier.width(8.dp))
                 }
-                Text(text = "Input", maxLines = 1)
+                Text(
+                    text = stringResource(R.string.transaction_type_input),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
             }
         }
 
@@ -125,7 +136,11 @@ fun SegmentedButtonType(
                     SBIcon(inactive = true, icon = R.drawable.ic_sync)
                     Spacer(modifier = Modifier.width(8.dp))
                 }
-                Text(text = "Transfer", maxLines = 1)
+                Text(
+                    text = stringResource(R.string.transaction_type_transfer),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
             }
         }
     }

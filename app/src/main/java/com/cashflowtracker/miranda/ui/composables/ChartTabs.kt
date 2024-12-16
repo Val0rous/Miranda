@@ -1,5 +1,6 @@
 package com.cashflowtracker.miranda.ui.composables
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,10 +19,13 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
 import com.cashflowtracker.miranda.utils.Routes
 
@@ -31,24 +35,29 @@ data class ChartTabsItem(
 )
 
 object ChartTabsItems {
-    val items = listOf(
-        ChartTabsItem(
-            label = "Overall",
-            route = Routes.OverallStats.route
-        ),
-        ChartTabsItem(
-            label = "Yearly",
-            route = Routes.YearlyStats.route
-        ),
-        ChartTabsItem(
-            label = "Quarterly",
-            route = Routes.QuarterlyStats.route
-        ),
-        ChartTabsItem(
-            label = "Monthly",
-            route = Routes.MonthlyStats.route
+
+    @Composable
+    fun getItems(): List<ChartTabsItem> {
+        val context = LocalContext.current
+        return listOf(
+            ChartTabsItem(
+                label = context.getString(R.string.overall),
+                route = Routes.OverallStats.route
+            ),
+            ChartTabsItem(
+                label = context.getString(R.string.yearly),
+                route = Routes.YearlyStats.route
+            ),
+            ChartTabsItem(
+                label = context.getString(R.string.quarterly),
+                route = Routes.QuarterlyStats.route
+            ),
+            ChartTabsItem(
+                label = context.getString(R.string.monthly),
+                route = Routes.MonthlyStats.route
+            )
         )
-    )
+    }
 }
 
 @Composable
@@ -78,6 +87,7 @@ fun ChartTabs(navController: NavHostController, startDestination: String) {
         }
     }
 
+    val context = LocalContext.current
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = currentBackStackEntry?.destination
 
@@ -102,7 +112,7 @@ fun ChartTabs(navController: NavHostController, startDestination: String) {
             )
         }
     ) {
-        ChartTabsItems.items.forEachIndexed { index, item ->
+        ChartTabsItems.getItems().forEachIndexed { index, item ->
             if (currentDestination?.route == item.route) {
                 selectedTabIndex = index
             }

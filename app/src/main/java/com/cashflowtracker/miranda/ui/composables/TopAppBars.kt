@@ -132,9 +132,9 @@ fun MainTopAppBar(currentRoute: String?, showProfileIconMenu: MutableState<Boole
         title = {
             val text = when (currentRoute) {
                 Routes.Home.route -> stringResource(R.string.app_name)
-                Routes.Transactions.route -> "Transactions"
-                Routes.Recurrents.route -> "Recurrents"
-                Routes.Stats.route -> "Stats"
+                Routes.Transactions.route -> stringResource(R.string.transactions)
+                Routes.Recurrents.route -> stringResource(R.string.recurrents)
+                Routes.Stats.route -> stringResource(R.string.stats)
                 else -> ""
             }
             Text(

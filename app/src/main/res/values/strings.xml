@@ -8,6 +8,7 @@
     <string name="transactions">Transactions</string>
     <string name="recurrents">Recurrents</string>
     <string name="stats">Stats</string>
+    <string name="recents">Recents</string>
     <string name="total_balance">Total Balance</string>
     <string name="accounts">Accounts</string>
     <string name="account">Account</string>
@@ -17,6 +18,7 @@
     <string name="current_balance">Current balance</string>
     <string name="toggle_visibility">Toggle Visibility</string>
     <string name="create">Create</string>
+    <string name="save">Save</string>
     <string name="title">Title</string>
     <string name="type">Type</string>
     <string name="created_on">Created on</string>
@@ -69,6 +71,10 @@
     <string name="loading">Loading...</string>
     <string name="currency">Currency</string>
     <string name="get_gps_location">Get GPS location</string>
+    <string name="recurrence_next_output">Next Output</string>
+    <string name="recurrence_next_input">Next Input</string>
+    <string name="recurrence_next_transfer">Next Transfer</string>
+    <string name="created_with_recurrence">Created with recurrence</string>
 
     <!-- Account types -->
     <string name="account_type_bank">Bank</string>

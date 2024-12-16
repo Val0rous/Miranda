@@ -126,7 +126,7 @@ class ViewAccount : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     topBar = {
                         TopAppBar(
-                            title = { Text("Account") },
+                            title = { Text(stringResource(R.string.account)) },
                             navigationIcon = {
                                 IconButton(
                                     onClick = { finish() },
@@ -150,7 +150,7 @@ class ViewAccount : ComponentActivity() {
                         ) {
                             NavigationBarItem(
                                 selected = false,
-                                label = { Text("Favorite") },
+                                label = { Text(stringResource(R.string.favorite)) },
                                 icon = {
                                     Icon(
                                         imageVector = if (isFavorite) {
@@ -158,7 +158,7 @@ class ViewAccount : ComponentActivity() {
                                         } else {
                                             ImageVector.vectorResource(R.drawable.ic_favorite)
                                         },
-                                        contentDescription = "Favorite"
+                                        contentDescription = stringResource(R.string.favorite)
                                     )
                                 },
                                 onClick = {
@@ -172,11 +172,11 @@ class ViewAccount : ComponentActivity() {
                             )
                             NavigationBarItem(
                                 selected = false,
-                                label = { Text("Edit") },
+                                label = { Text(stringResource(R.string.edit)) },
                                 icon = {
                                     Icon(
                                         ImageVector.vectorResource(R.drawable.ic_edit),
-                                        contentDescription = "Edit"
+                                        contentDescription = stringResource(R.string.edit)
                                     )
                                 },
                                 onClick = {
@@ -188,11 +188,11 @@ class ViewAccount : ComponentActivity() {
                             )
                             NavigationBarItem(
                                 selected = false,
-                                label = { Text("Delete") },
+                                label = { Text(stringResource(R.string.delete)) },
                                 icon = {
                                     Icon(
                                         ImageVector.vectorResource(R.drawable.ic_delete),
-                                        contentDescription = "Delete"
+                                        contentDescription = stringResource(R.string.delete)
                                     )
                                 },
                                 enabled = !isDeleting,
@@ -260,7 +260,7 @@ class ViewAccount : ComponentActivity() {
                                                 verticalAlignment = Alignment.CenterVertically,
                                                 modifier = Modifier.padding()
                                             ) {
-                                                Text(text = "Current balance")
+                                                Text(text = stringResource(R.string.current_balance))
                                                 Spacer(modifier = Modifier.weight(1f))
                                                 BalanceText(
                                                     balance = account!!.balance,
@@ -274,7 +274,7 @@ class ViewAccount : ComponentActivity() {
                                                 verticalAlignment = Alignment.CenterVertically,
                                                 modifier = Modifier.padding()
                                             ) {
-                                                Text(text = "Type")
+                                                Text(text = stringResource(R.string.type))
                                                 Spacer(modifier = Modifier.weight(1f))
                                                 Text(
                                                     text = stringResource(
@@ -291,7 +291,7 @@ class ViewAccount : ComponentActivity() {
                                                 verticalAlignment = Alignment.CenterVertically,
                                                 modifier = Modifier.padding()
                                             ) {
-                                                Text(text = "Created on")
+                                                Text(text = stringResource(R.string.created_on))
                                                 Spacer(modifier = Modifier.weight(1f))
                                                 Text(
                                                     text = formatDate(account!!.createdOn),
@@ -319,7 +319,7 @@ class ViewAccount : ComponentActivity() {
                                         onClick = { index = 0 },
                                         label = {
                                             Text(
-                                                text = "Stats",
+                                                text = stringResource(R.string.stats),
                                                 textAlign = TextAlign.Center,
                                                 modifier = Modifier.weight(1f)
                                             )
@@ -342,7 +342,7 @@ class ViewAccount : ComponentActivity() {
                                         onClick = { index = 1 },
                                         label = {
                                             Text(
-                                                text = "Recents",
+                                                text = stringResource(R.string.recents),
                                                 textAlign = TextAlign.Center,
                                                 modifier = Modifier.weight(1f)
                                             )
@@ -365,7 +365,7 @@ class ViewAccount : ComponentActivity() {
                                         onClick = { index = 2 },
                                         label = {
                                             Text(
-                                                text = "Recurrents",
+                                                text = stringResource(R.string.recurrents),
                                                 textAlign = TextAlign.Center,
                                                 modifier = Modifier.weight(1f)
                                             )

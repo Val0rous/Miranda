@@ -43,6 +43,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.R
@@ -185,7 +186,15 @@ class ViewRecurrence : ComponentActivity() {
                             title = {
                                 if (isLoaded) {
                                     if (!isDeleting) {
-                                        Text("Next " + TransactionType.valueOf(recurrence!!.type).type)
+                                        Text(
+                                            stringResource(
+                                                when (TransactionType.valueOf(recurrence!!.type)) {
+                                                    TransactionType.OUTPUT -> R.string.recurrence_next_output
+                                                    TransactionType.INPUT -> R.string.recurrence_next_input
+                                                    TransactionType.TRANSFER -> R.string.recurrence_next_transfer
+                                                }
+                                            )
+                                        )
                                     }
                                 }
                             },
@@ -212,11 +221,11 @@ class ViewRecurrence : ComponentActivity() {
                         ) {
                             NavigationBarItem(
                                 selected = false,
-                                label = { Text("Edit") },
+                                label = { Text(stringResource(R.string.edit)) },
                                 icon = {
                                     Icon(
                                         ImageVector.vectorResource(R.drawable.ic_edit),
-                                        contentDescription = "Edit"
+                                        contentDescription = stringResource(R.string.edit)
                                     )
                                 },
                                 onClick = {
@@ -231,11 +240,11 @@ class ViewRecurrence : ComponentActivity() {
                             )
                             NavigationBarItem(
                                 selected = false,
-                                label = { Text("Delete") },
+                                label = { Text(stringResource(R.string.delete)) },
                                 icon = {
                                     Icon(
                                         ImageVector.vectorResource(R.drawable.ic_delete),
-                                        contentDescription = "Delete"
+                                        contentDescription = stringResource(R.string.delete)
                                     )
                                 },
                                 enabled = !isDeleting,

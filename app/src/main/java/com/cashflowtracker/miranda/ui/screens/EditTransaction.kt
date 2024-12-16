@@ -27,7 +27,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.data.database.Transaction
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserId
 import com.cashflowtracker.miranda.ui.composables.AddEditTopAppBar
@@ -285,7 +287,7 @@ class EditTransaction : ComponentActivity() {
                 Scaffold(
                     topBar = {
                         AddEditTopAppBar(
-                            buttonText = "Save",
+                            buttonText = stringResource(R.string.save),
                             isButtonEnabled = isFormValid,
                             onIconButtonClick = { finish() },
                             onButtonClick = {

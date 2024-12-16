@@ -8,15 +8,17 @@
     <string name="transactions">Transazioni</string>
     <string name="recurrents">Ricorrenze</string>
     <string name="stats">Statistiche</string>
+    <string name="recents">Recenti</string>
     <string name="total_balance">Saldo Totale</string>
     <string name="accounts">Conti</string>
     <string name="account">Conto</string>
     <string name="add_account">Aggiungi Conto</string>
     <string name="sort">Ordina</string>
     <string name="filter">Filtra</string>
-    <string name="current_balance">Saldo attuale</string>
+    <string name="current_balance">Saldo corrente</string>
     <string name="toggle_visibility">Alterna Visibilità</string>
     <string name="create">Crea</string>
+    <string name="save">Salva</string>
     <string name="title">Titolo</string>
     <string name="type">Tipo</string>
     <string name="created_on">Creato il</string>
@@ -54,9 +56,9 @@
     <string name="quarterly_report">Rapp. Trimestrale</string>
     <string name="monthly_report">Rapporto Mensile</string>
     <string name="categories">Categorie</string>
-    <string name="overall">Complessivo</string>
+    <string name="overall">Totale</string>
     <string name="yearly">Annuale</string>
-    <string name="quarterly">Trimestrale</string>
+    <string name="quarterly">Trimestre</string>
     <string name="monthly">Mensile</string>
     <string name="no_accounts">Nessun conto. Tocca + per aggiungerne uno!</string>
     <string name="no_transactions">Nessuna transazione trovata</string>
@@ -69,6 +71,10 @@
     <string name="loading">Caricamento...</string>
     <string name="currency">Valuta</string>
     <string name="get_gps_location">Ottieni posizione GPS</string>
+    <string name="recurrence_next_output">Prossima Spesa</string>
+    <string name="recurrence_next_input">Prossima Entrata</string>
+    <string name="recurrence_next_transfer">Prossimo Trasferimento</string>
+    <string name="created_with_recurrence">Creato con ricorrenza</string>
 
     <!-- Account types -->
     <string name="account_type_bank">Banca</string>

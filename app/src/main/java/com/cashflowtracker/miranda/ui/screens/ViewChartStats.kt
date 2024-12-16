@@ -29,6 +29,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.core.view.WindowCompat
 import androidx.navigation.NavHostController
@@ -105,7 +106,7 @@ class ViewChartStats : ComponentActivity() {
                                     IconButton(onClick = { finish() }) {
                                         Icon(
                                             imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_back),
-                                            contentDescription = "Back",
+                                            contentDescription = stringResource(R.string.back),
                                             tint = MaterialTheme.colorScheme.onSurface
                                         )
                                     }

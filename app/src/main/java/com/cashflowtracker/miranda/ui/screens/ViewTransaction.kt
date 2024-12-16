@@ -171,11 +171,11 @@ class ViewTransaction : ComponentActivity() {
                         ) {
                             NavigationBarItem(
                                 selected = false,
-                                label = { Text("Edit") },
+                                label = { Text(stringResource(R.string.edit)) },
                                 icon = {
                                     Icon(
                                         ImageVector.vectorResource(R.drawable.ic_edit),
-                                        contentDescription = "Edit"
+                                        contentDescription = stringResource(R.string.edit)
                                     )
                                 },
                                 onClick = {
@@ -194,11 +194,11 @@ class ViewTransaction : ComponentActivity() {
                             )
                             NavigationBarItem(
                                 selected = false,
-                                label = { Text("Delete") },
+                                label = { Text(stringResource(R.string.delete)) },
                                 icon = {
                                     Icon(
                                         ImageVector.vectorResource(R.drawable.ic_delete),
-                                        contentDescription = "Delete"
+                                        contentDescription = stringResource(R.string.delete)
                                     )
                                 },
                                 enabled = !isDeleting,

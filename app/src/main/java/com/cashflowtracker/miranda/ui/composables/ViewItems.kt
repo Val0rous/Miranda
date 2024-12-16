@@ -38,6 +38,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -364,7 +365,7 @@ fun IsRecurrencePillCard() {
     PillCard(
         icon = R.drawable.ic_schedule,
         description = "",
-        text = "Created with recurrence"
+        text = stringResource(R.string.created_with_recurrence)
     )
 }
 
