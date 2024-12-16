@@ -6,19 +6,8 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.os.Build
-import androidx.compose.ui.graphics.toArgb
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.work.Data
-import androidx.work.OneTimeWorkRequest
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
-import com.cashflowtracker.miranda.R
-import com.cashflowtracker.miranda.data.database.Notification
-import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
-import java.time.Duration
-import java.time.ZonedDateTime
-import java.util.concurrent.TimeUnit
 
 object NotificationHelper {
     private val channelId = "miranda-notification-channel"
@@ -29,7 +18,8 @@ object NotificationHelper {
     fun sendNotification(
         context: Context,
         notificationId: Int,
-        type: String,
+        notificationType: String,
+        recurrenceType: String,
         source: String,
         destination: String,
         amount: Double,
@@ -42,8 +32,16 @@ object NotificationHelper {
         createNotificationChannel(context)
 
         val notification = NotificationCompat.Builder(context, channelId)
-            .setContentTitle("$comment renews ${Notifications.valueOf(type).shortDesc}")
-            .setContentText("${formatAmount(amount, currency, type)} with $source to $destination")
+            .setContentTitle("$comment renews ${Notifications.valueOf(notificationType).shortDesc}")
+            .setContentText(
+                "${
+                    formatAmount(
+                        amount,
+                        currency,
+                        recurrenceType
+                    )
+                } with $source to $destination"
+            )
             .setSmallIcon(icon)
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)

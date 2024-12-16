@@ -194,7 +194,7 @@ fun formatRenewal(dateTime: String): String {
 
 fun formatSource(source: String, transactionType: String): String {
     return when (transactionType) {
-        TransactionType.OUTPUT.name -> AccountType.getType(source).ifEmpty { source }
+        TransactionType.OUTPUT.name -> source //AccountType.getType(source).ifEmpty { source }
         TransactionType.INPUT.name -> when (source) {
             SpecialType.POCKET.name,
             SpecialType.EXTRA.name,
@@ -204,15 +204,15 @@ fun formatSource(source: String, transactionType: String): String {
             else -> DefaultCategories.getCategory(source)
         }
 
-        else -> AccountType.getType(source).ifEmpty { source }
+        else -> source //AccountType.getType(source).ifEmpty { source }
     }
 }
 
 fun formatDestination(destination: String, transactionType: String): String {
     return when (transactionType) {
         TransactionType.OUTPUT.name -> DefaultCategories.getCategory(destination)
-        TransactionType.INPUT.name -> AccountType.getType(destination).ifEmpty { destination }
-        else -> AccountType.getType(destination).ifEmpty { destination }
+        TransactionType.INPUT.name -> destination //AccountType.getType(destination).ifEmpty { destination }
+        else -> destination //AccountType.getType(destination).ifEmpty { destination }
     }
 }
 

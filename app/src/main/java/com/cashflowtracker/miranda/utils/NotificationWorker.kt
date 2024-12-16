@@ -40,7 +40,7 @@ class NotificationWorker(
         ) {
             accountsRepo.getByAccountId(UUID.fromString(source)).title
         } else {
-            this.source
+            formatSource(this.source, recurrenceType)
         }
 
         val destination = if ((recurrenceType == TransactionType.INPUT.name
@@ -49,7 +49,7 @@ class NotificationWorker(
         ) {
             accountsRepo.getByAccountId(UUID.fromString(destination)).title
         } else {
-            this.destination
+            formatDestination(this.destination, recurrenceType)
         }
 
         val intent = Intent(applicationContext, ViewRecurrence::class.java).apply {
@@ -68,12 +68,13 @@ class NotificationWorker(
             applicationContext,
             UUID.fromString(notificationId).hashCode(),
             notificationType,
+            recurrenceType,
             source,
             destination,
             amount,
             Currencies.valueOf(currency),
             comment,
-            iconFactory(recurrenceType, source, destination),
+            iconFactory(recurrenceType, this.source, this.destination),
             pendingIntent
         )
         return Result.success()
