@@ -208,7 +208,13 @@ fun formatSource(source: String, transactionType: String, context: Context): Str
 
 fun formatDestination(destination: String, transactionType: String, context: Context): String {
     return when (transactionType) {
-        TransactionType.OUTPUT.name -> context.getString(DefaultCategories.getCategory(destination))
+        TransactionType.OUTPUT.name -> when (destination) {
+            SpecialType.DEBTS.name,
+            SpecialType.CREDITS.name -> context.getString(SpecialType.getCategory(destination))
+
+            else -> context.getString(DefaultCategories.getCategory(destination))
+        }
+
         TransactionType.INPUT.name -> destination //AccountType.getType(destination).ifEmpty { destination }
         else -> destination //AccountType.getType(destination).ifEmpty { destination }
     }

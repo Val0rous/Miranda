@@ -5,7 +5,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -29,18 +31,23 @@ import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.data.repositories.LoginRepository.getCurrentUserId
 import com.cashflowtracker.miranda.ui.composables.AccountListItem
+import com.cashflowtracker.miranda.ui.composables.CategoryDescriptionBottomSheet
 import com.cashflowtracker.miranda.ui.composables.CategoryListItem
 import com.cashflowtracker.miranda.ui.composables.SpecialListItem
 import com.cashflowtracker.miranda.ui.theme.MirandaTheme
 import com.cashflowtracker.miranda.ui.viewmodels.AccountsViewModel
 import com.cashflowtracker.miranda.utils.AccountType
 import com.cashflowtracker.miranda.utils.DefaultCategories
+import com.cashflowtracker.miranda.utils.DescriptionCategory
 import com.cashflowtracker.miranda.utils.SpecialType
 import com.cashflowtracker.miranda.utils.TransactionType
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 class SelectSource : ComponentActivity() {
-    @OptIn(ExperimentalMaterial3Api::class)
+    @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -56,6 +63,8 @@ class SelectSource : ComponentActivity() {
             val vm = koinViewModel<AccountsViewModel>()
             val userId = context.getCurrentUserId()
             val accounts by vm.actions.getAllByUserId(userId).collectAsState(initial = emptyList())
+            val showDialog = remember { mutableStateOf(false) }
+            val selectedItem = remember { mutableStateOf<DescriptionCategory?>(null) }
             MirandaTheme {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
@@ -128,34 +137,51 @@ class SelectSource : ComponentActivity() {
                             items(SpecialType.entries) {
                                 if (it.isSource) {
                                     SpecialListItem(
-                                        item = it,
-                                        modifier = Modifier.clickable {
-                                            val resultIntent =
-                                                Intent().putExtra("sourceTitle", it.name)
+                                        special = it,
+                                        modifier = Modifier.combinedClickable(
+                                            onClick = {
+                                                val resultIntent = Intent()
+                                                    .putExtra("sourceTitle", it.name)
                                                     .putExtra("sourceIcon", it.icon.toString())
-                                            setResult(RESULT_OK, resultIntent)
-                                            finish()
-                                        }
+                                                setResult(RESULT_OK, resultIntent)
+                                                finish()
+                                            },
+                                            onLongClick = {
+                                                CoroutineScope(Dispatchers.Main).launch {
+                                                    selectedItem.value = it
+                                                    showDialog.value = true
+                                                }
+                                            }
+                                        )
                                     )
                                 }
                             }
-                        }
-                        if (transactionType == TransactionType.INPUT.name) {
                             // Category list
                             items(DefaultCategories.entries) {
                                 CategoryListItem(
                                     category = it,
-                                    modifier = Modifier.clickable {
-                                        val resultIntent =
-                                            Intent()
+                                    modifier = Modifier.combinedClickable(
+                                        onClick = {
+                                            val resultIntent = Intent()
                                                 .putExtra("sourceTitle", it.name)
                                                 .putExtra("sourceIcon", it.icon.toString())
-                                        setResult(RESULT_OK, resultIntent)
-                                        finish()
-                                    }
+                                            setResult(RESULT_OK, resultIntent)
+                                            finish()
+                                        },
+                                        onLongClick = {
+                                            CoroutineScope(Dispatchers.Main).launch {
+                                                selectedItem.value = it
+                                                showDialog.value = true
+                                            }
+                                        }
+                                    )
                                 )
                             }
                         }
+                    }
+
+                    if (showDialog.value) {
+                        CategoryDescriptionBottomSheet(showDialog, selectedItem)
                     }
                 }
             }

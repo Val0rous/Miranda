@@ -4,20 +4,24 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.data.database.Account
@@ -66,18 +70,28 @@ fun AccountListItem(account: Account, modifier: Modifier) {
 }
 
 @Composable
-fun CategoryListItem(category: DefaultCategories, modifier: Modifier) {
+fun CategoryListItem(
+    category: DefaultCategories,
+    modifier: Modifier = Modifier,
+    boxSize: Dp = 40.dp,
+    iconSize: Dp = 24.dp,
+    starSize: Dp = 24.dp,
+    containerColor: Color = MaterialTheme.colorScheme.surface,
+    textStyle: TextStyle = MaterialTheme.typography.bodyLarge,
+    textPaddingStart: Dp = 0.dp
+) {
     ListItem(
         headlineContent = {
             Text(
                 text = stringResource(category.category),
-                style = MaterialTheme.typography.bodyLarge
+                style = textStyle,
+                modifier = Modifier.padding(start = textPaddingStart)
             )
         },
         leadingContent = {
             Box(
                 modifier = Modifier
-                    .size(40.dp)
+                    .size(boxSize)
                     .clip(CircleShape)
                     //.background(MaterialTheme.colorScheme.surfaceTint)
                     .background(
@@ -94,7 +108,7 @@ fun CategoryListItem(category: DefaultCategories, modifier: Modifier) {
                     contentDescription = stringResource(category.category),
                     tint = LocalCustomColors.current.icon,
                     modifier = Modifier
-                        .size(24.dp)
+                        .size(iconSize)
                         .align(Alignment.Center)
                 )
             }
@@ -109,7 +123,7 @@ fun CategoryListItem(category: DefaultCategories, modifier: Modifier) {
                                 contentDescription = "",
                                 tint = Red400,
                                 modifier = Modifier
-                                    .size(24.dp)
+                                    .size(starSize)
                             )
                         }
                     }
@@ -123,7 +137,7 @@ fun CategoryListItem(category: DefaultCategories, modifier: Modifier) {
                                 contentDescription = "",
                                 tint = Yellow400,
                                 modifier = Modifier
-                                    .size(24.dp)
+                                    .size(starSize)
                             )
                         }
                     }
@@ -136,7 +150,7 @@ fun CategoryListItem(category: DefaultCategories, modifier: Modifier) {
                                 contentDescription = "",
                                 tint = Green400,
                                 modifier = Modifier
-                                    .size(24.dp)
+                                    .size(starSize)
                             )
                         }
                     }
@@ -144,42 +158,53 @@ fun CategoryListItem(category: DefaultCategories, modifier: Modifier) {
                 CategoryClass.UNRANKED -> {}
             }
         },
-        modifier = modifier
+        modifier = modifier,
+        colors = ListItemDefaults.colors(containerColor = containerColor)
     )
 //    HorizontalDivider()
 }
 
 @Composable
-fun SpecialListItem(item: SpecialType, modifier: Modifier) {
+fun SpecialListItem(
+    special: SpecialType,
+    modifier: Modifier = Modifier,
+    boxSize: Dp = 40.dp,
+    iconSize: Dp = 24.dp,
+    containerColor: Color = MaterialTheme.colorScheme.surface,
+    textStyle: TextStyle = MaterialTheme.typography.bodyLarge,
+    textPaddingStart: Dp = 0.dp
+) {
     ListItem(
         headlineContent = {
             Text(
-                text = stringResource(item.category),
-                style = MaterialTheme.typography.bodyLarge
+                text = stringResource(special.category),
+                style = textStyle,
+                modifier = Modifier.padding(start = textPaddingStart)
             )
         },
         leadingContent = {
             Box(
                 modifier = Modifier
-                    .size(40.dp)
+                    .size(boxSize)
                     .clip(CircleShape)
                     .background(LocalCustomColors.current.surfaceTintDeepPurple)
             ) {
                 Icon(
                     imageVector = ImageVector.vectorResource(
                         SpecialType.getIcon(
-                            item.name
+                            special.name
                         )
                     ),
-                    contentDescription = stringResource(item.category),
+                    contentDescription = stringResource(special.category),
                     tint = LocalCustomColors.current.icon,
                     modifier = Modifier
-                        .size(24.dp)
+                        .size(iconSize)
                         .align(Alignment.Center)
                 )
             }
         },
-        modifier = modifier
+        modifier = modifier,
+        colors = ListItemDefaults.colors(containerColor = containerColor)
     )
 //    HorizontalDivider()
 }

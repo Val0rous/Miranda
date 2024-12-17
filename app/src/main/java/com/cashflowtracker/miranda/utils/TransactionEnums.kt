@@ -32,7 +32,12 @@ enum class CategoryClass(val stars: Char, val label: Int) {
  *  @param icon Path of category icon
  *  @param type Category type (stars)
  */
-enum class DefaultCategories(val category: Int, val icon: Int, val type: CategoryClass) {
+enum class DefaultCategories(
+    override val category: Int,
+    override val icon: Int,
+    val type: CategoryClass,
+    override val description: String = ""
+) : DescriptionCategory {
     BANK(R.string.category_bank, R.drawable.ic_account_balance, CategoryClass.NECESSITY),
     CAR(R.string.category_car, R.drawable.ic_directions_car, CategoryClass.NECESSITY),
     RENT(R.string.category_rent, R.drawable.ic_apartment, CategoryClass.NECESSITY),

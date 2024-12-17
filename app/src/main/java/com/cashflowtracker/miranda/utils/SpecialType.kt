@@ -3,11 +3,12 @@ package com.cashflowtracker.miranda.utils
 import com.cashflowtracker.miranda.R
 
 enum class SpecialType(
-    val category: Int,
-    val icon: Int,
+    override val category: Int,
+    override val icon: Int,
     val isSource: Boolean,
-    val isDestination: Boolean
-) {
+    val isDestination: Boolean,
+    override val description: String = ""
+) : DescriptionCategory {
     POCKET(R.string.special_type_pocket, R.drawable.ic_guardian, true, false),
     EXTRA(R.string.special_type_extra, R.drawable.ic_cake, true, false),
     DEBTS(R.string.special_type_debts, R.drawable.ic_credit_card_clock, true, true),
@@ -26,4 +27,10 @@ enum class SpecialType(
             }?.icon ?: R.drawable.ic_default_empty
         }
     }
+}
+
+interface DescriptionCategory {
+    val category: Int;
+    val icon: Int;
+    val description: String;
 }
