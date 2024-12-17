@@ -37,6 +37,10 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.cashflowtracker.miranda.R
 import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
@@ -60,21 +64,12 @@ fun CategoryDescriptionBottomSheet(
     val context = LocalContext.current
     val colorScheme = MaterialTheme.colorScheme
     val color = remember { mutableStateOf(colorScheme.surfaceTint) }
+    val category = remember { mutableStateOf("") }
     ModalBottomSheet(
         onDismissRequest = { showDialog.value = false },
     ) {
         when (selectedItem.value) {
             is DefaultCategories -> {
-                CategoryListItem(
-                    category = selectedItem.value as DefaultCategories,
-                    modifier = Modifier.padding(horizontal = 8.dp),
-                    boxSize = 52.dp,
-                    iconSize = 32.dp,
-                    starSize = 28.dp,
-                    containerColor = Color.Transparent,
-                    textStyle = MaterialTheme.typography.titleLarge,
-                    textPaddingStart = 4.dp
-                )
                 when ((selectedItem.value as DefaultCategories).type) {
                     CategoryClass.NECESSITY -> color.value =
                         LocalCustomColors.current.surfaceTintRed
@@ -85,9 +80,25 @@ fun CategoryDescriptionBottomSheet(
                     CategoryClass.LUXURY -> color.value = LocalCustomColors.current.surfaceTintGreen
                     CategoryClass.UNRANKED -> {}
                 }
+                category.value =
+                    stringResource((selectedItem.value as DefaultCategories).type.label)
+                CategoryListItem(
+                    category = selectedItem.value as DefaultCategories,
+                    modifier = Modifier.padding(horizontal = 8.dp),
+                    boxSize = 52.dp,
+                    iconSize = 32.dp,
+                    starSize = 28.dp,
+                    containerColor = Color.Transparent,
+                    textStyle = MaterialTheme.typography.titleLarge,
+                    textPaddingStart = 4.dp,
+                    showCategory = true,
+                    chipColor = color.value
+                )
             }
 
             is SpecialType -> {
+                color.value = LocalCustomColors.current.surfaceTintDeepPurple
+                category.value = stringResource(R.string.category_class_special)
                 SpecialListItem(
                     special = selectedItem.value as SpecialType,
                     modifier = Modifier.padding(horizontal = 8.dp),
@@ -95,9 +106,10 @@ fun CategoryDescriptionBottomSheet(
                     iconSize = 32.dp,
                     containerColor = Color.Transparent,
                     textStyle = MaterialTheme.typography.titleLarge,
-                    textPaddingStart = 4.dp
+                    textPaddingStart = 4.dp,
+                    showSpecial = true,
+                    chipColor = color.value
                 )
-                color.value = LocalCustomColors.current.surfaceTintDeepPurple
             }
         }
         if (selectedItem.value!!.description != 0) {
@@ -115,7 +127,7 @@ fun CategoryDescriptionBottomSheet(
         ) {
             TextButton(
                 onClick = { showDialog.value = false },
-                colors = ButtonDefaults.outlinedButtonColors(
+                colors = ButtonDefaults.textButtonColors(
                     contentColor = MaterialTheme.colorScheme.onSurface
                 ),
                 modifier = Modifier.weight(1f)

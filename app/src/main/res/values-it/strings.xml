@@ -75,6 +75,7 @@
     <string name="recurrence_next_input">Prossima Entrata</string>
     <string name="recurrence_next_transfer">Prossimo Trasferimento</string>
     <string name="created_with_recurrence">Creato con ricorrenza</string>
+    <string name="category">Categoria</string>
 
     <!-- Account types -->
     <string name="account_type_bank">Banca</string>
@@ -104,6 +105,7 @@
     <string name="category_class_convenience">Comodità</string>
     <string name="category_class_luxury">Lusso</string>
     <string name="category_class_unranked">Non Classificato</string>
+    <string name="category_class_special">Speciale</string>
 
     <!-- Default categories -->
     <string name="category_bank">Banca</string>

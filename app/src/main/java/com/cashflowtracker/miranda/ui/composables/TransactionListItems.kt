@@ -3,10 +3,12 @@ package com.cashflowtracker.miranda.ui.composables
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
@@ -78,15 +80,33 @@ fun CategoryListItem(
     starSize: Dp = 24.dp,
     containerColor: Color = MaterialTheme.colorScheme.surface,
     textStyle: TextStyle = MaterialTheme.typography.bodyLarge,
-    textPaddingStart: Dp = 0.dp
+    textPaddingStart: Dp = 0.dp,
+    showCategory: Boolean = false,
+    chipColor: Color = Color.Transparent
 ) {
     ListItem(
         headlineContent = {
-            Text(
-                text = stringResource(category.category),
-                style = textStyle,
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.Start,
                 modifier = Modifier.padding(start = textPaddingStart)
-            )
+            ) {
+                Text(
+                    text = stringResource(category.category),
+                    style = textStyle
+                )
+                if (showCategory) {
+                    Text(
+                        text = stringResource(category.type.label),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = LocalCustomColors.current.icon,
+                        modifier = Modifier
+                            .padding(top = 4.dp)
+                            .background(chipColor, RoundedCornerShape(100))
+                            .padding(horizontal = 8.dp, vertical = 4.dp)
+                    )
+                }
+            }
         },
         leadingContent = {
             Box(
@@ -172,15 +192,33 @@ fun SpecialListItem(
     iconSize: Dp = 24.dp,
     containerColor: Color = MaterialTheme.colorScheme.surface,
     textStyle: TextStyle = MaterialTheme.typography.bodyLarge,
-    textPaddingStart: Dp = 0.dp
+    textPaddingStart: Dp = 0.dp,
+    showSpecial: Boolean = false,
+    chipColor: Color = Color.Transparent
 ) {
     ListItem(
         headlineContent = {
-            Text(
-                text = stringResource(special.category),
-                style = textStyle,
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.Start,
                 modifier = Modifier.padding(start = textPaddingStart)
-            )
+            ) {
+                Text(
+                    text = stringResource(special.category),
+                    style = textStyle
+                )
+                if (showSpecial) {
+                    Text(
+                        text = stringResource(R.string.category_class_special),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = LocalCustomColors.current.icon,
+                        modifier = Modifier
+                            .padding(top = 4.dp)
+                            .background(chipColor, RoundedCornerShape(100))
+                            .padding(horizontal = 8.dp, vertical = 4.dp)
+                    )
+                }
+            }
         },
         leadingContent = {
             Box(

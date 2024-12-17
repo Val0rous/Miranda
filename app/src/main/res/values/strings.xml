@@ -75,6 +75,7 @@
     <string name="recurrence_next_input">Next Input</string>
     <string name="recurrence_next_transfer">Next Transfer</string>
     <string name="created_with_recurrence">Created with recurrence</string>
+    <string name="category">Category</string>
 
     <!-- Account types -->
     <string name="account_type_bank">Bank</string>
@@ -104,6 +105,7 @@
     <string name="category_class_convenience">Convenience</string>
     <string name="category_class_luxury">Luxury</string>
     <string name="category_class_unranked">Unranked</string>
+    <string name="category_class_special">Special</string>
 
     <!-- Default categories -->
     <string name="category_bank">Bank</string>
