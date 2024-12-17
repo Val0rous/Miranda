@@ -7,7 +7,7 @@ enum class SpecialType(
     override val icon: Int,
     val isSource: Boolean,
     val isDestination: Boolean,
-    override val description: String = ""
+    override val description: Int = 0
 ) : DescriptionCategory {
     POCKET(R.string.special_type_pocket, R.drawable.ic_guardian, true, false),
     EXTRA(R.string.special_type_extra, R.drawable.ic_cake, true, false),
@@ -32,5 +32,5 @@ enum class SpecialType(
 interface DescriptionCategory {
     val category: Int;
     val icon: Int;
-    val description: String;
+    val description: Int;
 }

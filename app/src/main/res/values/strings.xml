@@ -151,6 +151,23 @@
     <string name="category_stuff">Stuff</string>
     <string name="category_travel">Travel</string>
 
+    <!-- Default categories Descriptions -->
+    <string name="category_bank_description" translatable="false">Any kind of bank</string>
+    <string name="category_car_description" translatable="false">Car</string>
+    <string name="category_rent_description" translatable="false">Rent</string>
+    <string name="category_family_description" translatable="false">Family</string>
+    <string name="category_fees_description" translatable="false">Fees</string>
+    <string name="category_food_description" translatable="false">Food</string>
+    <string name="category_fuel_description" translatable="false">Fuel</string>
+    <string name="category_healthcare_description" translatable="false">Healthcare expenses.\n\nExamples:\n\u2022 Doctor receipts\n\u2022 Prescription receipts\n\u2022 Prescription drugs\n\u2022 Contraceptives\n\u2022 Mental health</string>
+    <string name="category_household_description" translatable="false">Household</string>
+    <string name="category_insurance_description" translatable="false">Insurance</string>
+    <string name="category_job_description" translatable="false">Job</string>
+    <string name="category_phone_internet_description" translatable="false">Phone/Internet</string>
+    <string name="category_fines_description" translatable="false">Fines</string>
+    <string name="category_supplements_description" translatable="false">Supplements</string>
+    <string name="category_transport_description" translatable="false">Transport</string>
+
     <!-- Currencies -->
     <string name="currency_euro">Euro</string>
     <string name="currency_us_dollar">US Dollar</string>

@@ -188,7 +188,12 @@ class SelectDestination : ComponentActivity() {
                     }
 
                     if (showDialog.value) {
-                        CategoryDescriptionBottomSheet(showDialog, selectedItem)
+                        CategoryDescriptionBottomSheet(
+                            showDialog,
+                            selectedItem,
+                            false,
+                            this@SelectDestination
+                        )
                     }
                 }
             }

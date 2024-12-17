@@ -36,7 +36,7 @@ enum class DefaultCategories(
     override val category: Int,
     override val icon: Int,
     val type: CategoryClass,
-    override val description: String = ""
+    override val description: Int = 0
 ) : DescriptionCategory {
     BANK(R.string.category_bank, R.drawable.ic_account_balance, CategoryClass.NECESSITY),
     CAR(R.string.category_car, R.drawable.ic_directions_car, CategoryClass.NECESSITY),
@@ -45,7 +45,12 @@ enum class DefaultCategories(
     FEES(R.string.category_fees, R.drawable.ic_paid, CategoryClass.NECESSITY),
     FOOD(R.string.category_food, R.drawable.ic_local_pizza, CategoryClass.NECESSITY),
     FUEL(R.string.category_fuel, R.drawable.ic_local_gas_station, CategoryClass.NECESSITY),
-    HEALTHCARE(R.string.category_healthcare, R.drawable.ic_ecg_heart, CategoryClass.NECESSITY),
+    HEALTHCARE(
+        R.string.category_healthcare,
+        R.drawable.ic_ecg_heart,
+        CategoryClass.NECESSITY,
+        R.string.category_healthcare_description
+    ),
     HOUSEHOLD(R.string.category_household, R.drawable.ic_cottage, CategoryClass.NECESSITY),
     INSURANCE(
         R.string.category_insurance,
