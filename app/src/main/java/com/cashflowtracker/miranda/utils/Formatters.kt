@@ -14,6 +14,7 @@ import java.time.format.DateTimeFormatter
 import java.util.Currency
 import java.util.Date
 import java.util.Locale
+import kotlin.math.absoluteValue
 
 private const val MONEY_FORMAT = "###,###,##0.00"
 private const val MONEY_FORMAT_NO_CENTS = "###,###,###"
@@ -50,9 +51,9 @@ fun formatAmountAsInt(amount: Float, currency: Currencies): String {
     numberFormat.maximumFractionDigits = 1
 
     val suffix = when {
-        amount >= 1_000_000_000 -> "B"
-        amount >= 1_000_000 -> "M"
-        amount >= 1_000 -> "K"
+        amount.absoluteValue >= 1_000_000_000 -> "B"
+        amount.absoluteValue >= 1_000_000 -> "M"
+        amount.absoluteValue >= 1_000 -> "K"
         else -> ""
     }
     val divisor = when (suffix) {
