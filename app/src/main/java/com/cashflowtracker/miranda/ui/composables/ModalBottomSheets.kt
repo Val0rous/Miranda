@@ -132,7 +132,7 @@ fun CategoryDescriptionBottomSheet(
                 ),
                 modifier = Modifier.weight(1f)
             ) {
-                Text(text = "Cancel")
+                Text(text = stringResource(R.string.cancel))
             }
             FilledTonalButton(
                 onClick = {
@@ -149,7 +149,7 @@ fun CategoryDescriptionBottomSheet(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = "Select",
+                    text = stringResource(R.string.select),
                     color = LocalCustomColors.current.icon
                 )
             }

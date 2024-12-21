@@ -50,7 +50,7 @@
     <string name="time_zones">Fusi Orari</string>
     <string name="time_zone">Fuso Orario</string>
     <string name="create_first_occurrence">Crea Prima Ricorrenza</string>
-    <string name="add_notification">Aggiungi Notifica</string>
+    <string name="add_notification">Aggiungi notifica</string>
     <string name="overall_cashflow">Flusso Totale</string>
     <string name="yearly_report">Rapporto Annuale</string>
     <string name="quarterly_report">Rapp. Trimestrale</string>
@@ -76,6 +76,77 @@
     <string name="recurrence_next_transfer">Prossimo Trasferimento</string>
     <string name="created_with_recurrence">Creato con ricorrenza</string>
     <string name="category">Categoria</string>
+    <string name="select">Seleziona</string>
+    <string name="cancel">Annulla</string>
+    <string name="about">Info</string>
+    <string name="your_data_in">I tuoi dati in</string>
+    <string name="archive">Archivio</string>
+    <string name="custom_categories">Categorie Personalizzate</string>
+    <string name="privacy_policy">Politica Privacy</string>
+    <string name="terms_of_service">Termini di Servizio</string>
+    <string name="notification_renews">si rinnova</string>
+    <string name="notification_with">con</string>
+    <string name="notification_to">in</string>
+    <string name="renews">Rinnovo</string>
+    <string name="already_renewed">Già rinnovato</string>
+    <string name="time_in">tra</string>
+    <string name="time_years">anni</string>
+    <string name="time_year">anno</string>
+    <string name="time_months">mesi</string>
+    <string name="time_month">mese</string>
+    <string name="time_weeks">settimane</string>
+    <string name="time_week">settimana</string>
+    <string name="time_days">giorni</string>
+    <string name="time_day">giorno</string>
+    <string name="time_hours">ore</string>
+    <string name="time_hour">ora</string>
+    <string name="time_minutes">minuti</string>
+    <string name="time_minute">minuto</string>
+    <string name="time_less_than_a_minute">meno di un minuto</string>
+    <string name="since">Dal</string>
+
+    <!-- Repeats -->
+    <string name="repeats_daily">Ogni giorno</string>
+    <string name="repeats_weekly">Ogni settimana</string>
+    <string name="repeats_biweekly">Ogni 2 settimane</string>
+    <string name="repeats_monthly">Ogni mese</string>
+    <string name="repeats_bimonthly">Ogni 2 mesi</string>
+    <string name="repeats_quarterly">Ogni 3 mesi</string>
+    <string name="repeats_yearly">Ogni anno</string>
+
+    <!-- Notifications -->
+    <string name="notification_at_time">Al momento della transazione</string>
+    <string name="notification_5_minutes_before">5 minuti prima</string>
+    <string name="notification_10_minutes_before">10 minuti prima</string>
+    <string name="notification_15_minutes_before">15 minuti prima</string>
+    <string name="notification_30_minutes_before">30 minuti prima</string>
+    <string name="notification_1_hour_before">1 ora prima</string>
+    <string name="notification_2_hours_before">2 ore prima</string>
+    <string name="notification_3_hours_before">3 ore prima</string>
+    <string name="notification_4_hours_before">4 ore prima</string>
+    <string name="notification_6_hours_before">6 ore prima</string>
+    <string name="notification_8_hours_before">8 ore prima</string>
+    <string name="notification_12_hours_before">12 ore prima</string>
+    <string name="notification_1_day_before">1 giorno prima</string>
+    <string name="notification_1_week_before">1 settimana prima</string>
+    <string name="notification_2_weeks_before">2 settimane prima</string>
+
+    <!-- Notifications shortDesc -->
+    <string name="notification_at_time_short">adesso</string>
+    <string name="notification_5_minutes_before_short">tra 5 minuti</string>
+    <string name="notification_10_minutes_before_short">tra 10 minuti</string>
+    <string name="notification_15_minutes_before_short">tra 15 minuti</string>
+    <string name="notification_30_minutes_before_short">tra 30 minuti</string>
+    <string name="notification_1_hour_before_short">tra 1 ora</string>
+    <string name="notification_2_hours_before_short">tra 2 ore</string>
+    <string name="notification_3_hours_before_short">tra 3 ore</string>
+    <string name="notification_4_hours_before_short">tra 4 ore</string>
+    <string name="notification_6_hours_before_short">tra 6 ore</string>
+    <string name="notification_8_hours_before_short">tra 8 ore</string>
+    <string name="notification_12_hours_before_short">tra 12 ore</string>
+    <string name="notification_1_day_before_short">tra 1 giorno</string>
+    <string name="notification_1_week_before_short">tra 1 settimana</string>
+    <string name="notification_2_weeks_before_short">tra 2 settimane</string>
 
     <!-- Account types -->
     <string name="account_type_bank">Banca</string>
@@ -108,6 +179,7 @@
     <string name="category_class_special">Speciale</string>
 
     <!-- Default categories -->
+    <!-- 1 star -->
     <string name="category_bank">Banca</string>
     <string name="category_car">Auto</string>
     <string name="category_rent">Affitto</string>
@@ -123,7 +195,7 @@
     <string name="category_fines">Multe</string>
     <string name="category_supplements">Integratori</string>
     <string name="category_transport">Trasporti</string>
-
+    <!-- 2 stars -->
     <string name="category_meal">Pasto</string>
     <string name="category_personal_care">Cura Personale</string>
     <string name="category_app_software">App/Software</string>
@@ -139,7 +211,7 @@
     <string name="category_accessories">Accessori</string>
     <string name="category_cafe">Caffetteria</string>
     <string name="category_clothing">Abbigliamento</string>
-
+    <!-- 3 stars -->
     <string name="category_cinema">Cinema</string>
     <string name="category_bet">Scommesse</string>
     <string name="category_entertainment">Intrattenimento</string>

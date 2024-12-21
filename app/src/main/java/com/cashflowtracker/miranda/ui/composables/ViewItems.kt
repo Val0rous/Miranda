@@ -293,7 +293,7 @@ fun RepeatsPillCard(repeat: Repeats) {
     PillCard(
         icon = R.drawable.ic_replay,
         description = "Repeat",
-        text = repeat.label,
+        text = stringResource(repeat.label),
         modifier = Modifier
             .padding(end = 16.dp)
             .scale(
@@ -331,7 +331,7 @@ fun NotificationsPillCard(notifications: List<Notification>) {
             Spacer(modifier = Modifier.width(4.dp))
             LazyColumn() {
                 items(notifications) {
-                    Text(Notifications.valueOf(it.notificationType).label)
+                    Text(stringResource(Notifications.valueOf(it.notificationType).label))
                     if (it != notifications.last()) {
                         Spacer(modifier = Modifier.height(16.dp))
                     }
@@ -347,16 +347,17 @@ fun CreationPillCard(creationDate: String) {
     PillCard(
         icon = R.drawable.ic_history,
         description = "Creation date",
-        text = "Since $creationDate"
+        text = "${stringResource(R.string.since)} $creationDate"
     )
 }
 
 @Composable
 fun RenewalPillCard(reoccursOn: String) {
+    val context = LocalContext.current
     PillCard(
         icon = R.drawable.ic_schedule,
         description = "Renewal",
-        text = formatRenewal(reoccursOn)
+        text = formatRenewal(reoccursOn, context)
     )
 }
 

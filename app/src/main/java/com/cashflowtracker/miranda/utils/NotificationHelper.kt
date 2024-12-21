@@ -8,6 +8,7 @@ import android.content.Context
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import com.cashflowtracker.miranda.R
 
 object NotificationHelper {
     private val channelId = "miranda-notification-channel"
@@ -32,7 +33,13 @@ object NotificationHelper {
         createNotificationChannel(context)
 
         val notification = NotificationCompat.Builder(context, channelId)
-            .setContentTitle("$comment renews ${Notifications.valueOf(notificationType).shortDesc}")
+            .setContentTitle(
+                "$comment ${context.getString(R.string.notification_renews)} ${
+                    context.getString(
+                        Notifications.valueOf(notificationType).shortDesc
+                    )
+                }"
+            )
             .setContentText(
                 "${
                     formatAmount(
@@ -40,7 +47,7 @@ object NotificationHelper {
                         currency,
                         recurrenceType
                     )
-                } with $source to $destination"
+                } ${context.getString(R.string.notification_with)} $source ${context.getString(R.string.notification_to)} $destination"
             )
             .setSmallIcon(icon)
             .setAutoCancel(true)

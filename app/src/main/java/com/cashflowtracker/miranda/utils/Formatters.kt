@@ -3,6 +3,7 @@ package com.cashflowtracker.miranda.utils
 import android.annotation.SuppressLint
 import android.content.Context
 import android.text.format.DateFormat
+import com.cashflowtracker.miranda.R
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
@@ -156,13 +157,15 @@ fun formatTimezone(zonedDateTime: ZonedDateTime): String {
     }
 }
 
-fun formatRenewal(dateTime: String): String {
+fun formatRenewal(dateTime: String, context: Context): String {
     val now = ZonedDateTime.now()
     val renewalTime = ZonedDateTime.parse(dateTime)
     val duration = Duration.between(now, renewalTime)
+    val timeIn = context.getString(R.string.time_in)
+    val alreadyRenewed = context.getString(R.string.already_renewed)
 
     if (duration.isNegative) {
-        return "Already renewed"
+        return alreadyRenewed
     }
 
     val days = duration.toDays()
@@ -172,23 +175,23 @@ fun formatRenewal(dateTime: String): String {
 
     // Decide the message based on the largest applicable unit
     val message = when {
-        days >= 730 -> "in ${days / 365} years" // 730 days = 2 years
-        days >= 365 -> "in 1 year"
-        days >= 60 -> "in ${days / 30} months" // Approximate months as 30 days
-        days >= 30 -> "in 1 month"
-        days >= 14 -> "in ${days / 7} weeks"
-        days >= 7 -> "in 1 week"
-        days >= 2 -> "in $days days"
-        days == 1L -> "in 1 day"
-        hours >= 2 -> "in ${hours % 24} hours"
-        hours == 1L -> "in 1 hour"
-        minutes >= 2 -> "in ${minutes % 60} minutes"
-        minutes == 1L -> "in 1 minute"
-        seconds >= 0 -> "in less than a minute"
-        else -> return "Already renewed"
+        days >= 730 -> "$timeIn ${days / 365} ${context.getString(R.string.time_years)}" // 730 days = 2 years
+        days >= 365 -> "$timeIn 1 ${context.getString(R.string.time_year)}"
+        days >= 60 -> "$timeIn ${days / 30} ${context.getString(R.string.time_months)}" // Approximate months as 30 days
+        days >= 30 -> "$timeIn 1 ${context.getString(R.string.time_month)}"
+        days >= 14 -> "$timeIn ${days / 7} ${context.getString(R.string.time_weeks)}"
+        days >= 7 -> "$timeIn 1 ${context.getString(R.string.time_week)}"
+        days >= 2 -> "$timeIn $days ${context.getString(R.string.time_days)}"
+        days == 1L -> "$timeIn 1 ${context.getString(R.string.time_day)}"
+        hours >= 2 -> "$timeIn ${hours % 24} ${context.getString(R.string.time_hours)}"
+        hours == 1L -> "$timeIn 1 ${context.getString(R.string.time_hour)}"
+        minutes >= 2 -> "$timeIn ${minutes % 60} ${context.getString(R.string.time_minutes)}"
+        minutes == 1L -> "$timeIn 1 ${context.getString(R.string.time_minute)}"
+        seconds >= 0 -> "$timeIn ${context.getString(R.string.time_less_than_a_minute)}"
+        else -> return alreadyRenewed
     }
 
-    return "Renews $message"
+    return "${context.getString(R.string.renews)} $message"
 }
 
 fun formatSource(source: String, transactionType: String, context: Context): String {

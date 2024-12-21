@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -123,6 +124,7 @@ fun RecurrenceListItem(
     )
     val date = zdt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
     val time = zdt.format(DateTimeFormatter.ofPattern("HH:mm"))
+    val context = LocalContext.current
     ListItem(
         overlineContent = {
             Text(
@@ -177,7 +179,7 @@ fun RecurrenceListItem(
                         .size(12.dp)
                 )
                 Text(
-                    text = formatRenewal(reoccursOn).lowercase(),
+                    text = formatRenewal(reoccursOn, context).lowercase(),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -197,7 +199,7 @@ fun RecurrenceListItem(
 //                                }
                 )
                 Text(
-                    text = repeat.label.lowercase(),
+                    text = stringResource(repeat.label).lowercase(),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(top = 4.dp)

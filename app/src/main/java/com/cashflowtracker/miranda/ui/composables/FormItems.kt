@@ -248,7 +248,7 @@ fun NotificationsForm(notifications: SnapshotStateList<Notifications>) {
                                 Spacer(modifier = Modifier.width(40.dp))
                             }
                             Text(
-                                notification.label,
+                                stringResource(notification.label),
                                 style = MaterialTheme.typography.titleMedium.copy(
                                     fontWeight = FontWeight.Normal
                                 )

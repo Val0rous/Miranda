@@ -88,7 +88,7 @@ fun NotificationPickerDialog(
                             interactionSource = remember { MutableInteractionSource() }
                         )
                         Text(
-                            text = option.label,
+                            text = stringResource(option.label),
                             modifier = Modifier.padding(start = 16.dp)
                         )
                     }
@@ -132,7 +132,7 @@ fun NotificationPicker(
             Spacer(modifier = Modifier.width(40.dp))
         }
         Text(
-            text = "Add notification",
+            text = stringResource(R.string.add_notification),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             style = MaterialTheme.typography.titleMedium.copy(
                 fontWeight = FontWeight.Normal

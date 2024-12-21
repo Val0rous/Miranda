@@ -76,6 +76,77 @@
     <string name="recurrence_next_transfer">Next Transfer</string>
     <string name="created_with_recurrence">Created with recurrence</string>
     <string name="category">Category</string>
+    <string name="select">Select</string>
+    <string name="cancel">Cancel</string>
+    <string name="about">About</string>
+    <string name="your_data_in">Your data in</string>
+    <string name="archive">Archive</string>
+    <string name="custom_categories">Custom Categories</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="terms_of_service">Terms of Service</string>
+    <string name="notification_renews">renews</string>
+    <string name="notification_with">with</string>
+    <string name="notification_to">to</string>
+    <string name="renews">Renews</string>
+    <string name="already_renewed">Already renewed</string>
+    <string name="time_in">in</string>
+    <string name="time_years">years</string>
+    <string name="time_year">year</string>
+    <string name="time_months">months</string>
+    <string name="time_month">month</string>
+    <string name="time_weeks">weeks</string>
+    <string name="time_week">week</string>
+    <string name="time_days">days</string>
+    <string name="time_day">day</string>
+    <string name="time_hours">hours</string>
+    <string name="time_hour">hour</string>
+    <string name="time_minutes">minutes</string>
+    <string name="time_minute">minute</string>
+    <string name="time_less_than_a_minute">less than a minute</string>
+    <string name="since">Since</string>
+
+    <!-- Repeats -->
+    <string name="repeats_daily">Every day</string>
+    <string name="repeats_weekly">Every week</string>
+    <string name="repeats_biweekly">Every 2 weeks</string>
+    <string name="repeats_monthly">Every month</string>
+    <string name="repeats_bimonthly">Every 2 months</string>
+    <string name="repeats_quarterly">Every 3 months</string>
+    <string name="repeats_yearly">Every year</string>
+
+    <!-- Notifications -->
+    <string name="notification_at_time">At time of transaction</string>
+    <string name="notification_5_minutes_before">5 minutes before</string>
+    <string name="notification_10_minutes_before">10 minutes before</string>
+    <string name="notification_15_minutes_before">15 minutes before</string>
+    <string name="notification_30_minutes_before">30 minutes before</string>
+    <string name="notification_1_hour_before">1 hour before</string>
+    <string name="notification_2_hours_before">2 hours before</string>
+    <string name="notification_3_hours_before">3 hours before</string>
+    <string name="notification_4_hours_before">4 hours before</string>
+    <string name="notification_6_hours_before">6 hours before</string>
+    <string name="notification_8_hours_before">8 hours before</string>
+    <string name="notification_12_hours_before">12 hours before</string>
+    <string name="notification_1_day_before">1 day before</string>
+    <string name="notification_1_week_before">1 week before</string>
+    <string name="notification_2_weeks_before">2 weeks before</string>
+
+    <!-- Notifications shortDesc -->
+    <string name="notification_at_time_short">now</string>
+    <string name="notification_5_minutes_before_short">in 5 minutes</string>
+    <string name="notification_10_minutes_before_short">in 10 minutes</string>
+    <string name="notification_15_minutes_before_short">in 15 minutes</string>
+    <string name="notification_30_minutes_before_short">in 30 minutes</string>
+    <string name="notification_1_hour_before_short">in 1 hour</string>
+    <string name="notification_2_hours_before_short">in 2 hours</string>
+    <string name="notification_3_hours_before_short">in 3 hours</string>
+    <string name="notification_4_hours_before_short">in 4 hours</string>
+    <string name="notification_6_hours_before_short">in 6 hours</string>
+    <string name="notification_8_hours_before_short">in 8 hours</string>
+    <string name="notification_12_hours_before_short">in 12 hours</string>
+    <string name="notification_1_day_before_short">in 1 day</string>
+    <string name="notification_1_week_before_short">in 1 week</string>
+    <string name="notification_2_weeks_before_short">in 2 weeks</string>
 
     <!-- Account types -->
     <string name="account_type_bank">Bank</string>
@@ -108,6 +179,7 @@
     <string name="category_class_special">Special</string>
 
     <!-- Default categories -->
+    <!-- 1 star -->
     <string name="category_bank">Bank</string>
     <string name="category_car">Car</string>
     <string name="category_rent">Rent</string>
@@ -123,7 +195,7 @@
     <string name="category_fines">Fines</string>
     <string name="category_supplements">Supplements</string>
     <string name="category_transport">Transport</string>
-
+    <!-- 2 stars -->
     <string name="category_meal">Meal</string>
     <string name="category_personal_care">Personal Care</string>
     <string name="category_app_software">App/Software</string>
@@ -139,7 +211,7 @@
     <string name="category_accessories">Accessories</string>
     <string name="category_cafe">Café</string>
     <string name="category_clothing">Clothing</string>
-
+    <!-- 3 stars -->
     <string name="category_cinema">Cinema</string>
     <string name="category_bet">Bet</string>
     <string name="category_entertainment">Entertainment</string>

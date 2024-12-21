@@ -145,7 +145,7 @@ fun ProfileIconMenu(
                 ListItem(
                     headlineContent = {
                         Text(
-                            text = "Custom Categories",
+                            text = stringResource(R.string.custom_categories),
                             style = MaterialTheme.typography.titleSmall,
                             modifier = Modifier.offset(x = (-2).dp)
                         )
@@ -153,7 +153,7 @@ fun ProfileIconMenu(
                     leadingContent = {
                         Icon(
                             imageVector = ImageVector.vectorResource(R.drawable.ic_category),
-                            contentDescription = "Custom Categories",
+                            contentDescription = stringResource(R.string.custom_categories),
                             modifier = Modifier
                                 .offset(x = (-6).dp)
                                 .padding(start = 10.dp)
@@ -173,7 +173,7 @@ fun ProfileIconMenu(
                 ListItem(
                     headlineContent = {
                         Text(
-                            text = "Archive",
+                            text = stringResource(R.string.archive),
                             style = MaterialTheme.typography.titleSmall,
                             modifier = Modifier.offset(x = (-2).dp)
                         )
@@ -181,7 +181,7 @@ fun ProfileIconMenu(
                     leadingContent = {
                         Icon(
                             imageVector = ImageVector.vectorResource(R.drawable.ic_history),
-                            contentDescription = "Archive",
+                            contentDescription = stringResource(R.string.archive),
                             modifier = Modifier
                                 .offset(x = (-6).dp)
                                 .padding(start = 10.dp)
@@ -199,7 +199,7 @@ fun ProfileIconMenu(
             ListItem(
                 headlineContent = {
                     Text(
-                        text = "Your data in ${stringResource(R.string.app_name)}",
+                        text = "${stringResource(R.string.your_data_in)} ${stringResource(R.string.app_name)}",
                         style = MaterialTheme.typography.titleSmall,
                         modifier = Modifier.offset(x = (-2).dp)
                     )
@@ -207,7 +207,11 @@ fun ProfileIconMenu(
                 leadingContent = {
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.ic_shield_lock),
-                        contentDescription = "Your data in ${stringResource(R.string.app_name)}",
+                        contentDescription = "${stringResource(R.string.your_data_in)} ${
+                            stringResource(
+                                R.string.app_name
+                            )
+                        }",
                         modifier = Modifier
                             .offset(x = (-4).dp)
                             .padding(start = 18.dp)
@@ -228,7 +232,7 @@ fun ProfileIconMenu(
             ListItem(
                 headlineContent = {
                     Text(
-                        text = "Settings",
+                        text = stringResource(R.string.settings),
                         style = MaterialTheme.typography.titleSmall,
                         modifier = Modifier.offset(x = (-2).dp)
                     )
@@ -236,7 +240,7 @@ fun ProfileIconMenu(
                 leadingContent = {
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.ic_settings),
-                        contentDescription = "Settings",
+                        contentDescription = stringResource(R.string.settings),
                         modifier = Modifier
                             .offset(x = (-4).dp)
                             .padding(start = 18.dp)
@@ -257,7 +261,7 @@ fun ProfileIconMenu(
             ListItem(
                 headlineContent = {
                     Text(
-                        text = "About",
+                        text = stringResource(R.string.about),
                         style = MaterialTheme.typography.titleSmall,
                         modifier = Modifier.offset(x = (-2).dp)
                     )
@@ -265,7 +269,7 @@ fun ProfileIconMenu(
                 leadingContent = {
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.ic_info),
-                        contentDescription = "About",
+                        contentDescription = stringResource(R.string.about),
                         modifier = Modifier
                             .offset(x = (-4).dp)
                             .padding(start = 18.dp)
@@ -298,7 +302,7 @@ fun ProfileIconMenu(
                     modifier = Modifier
                 ) {
                     Text(
-                        text = "Privacy Policy",
+                        text = stringResource(R.string.privacy_policy),
                         style = MaterialTheme.typography.titleSmall.copy(
                             fontSize = 13.sp,
                             fontWeight = FontWeight.Normal
@@ -321,7 +325,7 @@ fun ProfileIconMenu(
                     modifier = Modifier
                 ) {
                     Text(
-                        text = "Terms of Service",
+                        text = stringResource(R.string.terms_of_service),
                         style = MaterialTheme.typography.titleSmall.copy(
                             fontSize = 13.sp,
                             fontWeight = FontWeight.Normal
