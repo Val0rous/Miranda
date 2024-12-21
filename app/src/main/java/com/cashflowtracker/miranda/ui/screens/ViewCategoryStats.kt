@@ -115,7 +115,7 @@ class ViewCategoryStats : ComponentActivity() {
                         TopAppBar(
                             title = {
                                 Text(
-                                    text = "Category Stats",
+                                    text = stringResource(R.string.category_stats),
                                     color = MaterialTheme.colorScheme.onSurface
                                 )
                             },

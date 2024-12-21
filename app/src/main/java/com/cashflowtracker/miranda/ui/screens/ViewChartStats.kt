@@ -98,7 +98,7 @@ class ViewChartStats : ComponentActivity() {
                             TopAppBar(
                                 title = {
                                     Text(
-                                        text = "Cashflow Chart",
+                                        text = stringResource(R.string.cashflow_chart),
                                         color = MaterialTheme.colorScheme.onSurface
                                     )
                                 },

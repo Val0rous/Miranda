@@ -41,7 +41,7 @@
     <string name="theme_light">Chiaro</string>
     <string name="theme_system">Sistema</string>
     <string name="theme_dark">Scuro</string>
-    <string name="map_view">Vista Mappa</string>
+    <string name="map_view">Vista mappa</string>
     <string name="source">Origine</string>
     <string name="destination">Destinazione</string>
     <string name="amount">Importo</string>
@@ -105,6 +105,8 @@
     <string name="time_less_than_a_minute">meno di un minuto</string>
     <string name="since">Dal</string>
     <string name="sort_filter_accounts">Ordina &amp; Filtra Conti</string>
+    <string name="cashflow_chart">Grafico Flusso</string>
+    <string name="category_stats">Statistiche Categoria</string>
 
     <!-- Repeats -->
     <string name="repeats_daily">Ogni giorno</string>

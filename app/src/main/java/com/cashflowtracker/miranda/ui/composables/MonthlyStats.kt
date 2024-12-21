@@ -32,6 +32,8 @@ import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
 import com.cashflowtracker.miranda.utils.TransactionType
 import java.time.LocalDate
 import java.time.Month
+import java.time.format.TextStyle
+import java.util.Locale
 
 fun nextMonth(month: Int, year: MutableIntState): Int {
     return when (month) {
@@ -55,7 +57,7 @@ fun previousMonth(month: Int, year: MutableIntState): Int {
 
 fun getMonthAbbreviation(month: Int): String {
     return if (month in 1..12) {
-        Month.of(month).name.substring(0, 3).lowercase().replaceFirstChar { it.uppercase() }
+        Month.of(month).getDisplayName(TextStyle.SHORT, Locale.getDefault())
     } else {
         ""
     }
