@@ -104,6 +104,7 @@
     <string name="time_minute">minute</string>
     <string name="time_less_than_a_minute">less than a minute</string>
     <string name="since">Since</string>
+    <string name="sort_filter_accounts">Sort &amp; Filter Accounts</string>
 
     <!-- Repeats -->
     <string name="repeats_daily">Every day</string>

@@ -50,7 +50,7 @@ fun AccountsFilter(
         onDismissRequest = { isVisible.value = false }
     ) {
         Text(
-            text = "Sort & Filter Accounts",
+            text = stringResource(R.string.sort_filter_accounts),
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.titleLarge,
             modifier = Modifier
@@ -60,7 +60,7 @@ fun AccountsFilter(
         )
 
         Text(
-            text = "Account type",
+            text = stringResource(R.string.account_type),
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.padding(start = 16.dp)
         )
@@ -134,7 +134,7 @@ fun AccountsFilter(
                 ),
                 modifier = Modifier.weight(1f)
             ) {
-                Text("Reset")
+                Text(stringResource(R.string.reset))
             }
             Button(
                 onClick = {
@@ -143,7 +143,7 @@ fun AccountsFilter(
                 },
                 modifier = Modifier.weight(1f)
             ) {
-                Text("Apply")
+                Text(stringResource(R.string.apply))
             }
         }
     }

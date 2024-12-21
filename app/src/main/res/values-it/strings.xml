@@ -104,6 +104,7 @@
     <string name="time_minute">minuto</string>
     <string name="time_less_than_a_minute">meno di un minuto</string>
     <string name="since">Dal</string>
+    <string name="sort_filter_accounts">Ordina &amp; Filtra Conti</string>
 
     <!-- Repeats -->
     <string name="repeats_daily">Ogni giorno</string>
