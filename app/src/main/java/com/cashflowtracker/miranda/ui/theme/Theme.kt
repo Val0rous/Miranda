@@ -1,6 +1,7 @@
 package com.cashflowtracker.miranda.ui.theme
 
 import android.app.Activity
+import android.content.Context
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -20,6 +21,8 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import com.cashflowtracker.miranda.data.repositories.ThemeRepository.getSystemPreferenceFlow
+import com.cashflowtracker.miranda.data.repositories.ThemeRepository.getThemePreferenceFlow
 import com.cashflowtracker.miranda.ui.viewmodels.ThemeViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -200,4 +203,16 @@ fun MirandaTheme(
             }
         }
     )
+}
+
+@Composable
+        /** Returns true if dark, false if light */
+fun Context.currentTheme(): Boolean {
+    val isDarkTheme by this.getThemePreferenceFlow().collectAsState(false)
+    val followSystem by this.getSystemPreferenceFlow().collectAsState(true)
+    return if (followSystem) {
+        isSystemInDarkTheme()
+    } else {
+        isDarkTheme
+    }
 }

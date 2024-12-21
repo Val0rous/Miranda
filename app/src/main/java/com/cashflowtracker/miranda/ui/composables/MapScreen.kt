@@ -170,13 +170,15 @@ fun FullScreenMapView(transactions: List<Transaction>) {
         }
     ) {
         transactions.forEach { transaction ->
-            val coordinates = transaction.location?.split(", ", limit = 2)?.let {
-                if (it.size == 2) {
-                    Coordinates(it[0].toDouble(), it[1].toDouble())
-                } else {
-                    null
+            val coordinates = transaction.location
+                .split(", ", limit = 2)
+                .let {
+                    if (it.size == 2) {
+                        Coordinates(it[0].toDouble(), it[1].toDouble())
+                    } else {
+                        null
+                    }
                 }
-            }
             if (coordinates != null) {
                 val markerIcon = createRoundedMarkerIcon(
                     type = transaction.type,

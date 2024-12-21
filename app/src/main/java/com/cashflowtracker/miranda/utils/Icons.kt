@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,6 +37,7 @@ import com.cashflowtracker.miranda.ui.theme.Green400
 import com.cashflowtracker.miranda.ui.theme.LocalCustomColors
 import com.cashflowtracker.miranda.ui.theme.Red400
 import com.cashflowtracker.miranda.ui.theme.Yellow400
+import com.cashflowtracker.miranda.ui.theme.currentTheme
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import kotlin.math.min
@@ -188,7 +190,13 @@ fun createRoundedMarkerIcon(
     }
     canvas.drawCircle(centerX, centerY, radius + offset, backgroundPaint)
     // Draw the border circle
-    val borderColor = Color.White
+    val borderColor = if (context.currentTheme()) {
+        // Dark theme
+        MaterialTheme.colorScheme.surfaceVariant
+    } else {
+        // Light theme
+        Color.White
+    }
     val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = borderColor.toArgb()
         style = Paint.Style.STROKE
